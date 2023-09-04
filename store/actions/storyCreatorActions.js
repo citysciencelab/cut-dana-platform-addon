@@ -243,7 +243,11 @@ function dataURLtoFile (dataurl, filename) {
         mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]);
     let n = bstr.length;
+
+    /* eslint-disable one-var */
+    // It depends on previous code, so it's not possible to move it to the top
     const u8arr = new Uint8Array(n);
+    /* eslint-enable */
 
     while (n) {
         u8arr[n - 1] = bstr.charCodeAt(n - 1);

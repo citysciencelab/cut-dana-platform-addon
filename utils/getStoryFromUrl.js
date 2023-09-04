@@ -39,7 +39,7 @@ export function loadStepContent (url, storyId, currentStep) {
         .then((data) => {
             let loadedContent = data;
 
-            for (const matchAllElement of [...loadedContent.matchAll("src\s*=\s*\"([^\"]+)\"")]) {
+            for (const matchAllElement of [...loadedContent.matchAll(/src\s*=\s*"([^"]+)"/gi)]) {
                 loadedContent = loadedContent.replace(matchAllElement[1], loadImageURL + matchAllElement[1]);
             }
             return loadedContent;

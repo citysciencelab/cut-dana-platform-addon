@@ -49,7 +49,9 @@ export default {
         refreshStoryList () {
             axios
                 .get(this.backendConfig.url + "story")
-                .then((response) => this.storyList = response.data);
+                .then((response) => {
+                    this.storyList = response.data;
+                });
         },
 
         /**
