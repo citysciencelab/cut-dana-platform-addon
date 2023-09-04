@@ -1,0 +1,101 @@
+{
+  "modules": {
+    "tools": {
+      "dataNarrator": {
+        "title": "Data Narrator",
+        "create": "Create Story",
+        "play": "Start Story",
+        "dashboard": "Story Dashboard",
+        "tableOfContents": "Table of Contents",
+        "createStory": "Create Story",
+        "createStoryStep": "Create Story Step",
+        "label": {
+          "storyName": "Name of the Story",
+          "storyDescription": "Description",
+          "author": "Author",
+          "cover": "Cover",
+          "scrolly": "Scrollable story",
+          "interval": "Autoplay interval in seconds",
+          "steps": "Steps",
+          "chapter": "Chapter",
+          "newChapterNumber": "Number of the new Chapter",
+          "newChapterTitle": "Title of the new Chapter",
+          "stepNumber": "Step Number",
+          "stepTitle": "Step Title",
+          "stepWidth": "Window Width",
+          "visible": "Visibility",
+          "htmlContent": "Content",
+          "centerCoordinate": "Position of the Map",
+          "zoomLevel": "Zoom Level of the Map",
+          "layers": "Layers",
+          "interactionAddons": "AddOns",
+          "is3D": "Show map in 3D",
+          "centerCoordinate3D": "Position/Angle of the 3D map",
+          "heading": "Heading",
+          "pitch": "Pitch",
+          "autoPLay": "autoplay",
+          "on": "on",
+          "off": "off"
+        },
+        "creator": {
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "dashboardView": {
+          "title": "Story Dashboard",
+          "refresh": "Refresh Dashboard",
+          "total": "The total number of stories is: "
+        },
+        "success": {
+          "storyCreated": "Story created.",
+          "storyDeleted": "Story deleted."
+        },
+        "warning": {
+          "mapMoved": "The entered position doesn't match the current map view.",
+          "mapZoomed": "The entered zoom level doesn't match the current map view.",
+          "sendNoSteps": "Submitting a story is only possible once at least one step has been added to the story.",
+          "sendNoHTML": "Submitting a step is only possible if you have added content.",
+          "storyNotSaved": "Your story could not be saved.",
+          "noIntervalOnScrolly": "Scrollable stories can't have an autoplay interval."
+        },
+        "error": {
+          "chapterNumberAlreadyExists": "A chapter with this number already exists. Please try out a different number.",
+          "stepNumberAlreadyExists": "A step with this number already exists. Please try out a different number.",
+          "errorAddingImage": "The image couldn't be loaded. Please try another file.",
+          "storyDeleted": "Story could not be deleted."
+        },
+        "confirm": {
+          "closeStoryCreation": {
+            "title": "Close Tool",
+            "description": "Are you sure you want to close this tool? Entered data won't be saved.",
+            "confirmButton": "Close",
+            "denyButton": "Cancel"
+          },
+          "deleteStep": {
+            "title": "Delete step",
+            "description": "Are you sure you want to delete this step? This can't be undone.",
+            "confirmButton": "Delete",
+            "denyButton": "Cancel"
+          },
+          "deleteStory": {
+            "title": "Delete Story",
+            "description": "Are you sure you want to delete this story? This can't be undone.",
+            "confirmButton": "Delete",
+            "denyButton": "Cancel"
+          }
+        },
+        "button": {
+          "cancel": "Cancel",
+          "addStep": "Add Step",
+          "deleteStep": "Delete Step",
+          "submitAddStep": "Add Step to Story",
+          "submitEditStep": "Save Step",
+          "previewStory": "Preview Story",
+          "downloadStory": "Download Story",
+          "uploadStory": "Upload Story"
+        },
+        "newChapter": "New Chapter"
+      }
+    }
+  }
+}

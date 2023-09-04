@@ -1,0 +1,101 @@
+{
+  "modules": {
+    "tools": {
+      "dataNarrator": {
+        "title": "Data Narrator",
+        "create": "Story erstellen",
+        "play": "Story starten",
+        "dashboard": "Story Dashboard",
+        "tableOfContents": "Inhaltsverzeichnis",
+        "createStory": "Story erstellen",
+        "createStoryStep": "Storyschritt erstellen",
+        "label": {
+          "storyName": "Storyname",
+          "storyDescription": "Beschreibung",
+          "author": "Autor",
+          "cover": "Titelbild",
+          "scrolly": "Scrollbare Story",
+          "interval": "Autoplay Intervall in Sekunden",
+          "steps": "Schritte",
+          "chapter": "Kapitel",
+          "newChapterNumber": "Nummer des neuen Kapitels",
+          "newChapterTitle": "Titel des neuen Kapitels",
+          "stepNumber": "Schritt Nummer",
+          "stepTitle": "Schritt Titel",
+          "stepWidth": "Fensterbreite",
+          "visible": "Sichtbarkeit",
+          "htmlContent": "Inhalt",
+          "centerCoordinate": "Position der Karte",
+          "zoomLevel": "Zoomstufe der Karte",
+          "layers": "Layer",
+          "interactionAddons": "Erweiterungen",
+          "is3D": "Karte in 3D anzeigen",
+          "centerCoordinate3D": "Position/Winkel der 3D Karte",
+          "heading": "Heading",
+          "pitch": "Pitch",
+          "autoPLay": "Autoplay",
+          "on": "an",
+          "off": "aus"
+        },
+        "creator": {
+          "edit": "Bearbeiten",
+          "delete": "Löschen"
+        },
+        "dashboardView": {
+          "title": "Story Dashboard",
+          "refresh": "Dashboard aktualisieren",
+          "total": "Die Anzahl der Stories beträgt: "
+        },
+        "success": {
+          "storyCreated": "Story erfolgreich erstellt.",
+          "storyDeleted": " Story gelöscht."
+        },
+        "warning": {
+          "mapMoved": "Die eingetragene Position entspricht nicht der aktuellen Ansicht der Karte.",
+          "mapZoomed": "Die eingetragene Zoomstufe entspricht nicht der aktuellen Ansicht der Karte.",
+          "sendNoSteps": "Story abschicken ist erst möglich sobald mindestens ein Schritt zur Story hinzugefügt wurde.",
+          "sendNoHTML": "Das Absenden eines Unterkapitels ist erst möglich sobald Inhalt hinzugefügt wurde.",
+          "storyNotSaved": "Ihre Story konnte nicht gespeichert werden.",
+          "noIntervalOnScrolly": "Scrollbare Stories können kein Autoplay Intervall haben."
+        },
+        "error": {
+          "chapterNumberAlreadyExists": "Ein Kapitel mit dieser Nummer existiert bereits. Bitte wählen Sie eine andere Nummer.",
+          "stepNumberAlreadyExists": "Ein Schritt mit dieser Nummer existiert bereits. Bitte wählen Sie eine andere Nummer.",
+          "errorAddingImage": "Das Bild konnte nicht geladen werden. Bitte versuchen Sie es mit einer anderen Datei.",
+          "storyDeleted": "Story konnte nicht gelöscht werden."
+        },
+        "confirm": {
+          "closeStoryCreation": {
+            "title": "Tool schließen",
+            "description": "Sind Sie sicher, dass Sie das Tool schließen möchten? Eingetragene Daten werden nicht gespeichert.",
+            "confirmButton": "Schließen",
+            "denyButton": "Abbrechen"
+          },
+          "deleteStep": {
+            "title": "Schritt löschen",
+            "description": "Sind Sie sicher, dass Sie diesen Schritt löschen möchten? Dies kann nicht rückgängig gemacht werden.",
+            "confirmButton": "Löschen",
+            "denyButton": "Abbrechen"
+          },
+          "deleteStory": {
+            "title": "Story löschen",
+            "description": "Sind Sie sicher, dass Sie diese Story löschen möchten? Dies kann nicht rückgängig gemacht werden.",
+            "confirmButton": "Löschen",
+            "denyButton": "Abbrechen"
+          }
+        },
+        "button": {
+          "cancel": "Abbrechen",
+          "addStep": "Schritt hinzufügen",
+          "deleteStep": "Schritt löschen",
+          "submitAddStep": "Schritt zur Story hinzufügen",
+          "submitEditStep": "Schritt speichern",
+          "previewStory": "Vorschau",
+          "downloadStory": "Story herunterladen",
+          "uploadStory": "Story abschicken"
+        },
+        "newChapter": "Neues Kapitel"
+      }
+    }
+  }
+}

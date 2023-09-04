@@ -1,0 +1,4 @@
+/**
+ * @namespace DataNarrator
+ * @memberof Addons
+ */
