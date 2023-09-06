@@ -569,6 +569,8 @@ export default {
                     :class="{
                         'primary--text': isHovering === chapter.chapterNumber
                     }"
+                    role="button"
+                    tabindex="0"
                     @mouseover="isHovering = chapter.chapterNumber"
                     @focus="isHovering = chapter.chapterNumber"
                     @mouseout="isHovering = null"
@@ -583,6 +585,8 @@ export default {
                     <li
                         v-for="(step, stepIndex) in storyConf.steps"
                         :key="step.stepNumber + step.title"
+                        role="button"
+                        tabindex="0"
                         :class="{
                             'primary--text':
                                 isHovering ===

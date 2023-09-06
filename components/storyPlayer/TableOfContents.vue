@@ -36,6 +36,8 @@ export default {
             <li
                 v-for="(step, stepIndex) in steps"
                 :key="stepIndex + step.title"
+                role="button"
+                tabindex="0"
                 @click="scrollToStep(stepIndex)"
                 @keydown="scrollToStep(stepIndex)"
             >

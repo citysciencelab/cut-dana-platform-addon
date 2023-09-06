@@ -1,8 +1,8 @@
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import axios from "axios";
-import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
-import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
+import {getHTMLContentReference, getStepReference} from "../../utils/getReference.js";
+import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 
 const uuid = require("uuid");
 

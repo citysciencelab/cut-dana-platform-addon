@@ -48,6 +48,8 @@ export default {
         <span
             v-if="storyConf?.displayType && storyConf.displayType === 'scrolly'"
             class="scrolly-button"
+            role="button"
+            tabindex="0"
             @click="toggleScrollytelling"
             @keydown="toggleScrollytelling"
         >
@@ -57,6 +59,8 @@ export default {
             v-if="mode && storyConf.storyInterval"
         >
             <span
+                role="button"
+                tabindex="0"
                 @click="toggleAutoPlay"
                 @keydown="toggleAutoPlay"
             >
@@ -82,6 +86,8 @@ export default {
             </span>
         </span>
         <span
+            role="button"
+            tabindex="0"
             @click="reset"
             @keydown="reset"
         >

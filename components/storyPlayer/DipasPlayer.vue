@@ -186,6 +186,8 @@ export default {
                 <div> {{ $t("additional:modules.tools.dataNarrator.tableOfContents") }} </div>
                 <span class="bootstrap-icon">
                     <i
+                        role="button"
+                        tabindex="0"
                         class="bi-x"
                         @click="showTableOfContents ^= 1"
                         @keydown="showTableOfContents ^= 1"
