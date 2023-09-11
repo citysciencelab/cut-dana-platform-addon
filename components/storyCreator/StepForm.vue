@@ -350,17 +350,15 @@ export default {
          * @returns {void}
          */
         async onAddImage (imageFile, Editor, cursorLocation, resetUploader) {
-            try {
-                const dataUrl = await getDataUrlFromFile(imageFile),
-                    fileExtension = getFileExtension(imageFile);
+            const fileExtension = getFileExtension(imageFile);
 
+            getDataUrlFromFile(imageFile).then(dataUrl => {
                 this.htmlContentImages.push({dataUrl, fileExtension});
-
                 // Add image to HTML content
                 Editor.insertEmbed(cursorLocation, "image", dataUrl);
+                // console.log("Image added to HTML content");
                 resetUploader();
-            }
-            catch (error) {
+            }).catch((error) => {
                 console.error(error);
                 Radio.trigger("Alert", "alert", {
                     text: i18next.t(
@@ -369,7 +367,7 @@ export default {
                     category: "Error",
                     kategorie: "alert-danger"
                 });
-            }
+            });
         },
 
         /**
@@ -547,7 +545,7 @@ export default {
         <form @submit.prevent="onSubmit">
             <div class="form-group">
                 <label
-                    class="form-label"
+                    class="form-label required"
                     for="step-associate"
                 >
                     {{
@@ -573,7 +571,7 @@ export default {
                 class="form-group"
             >
                 <label
-                    class="form-label"
+                    class="form-label required"
                     for="step-number"
                 >
                     {{
@@ -611,7 +609,7 @@ export default {
                 class="form-group"
             >
                 <label
-                    class="form-label"
+                    class="form-label required"
                     for="step-chapter-title"
                 >
                     {{
@@ -631,7 +629,7 @@ export default {
 
             <div class="form-group">
                 <label
-                    class="form-label"
+                    class="form-label required"
                     for="step-number"
                 >
                     {{
@@ -670,7 +668,7 @@ export default {
 
             <div class="form-group">
                 <label
-                    class="form-label"
+                    class="form-label required"
                     for="step-title"
                 >
                     {{
@@ -1114,7 +1112,7 @@ export default {
 
             <div class="form-group">
                 <label
-                    class="form-label"
+                    class="form-label required"
                     for="step-vue-editor"
                 >
                     {{
@@ -1136,42 +1134,66 @@ export default {
                 </div>
             </div>
 
-            <button
-                type="button"
-                class="btn btn-lgv-grey"
-                @click="$emit('return')"
-            >
-                {{
-                    $t(
-                        "additional:modules.tools.dataNarrator.button.cancel"
-                    )
-                }}
-            </button>
-            <button
-                v-if="isEditing"
-                type="button"
-                class="btn btn-lgv-grey"
-                @click="onDeleteStep"
-            >
-                {{
-                    $t(
-                        "additional:modules.tools.dataNarrator.button.deleteStep"
-                    )
-                }}
-            </button>
-            <button
-                type="submit"
-                class="btn btn-lgv-grey"
-                :disabled="!htmlContent"
-            >
-                {{
-                    $t(
-                        isEditing
-                            ? "additional:modules.tools.dataNarrator.button.submitEditStep"
-                            : "additional:modules.tools.dataNarrator.button.submitAddStep"
-                    )
-                }}
-            </button>
+            <div class="tool-dataNarrator-creator-actions">
+                <v-tooltip top>
+                    <template #activator="{ on }">
+                        <v-icon
+                            id="reset-button"
+                            class="mr-1"
+                            @click="$emit('return')"
+                            v-on="on"
+                        >
+                            cancel
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.button.cancel")
+                        }}
+                    </span>
+                </v-tooltip>
+
+                <v-tooltip
+                    v-if="isEditing"
+                    top
+                >
+                    <template #activator="{ on }">
+                        <v-icon
+                            id="delete-button"
+                            class="mr-1"
+                            @click="onDeleteStep"
+                            v-on="on"
+                        >
+                            delete
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.button.deleteStep")
+                        }}
+                    </span>
+                </v-tooltip>
+                <v-tooltip top>
+                    <template #activator="{ on }">
+                        <v-icon
+                            id="save-button"
+                            class="mr-1"
+                            :disabled="!htmlContent?.length"
+                            @click="onSubmit"
+                            v-on="on"
+                        >
+                            save
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t(isEditing
+                                ? "additional:modules.tools.dataNarrator.button.submitEditStep"
+                                : "additional:modules.tools.dataNarrator.button.submitAddStep")
+                        }}
+                    </span>
+                </v-tooltip>
+            </div>
             <p />
             <v-alert
                 v-show="!htmlContent || !htmlContent.length"
@@ -1217,6 +1239,8 @@ export default {
             0 0 8px rgba(102, 175, 233, 0.6);
         }
     }
+
+    label.required:after { content: '*';color:red; }
 
     .stepForm-inputs-centerCoordinate {
         display: grid;

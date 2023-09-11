@@ -1,5 +1,10 @@
 # Data Narrator
 
+## Installation
+
+To avoid problems setting up vuetify, install the add-ons' dependencies with --legacy-peer-deps
+(npm install --legacy-peer-deps)
+
 ## City Science Lab - Connected Urban Twin
 
 <p align="center">
@@ -22,7 +27,7 @@ The example portal configuration is included in this repository in the example f
 that includes 3D data can be
 found **[here](https://github.com/citysciencelab/cut-data-narrator/tree/dev/portal/3d-test)**
 
-[![example story video](./doc/videoimage.jpg)](https://user-images.githubusercontent.com/36763878/161025746-b8ac51be-a687-4e63-8bcf-b1da01334ead.mp4 "Example story video - Click to Watch!")
+[![example story video](./doc/videoimage.jpg)](https://user-images.githubusercontent.com/36763878/161025746-b8ac51be-a687-4e63-8bcf-b1da01334ead.mp4 'Example story video - Click to Watch!')
 
 ### Story JSON
 
@@ -81,7 +86,7 @@ The story steps attributes in the story.json are the follwing:
 The Data Narrator let's the user explore and create stories.
 
 | Name               | Required | Type    | Default        | Description                                                                              |
-| ------------------ | -------- | ------- |----------------| ---------------------------------------------------------------------------------------- |
+| ------------------ | -------- | ------- | -------------- | ---------------------------------------------------------------------------------------- |
 | active             | no       | Boolean | false          | Whether the tool is initially opened or not.                                             |
 | name               | no       | String  | Data Narrator  | Name of the tool in the menu.                                                            |
 | glyphicon          | no       | String  | glyphicon-book | CSS class of the glyphicons, which is displayed before the name of the tool in the menu. |

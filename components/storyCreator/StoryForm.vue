@@ -22,8 +22,8 @@ export default {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters))
     },
     mounted () {
-        if (Object.hasOwn(this.storyConf, "titleImage") && this.storyConf.titleImage !== "") {
-            this.$refs.preview_image.src = URL.createObjectURL(this.storyConf.titleImage);
+        if (Object.hasOwn(this.storyConf, "titleImage") && this.storyConf.title_image !== "") {
+            this.$refs.preview_image.src = URL.createObjectURL(this.storyConf.title_image);
             // this.$refs.image_input.value = this.storyConf.titleImage.name;
             this.hasCover = true;
         }
@@ -53,9 +53,11 @@ export default {
         async saveStoryToBackend () {
             if (Object.hasOwn(this.storyConf, "storyId")) {
                 // const updateResponse = await this.updateStory();
+                console.log("Editing story is not implemented yet.");
             }
             else {
                 const uploadResponse = await this.uploadStoryFiles();
+
 
                 if (uploadResponse.toString().indexOf("Error") !== -1) {
                     this.$root.snackB.show({
@@ -102,7 +104,7 @@ export default {
             <div class="form-group">
                 <label
                     for="title"
-                    class="form-label"
+                    class="form-label required"
                 >
                     {{
                         $t(
@@ -322,43 +324,74 @@ export default {
             </div>
 
             <div class="tool-dataNarrator-creator-actions">
-                <button
-                    type="button"
-                    class="btn btn-lgv-grey"
-                    :disabled="!storyConf.steps || !storyConf.steps.length"
-                    @click="
-                        $emit('openView', constants.storyCreationViews.PREVIEW)
-                    "
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.button.previewStory"
-                        )
-                    }}
-                </button>
-                <button
-                    type="submit"
-                    class="btn btn-lgv-grey"
-                    :disabled="!storyConf.steps || !storyConf.steps.length"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.button.downloadStory"
-                        )
-                    }}
-                </button>
-                <button
-                    type="button"
-                    class="btn btn-lgv-grey"
-                    :disabled="!storyConf.steps || !storyConf.steps.length"
-                    @click="saveStoryToBackend"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.button.uploadStory"
-                        )
-                    }}
-                </button>
+                <v-tooltip top>
+                    <template #activator="{ on }">
+                        <v-icon
+                            id="reset-button"
+                            class="mr-1"
+                            @click="$emit('reset-tool')"
+                            v-on="on"
+                        >
+                            cancel
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.button.cancel")
+                        }}
+                    </span>
+                </v-tooltip>
+                <v-tooltip top>
+                    <template #activator="{ on }">
+                        <v-icon
+                            class="mr-1"
+                            :disabled="!storyConf.steps || !storyConf.steps.length"
+                            @click=" $emit('openView', constants.storyCreationViews.PREVIEW)"
+                            v-on="on"
+                        >
+                            preview
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.button.previewStory")
+                        }}
+                    </span>
+                </v-tooltip>
+                <v-tooltip top>
+                    <template #activator="{ on }">
+                        <v-icon
+                            class="mr-1"
+                            :disabled="!storyConf.steps || !storyConf.steps.length"
+                            @click="downloadStoryFiles"
+                            v-on="on"
+                        >
+                            download
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.button.downloadStory")
+                        }}
+                    </span>
+                </v-tooltip>
+                <v-tooltip top>
+                    <template #activator="{ on }">
+                        <v-icon
+                            class="mr-1"
+                            :disabled="!storyConf.steps || !storyConf.steps.length"
+                            @click="saveStoryToBackend"
+                            v-on="on"
+                        >
+                            save
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.button.uploadStory")
+                        }}
+                    </span>
+                </v-tooltip>
                 <p />
                 <v-alert
                     v-show="!storyConf.steps || !storyConf.steps.length"
@@ -376,6 +409,8 @@ export default {
 <style lang="scss" scoped>
 #tool-dataNarrator-creator-storyForm {
     max-width: 460px;
+
+    label.required:after { content: '*';color:red; }
 
     .story-step-button {
         min-width: 46px;
