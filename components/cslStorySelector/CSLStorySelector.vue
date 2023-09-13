@@ -244,17 +244,17 @@ export default {
                                 <div>
                                     <div class="row">
                                         <v-col
-                                            v-if="item.coverImagePath"
+                                            v-if="item.title_image"
                                             cols="6"
                                         >
                                             <v-img
-                                                :src="backendConfig.url + 'image/' + item.coverImagePath"
+                                                :src="backendConfig.url + 'image/' + item.title_image"
                                                 :alt="item.title"
                                                 max-width="200"
                                                 max-height="200"
                                             />
                                         </v-col>
-                                        <v-col :cols="item.coverImagePath ? 6 : 12">
+                                        <v-col :cols="item.title_image ? 6 : 12">
                                             <v-card-title
                                                 class="text-h5"
                                             >
