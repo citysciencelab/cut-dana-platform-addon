@@ -334,16 +334,7 @@ async function uploadStoryFiles ({state, commit}) {
     let storyID;
 
     // Add story and get current storyID back from server
-    return axios.post(backendUrl + "add/story", {
-        title: storyConf.title,
-        category: storyConf.author,
-        story_json: storyConf,
-        author: storyConf.author,
-        description: storyConf.description,
-        title_image: storyConf.titleImage,
-        story_interval: storyConf.storyInterval,
-        display_type: storyConf.displayType
-    }).then((response) => {
+    return axios.post(backendUrl + "story", storyConf).then((response) => {
         // store story ID to state
         commit("setStoryConf", {
             ...state.storyConf,

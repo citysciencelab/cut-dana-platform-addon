@@ -116,7 +116,7 @@ export default {
              * @returns {void}
              */
             const deleteStory = () => {
-                    this.storyConfURL = this.backendConfig.url + "delete/story/" + storyId;
+                    this.storyConfURL = this.backendConfig.url + "story/" + storyId;
 
                     axios
                         .delete(this.storyConfURL)
@@ -244,17 +244,17 @@ export default {
                                 <div>
                                     <div class="row">
                                         <v-col
-                                            v-if="item.title_image"
+                                            v-if="item.titleImage"
                                             cols="6"
                                         >
                                             <v-img
-                                                :src="backendConfig.url + 'image/' + item.title_image"
+                                                :src="backendConfig.url + 'image/' + item.titleImage"
                                                 :alt="item.title"
                                                 max-width="200"
                                                 max-height="200"
                                             />
                                         </v-col>
-                                        <v-col :cols="item.title_image ? 6 : 12">
+                                        <v-col :cols="item.titleImage ? 6 : 12">
                                             <v-card-title
                                                 class="text-h5"
                                             >
@@ -282,7 +282,7 @@ export default {
                                                 v-if="userRole !== constants.dataNarratorRoles.ADMIN"
                                                 class="ml-2"
                                                 text
-                                                @click="onStorySelectedById(item.id), toggle()"
+                                                @click="onStorySelectedById(item._id), toggle()"
                                             >
                                                 {{
                                                     $t("additional:modules.tools.dataNarrator.play")
@@ -298,7 +298,7 @@ export default {
                                                         id="play-button"
                                                         class="ml-2 mr-1"
                                                         v-on="on"
-                                                        @click="onStorySelectedById(item.id), toggle()"
+                                                        @click="onStorySelectedById(item._id), toggle()"
                                                     >
                                                         play_arrow
                                                     </v-icon>
@@ -316,7 +316,7 @@ export default {
                                                         id="edit-button"
                                                         class="ml-2 mr-1"
                                                         v-on="on"
-                                                        @click="onStoryEditById(item.id), toggle()"
+                                                        @click="onStoryEditById(item._id), toggle()"
                                                     >
                                                         edit_note
                                                     </v-icon>
@@ -333,7 +333,7 @@ export default {
                                                         id="delete-button"
                                                         class="ml-2 mr-1"
                                                         v-on="on"
-                                                        @click="onStoryDeleteById(item.id), toggle()"
+                                                        @click="onStoryDeleteById(item._id), toggle()"
                                                     >
                                                         playlist_remove
                                                     </v-icon>

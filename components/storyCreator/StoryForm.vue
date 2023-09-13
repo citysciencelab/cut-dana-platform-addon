@@ -22,9 +22,8 @@ export default {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters))
     },
     mounted () {
-        if (Object.hasOwn(this.storyConf, "titleImage") && this.storyConf.title_image !== "") {
-            this.$refs.preview_image.src = URL.createObjectURL(this.storyConf.title_image);
-            // this.$refs.image_input.value = this.storyConf.titleImage.name;
+        if (Object.hasOwn(this.storyConf, "titleImage") && this.storyConf.titleImage !== "") {
+            this.$refs.preview_image.src = URL.createObjectURL(this.storyConf.titleImage);
             this.hasCover = true;
         }
     },
