@@ -3,21 +3,18 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 import ToolTemplate from "../../../../src/modules/tools/ToolTemplate.vue";
 import StoryCreator from "./storyCreator/StoryCreator.vue";
 import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
-import fetchDataFromUrl from "../utils/getStoryFromUrl";
 import * as constants from "../store/constantsDataNarrator";
 import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
-import SnackBar from "./snackBar/SnackBar.vue";
-import CSLStorySelector from "./cslStorySelector/CSLStorySelector.vue";
-import StaticStorySelector from "./cslStorySelector/StaticStorySelector.vue";
+import SnackBar from "./SnackBar.vue";
+import DashboardCard from "./DashboardCard.vue";
 import {EventEmitter} from "./utils/EventEmitter";
 
 export default {
     name: "DataNarrator",
     components: {
-        StaticStorySelector,
-        CSLStorySelector,
+        DashboardCard,
         SnackBar,
         ToolTemplate,
         StoryCreator,
@@ -26,11 +23,8 @@ export default {
     data () {
         return {
             constants,
-            fetchDataFromUrl,
-            storyConfURL: Config.storyConf ? Config.storyConf : this.getConfPathfromUrl(),
-            storyList: {},
-            storyId: null,
-            modeOptions: null
+            stepIndex: 0
+            // modeOptions: null
         };
     },
     computed: {
@@ -63,10 +57,10 @@ export default {
      * Put initialize here if mounting occurs after config parsing
      * @returns {void}
      */
-    async mounted () {
+    mounted () {
         this.$root.snackB = this.$refs.snackB;
         this.applyTranslationKey(this.name);
-        this.createModeOptions();
+        // this.createModeOptions();
 
         if (this.$store.state.Tools.DataNarrator.backendURL) {
             this.setBackendConfig({url: this.$store.state.Tools.DataNarrator.backendURL});
@@ -82,33 +76,19 @@ export default {
             }
         }
 
-        if (url.searchParams.get("overview") !== null) {
-            this.setMode(constants.storyTellingModes.STATIC);
-        }
-        else if (url.searchParams.get("dashboard") !== null) {
-            this.setMode(constants.storyTellingModes.DASHBOARD);
+        if (url.searchParams.get("story") !== null) {
+            this.setCurrentStoryId(url.searchParams.get("story"));
+            this.stepIndex = parseInt(url.searchParams.get("step"), 10);
+            this.loadCurrentStory();
         }
         else {
-            await this.loadStoryFromFile();
-            this.setMode(this.$store.state.Tools.DataNarrator.autoplay ? constants.storyTellingModes.PLAY : "");
+            this.setMode(constants.storyTellingModes.DASHBOARD);
         }
         this.activateTool();
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-
-        /**
-         * Handles the URL loading of the story from ath
-         * @returns {void}
-         */
-        async loadStoryFromFile () {
-            if (this.storyConfURL) {
-                await fetchDataFromUrl(this.storyConfURL).then(loadedStoryConf => {
-                    this.setStoryConf(loadedStoryConf);
-                });
-            }
-        },
 
         /**
          * Active tool workaround
@@ -125,51 +105,70 @@ export default {
                     toolWindow.style.display = "block";
                 }
             }
-            if (this.storyConf.isNoCreateMode) {
-                this.modeOptions.filter(element => element.mode !== "play").forEach(element => {
-                    element.visible = false;
-                });
-            }
-
-            // Temporary for static mode
-            this.modeOptions.find(element => element.mode === "static").visible = false;
+            // if (this.storyConf.isNoCreateMode) {
+            //     this.modeOptions.filter(element => element.mode !== "play").forEach(element => {
+            //         element.visible = false;
+            //     });
+            // }
         },
 
         /**
          * The story telling tool options
          * @returns {Object[]} mode options (icon, title and disabled)
          */
-        createModeOptions () {
-            this.modeOptions = Object.values(this.constants.storyTellingModes).map(
-                mode => ({
-                    mode,
-                    icon: this.constants.storyTellingModeIcons[mode],
-                    title: this.$t(
-                        "additional:modules.tools.dataNarrator." + mode
-                    ),
-                    disabled:
-                        mode === this.constants.storyTellingModes.PLAY &&
-                        !this.storyConfURL,
-                    visible: true
-                })
+        // createModeOptions () {
+        //     this.modeOptions = Object.values(this.constants.storyTellingModes).map(
+        //         mode => ({
+        //             mode,
+        //             icon: this.constants.storyTellingModeIcons[mode],
+        //             title: this.$t(
+        //                 "additional:modules.tools.dataNarrator." + mode
+        //             ),
+        //             disabled:
+        //                 mode === this.constants.storyTellingModes.PLAY &&
+        //                 !this.storyConfURL,
+        //             visible: true
+        //         })
+        //     );
+        // },
+
+        confirmOnlyWhenCreatingStory (actionCallback) {
+            if (this.isCreatingStory()) {
+                this.confirmDialog("closeStoryCreation", actionCallback);
+            }
+            else {
+                actionCallback();
+            }
+        },
+
+        /**
+         * Confirms the action with a dialog when the user is creating a story
+         * @param {string} tPrefix translation prefix
+         * @param {function} actionCallback function that needs to be confirmed
+         * @returns {void}
+         */
+        confirmDialog (tPrefix, actionCallback) {
+            const confirmActionSettings = {
+                actionConfirmedCallback: actionCallback,
+                confirmCaption: this.$t(
+                    `additional:modules.tools.dataNarrator.confirm.${tPrefix}.confirmButton`
+                ),
+                denyCaption: this.$t(
+                    `additional:modules.tools.dataNarrator.confirm.${tPrefix}.denyButton`
+                ),
+                textContent: this.$t(
+                    `additional:modules.tools.dataNarrator.confirm.${tPrefix}.description`
+                ),
+                headline: this.$t(
+                    `additional:modules.tools.dataNarrator.confirm.${tPrefix}.title`
+                ),
+                forceClickToClose: true
+            };
+
+            this.$store.dispatch(
+                "ConfirmAction/addSingleAction",
+                confirmActionSettings
             );
-        },
-        /**
-         * Handles story telling mode changes.
-         * @param {Number} index the index of the new story telling mode
-         * @returns {void}
-         */
-        onChangeStoryTellingMode (index) {
-            this.setMode(Object.values(this.constants.storyTellingModes)[index]);
-        },
-
-
-        /**
-         * Remote control for the reset function
-         * @returns {void}
-         */
-        resetTool () {
-            this.reset();
         },
 
         /**
@@ -184,37 +183,11 @@ export default {
              */
             const resetDataNarrator = () => {
                 this.resetCreatorContent();
-                this.loadStoryFromFile();
-                this.setMode(null);
+                this.setMode(this.constants.storyTellingModes.DASHBOARD);
                 EventEmitter.$emit("resetPlayer");
             };
 
-            if (this.isCreatingStory()) {
-                const confirmActionSettings = {
-                    actionConfirmedCallback: resetDataNarrator,
-                    confirmCaption: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.closeStoryCreation.confirmButton"
-                    ),
-                    denyCaption: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.closeStoryCreation.denyButton"
-                    ),
-                    textContent: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.closeStoryCreation.description"
-                    ),
-                    headline: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.closeStoryCreation.title"
-                    ),
-                    forceClickToClose: true
-                };
-
-                this.$store.dispatch(
-                    "ConfirmAction/addSingleAction",
-                    confirmActionSettings
-                );
-            }
-            else {
-                resetDataNarrator();
-            }
+            this.confirmOnlyWhenCreatingStory(resetDataNarrator);
         },
 
         /**
@@ -244,32 +217,7 @@ export default {
                 }
             };
 
-            if (this.isCreatingStory()) {
-                const confirmActionSettings = {
-                    actionConfirmedCallback: closeDataNarrator,
-                    confirmCaption: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.closeStoryCreation.confirmButton"
-                    ),
-                    denyCaption: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.closeStoryCreation.denyButton"
-                    ),
-                    textContent: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.closeStoryCreation.description"
-                    ),
-                    headline: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.closeStoryCreation.title"
-                    ),
-                    forceClickToClose: true
-                };
-
-                this.$store.dispatch(
-                    "ConfirmAction/addSingleAction",
-                    confirmActionSettings
-                );
-            }
-            else {
-                closeDataNarrator();
-            }
+            this.confirmOnlyWhenCreatingStory(closeDataNarrator);
         },
 
         /**
@@ -284,24 +232,23 @@ export default {
                 ) !== JSON.stringify(this.constants.emptyStoryConf);
         },
 
-        /**
-         * Gets the URL of a story.json from the URL parameter 'story'
-         * @returns {String} the URL of the story.json
-         */
-        getConfPathfromUrl () {
-            const queryString = window.location.search,
-                urlParams = new URLSearchParams(queryString);
-
-            return urlParams.get("story");
-        },
 
         /**
-         * Sets the storyId from the child component
-         * @param {String} storyId the storyId
+         * Share the story that is selected
+         * @param {integer} storyId The ID of the selected story
+         * @param {integer} stepIndex The index of the selected step
          * @returns {void}
          */
-        setStoryIdFromChild (storyId) {
-            this.storyId = storyId;
+        shareStory (storyId, stepIndex = 0) {
+            const sharedLink = this.backendConfig.url + "s/" + storyId + "/" + stepIndex;
+
+            navigator.clipboard.writeText(sharedLink);
+
+            this.$root.snackB.show({
+                message: this.$t(
+                    "additional:modules.tools.dataNarrator.success.storyShared"
+                )
+            });
         }
     }
 };
@@ -324,150 +271,23 @@ export default {
                 id="tool-dataNarrator"
                 :class="mode"
             >
-                <!--                <span-->
-                <!--                    v-if="mode && storyConf.storyInterval"-->
-                <!--                    id="tool-dataNarrator-clock"-->
-                <!--                >-->
-                <!--                    <span-->
-                <!--                        @click="$refs.player.toggleInterval()"-->
-                <!--                        @keydown="$refs.player.toggleInterval()"-->
-                <!--                    >-->
-                <!--                        <v-tooltip left>-->
-                <!--                            <template #activator="{ on, attrs }">-->
-                <!--                                <v-icon-->
-                <!--                                    v-bind="attrs"-->
-                <!--                                    v-on="on"-->
-                <!--                                >timer-->
-                <!--                                </v-icon>-->
-                <!--                            </template>-->
-                <!--                            <span>-->
-                <!--                                {{-->
-                <!--                                    $t("additional:modules.tools.dataNarrator.label.autoPLay")-->
-                <!--                                }}-->
-                <!--                                &lt;!&ndash;                                &nbsp;-->
-                <!--                                                                {{-->
-                <!--                                                                    $refs.player.getInter() !== null ? $t("additional:modules.tools.dataNarrator.label.off") :-->
-                <!--                                                                    $t("additional:modules.tools.dataNarrator.label.on")-->
-                <!--                                                                }}&ndash;&gt;-->
-                <!--                            </span>-->
-                <!--                        </v-tooltip>-->
-                <!--                    </span>-->
-                <!--                </span>-->
-                <!--                <span-->
-                <!--                    v-if="mode && mode !== constants.storyTellingModes.DASHBOARD"-->
-                <!--                    id="tool-dataNarrator-reset"-->
-                <!--                >-->
-                <!--                    <span-->
-                <!--                        @click="reset"-->
-                <!--                        @keydown="reset"-->
-                <!--                    >-->
-                <!--                        <v-tooltip left>-->
-                <!--                            <template #activator="{ on, attrs }">-->
-                <!--                                <v-icon-->
-                <!--                                    v-bind="attrs"-->
-                <!--                                    v-on="on"-->
-                <!--                                >keyboard_backspace-->
-                <!--                                </v-icon>-->
-                <!--                            </template>-->
-                <!--                            <span>reset</span>-->
-                <!--                        </v-tooltip>-->
-                <!--                    </span>-->
-                <!--                </span>-->
-                <v-item-group
-                    v-if="!mode"
-                    id="tool-dataNarrator-modeSelection"
-                    :value="mode"
-                    @change="onChangeStoryTellingMode"
-                >
-                    <v-flex
-                        v-for="option in modeOptions"
-                        :key="option.title"
-                    >
-                        <v-item v-slot="{ toggle }">
-                            <v-card
-                                v-if="option.visible"
-                                :disabled="option.disabled"
-                                class="my-4"
-                            >
-                                <v-img
-                                    v-if="option.mode === 'play'"
-                                    :src="storyConf.coverImagePath"
-                                    height="200px"
-                                />
-                                <v-card-title v-if="option.mode === 'play'">
-                                    {{ storyConf.title }}
-                                </v-card-title>
-                                <v-card-subtitle v-if="option.mode === 'play'">
-                                    {{ storyConf.description }}
-                                </v-card-subtitle>
-                                <v-card-actions>
-                                    <v-btn
-                                        v-if="option.mode === 'play'"
-                                        text
-                                        @click="toggle"
-                                    >
-                                        {{ option.title }}
-                                    </v-btn>
-                                    <v-col
-                                        v-if="option.mode === 'create'"
-                                        class="text-center"
-                                    >
-                                        <p><i>- Experimentell -</i></p>
-                                        <v-btn
-                                            outlined
-                                            small
-                                            color=""
-                                            @click="toggle"
-                                        >
-                                            <v-icon>{{ option.icon }}</v-icon>
-                                            Eigene {{ option.title }}
-                                        </v-btn>
-                                    </v-col>
-                                    <v-col
-                                        v-if="option.mode === 'dashboard'"
-                                        class="text-center"
-                                    >
-                                        <p><i>- Experimentell -</i></p>
-                                        <v-btn
-                                            outlined
-                                            small
-                                            color=""
-                                            @click="toggle"
-                                        >
-                                            <v-icon>{{ option.icon }}</v-icon>
-                                            {{ option.title }}
-                                        </v-btn>
-                                    </v-col>
-                                </v-card-actions>
-                            </v-card>
-                        </v-item>
-                        <v-spacer />
-                    </v-flex>
-                </v-item-group>
-
-                <CSLStorySelector
-                    v-if="mode === constants.storyTellingModes.DASHBOARD"
-                    :story-id="storyId"
-                    @updateStoryId="setStoryIdFromChild"
-                />
-
-                <StaticStorySelector
-                    v-if="mode === constants.storyTellingModes.STATIC"
+                <DashboardCard
+                    v-if="!mode || mode === constants.storyTellingModes.DASHBOARD"
+                    @confirm="confirmDialog"
+                    @share-story="shareStory"
+                    @reset-step-index="stepIndex = 0"
                 />
 
                 <StoryCreator
                     v-if="mode === constants.storyTellingModes.CREATE"
-                    @reset-tool="resetTool"
+                    @reset-tool="reset"
                 />
 
                 <StoryPlayer
-                    v-if="
-                        mode === constants.storyTellingModes.PLAY &&
-                            storyConfURL
-                    "
+                    v-if="mode === constants.storyTellingModes.PLAY"
                     ref="player"
-                    :story-conf-path="storyConfURL"
-                    :story-id="storyId"
+                    :step-index="stepIndex"
+                    @share-story="shareStory"
                 />
 
                 <SnackBar ref="snackB" />

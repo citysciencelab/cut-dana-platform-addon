@@ -1,19 +1,13 @@
 <script>
-import * as constants from "../../store/constantsDataNarrator";
+import * as constants from "../store/constantsDataNarrator";
 import axios from "axios";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import mutations from "../../store/mutationsDataNarrator";
-import actions from "../../store/actionsDataNarrator";
-import getters from "../../store/gettersDataNarrator";
+import mutations from "../store/mutationsDataNarrator";
+import actions from "../store/actionsDataNarrator";
+import getters from "../store/gettersDataNarrator";
 
 export default {
-    name: "CSLStorySelector",
-    props: {
-        storyId: {
-            type: Number,
-            default: null
-        }
-    },
+    name: "DashboardCard",
     data () {
         return {
             constants,
@@ -23,8 +17,18 @@ export default {
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters))
     },
+    watch: {
+        "backendConfig": { // Can be unavailable when the component is mounted
+            handler (conf) {
+                if (conf.url) { // check if it is available
+                    this.refreshStoryList();
+                }
+            },
+            immediate: true // make this watch function is called when component created
+        }
+    },
     mounted () {
-        this.refreshStoryList();
+        this.$emit("reset-step-index");
 
         // We need to alter the tool window corresponding to the uiStyle
         let toolWindowClass = "tool-window-vue";
@@ -59,6 +63,8 @@ export default {
          * @returns {void}
          */
         createStory () {
+            this.setCurrentStory(null);
+            this.setCurrentStoryId(null);
             this.setMode(constants.storyTellingModes.CREATE);
         },
 
@@ -68,14 +74,8 @@ export default {
          * @returns {void}
          */
         onStorySelectedById (storyId) {
-            this.storyConfURL = this.backendConfig.url + "story/" + storyId;
-            axios
-                .get(this.storyConfURL)
-                .then((response) => {
-                    this.setStoryConf(response.data);
-                    this.updateStoryId(storyId);
-                    this.setMode(constants.storyTellingModes.PLAY);
-                });
+            this.setCurrentStoryId(storyId);
+            this.loadCurrentStory();
         },
 
         /**
@@ -88,21 +88,21 @@ export default {
             axios
                 .get(this.storyConfURL)
                 .then((response) => {
-                    this.setStoryConf(response.data);
-                    this.storyConf.storyId = storyId;
-                    this.updateStoryId(storyId);
+                    this.setCurrentStory(response.data);
+                    this.setCurrentStoryId(storyId);
                     this.setMode(constants.storyTellingModes.CREATE);
                 });
         },
 
         /**
-         * Emits the storyId to the parent component
-         * @param {integer} value The storyId of the selected story
+         * Share the story that is selected
+         * @param {integer} storyId The ID of the selected story
          * @returns {void}
          */
-        updateStoryId: function (value) {
-            this.$emit("updateStoryId", value);
+        onShareById (storyId) {
+            this.$emit("share-story", storyId, 0);
         },
+
 
         /**
          * Delete the story that is selected
@@ -116,47 +116,27 @@ export default {
              * @returns {void}
              */
             const deleteStory = () => {
-                    this.storyConfURL = this.backendConfig.url + "story/" + storyId;
+                this.storyConfURL = this.backendConfig.url + "story/" + storyId;
 
-                    axios
-                        .delete(this.storyConfURL)
-                        .then(() => {
-                            this.$root.snackB.show({
-                                message: this.$t(
-                                    "additional:modules.tools.dataNarrator.success.storyDeleted"
-                                )
-                            });
-                            this.refreshStoryList();
-                        }).catch(() => {
-                            this.$root.snackB.show({
-                                message: this.$t(
-                                    "additional:modules.tools.dataNarrator.error.storyDeleted"
-                                ), color: "red"
-                            });
-                        }
-                        );
-                },
-                confirmActionSettings = {
-                    actionConfirmedCallback: deleteStory,
-                    confirmCaption: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.deleteStory.confirmButton"
-                    ),
-                    denyCaption: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.deleteStory.denyButton"
-                    ),
-                    textContent: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.deleteStory.description"
-                    ),
-                    headline: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.deleteStory.title"
-                    ),
-                    forceClickToClose: true
-                };
+                axios
+                    .delete(this.storyConfURL)
+                    .then(() => {
+                        this.$root.snackB.show({
+                            message: this.$t(
+                                "additional:modules.tools.dataNarrator.success.storyDeleted"
+                            )
+                        });
+                        this.refreshStoryList();
+                    }).catch(() => {
+                        this.$root.snackB.show({
+                            message: this.$t(
+                                "additional:modules.tools.dataNarrator.error.storyDeleted"
+                            ), color: "red"
+                        });
+                    });
+            };
 
-            this.$store.dispatch(
-                "ConfirmAction/addSingleAction",
-                confirmActionSettings
-            );
+            this.$emit("confirm", "deleteStory", deleteStory);
         }
     }
 };
@@ -278,21 +258,25 @@ export default {
                                             </v-col>
                                         </div>
                                         <v-card-actions>
-                                            <v-btn
-                                                v-if="userRole !== constants.dataNarratorRoles.ADMIN"
-                                                class="ml-2"
-                                                text
-                                                @click="onStorySelectedById(item._id), toggle()"
-                                            >
-                                                {{
-                                                    $t("additional:modules.tools.dataNarrator.play")
-                                                }}
-                                            </v-btn>
+                                            <v-tooltip top>
+                                                <template #activator="{ on }">
+                                                    <v-icon
+                                                        id="share-button"
+                                                        class="ml-2 mr-1"
+                                                        v-on="on"
+                                                        @click="onShareById(item._id), toggle()"
+                                                    >
+                                                        share
+                                                    </v-icon>
+                                                </template>
+                                                <span>
+                                                    {{
+                                                        $t("additional:modules.tools.dataNarrator.button.share")
+                                                    }}
+                                                </span>
+                                            </v-tooltip>
 
-                                            <v-tooltip
-                                                v-if="userRole === constants.dataNarratorRoles.ADMIN"
-                                                top
-                                            >
+                                            <v-tooltip top>
                                                 <template #activator="{ on }">
                                                     <v-icon
                                                         id="play-button"

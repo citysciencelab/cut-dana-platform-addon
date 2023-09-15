@@ -48,7 +48,8 @@
         },
         "success": {
           "storyCreated": "Story created.",
-          "storyDeleted": "Story deleted."
+          "storyDeleted": "Story deleted.",
+          "storyShared": "Story URL was copied into buffer."
         },
         "warning": {
           "mapMoved": "The entered position doesn't match the current map view.",
@@ -92,7 +93,8 @@
           "submitEditStep": "Save Step",
           "previewStory": "Preview Story",
           "downloadStory": "Download Story",
-          "uploadStory": "Upload Story"
+          "uploadStory": "Upload Story",
+          "share": "Share Story"
         },
         "newChapter": "New Chapter"
       }

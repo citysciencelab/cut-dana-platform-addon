@@ -1,5 +1,8 @@
 import storyCreatorActions from "./actions/storyCreatorActions";
 import stateDataNarrator from "./stateDataNarrator";
+import * as constants from "./constantsDataNarrator";
+
+import axios from "axios";
 
 const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
     actions = {
@@ -29,6 +32,14 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
             commit("setHtmlContents", initialState.htmlContents);
             commit("setHtmlContentsImages", initialState.htmlContentsImages);
             commit("setInitialWidth", initialState.initialWidth);
+        },
+
+        loadCurrentStory ({state, commit}) {
+            axios.get(state.backendConfig.url + "story/" + state.currentStoryId).then((response) => {
+                commit("setStoryConf", response.data); // compatibility, remove later
+                commit("setCurrentStory", response.data);
+                commit("setMode", constants.storyTellingModes.PLAY);
+            });
         }
     };
 

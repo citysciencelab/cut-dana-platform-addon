@@ -48,7 +48,8 @@
         },
         "success": {
           "storyCreated": "Story erfolgreich erstellt.",
-          "storyDeleted": " Story gelöscht."
+          "storyDeleted": " Story gelöscht.",
+          "storyShared": "Die Story-URL wurde in den Puffer kopiert."
         },
         "warning": {
           "mapMoved": "Die eingetragene Position entspricht nicht der aktuellen Ansicht der Karte.",
@@ -92,7 +93,8 @@
           "submitEditStep": "Schritt speichern",
           "previewStory": "Vorschau",
           "downloadStory": "Story herunterladen",
-          "uploadStory": "Story abschicken"
+          "uploadStory": "Story abschicken",
+          "share": "Story teilen"
         },
         "newChapter": "Neues Kapitel"
       }

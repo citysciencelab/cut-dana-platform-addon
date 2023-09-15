@@ -1,8 +1,7 @@
 const storyTellingModes = {
         CREATE: "create",
         PLAY: "play",
-        DASHBOARD: "dashboard",
-        STATIC: "static"
+        DASHBOARD: "dashboard"
     },
     dataNarratorRoles = {
         ADMIN: "admin",
@@ -12,8 +11,7 @@ const storyTellingModes = {
     storyTellingModeIcons = {
         [storyTellingModes.CREATE]: "add",
         [storyTellingModes.PLAY]: "play_arrow",
-        [storyTellingModes.DASHBOARD]: "dashboard",
-        [storyTellingModes.STATIC]: "bolt"
+        [storyTellingModes.DASHBOARD]: "dashboard"
     },
     storyCreationViews = {
         STORY_CREATION: "story",

@@ -21,20 +21,15 @@ export default {
         DipasPlayer
     },
     props: {
-        // The path to the story configuration to load
-        storyConfPath: {
-            type: String,
-            default: null
-        },
-        // The Story ID of the selected story
-        storyId: {
-            type: Number,
-            default: null
-        },
         // Whether the story player is in preview mode or not
         isPreview: {
             type: Boolean,
             default: false
+        },
+        // Step to show
+        stepIndex: {
+            type: Number,
+            default: 0
         }
     },
     data () {
@@ -42,7 +37,7 @@ export default {
             getStepReference,
             fetchDataFromUrl,
             getHTMLContentReference,
-            currentStepIndex: 0,
+            currentStepIndex: null,
             loadedContent: null,
             isHovering: null,
             isChangeFrom3D: false,
@@ -62,10 +57,10 @@ export default {
         currentStep () {
             const stepindex = this.$store.state.Tools.DataNarrator.autoplay && this.steps.length > 0
                 ? this.steps[this.currentStepIndex]
-                : this.storyConf.steps[this.currentStepIndex];
+                : this.currentStory.steps[this.currentStepIndex];
 
             return this.currentStepIndex !== null
-                ? this.storyConf && stepindex
+                ? this.currentStory && stepindex
                 : null;
         },
 
@@ -75,15 +70,15 @@ export default {
          */
         currentChapter () {
             return (
-                this.storyConf && this.storyConf.chapters &&
-                this.storyConf.chapters.find(
+                this.currentStory && this.currentStory.chapters &&
+                this.currentStory.chapters.find(
                     ({chapterNumber}) => this.currentStep &&
                         this.currentStep.associatedChapter === chapterNumber
                 )
             );
         },
         stepsCopy () {
-            return JSON.parse(JSON.stringify(this.storyConf.steps));
+            return {...this.currentStory.steps};
         }
     },
     watch: {
@@ -113,32 +108,17 @@ export default {
         }
     },
     async mounted () {
-        if (this.storyConf && this.storyConf.chapters?.length) {
-            this.showMode = this.storyConf?.displayType ? this.storyConf.displayType : "classic";
-            this.loadStep();
-        }
-        else if (!this.storyConf && this.storyConfPath || !this.storyConf.chapters?.length) {
-            await fetchDataFromUrl(this.storyConfPath).then(loadedStoryConf => {
-                this.setStoryConf(loadedStoryConf);
-
-                let count = 0;
-
-                this.stepsCopy.forEach(() => {
-                    this.assignDepth(this.stepsCopy, 0, count);
-                    count += 1;
-                });
-
-                this.showMode = this.storyConf?.displayType ? this.storyConf.displayType : "classic";
-                this.createStepArray(this.stepsCopy);
-                this.loadStep();
-            });
+        if (this.currentStory) {
+            this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
+            this.currentStepIndex = this.stepIndex;
+            // this.loadStep();
         }
 
-        if (this.isPreview && this.storyConf) {
-            this.showMode = this.storyConf?.displayType ? this.storyConf.displayType : "classic";
-            this.loadStep();
-        }
-        if (this.storyConf.storyInterval) {
+        // if (this.isPreview && this.storyConf) {
+        //     this.showMode = this.storyConf?.displayType ? this.storyConf.displayType : "classic";
+        //     this.loadStep();
+        // }
+        if (this.currentStory.storyInterval) {
             this.activateInterval();
         }
     },
@@ -171,7 +151,7 @@ export default {
         }
         Radio.trigger("Menu", "rerender");
 
-        if (Object.hasOwn(this.storyConf, "displayType") && this.storyConf.displayType.toUpperCase() === "DIPAS") {
+        if (Object.hasOwn(this.currentStory, "displayType") && this.currentStory.displayType.toUpperCase() === "DIPAS") {
             this.$store.commit(
                 "Tools/DipasStorySelector/setActive",
                 true
@@ -189,6 +169,7 @@ export default {
         // These application wide getters and setters can be found in 'src/modules/map/store'
         ...mapMutations("Map", ["setCenter", "setLayerVisibility"]),
         ...mapGetters("Map", ["layerList", "visibleLayerList", "map"]),
+
 
         /**
          * Activates a tool
@@ -277,7 +258,7 @@ export default {
          * @returns  {void}
          */
         onClickChapter (chapter) {
-            this.currentStepIndex = this.storyConf.steps.findIndex(
+            this.currentStepIndex = this.currentStory.steps.findIndex(
                 ({associatedChapter}) => associatedChapter === chapter.chapterNumber
             );
         },
@@ -313,9 +294,9 @@ export default {
          */
         activateInterval () {
             this.interval = setInterval(() => {
-                this.currentStepIndex = this.storyConf.steps.length - 1 === this.currentStepIndex ? 0 : this.currentStepIndex + 1;
+                this.currentStepIndex = this.currentStory.steps.length - 1 === this.currentStepIndex ? 0 : this.currentStepIndex + 1;
                 this.$emit("change", this.currentStepIndex);
-            }, this.storyConf.storyInterval);
+            }, this.currentStory.storyInterval);
         },
 
         /**
@@ -398,11 +379,12 @@ export default {
                     this.currentStep.stepNumber
                 );
 
+
             // Updates the map layers
             for (const layer of layerList) {
-                const isStepLayer = (this.currentStep.layers || []).includes(
-                    layer.id
-                ) || this.currentStep.layers.some(l => l.includes(layer.id));
+                const stepLayers = this.currentStep.layers || [],
+                    isStepLayer = stepLayers.includes(layer.id) ||
+                                        stepLayers.some(l => l.includes(layer.id));
 
                 // if (isStepLayer && !layer.attributes.isVisibleInMap) {
                 if (isStepLayer) {
@@ -414,19 +396,13 @@ export default {
                 }
             }
 
+
             Radio.trigger("Menu", "rerender");
 
             // Updates the step html content
-            if (this.storyConf.htmlFolder && this.currentStep.htmlFile && this.showMode === "classic") {
-                // Load HTML file for the story step
-                fetchDataFromUrl(
-                    "./assets/" +
-                    this.storyConf.htmlFolder +
-                    "/" +
-                    this.currentStep.htmlFile
-                ).then(data => {
-                    this.loadedContent = data;
-                });
+            if (this.currentStory && this.loadedContent === null) {
+                // Get HTML for the story step
+                this.loadedContent = this.currentStep.html;
             }
             else if (this.isPreview && this.htmlContents[htmlReference]) {
                 // Get temporary HTML for the story step preview
@@ -452,57 +428,56 @@ export default {
                 interactionAddons.forEach(this.activateTool);
             }
 
-            if (this.loadedContent === null && this.storyId) {
-                loadStepContent(this.backendConfig.url, this.storyId, this.currentStep).then(data => {
+            if (this.loadedContent === null && this.currentStoryId) {
+                loadStepContent(this.backendConfig.url, this.currentStoryId, this.currentStep).then(data => {
                     this.loadedContent = data;
                 });
             }
-        },
+        }
         /*
          * Fills the steps array transforming the nested structure of the steps into a flat structure
          * @returns {void}
          */
-        createStepArray (steps) {
-            steps.forEach(s => {
-                const step = JSON.parse(JSON.stringify(s));
+        // createStepArray (steps) {
+        //     steps.forEach(s => {
+        //         const step = {...s};
 
-                delete step.steps;
-                this.steps.push(step);
-                if (s.steps) {
-                    this.createStepArray(s.steps);
-                }
-            });
-        },
+        //         delete step.steps;
+        //         this.steps.push(step);
+        //         if (s.steps) {
+        //             this.createStepArray(s.steps);
+        //         }
+        //     });
+        // },
         /*
          * Adds the depth level of a story step to a copy of the storyConf
          * @returns {void}
          */
-        assignDepth (arr, depth = 0, index = 0) {
+        // assignDepth (arr, depth = 0, index = 0) {
 
-            if (index < arr.length) {
-                arr[index].depth = depth;
-                if (arr[index].steps && arr[index].steps.length) {
-                    return this.assignDepth(arr[index].steps, depth + 1, 0);
-                }
+        //     if (index < arr.length) {
+        //         arr[index].depth = depth;
+        //         if (arr[index].steps && arr[index].steps.length) {
+        //             return this.assignDepth(arr[index].steps, depth + 1, 0);
+        //         }
 
-                return this.assignDepth(arr, depth, index + 1);
-            }
+        //         return this.assignDepth(arr, depth, index + 1);
+        //     }
 
-            return null;
-        }
+        //     return null;
+        // },
     }
 };
 </script>
 
 <template lang="html">
     <div
-        v-if="storyConf !== undefined && storyConf.steps && currentStep"
+        v-if="currentStory !== undefined && currentStory.steps && currentStep"
         id="tool-dataNarrator-player"
     >
         <ScrollyTeller
             v-if="showMode === 'scrolly'"
             :current-step-index="currentStepIndex"
-            :story-id="storyId"
         />
 
         <ClassicPlayer
@@ -513,46 +488,26 @@ export default {
             :loaded-content="loadedContent"
         />
 
-        <!--        <div-->
-        <!--            v-if="showMode === 'classic'"-->
-        <!--            id="tool-dataNarrator-currentStep"-->
-        <!--        >-->
-        <!--            <h2 v-if="currentChapter">-->
-        <!--                {{ currentChapter.chapterTitle }}-->
-        <!--            </h2>-->
-        <!--            <h1>{{ currentStep.title }}</h1>-->
-
-        <!--            <div-->
-        <!--                v-if="currentStep"-->
-        <!--                class="tool-dataNarrator-content"-->
-        <!--            >-->
-        <!--                <div-->
-        <!--                    v-if="loadedContent"-->
-        <!--                    v-html="loadedContent"-->
-        <!--                />-->
-        <!--            </div>-->
-        <!--        </div>-->
-
         <StoryNavigation
             v-if="showMode === 'classic'"
             v-model="currentStepIndex"
-            :current-chapter="currentStep && currentStep.associatedChapter"
-            :steps="storyConf.steps"
+            :current-chapter="currentStep.associatedChapter"
+            :steps="currentStory.steps"
         />
 
-        <DipasPlayer
+        <!-- <DipasPlayer
             v-if="showMode === 'dipas'"
             v-model="currentStepIndex"
-            :story-conf-path="storyConfPath"
+            :story-conf-path="null"
             :steps="steps"
-        />
+        /> -->
     </div>
 
     <div
         v-else
         id="tool-dataNarrator-tableOfContents"
     >
-        <h1>{{ storyConf.title }}</h1>
+        <h1>{{ currentStory.title }}</h1>
 
         <h2>
             {{
@@ -562,7 +517,7 @@ export default {
 
         <ol class="tableOfContents">
             <li
-                v-for="chapter in storyConf.chapters"
+                v-for="chapter in currentStory.chapters"
                 :key="chapter.chapterNumber"
             >
                 <span
@@ -583,8 +538,8 @@ export default {
                 </span>
                 <ol>
                     <li
-                        v-for="(step, stepIndex) in storyConf.steps"
-                        :key="step.stepNumber + step.title"
+                        v-for="(step, stepIndex) in currentStory.steps"
+                        :key="chapter.chapterNumber + '.' + step.stepNumber"
                         role="button"
                         tabindex="0"
                         :class="{
