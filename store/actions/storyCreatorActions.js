@@ -6,47 +6,47 @@ import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 
 const uuid = require("uuid");
 
-/**
- * Adds an HTML file to the temporary HTML contents state
- *
- * @param {Object} context actions context object.
- * @param {Number} parameters.chapterNumber the chapter number to identify the step the HTML content belongs to
- * @param {Number} parameters.stepNumber the step number to identify the step the HTML content belongs to
- * @param {String} parameters.htmlContent the HTML content
- * @param {Array} parameters.htmlContentImages the images in the HTML content
- * @param {String} parameters.previousHtmlReference the previous HTMl reference (for the case that it changed)
- * @returns {String} the HTML file name
- */
-function saveHtmlContent (
-    {state, commit},
-    {
-        chapterNumber,
-        stepNumber,
-        htmlContent,
-        htmlContentImages,
-        previousHtmlReference
-    }
-) {
-    const htmlContents = {...state.htmlContents},
-        htmlContentsImages = {...state.htmlContentsImages},
-        htmlReference = getHTMLContentReference(chapterNumber, stepNumber);
+// /**
+//  * Adds an HTML file to the temporary HTML contents state
+//  *
+//  * @param {Object} context actions context object.
+//  * @param {Number} parameters.chapterNumber the chapter number to identify the step the HTML content belongs to
+//  * @param {Number} parameters.stepNumber the step number to identify the step the HTML content belongs to
+//  * @param {String} parameters.htmlContent the HTML content
+//  * @param {Array} parameters.htmlContentImages the images in the HTML content
+//  * @param {String} parameters.previousHtmlReference the previous HTMl reference (for the case that it changed)
+//  * @returns {String} the HTML file name
+//  */
+// function saveHtmlContent (
+//     {state, commit},
+//     {
+//         chapterNumber,
+//         stepNumber,
+//         htmlContent,
+//         htmlContentImages,
+//         previousHtmlReference
+//     }
+// ) {
+//     const htmlContents = {...state.htmlContents},
+//         htmlContentsImages = {...state.htmlContentsImages},
+//         htmlReference = getHTMLContentReference(chapterNumber, stepNumber);
 
-    if (previousHtmlReference) {
-        delete htmlContents[previousHtmlReference];
-        delete htmlContentsImages[previousHtmlReference];
-    }
+//     if (previousHtmlReference) {
+//         delete htmlContents[previousHtmlReference];
+//         delete htmlContentsImages[previousHtmlReference];
+//     }
 
-    commit("setHtmlContents", {
-        ...htmlContents,
-        [htmlReference]: htmlContent
-    });
-    commit("setHtmlContentsImages", {
-        ...htmlContentsImages,
-        [htmlReference]: htmlContentImages
-    });
+//     commit("setHtmlContents", {
+//         ...htmlContents,
+//         [htmlReference]: htmlContent
+//     });
+//     commit("setHtmlContentsImages", {
+//         ...htmlContentsImages,
+//         [htmlReference]: htmlContentImages
+//     });
 
-    return `${htmlReference}.html`;
-}
+//     return `${htmlReference}.html`;
+// }
 
 /**
  * Adds a chapter to the story
@@ -386,7 +386,7 @@ function errorHandling (error) {
 }
 
 export default {
-    saveHtmlContent,
+    // saveHtmlContent,
     addStoryChapter,
     saveStoryStep,
     deleteStoryStep,

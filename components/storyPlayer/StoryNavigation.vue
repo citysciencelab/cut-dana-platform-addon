@@ -100,10 +100,22 @@ export default {
                 </v-btn>
             </v-slide-item>
 
+            <v-slide-item>
+                <v-btn
+                    class="story-navigation-step-button"
+                    depressed
+                    rounded
+                    @click="$parent.$emit('share-story', currentStoryId, currentStepIndex)"
+                >
+                    <v-icon>share</v-icon>
+                </v-btn>
+            </v-slide-item>
+
             <v-slide-item
-                v-for="step in steps"
+                v-for="(step, stepIndex) in steps"
                 :key="getStepReference(step.associatedChapter, step.stepNumber)"
                 v-slot="{ active, toggle }"
+                :value="stepIndex + 1"
             >
                 <v-btn
                     :input-value="active"
@@ -184,6 +196,10 @@ export default {
 
             &.currentChapter {
                 background: #e0eefa;
+            }
+
+            &.hidden {
+                display: none;
             }
         }
     }

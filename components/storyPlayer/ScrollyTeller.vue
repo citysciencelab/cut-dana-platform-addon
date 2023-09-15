@@ -6,7 +6,7 @@ import axios from "axios";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
-import StoryMenu from "../utils/StoryMenu.vue";
+import StoryMenu from "./StoryMenu.vue";
 import {loadStepContent} from "../../utils/getStoryFromUrl";
 
 
@@ -20,11 +20,6 @@ export default {
         currentStepIndex: {
             type: Number,
             default: 0
-        },
-        // The Story ID of the selected story
-        storyId: {
-            type: Number,
-            default: null
         }
     },
     data () {
@@ -55,7 +50,7 @@ export default {
                 });
             }
             else {
-                loadStepContent(this.backendConfig.url, this.storyId, step).then(data => {
+                loadStepContent(this.backendConfig.url, this.currentStoryId, step).then(data => {
                     this.$set(step, "loadedContent", data);
                 });
             }

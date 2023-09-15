@@ -5,6 +5,10 @@ import {emptyStoryConf} from "./constantsDataNarrator";
  * @typedef {object} DataNarratorState
  * @property {string} id the ID of the story telling tool
  * @property {Object} storyConf the configuration of the story
+ * @property {Object} currentStory current story
+ * @property {String} currentStoryId current story id
+ * @property {Number} currentChapterId current chapter id
+ * @property {Number} currentStepId current step id
  * @property {Object} htmlContents the HTML contents used for story creation
  * @property {Object} htmlContentsImages the HTML content images used for story creation
  * @property {boolean} active if true, the story telling tool will be rendered
@@ -21,6 +25,8 @@ import {emptyStoryConf} from "./constantsDataNarrator";
 const state = {
     id: "dataNarrator",
     storyConf: {...emptyStoryConf},
+    currentStory: null,
+    currentStoryId: null,
     htmlContents: {},
     htmlContentsImages: {},
     autoplay: false,

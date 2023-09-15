@@ -1,5 +1,5 @@
 <script>
-import StoryMenu from "../utils/StoryMenu.vue";
+import StoryMenu from "./StoryMenu.vue";
 import getters from "../../store/gettersDataNarrator";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import mutations from "../../store/mutationsDataNarrator";
