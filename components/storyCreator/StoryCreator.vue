@@ -74,6 +74,7 @@ export default {
             :is-editing="Boolean(stepToEdit)"
             :initial-step="stepToEdit"
             @return="returnToStoryForm"
+            v-on="$listeners"
         />
 
         <div

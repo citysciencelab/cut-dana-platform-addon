@@ -34,11 +34,11 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
             commit("setInitialWidth", initialState.initialWidth);
         },
 
-        loadCurrentStory ({state, commit}) {
+        loadCurrentStory ({state, commit}, {mode}) {
             axios.get(state.backendConfig.url + "story/" + state.currentStoryId).then((response) => {
                 commit("setStoryConf", response.data); // compatibility, remove later
                 commit("setCurrentStory", response.data);
-                commit("setMode", constants.storyTellingModes.PLAY);
+                commit("setMode", mode);
             });
         }
     };

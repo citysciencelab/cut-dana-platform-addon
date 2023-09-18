@@ -9,7 +9,7 @@ import store from "../../../../../src/app-store";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
-import {EventEmitter} from "../utils/EventEmitter";
+import {EventEmitter} from "../../utils/EventEmitter";
 import ClassicPlayer from "./ClassicPlayer.vue";
 
 export default {

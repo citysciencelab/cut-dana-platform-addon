@@ -103,7 +103,7 @@ export default {
          * @returns {Object[]} all chapter numbers
          */
         allChapterNumbers () {
-            const chapters = this.storyConf.chapters || [];
+            const chapters = this.currentStory.chapters || [];
 
             return chapters.map(({chapterNumber}) => chapterNumber);
         },
@@ -113,7 +113,7 @@ export default {
          * @returns {Object[]} all step numbers
          */
         allStepNumbers () {
-            const steps = this.storyConf.steps || [];
+            const steps = this.currentStory.steps || [];
 
             return steps
                 .filter(
@@ -127,7 +127,7 @@ export default {
          * @returns {Object[]} chapter options (value and text)
          */
         chapterOptions () {
-            const chapters = this.storyConf.chapters || [],
+            const chapters = this.currentStory.chapters || [],
                 chapterOptions = chapters.map(chapter => ({
                     value: chapter.chapterNumber,
                     text: chapter.chapterNumber + " – " + chapter.chapterTitle
@@ -392,34 +392,14 @@ export default {
              * @returns {void}
              */
             const deleteStep = () => {
-                    const {associatedChapter, stepNumber} =
+                const {associatedChapter, stepNumber} =
                     this.initialStep || this.step;
 
-                    this.deleteStoryStep({associatedChapter, stepNumber});
-                    this.$emit("return");
-                },
+                this.deleteStoryStep({associatedChapter, stepNumber});
+                this.$emit("return");
+            };
 
-                confirmActionSettings = {
-                    actionConfirmedCallback: deleteStep,
-                    confirmCaption: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.deleteStep.confirmButton"
-                    ),
-                    denyCaption: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.deleteStep.denyButton"
-                    ),
-                    textContent: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.deleteStep.description"
-                    ),
-                    headline: this.$t(
-                        "additional:modules.tools.dataNarrator.confirm.deleteStep.title"
-                    ),
-                    forceClickToClose: true
-                };
-
-            this.$store.dispatch(
-                "ConfirmAction/addSingleAction",
-                confirmActionSettings
-            );
+            this.$emit("confirm", "deleteStep", deleteStep);
         },
 
         /**

@@ -75,7 +75,7 @@ export default {
          */
         onStorySelectedById (storyId) {
             this.setCurrentStoryId(storyId);
-            this.loadCurrentStory();
+            this.loadCurrentStory({mode: constants.storyTellingModes.PLAY});
         },
 
         /**
@@ -84,14 +84,8 @@ export default {
          * @returns {void}
          */
         onStoryEditById (storyId) {
-            this.storyConfURL = this.backendConfig.url + "story/" + storyId;
-            axios
-                .get(this.storyConfURL)
-                .then((response) => {
-                    this.setCurrentStory(response.data);
-                    this.setCurrentStoryId(storyId);
-                    this.setMode(constants.storyTellingModes.CREATE);
-                });
+            this.setCurrentStoryId(storyId);
+            this.loadCurrentStory({mode: constants.storyTellingModes.CREATE});
         },
 
         /**

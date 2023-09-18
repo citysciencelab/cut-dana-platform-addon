@@ -1,5 +1,5 @@
 <script>
-import {EventEmitter} from "../utils/EventEmitter";
+import {EventEmitter} from "../../utils/EventEmitter";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";

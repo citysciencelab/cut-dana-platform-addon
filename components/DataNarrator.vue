@@ -9,7 +9,7 @@ import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 import SnackBar from "./SnackBar.vue";
 import DashboardCard from "./DashboardCard.vue";
-import {EventEmitter} from "./utils/EventEmitter";
+import {EventEmitter} from "../utils/EventEmitter";
 
 export default {
     name: "DataNarrator",
@@ -79,7 +79,7 @@ export default {
         if (url.searchParams.get("story") !== null) {
             this.setCurrentStoryId(url.searchParams.get("story"));
             this.stepIndex = parseInt(url.searchParams.get("step"), 10);
-            this.loadCurrentStory();
+            this.loadCurrentStory({mode: constants.storyTellingModes.PLAY});
         }
         else {
             this.setMode(constants.storyTellingModes.DASHBOARD);
@@ -280,6 +280,7 @@ export default {
 
                 <StoryCreator
                     v-if="mode === constants.storyTellingModes.CREATE"
+                    @confirm="confirmDialog"
                     @reset-tool="reset"
                 />
 

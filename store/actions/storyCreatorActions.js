@@ -106,7 +106,7 @@ function saveStoryStep ({state, commit}, {previousStepReference, step}) {
  * @returns {void}
  */
 function deleteStoryStep ({state, commit}, {associatedChapter, stepNumber}) {
-    const newSteps = state.storyConf.steps.filter(
+    const newSteps = state.currentStory.steps.filter(
             step => associatedChapter !== step.associatedChapter ||
                 stepNumber !== step.stepNumber
         ),
@@ -114,13 +114,13 @@ function deleteStoryStep ({state, commit}, {associatedChapter, stepNumber}) {
             step => step.associatedChapter === associatedChapter
         ),
         newChapters = chapterIsNotUsedAnymore
-            ? state.storyConf.chapters.filter(
+            ? state.currentStory.chapters.filter(
                 ({chapterNumber}) => chapterNumber !== associatedChapter
             )
-            : state.storyConf.chapters;
+            : state.currentStory.chapters;
 
-    commit("setStoryConf", {
-        ...state.storyConf,
+    commit("setCurrentStory", {
+        ...state.currentStory,
         chapters: newChapters,
         steps: newSteps
     });
