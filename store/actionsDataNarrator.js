@@ -41,6 +41,11 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
                 commit("setMode", mode);
             });
         }
+
+        // saveStory ({state, commit}) {
+
+
+        // },
     };
 
 export default actions;

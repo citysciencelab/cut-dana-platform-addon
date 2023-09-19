@@ -45,6 +45,42 @@ export default {
             this.currentStory.titleImage = file;
         },
 
+        prepareImages () {
+            const htmlContents = Object.entries(state.htmlContents),
+                images = state.htmlContentsImages,
+                storyConf = {...state.storyConf},
+                imageArray = [],
+                backendUrl = state.backendConfig.url;
+
+
+            for (const htmlContent of htmlContents) {
+                if (Object.hasOwn(images, htmlContent[0])) {
+                    for (const image of images[htmlContent[0]]) {
+                        const imageID = new Date().valueOf() + "_" + uuid.v4();
+
+                        image.imageId = imageID;
+                        image.stepRef = htmlContent[0];
+                        htmlContent[1] = htmlContent[1].replaceAll(image.dataUrl, imageID);
+                        imageArray.push(image);
+                    }
+                }
+            }
+
+            // Add title image to image array
+            if (state.storyConf.titleImage) {
+                const imageID = new Date().valueOf() + "_" + uuid.v4(),
+                    titleImage = {},
+                    dataUrl = await getDataUrlFromFile(state.storyConf.titleImage);
+
+                titleImage.imageId = imageID;
+                titleImage.fileExtension = state.storyConf.titleImage.type;
+                titleImage.stepRef = "step_0-0";
+                titleImage.dataUrl = dataUrl;
+                imageArray.push(titleImage);
+                storyConf.titleImage = imageID;
+            }
+        },
+
         /**
          * Upload the created story files
          * @returns {void}

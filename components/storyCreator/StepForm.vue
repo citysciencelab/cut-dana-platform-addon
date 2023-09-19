@@ -424,13 +424,13 @@ export default {
                         this.initialStep.stepNumber
                     );
 
-                // this.step.htmlFile = await this.saveHtmlContent({
-                //     chapterNumber: this.step.associatedChapter,
-                //     stepNumber: this.step.stepNumber,
-                //     htmlContent: this.htmlContent,
-                //     htmlContentImages: this.htmlContentImages,
-                //     ...previousHtmlReference && {previousHtmlReference}
-                // });
+                this.step.htmlFile = await this.saveHtmlContent({
+                    chapterNumber: this.step.associatedChapter,
+                    stepNumber: this.step.stepNumber,
+                    htmlContent: this.htmlContent,
+                    htmlContentImages: this.htmlContentImages,
+                    ...previousHtmlReference && {previousHtmlReference}
+                });
             }
 
             // Save the step in the story
