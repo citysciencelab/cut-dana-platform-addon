@@ -35,10 +35,9 @@ export default {
             getHTMLContentReference,
             minStepWidth: 280,
             maxStepWidth: 1000,
-            step: this.initialStep || {
+            step: this.isEditing ? this.initialStep : {
                 stepNumber: 1,
-                stepWidth: this.$store.state.Tools.DataNarrator
-                    .initialWidth,
+                stepWidth: this.$store.state.Tools.DataNarrator.initialWidth,
                 visible: true,
                 associatedChapter: null,
                 title: "",
@@ -60,19 +59,19 @@ export default {
             },
             newChapter: {
                 chapterNumber:
-                    this.$store.state.Tools.DataNarrator.storyConf.chapters
-                        .length + 1,
+                    this.$store.state.Tools.DataNarrator.currentStory.chapters.length + 1,
                 chapterTitle: ""
             },
             htmlContent:
-                (this.initialStep &&
-                    this.$store.state.Tools.DataNarrator.htmlContents[
-                        getHTMLContentReference(
-                            this.initialStep.associatedChapter,
-                            this.initialStep.stepNumber
-                        )
-                    ]) ||
-                null,
+                this.isEditing ? this.initialStep.html :
+                    (this.initialStep &&
+                        this.$store.state.Tools.DataNarrator.htmlContents[
+                            getHTMLContentReference(
+                                this.initialStep.associatedChapter,
+                                this.initialStep.stepNumber
+                            )
+                        ]) ||
+                    null,
             htmlContentImages:
                 (this.initialStep &&
                     this.$store.state.Tools.DataNarrator.htmlContentsImages[

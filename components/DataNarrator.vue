@@ -183,7 +183,6 @@ export default {
              */
             const resetDataNarrator = () => {
                 this.resetCreatorContent();
-                this.setMode(this.constants.storyTellingModes.DASHBOARD);
                 EventEmitter.$emit("resetPlayer");
             };
 
@@ -226,10 +225,7 @@ export default {
          */
         isCreatingStory () {
             // Confirm tool closing if user is creating a story
-            return this.mode === this.constants.storyTellingModes.CREATE &&
-                JSON.stringify(
-                    this.$store.state.Tools.DataNarrator.storyConf
-                ) !== JSON.stringify(this.constants.emptyStoryConf);
+            return this.mode === this.constants.storyTellingModes.CREATE && this.currentStory;
         },
 
 

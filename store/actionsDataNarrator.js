@@ -16,10 +16,11 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
          */
         resetModule ({commit}) {
             // Reset store data
-            commit("setStoryConf", initialState.storyConf);
             commit("setHtmlContents", initialState.htmlContents);
             commit("setHtmlContentsImages", initialState.htmlContentsImages);
             commit("setInitialWidth", initialState.initialWidth);
+            commit("setCurrentStory", null);
+            commit("setCurrentStoryId", null);
         },
 
         /**
@@ -32,6 +33,9 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
             commit("setHtmlContents", initialState.htmlContents);
             commit("setHtmlContentsImages", initialState.htmlContentsImages);
             commit("setInitialWidth", initialState.initialWidth);
+            commit("setCurrentStory", null);
+            commit("setCurrentStoryId", null);
+            commit("setMode", constants.storyTellingModes.DASHBOARD);
         },
 
         loadCurrentStory ({state, commit}, {mode}) {

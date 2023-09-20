@@ -19,20 +19,11 @@ export default {
         return {
             constants,
             view: constants.storyCreationViews.STORY_CREATION,
-            stepToEdit: null
+            stepToEdit: {}
         };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters))
-    },
-    mounted () {
-        if (Object.hasOwn(this.storyConf, "storyId")) {
-            // console.log(this.storyConf);
-        }
-        else {
-            this.setStoryConf({...this.constants.emptyStoryConf});
-        }
-
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -53,7 +44,7 @@ export default {
          * @returns {void}
          */
         returnToStoryForm () {
-            this.stepToEdit = null;
+            this.stepToEdit = {};
             this.view = this.constants.storyCreationViews.STORY_CREATION;
         }
     }
@@ -71,7 +62,7 @@ export default {
 
         <StepForm
             v-if="view === constants.storyCreationViews.STEP_CREATION"
-            :is-editing="Boolean(stepToEdit)"
+            :is-editing="Object.keys(stepToEdit).length !== 0"
             :initial-step="stepToEdit"
             @return="returnToStoryForm"
             v-on="$listeners"

@@ -3,6 +3,7 @@ import FileSaver from "file-saver";
 import axios from "axios";
 import {getHTMLContentReference, getStepReference} from "../../utils/getReference.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
+import {request} from "backbone.radio";
 
 const uuid = require("uuid");
 
@@ -58,13 +59,13 @@ function saveHtmlContent (
  * @returns {void}
  */
 function addStoryChapter ({state, commit}, chapter) {
-    const chapters = state.storyConf.chapters,
-        newStoryConf = {
-            ...state.storyConf,
+    const chapters = state.currentStory.chapters,
+        newStory = {
+            ...state.currentStory,
             chapters: [...chapters, chapter]
         };
 
-    commit("setStoryConf", newStoryConf);
+    commit("setCurrentStory", newStory);
 }
 
 /**
@@ -76,7 +77,7 @@ function addStoryChapter ({state, commit}, chapter) {
  * @returns {void}
  */
 function saveStoryStep ({state, commit}, {previousStepReference, step}) {
-    const steps = state.storyConf.steps.filter(
+    const steps = state.currentStory.steps.filter(
             ({associatedChapter, stepNumber}) => !previousStepReference ||
                 previousStepReference !==
                 getStepReference(associatedChapter, stepNumber)
@@ -88,12 +89,12 @@ function saveStoryStep ({state, commit}, {previousStepReference, step}) {
                 (stepA.stepNumber > stepB.stepNumber) -
                 (stepA.stepNumber < stepB.stepNumber)
         ),
-        newStoryConf = {
-            ...state.storyConf,
+        newStory = {
+            ...state.currentStory,
             steps: sortedNewSteps
         };
 
-    commit("setStoryConf", newStoryConf);
+    commit("setCurrentStory", newStory);
 }
 
 /**
@@ -203,33 +204,12 @@ function downloadStoryFiles ({state}) {
 /**
  * Parses a step reference to an array with the major and minor step
  * @param {String} stepReference the step reference to parse
- * @returns {String[]} array with major and minor step "step_1-2" => ["1", "2"]
+ * @returns {Integer[]} array with major and minor step "step_1-2" => [1, 2]
  */
 function parseStepReference (stepReference) {
     const step = stepReference.split("_")[1].split("-");
 
-    return step;
-}
-
-/**
- * Posts the HTML content of a step to the backend
- * @param {String} backendUrl the url of the backend
- * @param {String} htmlContent the html content of the step
- * @param {Number} storyID the id of the story
- * @returns {void}
- */
-function postStoryHtmlContent (backendUrl, htmlContent, storyID) {
-    const step = parseStepReference(htmlContent[0]),
-        query_url = backendUrl + "add/step/" + storyID + "/" + step[0] + "/" + step[1];
-
-    // htmlContent[1] = htmlContent[1].replace(image.dataUrl, `FILE PATH TBD`);
-    axios.post(query_url, {
-        html: htmlContent[1]
-    }).then(() => {
-        // console.log(response);
-    }).catch(function (error) {
-        errorHandling(error);
-    });
+    return [parseInt(step[0], 10), parseInt(step[1], 10)];
 }
 
 /**
@@ -267,7 +247,7 @@ function dataURLtoFile (dataurl, filename) {
  */
 function postStoryImage (backendUrl, image_dataURL, stepReference, storyID, imageID) {
     const step = parseStepReference(stepReference),
-        query_url = backendUrl + "add/step/" + storyID + "/" + step[0] + "/" + step[1] + "/" + imageID + "/image",
+        query_url = backendUrl + "images/" + storyID + "/" + step[0] + "/" + step[1] + "/" + imageID,
         // generate file from base64 string
         file = dataURLtoFile(image_dataURL),
         // put file into form data
@@ -278,14 +258,60 @@ function postStoryImage (backendUrl, image_dataURL, stepReference, storyID, imag
 
     data.append("image", file, file.name);
 
-    // now upload
-    axios.post(query_url, data, config).then(response => {
-        return response;
+    // return promise
+    return axios.post(query_url, data, config);
+}
+
+/**
+ * Add html to specific step
+ * @param {Array} steps Array of steps
+ * @param {String} stepReference the step reference for the query url
+ * @param {String} htmlContent the html content of the step
+ * @returns {Array} returns the updated steps
+ */
+function copyHtml (steps, stepReference, htmlContent) {
+    const [htmlAssociatedChapter, htmlStepNumber] = parseStepReference(stepReference);
+
+    return steps.map((step) => {
+        const newStep = {...step};
+
+        if (
+            step.associatedChapter === htmlAssociatedChapter &&
+            step.stepNumber === htmlStepNumber
+        ) {
+            newStep.html = htmlContent;
+        }
+        return newStep;
     });
 }
 
-function prepareImageArray (htmlContents) {
 
+/**
+ * Prepare html and images inside for upload
+ * @param {Object} story the story
+ * @param {Array} htmlContents Array of html contents
+ * @param {Array} images Array of images
+ * @returns {Array} returns the updated steps
+ */
+function prepareHtml (story, htmlContents, images) {
+    const imageArray = [];
+
+    Object.entries(htmlContents).forEach(([stepReference, htmlContent]) => {
+        let html = htmlContent;
+
+        if (Object.hasOwn(images, stepReference)) {
+            for (const image of images[stepReference]) {
+                const imageId = new Date().valueOf() + "_" + uuid.v4();
+
+                image.imageId = imageId;
+                image.stepRef = stepReference;
+                imageArray.push(image);
+                html = html.replaceAll(image.dataUrl, imageId);
+            }
+        }
+        story.steps = copyHtml(story.steps, stepReference, html);
+    });
+    return [story, imageArray];
 }
 
 
@@ -295,98 +321,50 @@ function prepareImageArray (htmlContents) {
  * @param {Object} context actions context object.
  * @returns {Promise} returns a promise that resolves when all files are uploaded
  */
-async function uploadStoryFiles ({state, commit}) {
+function uploadStoryFiles ({state}) {
 
-    const htmlContents = Object.entries(state.htmlContents),
-        images = state.htmlContentsImages,
-        storyConf = {...state.storyConf},
-        imageArray = [],
-        backendUrl = state.backendConfig.url;
+    const backendUrl = state.backendConfig.url,
+        requestConf = {url: backendUrl + "stories"},
 
+        [story, imageArray] = prepareHtml({...state.currentStory}, state.htmlContents, state.htmlContentsImages);
 
-    for (const htmlContent of htmlContents) {
-        if (Object.hasOwn(images, htmlContent[0])) {
-            for (const image of images[htmlContent[0]]) {
-                const imageID = new Date().valueOf() + "_" + uuid.v4();
-
-                image.imageId = imageID;
-                image.stepRef = htmlContent[0];
-                htmlContent[1] = htmlContent[1].replaceAll(image.dataUrl, imageID);
-                imageArray.push(image);
-            }
-        }
+    // If it's string, than it was uploaded previously and we have to keep it
+    // otherwise, new titleImage should be uploaded
+    if (typeof story.titleImage !== "string") {
+        delete story.titleImage;
     }
 
-    // Add title image to image array
-    if (state.storyConf.titleImage) {
-        const imageID = new Date().valueOf() + "_" + uuid.v4(),
-            titleImage = {},
-            dataUrl = await getDataUrlFromFile(state.storyConf.titleImage);
+    requestConf.data = story;
+    let storyId = state.currentStoryId;
 
-        titleImage.imageId = imageID;
-        titleImage.fileExtension = state.storyConf.titleImage.type;
-        titleImage.stepRef = "step_0-0";
-        titleImage.dataUrl = dataUrl;
-        imageArray.push(titleImage);
-        storyConf.titleImage = imageID;
-    }
-
-
-    // Just to be sure
-    storyConf.storyID = null;
-
-    let storyID;
-
-    // Add story and get current storyID back from server
-    return axios.post(backendUrl + "story", storyConf).then((response) => {
-        // store story ID to state
-        commit("setStoryConf", {
-            ...state.storyConf,
-            storyID: response.data.storyID
-        });
-        storyID = response.data.storyID;
-    }).then(() => {
-        // Step 2 - upload each step's html content
-        for (const htmlContent of htmlContents) {
-            postStoryHtmlContent(backendUrl, htmlContent, storyID);
-        }
-    }).then(() => {
-        for (const image of imageArray) {
-            postStoryImage(backendUrl, image.dataUrl, image.stepRef, storyID, image.imageId);
-        }
-    }).then(() => {
-        return "storyID";
-    }).catch(function (error) {
-        errorHandling(error);
-        return error;
-    });
-}
-
-/**
- * Defines how to handle and log errors
- *
- * @param {Object} error error object.
- * @returns {void}
- */
-function errorHandling (error) {
-    if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error(error.response.data);
-        console.error(error.response.status);
-        console.error(error.response.headers);
-    }
-    else if (error.request) {
-        // The request was made but no response was received
-        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-        // http.ClientRequest in node.js
-        console.error(error.request);
+    if (storyId) {
+        requestConf.url += "/" + storyId;
+        requestConf.method = "patch";
     }
     else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error", error.message);
+        requestConf.method = "post";
     }
-    console.error(error.config);
+
+    // Add story and get current storyID back from server
+    return axios(requestConf).then((response) => {
+        // Save entire story
+        storyId ||= response.data.storyId;
+    }).then(() => {
+        // Upload and replace images in story
+        const imageUploads = imageArray.map((image) => {
+            // Images in steps
+            return postStoryImage(backendUrl, image.dataUrl, image.stepRef, storyId, image.imageId);
+        });
+
+        if (state.currentStory.titleImage) {
+            const imageId = new Date().valueOf() + "_" + uuid.v4();
+
+            getDataUrlFromFile(state.currentStory.titleImage).then((dataUrl) => {
+                imageUploads.push(postStoryImage(backendUrl, dataUrl, "step_0-0", storyId, imageId));
+            });
+        }
+        return Promise.all(imageUploads);
+    });
 }
 
 export default {

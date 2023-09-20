@@ -63,7 +63,7 @@ export default {
          * @returns {void}
          */
         createStory () {
-            this.setCurrentStory(null);
+            this.setCurrentStory({chapters: [], steps: []});
             this.setCurrentStoryId(null);
             this.setMode(constants.storyTellingModes.CREATE);
         },
@@ -110,7 +110,7 @@ export default {
              * @returns {void}
              */
             const deleteStory = () => {
-                this.storyConfURL = this.backendConfig.url + "story/" + storyId;
+                this.storyConfURL = this.backendConfig.url + "stories/" + storyId;
 
                 axios
                     .delete(this.storyConfURL)
@@ -222,7 +222,7 @@ export default {
                                             cols="6"
                                         >
                                             <v-img
-                                                :src="backendConfig.url + 'image/' + item.titleImage"
+                                                :src="item.titleImage"
                                                 :alt="item.title"
                                                 max-width="200"
                                                 max-height="200"

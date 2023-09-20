@@ -5,6 +5,7 @@ import {getStepReference} from "../../utils/getReference";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
+import errorHandling from "../../utils/errorHandling";
 
 export default {
     name: "StoryForm",
@@ -23,7 +24,7 @@ export default {
     },
     mounted () {
         if (Object.hasOwn(this.currentStory, "titleImage") && this.currentStory.titleImage !== "") {
-            this.$refs.preview_image.src = URL.createObjectURL(this.currentStory.titleImage);
+            this.$refs.preview_image.src = this.currentStory.titleImage;
             this.hasCover = true;
         }
     },
@@ -39,78 +40,33 @@ export default {
         onCoverChange (event) {
             const file = event.target.files[0];
 
-            this.hasCover = true;
-
             this.$refs.preview_image.src = URL.createObjectURL(file);
             this.currentStory.titleImage = file;
+            this.hasCover = true;
         },
 
-        prepareImages () {
-            const htmlContents = Object.entries(state.htmlContents),
-                images = state.htmlContentsImages,
-                storyConf = {...state.storyConf},
-                imageArray = [],
-                backendUrl = state.backendConfig.url;
-
-
-            for (const htmlContent of htmlContents) {
-                if (Object.hasOwn(images, htmlContent[0])) {
-                    for (const image of images[htmlContent[0]]) {
-                        const imageID = new Date().valueOf() + "_" + uuid.v4();
-
-                        image.imageId = imageID;
-                        image.stepRef = htmlContent[0];
-                        htmlContent[1] = htmlContent[1].replaceAll(image.dataUrl, imageID);
-                        imageArray.push(image);
-                    }
-                }
-            }
-
-            // Add title image to image array
-            if (state.storyConf.titleImage) {
-                const imageID = new Date().valueOf() + "_" + uuid.v4(),
-                    titleImage = {},
-                    dataUrl = await getDataUrlFromFile(state.storyConf.titleImage);
-
-                titleImage.imageId = imageID;
-                titleImage.fileExtension = state.storyConf.titleImage.type;
-                titleImage.stepRef = "step_0-0";
-                titleImage.dataUrl = dataUrl;
-                imageArray.push(titleImage);
-                storyConf.titleImage = imageID;
-            }
-        },
 
         /**
-         * Upload the created story files
+         * Save created or edited story to backend
          * @returns {void}
          */
-        async saveStoryToBackend () {
-            if (Object.hasOwn(this.currentStory, "_id")) {
-                // const updateResponse = await this.updateStory();
-                console.log("Editing story is not implemented yet.");
-            }
-            else {
-                const uploadResponse = await this.uploadStoryFiles();
-
-
-                if (uploadResponse.toString().indexOf("Error") !== -1) {
-                    this.$root.snackB.show({
-                        message: this.$t(
-                            "additional:modules.tools.dataNarrator.warning.storyNotSaved"
-                        ), color: "red"
-                    });
-                }
-                else {
-                    this.$root.snackB.show({
-                        message: this.$t(
-                            "additional:modules.tools.dataNarrator.success.storyCreated"
-                        )
-                    });
-                    this.setStoryConf({...this.constants.emptyStoryConf});
-                    this.$emit("reset-tool");
-                }
-            }
+        saveStoryToBackend () {
+            this.uploadStoryFiles().then(() => {
+                this.$root.snackB.show({
+                    message: this.$t(
+                        "additional:modules.tools.dataNarrator.success.storyCreated"
+                    )
+                });
+                this.setCurrentStory(null);
+                this.$emit("reset-tool");
+            }).catch((error) => {
+                errorHandling(error);
+                this.$root.snackB.show({
+                    message: this.$t(
+                        "additional:modules.tools.dataNarrator.warning.storyNotSaved"
+                    ), color: "red"
+                });
+            });
         },
 
         getStoryInterval () {
