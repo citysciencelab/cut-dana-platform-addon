@@ -16,7 +16,9 @@ export default {
             getStepReference,
             hasCover: false,
             minInterval: 0,
-            maxInterval: 59
+            maxInterval: 59,
+            notSaving: true
+
         };
     },
     computed: {
@@ -51,7 +53,9 @@ export default {
          * @returns {void}
          */
         saveStoryToBackend () {
+            this.notSaving = false;
             this.uploadStoryFiles().then(() => {
+                this.notSaving = true;
                 this.$root.snackB.show({
                     message: this.$t(
                         "additional:modules.tools.dataNarrator.success.storyCreated"
@@ -66,6 +70,7 @@ export default {
                         "additional:modules.tools.dataNarrator.warning.storyNotSaved"
                     ), color: "red"
                 });
+                this.notSaving = true;
             });
         },
 
@@ -319,7 +324,19 @@ export default {
                 </v-slide-group>
             </div>
 
-            <div class="tool-dataNarrator-creator-actions">
+            <v-progress-linear
+                v-if="!notSaving"
+                indeterminate
+                height="10"
+                striped
+                rounded
+                color="lime"
+            />
+
+            <div
+                v-if="notSaving"
+                class="tool-dataNarrator-creator-actions"
+            >
                 <v-tooltip top>
                     <template #activator="{ on }">
                         <v-icon

@@ -9,7 +9,6 @@ import {emptyStoryConf} from "./constantsDataNarrator";
  * @property {String} currentStoryId current story id
  * @property {Number} currentChapterId current chapter id
  * @property {Number} currentStepId current step id
- * @property {Object} htmlContents the HTML contents used for story creation
  * @property {Object} htmlContentsImages the HTML content images used for story creation
  * @property {boolean} active if true, the story telling tool will be rendered
  * @property {string} name displayed as title (config-param)
@@ -27,7 +26,6 @@ const state = {
     storyConf: {...emptyStoryConf},
     currentStory: null,
     currentStoryId: null,
-    htmlContents: {},
     htmlContentsImages: {},
     autoplay: false,
     // defaults for config.json parameters

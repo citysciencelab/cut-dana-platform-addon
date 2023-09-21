@@ -7,47 +7,6 @@ import {request} from "backbone.radio";
 
 const uuid = require("uuid");
 
-/**
- * Adds an HTML file to the temporary HTML contents state
- *
- * @param {Object} context actions context object.
- * @param {Number} parameters.chapterNumber the chapter number to identify the step the HTML content belongs to
- * @param {Number} parameters.stepNumber the step number to identify the step the HTML content belongs to
- * @param {String} parameters.htmlContent the HTML content
- * @param {Array} parameters.htmlContentImages the images in the HTML content
- * @param {String} parameters.previousHtmlReference the previous HTMl reference (for the case that it changed)
- * @returns {String} the HTML file name
- */
-function saveHtmlContent (
-    {state, commit},
-    {
-        chapterNumber,
-        stepNumber,
-        htmlContent,
-        htmlContentImages,
-        previousHtmlReference
-    }
-) {
-    const htmlContents = {...state.htmlContents},
-        htmlContentsImages = {...state.htmlContentsImages},
-        htmlReference = getHTMLContentReference(chapterNumber, stepNumber);
-
-    if (previousHtmlReference) {
-        delete htmlContents[previousHtmlReference];
-        delete htmlContentsImages[previousHtmlReference];
-    }
-
-    commit("setHtmlContents", {
-        ...htmlContents,
-        [htmlReference]: htmlContent
-    });
-    commit("setHtmlContentsImages", {
-        ...htmlContentsImages,
-        [htmlReference]: htmlContentImages
-    });
-
-    return `${htmlReference}.html`;
-}
 
 /**
  * Adds a chapter to the story
@@ -76,12 +35,8 @@ function addStoryChapter ({state, commit}, chapter) {
  * @param {Object} parameters.previousStepReference the reference to the step in state (if already exists)
  * @returns {void}
  */
-function saveStoryStep ({state, commit}, {previousStepReference, step}) {
-    const steps = state.currentStory.steps.filter(
-            ({associatedChapter, stepNumber}) => !previousStepReference ||
-                previousStepReference !==
-                getStepReference(associatedChapter, stepNumber)
-        ),
+function saveStoryStep ({state, commit}, {step, images}) {
+    const steps = state.currentStory.steps.filter(({_id}) => _id !== step._id),
         // Sort steps by chapter number then by step number
         sortedNewSteps = [...steps, step].sort(
             (stepA, stepB) => (stepA.associatedChapter > stepB.associatedChapter) -
@@ -89,12 +44,13 @@ function saveStoryStep ({state, commit}, {previousStepReference, step}) {
                 (stepA.stepNumber > stepB.stepNumber) -
                 (stepA.stepNumber < stepB.stepNumber)
         ),
-        newStory = {
-            ...state.currentStory,
-            steps: sortedNewSteps
-        };
+        newStory = {...state.currentStory, steps: sortedNewSteps},
+        newImages = {...state.htmlContentsImages};
+
+    newImages[step._id] = images;
 
     commit("setCurrentStory", newStory);
+    commit("setHtmlContentsImages", newImages);
 }
 
 /**
@@ -106,25 +62,51 @@ function saveStoryStep ({state, commit}, {previousStepReference, step}) {
  * @param {Number} parameters.stepNumber the number of the step to delete
  * @returns {void}
  */
-function deleteStoryStep ({state, commit}, {associatedChapter, stepNumber}) {
+function deleteStoryStep ({state, commit}, {step}) {
     const newSteps = state.currentStory.steps.filter(
-            step => associatedChapter !== step.associatedChapter ||
-                stepNumber !== step.stepNumber
+            current => current.associatedChapter !== step.associatedChapter ||
+                        current.stepNumber !== step.stepNumber
         ),
         chapterIsNotUsedAnymore = !newSteps.some(
-            step => step.associatedChapter === associatedChapter
+            current => step.associatedChapter === current.associatedChapter
         ),
         newChapters = chapterIsNotUsedAnymore
             ? state.currentStory.chapters.filter(
-                ({chapterNumber}) => chapterNumber !== associatedChapter
+                ({chapterNumber}) => chapterNumber !== step.associatedChapter
             )
             : state.currentStory.chapters;
+
+    if (state.htmlContentsImages[step._id]) {
+        const newHtmlContentsImages = {...state.htmlContentsImages};
+
+        delete newHtmlContentsImages[step._id];
+        commit("setHtmlContentsImages", newHtmlContentsImages);
+    }
 
     commit("setCurrentStory", {
         ...state.currentStory,
         chapters: newChapters,
         steps: newSteps
     });
+}
+
+/**
+ * Adjust step numbers after deleting a step
+ *
+ * @param {Object} context actions context object.
+ * @param {Number} parameters.associatedChapter the chapter of the step to delete
+ * @param {Number} parameters.stepNumber the number of the step to delete
+ * @returns {void}
+ */
+function adjustStepNumbers ({state, commit}, {associatedChapter, stepNumber}) {
+    const newSteps = state.currentStory.steps.map(step => {
+        if (associatedChapter === step.associatedChapter && stepNumber < step.stepNumber) {
+            return {...step, stepNumber: step.stepNumber - 1};
+        }
+        return step;
+    });
+
+    commit("setCurrentStory", {...state.currentStory, steps: newSteps});
 }
 
 /**
@@ -263,53 +245,33 @@ function postStoryImage (backendUrl, image_dataURL, stepReference, storyID, imag
 }
 
 /**
- * Add html to specific step
- * @param {Array} steps Array of steps
- * @param {String} stepReference the step reference for the query url
- * @param {String} htmlContent the html content of the step
- * @returns {Array} returns the updated steps
- */
-function copyHtml (steps, stepReference, htmlContent) {
-    const [htmlAssociatedChapter, htmlStepNumber] = parseStepReference(stepReference);
-
-    return steps.map((step) => {
-        const newStep = {...step};
-
-        if (
-            step.associatedChapter === htmlAssociatedChapter &&
-            step.stepNumber === htmlStepNumber
-        ) {
-            newStep.html = htmlContent;
-        }
-        return newStep;
-    });
-}
-
-
-/**
  * Prepare html and images inside for upload
  * @param {Object} story the story
- * @param {Array} htmlContents Array of html contents
  * @param {Array} images Array of images
  * @returns {Array} returns the updated steps
  */
-function prepareHtml (story, htmlContents, images) {
+function prepareHtml (story, images) {
     const imageArray = [];
 
-    Object.entries(htmlContents).forEach(([stepReference, htmlContent]) => {
-        let html = htmlContent;
+    story.steps = story.steps.map((step) => {
+        let html = step.html;
 
-        if (Object.hasOwn(images, stepReference)) {
-            for (const image of images[stepReference]) {
+        console.log(images);
+
+        if (Object.hasOwn(images, step._id) && images[step._id]?.length > 0) {
+            const stepRef = getHTMLContentReference(step.associatedChapter, step.stepNumber);
+
+            for (const image of images[step._id]) {
                 const imageId = new Date().valueOf() + "_" + uuid.v4();
 
                 image.imageId = imageId;
-                image.stepRef = stepReference;
+                image.stepRef = stepRef;
                 imageArray.push(image);
                 html = html.replaceAll(image.dataUrl, imageId);
             }
         }
-        story.steps = copyHtml(story.steps, stepReference, html);
+        step.html = html;
+        return step;
     });
     return [story, imageArray];
 }
@@ -326,7 +288,7 @@ function uploadStoryFiles ({state}) {
     const backendUrl = state.backendConfig.url,
         requestConf = {url: backendUrl + "stories"},
 
-        [story, imageArray] = prepareHtml({...state.currentStory}, state.htmlContents, state.htmlContentsImages);
+        [story, imageArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages);
 
     // If it's string, than it was uploaded previously and we have to keep it
     // otherwise, new titleImage should be uploaded
@@ -356,7 +318,7 @@ function uploadStoryFiles ({state}) {
             return postStoryImage(backendUrl, image.dataUrl, image.stepRef, storyId, image.imageId);
         });
 
-        if (state.currentStory.titleImage) {
+        if (state.currentStory.titleImage && typeof state.currentStory.titleImage !== "string") {
             const imageId = new Date().valueOf() + "_" + uuid.v4();
 
             getDataUrlFromFile(state.currentStory.titleImage).then((dataUrl) => {
@@ -368,10 +330,10 @@ function uploadStoryFiles ({state}) {
 }
 
 export default {
-    saveHtmlContent,
     addStoryChapter,
     saveStoryStep,
     deleteStoryStep,
+    adjustStepNumbers,
     downloadStoryFiles,
     uploadStoryFiles
 };

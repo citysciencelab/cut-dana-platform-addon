@@ -16,7 +16,6 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
          */
         resetModule ({commit}) {
             // Reset store data
-            commit("setHtmlContents", initialState.htmlContents);
             commit("setHtmlContentsImages", initialState.htmlContentsImages);
             commit("setInitialWidth", initialState.initialWidth);
             commit("setCurrentStory", null);
@@ -30,7 +29,6 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
          * @returns {void}
          */
         resetCreatorContent ({commit}) {
-            commit("setHtmlContents", initialState.htmlContents);
             commit("setHtmlContentsImages", initialState.htmlContentsImages);
             commit("setInitialWidth", initialState.initialWidth);
             commit("setCurrentStory", null);

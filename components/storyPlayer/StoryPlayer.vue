@@ -1,24 +1,24 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
+import ClassicPlayer from "./ClassicPlayer.vue";
 import StoryNavigation from "./StoryNavigation.vue";
 import ScrollyTeller from "./ScrollyTeller.vue";
-import DipasPlayer from "./DipasPlayer.vue";
-import fetchDataFromUrl, {loadStepContent} from "../../utils/getStoryFromUrl";
+// import DipasPlayer from "./DipasPlayer.vue";
+import fetchDataFromUrl from "../../utils/getStoryFromUrl";
 import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 import store from "../../../../../src/app-store";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {EventEmitter} from "../../utils/EventEmitter";
-import ClassicPlayer from "./ClassicPlayer.vue";
 
 export default {
     name: "StoryPlayer",
     components: {
         ClassicPlayer,
         ScrollyTeller,
-        StoryNavigation,
-        DipasPlayer
+        StoryNavigation
+        // DipasPlayer
     },
     props: {
         // Whether the story player is in preview mode or not
@@ -55,13 +55,9 @@ export default {
          * @returns {number} current step index
          */
         currentStep () {
-            const stepindex = this.$store.state.Tools.DataNarrator.autoplay && this.steps.length > 0
+            return this.$store.state.Tools.DataNarrator.autoplay && this.steps.length > 0
                 ? this.steps[this.currentStepIndex]
                 : this.currentStory.steps[this.currentStepIndex];
-
-            return this.currentStepIndex !== null
-                ? this.currentStory && stepindex
-                : null;
         },
 
         /**
@@ -70,10 +66,9 @@ export default {
          */
         currentChapter () {
             return (
-                this.currentStory && this.currentStory.chapters &&
+                this.currentStory?.chapters &&
                 this.currentStory.chapters.find(
-                    ({chapterNumber}) => this.currentStep &&
-                        this.currentStep.associatedChapter === chapterNumber
+                    ({chapterNumber}) => this.currentStep?.associatedChapter === chapterNumber
                 )
             );
         },
@@ -111,13 +106,7 @@ export default {
         if (this.currentStory) {
             this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
             this.currentStepIndex = this.stepIndex;
-            // this.loadStep();
         }
-
-        // if (this.isPreview && this.storyConf) {
-        //     this.showMode = this.storyConf?.displayType ? this.storyConf.displayType : "classic";
-        //     this.loadStep();
-        // }
         if (this.currentStory.storyInterval) {
             this.activateInterval();
         }
@@ -259,7 +248,18 @@ export default {
          */
         onClickChapter (chapter) {
             this.currentStepIndex = this.currentStory.steps.findIndex(
-                ({associatedChapter}) => associatedChapter === chapter.chapterNumber
+                (step) => step.associatedChapter === chapter.chapterNumber
+            );
+        },
+
+        /**
+         * Set the step index on click of a step
+         * @param {Object} step the current step object of the iteration
+         * @returns  {void}
+         */
+        onClickStep (step) {
+            this.currentStepIndex = this.currentStory.steps.findIndex(
+                ({_id}) => _id === step._id
             );
         },
 
@@ -353,6 +353,7 @@ export default {
             // Updates the map center for 3D
             if (this.currentStep.navigation3D
                 && Object.prototype.hasOwnProperty.call(this.currentStep.navigation3D, "cameraPosition")
+                && this.currentStep.navigation3D.cameraPosition.length > 0
                 && this.currentStep.navigation3D.cameraPosition[0] !== null) {
                 const position = this.currentStep.navigation3D.cameraPosition,
                     map3d = Radio.request("Map", "getMap3d"),
@@ -399,17 +400,13 @@ export default {
 
             Radio.trigger("Menu", "rerender");
 
-            // Updates the step html content
-            if (this.currentStory && this.loadedContent === null) {
-                // Get HTML for the story step
-                this.loadedContent = this.currentStep.html;
-            }
-            else if (this.isPreview && this.htmlContents[htmlReference]) {
+
+            if (this.isPreview && this.htmlContents[htmlReference]) {
                 // Get temporary HTML for the story step preview
                 this.loadedContent = this.htmlContents[htmlReference];
             }
             else {
-                this.loadedContent = null;
+                this.loadedContent = this.currentStep.html;
             }
 
             setTimeout(() => {
@@ -427,45 +424,7 @@ export default {
                 // Activate all tools of the current step
                 interactionAddons.forEach(this.activateTool);
             }
-
-            if (this.loadedContent === null && this.currentStoryId) {
-                loadStepContent(this.backendConfig.url, this.currentStoryId, this.currentStep).then(data => {
-                    this.loadedContent = data;
-                });
-            }
         }
-        /*
-         * Fills the steps array transforming the nested structure of the steps into a flat structure
-         * @returns {void}
-         */
-        // createStepArray (steps) {
-        //     steps.forEach(s => {
-        //         const step = {...s};
-
-        //         delete step.steps;
-        //         this.steps.push(step);
-        //         if (s.steps) {
-        //             this.createStepArray(s.steps);
-        //         }
-        //     });
-        // },
-        /*
-         * Adds the depth level of a story step to a copy of the storyConf
-         * @returns {void}
-         */
-        // assignDepth (arr, depth = 0, index = 0) {
-
-        //     if (index < arr.length) {
-        //         arr[index].depth = depth;
-        //         if (arr[index].steps && arr[index].steps.length) {
-        //             return this.assignDepth(arr[index].steps, depth + 1, 0);
-        //         }
-
-        //         return this.assignDepth(arr, depth, index + 1);
-        //     }
-
-        //     return null;
-        // },
     }
 };
 </script>
@@ -518,7 +477,7 @@ export default {
         <ol class="tableOfContents">
             <li
                 v-for="chapter in currentStory.chapters"
-                :key="chapter.chapterNumber"
+                :key="'chapter_'+chapter.chapterNumber"
             >
                 <span
                     :class="{
@@ -538,8 +497,11 @@ export default {
                 </span>
                 <ol>
                     <li
-                        v-for="(step, stepIndex) in currentStory.steps"
-                        :key="chapter.chapterNumber + '.' + step.stepNumber"
+                        v-for="(step) in currentStory.steps.filter(
+                            ({associatedChapter}) =>
+                                associatedChapter === chapter.chapterNumber
+                        )"
+                        :key="'step_'+chapter.chapterNumber + '.' + step.stepNumber"
                         role="button"
                         tabindex="0"
                         :class="{
@@ -554,10 +516,10 @@ export default {
                         @focus="onHoverStep(step)"
                         @mouseout.stop="isHovering = null"
                         @blur="isHovering = null"
-                        @click.stop="currentStepIndex = stepIndex"
-                        @keydown="currentStepIndex = stepIndex"
+                        @click.stop="onClickStep(step)"
+                        @keydown="onClickStep(step)"
                     >
-                        <span v-if="step.associatedChapter === chapter.chapterNumber">
+                        <span>
                             {{
                                 getStepReference(
                                     step.associatedChapter,

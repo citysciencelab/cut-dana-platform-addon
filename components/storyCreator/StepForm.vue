@@ -8,6 +8,7 @@ import {getHTMLContentReference, getStepReference} from "../../utils/getReferenc
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
+const uuid = require("uuid");
 
 export default {
     name: "StepForm",
@@ -15,13 +16,8 @@ export default {
         VueEditor
     },
     props: {
-        // Whether to edit a step or creating a new one
-        isEditing: {
-            type: Boolean,
-            default: false
-        },
         // The initial values for a step to edit
-        initialStep: {
+        editedStep: {
             type: Object,
             default: null
         }
@@ -35,12 +31,14 @@ export default {
             getHTMLContentReference,
             minStepWidth: 280,
             maxStepWidth: 1000,
-            step: this.isEditing ? this.initialStep : {
+            step: this.editedStep || {
+                _id: uuid.v4(),
                 stepNumber: 1,
                 stepWidth: this.$store.state.Tools.DataNarrator.initialWidth,
                 visible: true,
-                associatedChapter: null,
+                associatedChapter: 1,
                 title: "",
+                html: "",
                 htmlFile: null,
                 centerCoordinate: null,
                 zoomLevel: null,
@@ -58,29 +56,10 @@ export default {
                 }
             },
             newChapter: {
-                chapterNumber:
-                    this.$store.state.Tools.DataNarrator.currentStory.chapters.length + 1,
+                chapterNumber: this.$store.state.Tools.DataNarrator.currentStory.chapters.length + 1,
                 chapterTitle: ""
             },
-            htmlContent:
-                this.isEditing ? this.initialStep.html :
-                    (this.initialStep &&
-                        this.$store.state.Tools.DataNarrator.htmlContents[
-                            getHTMLContentReference(
-                                this.initialStep.associatedChapter,
-                                this.initialStep.stepNumber
-                            )
-                        ]) ||
-                    null,
-            htmlContentImages:
-                (this.initialStep &&
-                    this.$store.state.Tools.DataNarrator.htmlContentsImages[
-                        getHTMLContentReference(
-                            this.initialStep.associatedChapter,
-                            this.initialStep.stepNumber
-                        )
-                    ]) ||
-                [],
+            htmlContentImages: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
             is3DLayerActive: false,
             layerTypes3DSpecific: ["Entities3D", "TileSet3D", "Terrain3D"],
             mapMovedPosition: {
@@ -105,6 +84,13 @@ export default {
             const chapters = this.currentStory.chapters || [];
 
             return chapters.map(({chapterNumber}) => chapterNumber);
+        },
+
+        /**
+         * @returns {Boolean} Can the step be submitted?
+         */
+        isValid () {
+            return this.step.html?.length > 0;
         },
 
         /**
@@ -288,9 +274,7 @@ export default {
             this.newChapter.chapterNumber = Number(event.target.value);
 
             // Validates the new chapter number
-            if (
-                this.allChapterNumbers.includes(this.newChapter.chapterNumber)
-            ) {
+            if (this.allChapterNumbers.includes(this.newChapter.chapterNumber)) {
                 event.target.setCustomValidity(
                     this.$t(
                         "additional:modules.tools.dataNarrator.error.chapterNumberAlreadyExists"
@@ -314,8 +298,8 @@ export default {
             // Validates the step number
             if (
                 this.allStepNumbers.includes(this.step.stepNumber) &&
-                (!this.initialStep ||
-                    this.step.stepNumber !== this.initialStep.stepNumber)
+                (!this.editedStep ||
+                    this.step.stepNumber !== this.editedStep.stepNumber)
             ) {
                 event.target.setCustomValidity(
                     this.$t(
@@ -348,7 +332,7 @@ export default {
          * @param {Function} resetUploader function to reset the uploader
          * @returns {void}
          */
-        async onAddImage (imageFile, Editor, cursorLocation, resetUploader) {
+        onAddImage (imageFile, Editor, cursorLocation, resetUploader) {
             const fileExtension = getFileExtension(imageFile);
 
             getDataUrlFromFile(imageFile).then(dataUrl => {
@@ -392,9 +376,10 @@ export default {
              */
             const deleteStep = () => {
                 const {associatedChapter, stepNumber} =
-                    this.initialStep || this.step;
+                    this.editedStep || this.step;
 
-                this.deleteStoryStep({associatedChapter, stepNumber});
+                this.deleteStoryStep({step: this.step});
+                this.adjustStepNumbers({associatedChapter, stepNumber});
                 this.$emit("return");
             };
 
@@ -412,38 +397,7 @@ export default {
                 this.addStoryChapter(this.newChapter);
                 this.step.associatedChapter = this.newChapter.chapterNumber;
             }
-
-            if (this.htmlContent) {
-                // Add HTML content including images to temporary state
-                // Update step's htmlFile reference
-                const previousHtmlReference =
-                    this.initialStep &&
-                    this.getHTMLContentReference(
-                        this.initialStep.associatedChapter,
-                        this.initialStep.stepNumber
-                    );
-
-                this.step.htmlFile = await this.saveHtmlContent({
-                    chapterNumber: this.step.associatedChapter,
-                    stepNumber: this.step.stepNumber,
-                    htmlContent: this.htmlContent,
-                    htmlContentImages: this.htmlContentImages,
-                    ...previousHtmlReference && {previousHtmlReference}
-                });
-            }
-
-            // Save the step in the story
-            const previousStepReference =
-                this.initialStep &&
-                this.getStepReference(
-                    this.initialStep.associatedChapter,
-                    this.initialStep.stepNumber
-                );
-
-            this.saveStoryStep({
-                step: this.step,
-                ...previousStepReference && {previousStepReference}
-            });
+            this.saveStoryStep({step: this.step, images: this.htmlContentImages});
 
             // Trigger submit action to return to story overview
             this.$emit("return");
@@ -630,8 +584,8 @@ export default {
                 <p
                     v-if="
                         allStepNumbers.includes(step.stepNumber) &&
-                            (!initialStep ||
-                                step.stepNumber !== initialStep.stepNumber)
+                            (!editedStep ||
+                                step.stepNumber !== editedStep.stepNumber)
                     "
                     class="text-danger"
                 >
@@ -1104,7 +1058,7 @@ export default {
                 <div class="stepForm-inputs-htmlEditor">
                     <VueEditor
                         id="step-vue-editor"
-                        v-model="htmlContent"
+                        v-model="step.html"
                         :editor-toolbar="constants.htmlEditorToolbar"
                         use-custom-image-handler
                         @image-added="onAddImage"
@@ -1132,10 +1086,7 @@ export default {
                     </span>
                 </v-tooltip>
 
-                <v-tooltip
-                    v-if="isEditing"
-                    top
-                >
+                <v-tooltip top>
                     <template #activator="{ on }">
                         <v-icon
                             id="delete-button"
@@ -1157,7 +1108,7 @@ export default {
                         <v-icon
                             id="save-button"
                             class="mr-1"
-                            :disabled="!htmlContent?.length"
+                            :disabled="!isValid"
                             @click="onSubmit"
                             v-on="on"
                         >
@@ -1166,7 +1117,7 @@ export default {
                     </template>
                     <span>
                         {{
-                            $t(isEditing
+                            $t(editedStep
                                 ? "additional:modules.tools.dataNarrator.button.submitEditStep"
                                 : "additional:modules.tools.dataNarrator.button.submitAddStep")
                         }}
@@ -1175,7 +1126,7 @@ export default {
             </div>
             <p />
             <v-alert
-                v-show="!htmlContent || !htmlContent.length"
+                v-show="!isValid"
                 type="info"
             >
                 {{

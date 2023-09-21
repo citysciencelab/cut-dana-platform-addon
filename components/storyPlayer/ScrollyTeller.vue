@@ -7,7 +7,6 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import StoryMenu from "./StoryMenu.vue";
-import {loadStepContent} from "../../utils/getStoryFromUrl";
 
 
 export default {
@@ -25,7 +24,7 @@ export default {
     data () {
         return {
             currentIndex: 0,
-            loadedContent: null,
+            // loadedContent: null,
             steps: null,
             toolWindow: null
         };
@@ -40,22 +39,7 @@ export default {
         }
     },
     created () {
-        this.steps = this.storyConf.steps;
-        this.steps.forEach((step) => {
-            if (this.storyConf.htmlFolder && step.htmlFile) {
-                this.loadStoryContents(step.htmlFile).then(data => {
-                    this.$set(step, "loadedContent", data);
-                }).catch(err => {
-                    console.error(err);
-                });
-            }
-            else {
-                loadStepContent(this.backendConfig.url, this.currentStoryId, step).then(data => {
-                    this.$set(step, "loadedContent", data);
-                });
-            }
-
-        });
+        this.steps = this.currentStory.steps;
     },
     beforeDestroy () {
         this.toolWindow.style.removeProperty("background-color");
@@ -160,7 +144,7 @@ export default {
             >
                 <div
                     v-if="index === currentIndex"
-                    v-html="step.loadedContent"
+                    v-html="step"
                 />
             </div>
         </div>

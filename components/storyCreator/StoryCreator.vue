@@ -44,7 +44,7 @@ export default {
          * @returns {void}
          */
         returnToStoryForm () {
-            this.stepToEdit = {};
+            this.stepToEdit = null;
             this.view = this.constants.storyCreationViews.STORY_CREATION;
         }
     }
@@ -62,8 +62,7 @@ export default {
 
         <StepForm
             v-if="view === constants.storyCreationViews.STEP_CREATION"
-            :is-editing="Object.keys(stepToEdit).length !== 0"
-            :initial-step="stepToEdit"
+            :edited-step="stepToEdit"
             @return="returnToStoryForm"
             v-on="$listeners"
         />
