@@ -52,7 +52,7 @@ export default {
          */
         refreshStoryList () {
             axios
-                .get(this.backendConfig.url + "story")
+                .get(this.backendConfig.url + "stories")
                 .then((response) => {
                     this.storyList = response.data;
                 });
