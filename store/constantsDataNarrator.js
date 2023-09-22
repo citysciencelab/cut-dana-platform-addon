@@ -18,11 +18,34 @@ const storyTellingModes = {
         STEP_CREATION: "step",
         PREVIEW: "preview"
     },
-    emptyStoryConf = {
+    emptyStory = {
         storyInterval: 0,
         titleImage: "",
         chapters: [],
         steps: []
+    },
+    emptyStep = {
+        stepNumber: 1,
+        stepWidth: 0,
+        visible: true,
+        associatedChapter: 1,
+        title: "",
+        html: "",
+        htmlFile: null,
+        centerCoordinate: null,
+        zoomLevel: null,
+        layers: [],
+        interactionAddons: [],
+        is3D: false,
+        navigation3D: {
+            cameraPosition: [
+                null,
+                null,
+                null
+            ],
+            heading: null,
+            pitch: null
+        }
     },
     htmlEditorToolbar = [
         [{header: [false, 1, 2, 3, 4, 5, 6]}],
@@ -44,7 +67,8 @@ export {
     storyTellingModes,
     storyTellingModeIcons,
     storyCreationViews,
-    emptyStoryConf,
+    emptyStory,
     htmlEditorToolbar,
-    dataNarratorRoles
+    dataNarratorRoles,
+    emptyStep
 };

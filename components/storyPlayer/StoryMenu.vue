@@ -46,7 +46,7 @@ export default {
 <template>
     <div id="story-menu">
         <span
-            v-if="storyConf?.displayType && storyConf.displayType === 'scrolly'"
+            v-if="currentStory?.displayType && currentStory.displayType === 'scrolly'"
             class="scrolly-button"
             role="button"
             tabindex="0"
@@ -56,7 +56,7 @@ export default {
             <v-icon>style</v-icon>
         </span>
         <span
-            v-if="mode && storyConf.storyInterval"
+            v-if="mode && currentStory.storyInterval"
         >
             <span
                 role="button"

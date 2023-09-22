@@ -1,11 +1,10 @@
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import axios from "axios";
-import {getHTMLContentReference, getStepReference} from "../../utils/getReference.js";
-import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
-import {request} from "backbone.radio";
+import uuid from "uuid";
 
-const uuid = require("uuid");
+import {getHTMLContentReference} from "../../utils/getReference.js";
+import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 
 
 /**
@@ -256,8 +255,6 @@ function prepareHtml (story, images) {
     story.steps = story.steps.map((step) => {
         let html = step.html;
 
-        console.log(images);
-
         if (Object.hasOwn(images, step._id) && images[step._id]?.length > 0) {
             const stepRef = getHTMLContentReference(step.associatedChapter, step.stepNumber);
 
@@ -271,6 +268,7 @@ function prepareHtml (story, images) {
             }
         }
         step.html = html;
+        delete step._id;
         return step;
     });
     return [story, imageArray];

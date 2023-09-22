@@ -8,7 +8,7 @@ import {getHTMLContentReference, getStepReference} from "../../utils/getReferenc
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
-const uuid = require("uuid");
+import uuid from "uuid";
 
 export default {
     name: "StepForm",
@@ -31,35 +31,18 @@ export default {
             getHTMLContentReference,
             minStepWidth: 280,
             maxStepWidth: 1000,
-            step: this.editedStep || {
-                _id: uuid.v4(),
-                stepNumber: 1,
-                stepWidth: this.$store.state.Tools.DataNarrator.initialWidth,
-                visible: true,
-                associatedChapter: 1,
-                title: "",
-                html: "",
-                htmlFile: null,
-                centerCoordinate: null,
-                zoomLevel: null,
-                layers: [],
-                interactionAddons: [],
-                is3D: false,
-                navigation3D: {
-                    cameraPosition: [
-                        null,
-                        null,
-                        null
-                    ],
-                    heading: null,
-                    pitch: null
-                }
-            },
+            step: this.editedStep && Object.keys(this.editedStep).length > 0
+                ? this.editedStep
+                : {
+                    ...constants.emptyStep,
+                    _id: uuid.v4(),
+                    stepWidth: this.$store.state.Tools.DataNarrator.initialWidth
+                },
             newChapter: {
                 chapterNumber: this.$store.state.Tools.DataNarrator.currentStory.chapters.length + 1,
                 chapterTitle: ""
             },
-            htmlContentImages: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
+            images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
             is3DLayerActive: false,
             layerTypes3DSpecific: ["Entities3D", "TileSet3D", "Terrain3D"],
             mapMovedPosition: {
@@ -265,28 +248,6 @@ export default {
         ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
 
         /**
-         * Handles new chapter number changes
-         * Validates the chapter number input
-         * @param {Event} event event fired by changing the input for newChapter.chapterNumber
-         * @returns {void}
-         */
-        onChangeChapterNumber (event) {
-            this.newChapter.chapterNumber = Number(event.target.value);
-
-            // Validates the new chapter number
-            if (this.allChapterNumbers.includes(this.newChapter.chapterNumber)) {
-                event.target.setCustomValidity(
-                    this.$t(
-                        "additional:modules.tools.dataNarrator.error.chapterNumberAlreadyExists"
-                    )
-                );
-            }
-            else {
-                event.target.setCustomValidity("");
-            }
-        },
-
-        /**
          * Handles step number changes
          * Validates the step number input
          * @param {Event} event event fired by changing the input for stepNumber
@@ -336,7 +297,7 @@ export default {
             const fileExtension = getFileExtension(imageFile);
 
             getDataUrlFromFile(imageFile).then(dataUrl => {
-                this.htmlContentImages.push({dataUrl, fileExtension});
+                this.images.push({dataUrl, fileExtension});
                 // Add image to HTML content
                 Editor.insertEmbed(cursorLocation, "image", dataUrl);
                 // console.log("Image added to HTML content");
@@ -359,7 +320,7 @@ export default {
          * @returns {void}
          */
         onRemoveImage (imageDataUrl) {
-            this.htmlContentImages = this.htmlContentImages.filter(
+            this.images = this.images.filter(
                 image => image.dataUrl !== imageDataUrl
             );
         },
@@ -397,7 +358,7 @@ export default {
                 this.addStoryChapter(this.newChapter);
                 this.step.associatedChapter = this.newChapter.chapterNumber;
             }
-            this.saveStoryStep({step: this.step, images: this.htmlContentImages});
+            this.saveStoryStep({step: this.step, images: this.images});
 
             // Trigger submit action to return to story overview
             this.$emit("return");
@@ -497,44 +458,6 @@ export default {
                     solo
                     hide-details
                 />
-            </div>
-
-            <div
-                v-if="step.associatedChapter === null"
-                class="form-group"
-            >
-                <label
-                    class="form-label required"
-                    for="step-number"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.newChapterNumber"
-                        )
-                    }}
-                </label>
-
-                <input
-                    id="step-number"
-                    class="form-control"
-                    type="number"
-                    :value="newChapter.chapterNumber"
-                    min="1"
-                    required
-                    @change="onChangeChapterNumber"
-                >
-                <p
-                    v-if="allChapterNumbers.includes(newChapter.chapterNumber)"
-                    class="text-danger"
-                >
-                    <small>
-                        {{
-                            $t(
-                                "additional:modules.tools.dataNarrator.error.chapterNumberAlreadyExists"
-                            )
-                        }}
-                    </small>
-                </p>
             </div>
 
             <div

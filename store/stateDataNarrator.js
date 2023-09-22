@@ -1,10 +1,8 @@
-import {emptyStoryConf} from "./constantsDataNarrator";
 
 /**
  * User type definition
  * @typedef {object} DataNarratorState
  * @property {string} id the ID of the story telling tool
- * @property {Object} storyConf the configuration of the story
  * @property {Object} currentStory current story
  * @property {String} currentStoryId current story id
  * @property {Number} currentChapterId current chapter id
@@ -23,7 +21,6 @@ import {emptyStoryConf} from "./constantsDataNarrator";
  */
 const state = {
     id: "dataNarrator",
-    storyConf: {...emptyStoryConf},
     currentStory: null,
     currentStoryId: null,
     htmlContentsImages: {},
