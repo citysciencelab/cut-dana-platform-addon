@@ -131,26 +131,33 @@ function adjustStepNumbers ({state, commit}, {associatedChapter, stepNumber}) {
  */
 function downloadStoryFiles ({state}) {
     const zip = new JSZip(),
-        htmlContents = Object.entries(state.htmlContents),
-        storyConf = {...state.storyConf};
+        // Compatability with old stories
+        storyConf = {...state.currentStory},
+        htmlContents = state.currentStory.steps.reduce(function (result, step) {
+            const reference = getHTMLContentReference(step.associatedChapter, step.stepNumber);
+
+            result[reference] = step.html;
+            return result;
+        }, {});
+
 
     // Add all HTML files used in the story to the story folder
-    if (htmlContents.length) {
+    if (Object.keys(htmlContents).length > 0) {
         const htmlFolder = "story";
+
 
         // Create a folder for the html files
         zip.folder(htmlFolder);
         storyConf.htmlFolder = htmlFolder;
 
-        for (const htmlContent of htmlContents) {
-            const stepReference = htmlContent[0],
-                images = state.htmlContentsImages[stepReference] || [],
+        for (const [stepReference, htmlContent] of Object.entries(htmlContents)) {
+            const images = state.htmlContentsImages[stepReference] || [],
                 imageFolder = `${htmlFolder}/images`,
                 [htmlAssociatedChapter, htmlStepNumber] = stepReference
                     .split(".")
                     .map(Number),
                 htmlFilePath = `${htmlFolder}/${stepReference}.html`;
-            let html = htmlContent[1];
+            let html = htmlContent;
 
             // Create a folder for the image files
             if (images.length) {
