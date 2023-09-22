@@ -35,20 +35,35 @@ function addStoryChapter ({state, commit}, chapter) {
  * @returns {void}
  */
 function saveStoryStep ({state, commit}, {step, images}) {
-    const steps = state.currentStory.steps.filter(({_id}) => _id !== step._id),
-        // Sort steps by chapter number then by step number
-        sortedNewSteps = [...steps, step].sort(
-            (stepA, stepB) => (stepA.associatedChapter > stepB.associatedChapter) -
-                (stepA.associatedChapter < stepB.associatedChapter) ||
-                (stepA.stepNumber > stepB.stepNumber) -
-                (stepA.stepNumber < stepB.stepNumber)
-        ),
-        newStory = {...state.currentStory, steps: sortedNewSteps},
-        newImages = {...state.htmlContentsImages};
+    // remove old step if it exists
+    let steps = state.currentStory.steps.filter(({_id}) => _id !== step._id);
+
+    const newImages = {...state.htmlContentsImages},
+        duplicatedStepNumber = steps.find(candidate => candidate.associatedChapter === step.associatedChapter &&
+            candidate.stepNumber === step.stepNumber
+        );
+
+    // Check if the step with same number and chapter already exists
+    if (duplicatedStepNumber) {
+        // move the step numbers of the following steps up
+        steps = steps.map(candidate => {
+            if (candidate.associatedChapter === step.associatedChapter && candidate.stepNumber >= step.stepNumber) {
+                return {...candidate, stepNumber: candidate.stepNumber + 1};
+            }
+            return candidate;
+        });
+    }
+    // sort all steps by chapter and step number
+    steps = [...steps, step].sort(
+        (stepA, stepB) => (stepA.associatedChapter > stepB.associatedChapter) -
+            (stepA.associatedChapter < stepB.associatedChapter) ||
+            (stepA.stepNumber > stepB.stepNumber) -
+            (stepA.stepNumber < stepB.stepNumber)
+    );
 
     newImages[step._id] = images;
 
-    commit("setCurrentStory", newStory);
+    commit("setCurrentStory", {...state.currentStory, steps: steps});
     commit("setHtmlContentsImages", newImages);
 }
 

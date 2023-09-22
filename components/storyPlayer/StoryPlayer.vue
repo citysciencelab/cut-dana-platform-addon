@@ -371,15 +371,10 @@ export default {
             }
 
             const layerList = Radio.request(
-                    "ModelList",
-                    "getModelsByAttributes",
-                    {isVisibleInTree: true}
-                ),
-                htmlReference = getHTMLContentReference(
-                    this.currentStep.associatedChapter,
-                    this.currentStep.stepNumber
-                );
-
+                "ModelList",
+                "getModelsByAttributes",
+                {isVisibleInTree: true}
+            );
 
             // Updates the map layers
             for (const layer of layerList) {
@@ -399,15 +394,7 @@ export default {
 
 
             Radio.trigger("Menu", "rerender");
-
-
-            if (this.isPreview && this.htmlContents[htmlReference]) {
-                // Get temporary HTML for the story step preview
-                this.loadedContent = this.htmlContents[htmlReference];
-            }
-            else {
-                this.loadedContent = this.currentStep.html;
-            }
+            this.loadedContent = this.currentStep.html;
 
             setTimeout(() => {
                 Radio.trigger("Menu", "rerender");

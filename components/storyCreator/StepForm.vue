@@ -38,10 +38,7 @@ export default {
                     _id: uuid.v4(),
                     stepWidth: this.$store.state.Tools.DataNarrator.initialWidth
                 },
-            newChapter: {
-                chapterNumber: this.$store.state.Tools.DataNarrator.currentStory.chapters.length + 1,
-                chapterTitle: ""
-            },
+            newChapterTitle: "",
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
             is3DLayerActive: false,
             layerTypes3DSpecific: ["Entities3D", "TileSet3D", "Terrain3D"],
@@ -63,10 +60,15 @@ export default {
          * All chapter numbers
          * @returns {Object[]} all chapter numbers
          */
-        allChapterNumbers () {
-            const chapters = this.currentStory.chapters || [];
+        newChapterNumber () {
+            let chapters = this.currentStory.chapters || [];
 
-            return chapters.map(({chapterNumber}) => chapterNumber);
+            if (chapters.length === 0) {
+                return 1;
+            }
+
+            chapters = chapters.map(({chapterNumber}) => chapterNumber);
+            return Math.max(...chapters) + 1;
         },
 
         /**
@@ -81,13 +83,15 @@ export default {
          * @returns {Object[]} all step numbers
          */
         allStepNumbers () {
-            const steps = this.currentStory.steps || [];
+            let steps = this.currentStory.steps || [];
 
-            return steps
-                .filter(
-                    ({associatedChapter}) => associatedChapter === this.step.associatedChapter
-                )
-                .map(({stepNumber}) => stepNumber);
+            if (steps.length === 0) {
+                return [1];
+            }
+            steps = steps.filter(
+                ({associatedChapter}) => associatedChapter === this.step.associatedChapter
+            );
+            return Array.from({length: steps.length + 1}, (v, i) => i + 1);
         },
 
         /**
@@ -98,10 +102,10 @@ export default {
             const chapters = this.currentStory.chapters || [],
                 chapterOptions = chapters.map(chapter => ({
                     value: chapter.chapterNumber,
-                    text: chapter.chapterNumber + " – " + chapter.chapterTitle
+                    text: chapter.chapterNumber + " - " + chapter.chapterTitle
                 })),
                 newChapterOption = {
-                    value: null,
+                    value: this.newChapterNumber,
                     text: this.$t(
                         "additional:modules.tools.dataNarrator.newChapter"
                     )
@@ -241,37 +245,22 @@ export default {
             });
         }
     },
+    mounted () {
+        if (this.step.associatedChapter === null) {
+            const diff = this.chapterOptions.length > 1 ? 2 : 1;
+
+            this.step.associatedChapter = this.chapterOptions[this.chapterOptions.length - diff].value;
+        }
+        if (this.step.stepNumber === null) {
+            this.step.stepNumber = this.allStepNumbers[this.allStepNumbers.length - 1];
+        }
+
+    },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         // These application wide getters and setters can be found in 'src/modules/map/store'
         ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
-
-        /**
-         * Handles step number changes
-         * Validates the step number input
-         * @param {Event} event event fired by changing the input for stepNumber
-         * @returns {void}
-         */
-        onChangeStepNumber (event) {
-            this.step.stepNumber = Number(event.target.value);
-
-            // Validates the step number
-            if (
-                this.allStepNumbers.includes(this.step.stepNumber) &&
-                (!this.editedStep ||
-                    this.step.stepNumber !== this.editedStep.stepNumber)
-            ) {
-                event.target.setCustomValidity(
-                    this.$t(
-                        "additional:modules.tools.dataNarrator.error.stepNumberAlreadyExists"
-                    )
-                );
-            }
-            else {
-                event.target.setCustomValidity("");
-            }
-        },
 
         /**
          * Handles step width changes
@@ -353,10 +342,12 @@ export default {
          * @returns {void}
          */
         async onSubmit () {
-            if (this.step.associatedChapter === null) {
+            if (this.step.associatedChapter === this.newChapterNumber) {
                 // Add a new chapter to the story
-                this.addStoryChapter(this.newChapter);
-                this.step.associatedChapter = this.newChapter.chapterNumber;
+                this.addStoryChapter({
+                    chapterNumber: this.newChapterNumber,
+                    chapterTitle: this.newChapterTitle
+                });
             }
             this.saveStoryStep({step: this.step, images: this.images});
 
@@ -461,7 +452,7 @@ export default {
             </div>
 
             <div
-                v-if="step.associatedChapter === null"
+                v-if="step.associatedChapter === newChapterNumber"
                 class="form-group"
             >
                 <label
@@ -477,7 +468,7 @@ export default {
 
                 <input
                     id="step-chapter-title"
-                    v-model="newChapter.chapterTitle"
+                    v-model="newChapterTitle"
                     class="form-control"
                     required
                 >
@@ -494,8 +485,17 @@ export default {
                         )
                     }}
                 </label>
+                <v-select
+                    id="step-number"
+                    v-model="step.stepNumber"
+                    :items="allStepNumbers"
+                    required
+                    dense
+                    solo
+                    hide-details
+                />
 
-                <input
+                <!-- <input
                     id="step-number"
                     class="form-control"
                     type="number"
@@ -519,7 +519,7 @@ export default {
                             )
                         }}
                     </small>
-                </p>
+                </p> -->
             </div>
 
             <div class="form-group">

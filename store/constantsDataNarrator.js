@@ -25,10 +25,10 @@ const storyTellingModes = {
         steps: []
     },
     emptyStep = {
-        stepNumber: 1,
+        stepNumber: null,
         stepWidth: 0,
         visible: true,
-        associatedChapter: 1,
+        associatedChapter: null,
         title: "",
         html: "",
         htmlFile: null,

@@ -359,7 +359,7 @@ export default {
                         <v-icon
                             class="mr-1"
                             :disabled="!currentStory.steps || !currentStory.steps.length"
-                            @click=" $emit('openView', constants.storyCreationViews.PREVIEW)"
+                            @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
                             v-on="on"
                         >
                             preview
