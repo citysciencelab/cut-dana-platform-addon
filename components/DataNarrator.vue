@@ -236,7 +236,7 @@ export default {
          * @returns {void}
          */
         shareStory (storyId, stepIndex = 0) {
-            const sharedLink = this.backendConfig.url + "s/" + storyId + "/" + stepIndex;
+            const sharedLink = this.backendConfig.url + "/s/" + storyId + "/" + stepIndex;
 
             navigator.clipboard.writeText(sharedLink);
 

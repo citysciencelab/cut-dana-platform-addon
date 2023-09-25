@@ -37,7 +37,7 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
         },
 
         loadCurrentStory ({state, commit}, {mode}) {
-            axios.get(state.backendConfig.url + "stories/" + state.currentStoryId).then((response) => {
+            axios.get(state.backendConfig.url + "/stories/" + state.currentStoryId).then((response) => {
                 commit("setCurrentStory", response.data);
                 commit("setMode", mode);
             });

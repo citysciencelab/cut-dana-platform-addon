@@ -250,7 +250,7 @@ function dataURLtoFile (dataurl, filename) {
  */
 function postStoryImage (backendUrl, image_dataURL, stepReference, storyID, imageID) {
     const step = parseStepReference(stepReference),
-        query_url = backendUrl + "images/" + storyID + "/" + step[0] + "/" + step[1] + "/" + imageID,
+        query_url = backendUrl + "/images/" + storyID + "/" + step[0] + "/" + step[1] + "/" + imageID,
         // generate file from base64 string
         file = dataURLtoFile(image_dataURL),
         // put file into form data
@@ -306,7 +306,7 @@ function prepareHtml (story, images) {
 function uploadStoryFiles ({state}) {
 
     const backendUrl = state.backendConfig.url,
-        requestConf = {url: backendUrl + "stories"},
+        requestConf = {url: backendUrl + "/stories"},
 
         [story, imageArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages);
 

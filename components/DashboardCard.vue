@@ -52,7 +52,7 @@ export default {
          */
         refreshStoryList () {
             axios
-                .get(this.backendConfig.url + "stories")
+                .get(this.backendConfig.url + "/stories")
                 .then((response) => {
                     this.storyList = response.data;
                 });
@@ -110,7 +110,7 @@ export default {
              * @returns {void}
              */
             const deleteStory = () => {
-                this.storyConfURL = this.backendConfig.url + "stories/" + storyId;
+                this.storyConfURL = this.backendConfig.url + "/stories/" + storyId;
 
                 axios
                     .delete(this.storyConfURL)
