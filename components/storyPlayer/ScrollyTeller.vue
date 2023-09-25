@@ -107,19 +107,7 @@ export default {
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-
-        /**
-         * Updates the step html content
-         * @param {Object} htmlFile name of the html file to load
-         * @returns {void}
-         */
-        async loadStoryContents (htmlFile) {
-            const response = await axios.get("./assets/" + this.storyConf.htmlFolder + "/" + htmlFile),
-                data = await response.data;
-
-            return data;
-        }
+        ...mapActions("Tools/DataNarrator", Object.keys(actions))
     }
 };
 </script>
@@ -134,7 +122,7 @@ export default {
             class="stepper"
             :class="{ active: index === currentIndex}"
         >
-            <StoryMenu :initial-auto-play="storyConf.storyInterval !== null" />
+            <StoryMenu :initial-auto-play="currentStory.storyInterval !== null" />
             <h1 v-if="step.title">
                 {{ step.title }}
             </h1>
@@ -144,7 +132,7 @@ export default {
             >
                 <div
                     v-if="index === currentIndex"
-                    v-html="step"
+                    v-html="step.html"
                 />
             </div>
         </div>
