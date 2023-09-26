@@ -2,7 +2,6 @@
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import scrollama from "scrollama";
 import "intersection-observer";
-import axios from "axios";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
