@@ -97,9 +97,14 @@ export default {
     max-height: calc(72vh - 40px);
 
     &-header {
+        position: fixed;
         display: flex;
         align-items: center;
         justify-content: center;
+        width: var(--initialToolWidth);
+        @media (max-width: 767px) {
+            width: var(--initialToolWidthMobile);
+        }
 
         > button {
             position: absolute;
