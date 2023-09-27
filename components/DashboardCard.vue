@@ -68,7 +68,7 @@ export default {
          * @returns {void}
          */
         createStory () {
-            this.setCurrentStory({chapters: [], steps: []});
+            this.setCurrentStory({chapters: [], steps: [], displayType: "classic"});
             this.setCurrentStoryId(null);
             this.setMode(constants.storyTellingModes.CREATE);
         },

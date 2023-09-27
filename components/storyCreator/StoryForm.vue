@@ -26,7 +26,12 @@ export default {
     },
     mounted () {
         if (Object.hasOwn(this.currentStory, "titleImage") && this.currentStory.titleImage !== "") {
-            this.$refs.preview_image.src = this.currentStory.titleImage;
+            if (this.currentStory.titleImage instanceof File) {
+                this.$refs.preview_image.src = URL.createObjectURL(this.currentStory.titleImage);
+            }
+            else {
+                this.$refs.preview_image.src = this.currentStory.titleImage;
+            }
             this.hasCover = true;
         }
     },
