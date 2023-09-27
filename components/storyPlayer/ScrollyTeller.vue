@@ -7,7 +7,6 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import StoryMenu from "./StoryMenu.vue";
-import {loadStepContent} from "../../utils/getStoryFromUrl";
 
 
 export default {
@@ -25,7 +24,7 @@ export default {
     data () {
         return {
             currentIndex: 0,
-            loadedContent: null,
+            // loadedContent: null,
             steps: null,
             toolWindow: null
         };
@@ -40,22 +39,7 @@ export default {
         }
     },
     created () {
-        this.steps = this.storyConf.steps;
-        this.steps.forEach((step) => {
-            if (this.storyConf.htmlFolder && step.htmlFile) {
-                this.loadStoryContents(step.htmlFile).then(data => {
-                    this.$set(step, "loadedContent", data);
-                }).catch(err => {
-                    console.error(err);
-                });
-            }
-            else {
-                loadStepContent(this.backendConfig.url, this.currentStoryId, step).then(data => {
-                    this.$set(step, "loadedContent", data);
-                });
-            }
-
-        });
+        this.steps = this.currentStory.steps;
     },
     beforeDestroy () {
         this.toolWindow.style.removeProperty("background-color");
@@ -123,19 +107,7 @@ export default {
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-
-        /**
-         * Updates the step html content
-         * @param {Object} htmlFile name of the html file to load
-         * @returns {void}
-         */
-        async loadStoryContents (htmlFile) {
-            const response = await axios.get("./assets/" + this.storyConf.htmlFolder + "/" + htmlFile),
-                data = await response.data;
-
-            return data;
-        }
+        ...mapActions("Tools/DataNarrator", Object.keys(actions))
     }
 };
 </script>
@@ -150,7 +122,7 @@ export default {
             class="stepper"
             :class="{ active: index === currentIndex}"
         >
-            <StoryMenu :initial-auto-play="storyConf.storyInterval !== null" />
+            <StoryMenu :initial-auto-play="currentStory.storyInterval !== null" />
             <h1 v-if="step.title">
                 {{ step.title }}
             </h1>
@@ -160,7 +132,7 @@ export default {
             >
                 <div
                     v-if="index === currentIndex"
-                    v-html="step.loadedContent"
+                    v-html="step.html"
                 />
             </div>
         </div>
@@ -187,7 +159,7 @@ export default {
 
     .stepper {
         min-height: 450px;
-        margin: 400px 0;
+        // margin: 400px 0;
         background-color: transparent !important;
         padding: 20px;
         border-radius: 12px;

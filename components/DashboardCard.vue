@@ -52,7 +52,7 @@ export default {
          */
         refreshStoryList () {
             axios
-                .get(this.backendConfig.url + "story")
+                .get(this.backendConfig.url + "/stories")
                 .then((response) => {
                     this.storyList = response.data;
                 });
@@ -63,7 +63,7 @@ export default {
          * @returns {void}
          */
         createStory () {
-            this.setCurrentStory(null);
+            this.setCurrentStory({chapters: [], steps: []});
             this.setCurrentStoryId(null);
             this.setMode(constants.storyTellingModes.CREATE);
         },
@@ -75,7 +75,7 @@ export default {
          */
         onStorySelectedById (storyId) {
             this.setCurrentStoryId(storyId);
-            this.loadCurrentStory();
+            this.loadCurrentStory({mode: constants.storyTellingModes.PLAY});
         },
 
         /**
@@ -84,14 +84,8 @@ export default {
          * @returns {void}
          */
         onStoryEditById (storyId) {
-            this.storyConfURL = this.backendConfig.url + "story/" + storyId;
-            axios
-                .get(this.storyConfURL)
-                .then((response) => {
-                    this.setCurrentStory(response.data);
-                    this.setCurrentStoryId(storyId);
-                    this.setMode(constants.storyTellingModes.CREATE);
-                });
+            this.setCurrentStoryId(storyId);
+            this.loadCurrentStory({mode: constants.storyTellingModes.CREATE});
         },
 
         /**
@@ -116,7 +110,7 @@ export default {
              * @returns {void}
              */
             const deleteStory = () => {
-                this.storyConfURL = this.backendConfig.url + "story/" + storyId;
+                this.storyConfURL = this.backendConfig.url + "/stories/" + storyId;
 
                 axios
                     .delete(this.storyConfURL)
@@ -228,7 +222,7 @@ export default {
                                             cols="6"
                                         >
                                             <v-img
-                                                :src="backendConfig.url + 'image/' + item.titleImage"
+                                                :src="item.titleImage"
                                                 :alt="item.title"
                                                 max-width="200"
                                                 max-height="200"

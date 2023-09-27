@@ -5,6 +5,7 @@ import {getStepReference} from "../../utils/getReference";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
+import errorHandling from "../../utils/errorHandling";
 
 export default {
     name: "StoryForm",
@@ -15,15 +16,17 @@ export default {
             getStepReference,
             hasCover: false,
             minInterval: 0,
-            maxInterval: 59
+            maxInterval: 59,
+            notSaving: true
+
         };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters))
     },
     mounted () {
-        if (Object.hasOwn(this.storyConf, "titleImage") && this.storyConf.titleImage !== "") {
-            this.$refs.preview_image.src = URL.createObjectURL(this.storyConf.titleImage);
+        if (Object.hasOwn(this.currentStory, "titleImage") && this.currentStory.titleImage !== "") {
+            this.$refs.preview_image.src = this.currentStory.titleImage;
             this.hasCover = true;
         }
     },
@@ -39,55 +42,51 @@ export default {
         onCoverChange (event) {
             const file = event.target.files[0];
 
-            this.hasCover = true;
-
             this.$refs.preview_image.src = URL.createObjectURL(file);
-            this.storyConf.titleImage = file;
+            this.currentStory.titleImage = file;
+            this.hasCover = true;
         },
 
+
         /**
-         * Upload the created story files
+         * Save created or edited story to backend
          * @returns {void}
          */
-        async saveStoryToBackend () {
-            if (Object.hasOwn(this.storyConf, "storyId")) {
-                // const updateResponse = await this.updateStory();
-                console.log("Editing story is not implemented yet.");
-            }
-            else {
-                const uploadResponse = await this.uploadStoryFiles();
-
-
-                if (uploadResponse.toString().indexOf("Error") !== -1) {
-                    this.$root.snackB.show({
-                        message: this.$t(
-                            "additional:modules.tools.dataNarrator.warning.storyNotSaved"
-                        ), color: "red"
-                    });
-                }
-                else {
-                    this.$root.snackB.show({
-                        message: this.$t(
-                            "additional:modules.tools.dataNarrator.success.storyCreated"
-                        )
-                    });
-                    this.setStoryConf({...this.constants.emptyStoryConf});
-                    this.$emit("reset-tool");
-                }
-            }
+        saveStoryToBackend () {
+            this.notSaving = false;
+            this.uploadStoryFiles().then(() => {
+                this.notSaving = true;
+                this.$root.snackB.show({
+                    message: this.$t(
+                        "additional:modules.tools.dataNarrator.success.storyCreated"
+                    )
+                });
+                this.setCurrentStory(null);
+                this.$emit("reset-tool");
+            }).catch((error) => {
+                errorHandling(error);
+                this.$root.snackB.show({
+                    message: this.$t(
+                        "additional:modules.tools.dataNarrator.warning.storyNotSaved"
+                    ), color: "red"
+                });
+                this.notSaving = true;
+            });
         },
 
         getStoryInterval () {
-            return this.storyConf.storyInterval / 1000;
+            return this.currentStory.storyInterval / 1000;
         },
 
         setStoryInterval (event) {
-            this.storyConf.storyInterval = event.target.value * 1000;
+            this.currentStory.storyInterval = event.target.value * 1000;
         },
 
         changeScrollyMode (event) {
             // Reactive setter
-            this.storyConf.displayType = event.target.checked ? this.$set(this.storyConf, "displayType", "scrolly") : this.$set(this.storyConf, "displayType", "classic");
+            this.currentStory.displayType = event.target.checked ?
+                this.$set(this.currentStory, "displayType", "scrolly") :
+                this.$set(this.currentStory, "displayType", "classic");
         }
     }
 };
@@ -114,7 +113,7 @@ export default {
 
                 <input
                     id="title"
-                    v-model="storyConf.title"
+                    v-model="currentStory.title"
                     class="form-control"
                     type="text"
                     required
@@ -135,7 +134,7 @@ export default {
 
                 <textarea
                     id="description"
-                    v-model="storyConf.description"
+                    v-model="currentStory.description"
                     class="form-control"
                 />
             </div>
@@ -154,7 +153,7 @@ export default {
 
                 <input
                     id="author"
-                    v-model="storyConf.author"
+                    v-model="currentStory.author"
                     class="form-control"
                     type="text"
                 >
@@ -213,12 +212,15 @@ export default {
                     id="story-scrolly"
                     class="checkbox"
                     type="checkbox"
-                    :checked="storyConf?.displayType && storyConf.displayType === 'scrolly'"
+                    :checked="currentStory?.displayType === 'scrolly'"
                     @change="changeScrollyMode"
                 >
             </div>
 
-            <div class="form-group">
+            <div
+                v-if="currentStory?.displayType !== 'scrolly'"
+                class="form-group"
+            >
                 <label
                     class="form-label"
                     for="story-interval"
@@ -271,11 +273,11 @@ export default {
                     center-active
                     @change="
                         stepIndex =>
-                            $emit('editStep', storyConf.steps[stepIndex])
+                            $emit('editStep', currentStory.steps[stepIndex])
                     "
                 >
                     <v-slide-item
-                        v-for="step in storyConf.steps"
+                        v-for="step in currentStory.steps"
                         :key="
                             getStepReference(
                                 step.associatedChapter,
@@ -322,7 +324,19 @@ export default {
                 </v-slide-group>
             </div>
 
-            <div class="tool-dataNarrator-creator-actions">
+            <v-progress-linear
+                v-if="!notSaving"
+                indeterminate
+                height="10"
+                striped
+                rounded
+                color="lime"
+            />
+
+            <div
+                v-if="notSaving"
+                class="tool-dataNarrator-creator-actions"
+            >
                 <v-tooltip top>
                     <template #activator="{ on }">
                         <v-icon
@@ -344,8 +358,8 @@ export default {
                     <template #activator="{ on }">
                         <v-icon
                             class="mr-1"
-                            :disabled="!storyConf.steps || !storyConf.steps.length"
-                            @click=" $emit('openView', constants.storyCreationViews.PREVIEW)"
+                            :disabled="!currentStory.steps || !currentStory.steps.length"
+                            @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
                             v-on="on"
                         >
                             preview
@@ -361,7 +375,7 @@ export default {
                     <template #activator="{ on }">
                         <v-icon
                             class="mr-1"
-                            :disabled="!storyConf.steps || !storyConf.steps.length"
+                            :disabled="!currentStory.steps || !currentStory.steps.length"
                             @click="downloadStoryFiles"
                             v-on="on"
                         >
@@ -378,7 +392,7 @@ export default {
                     <template #activator="{ on }">
                         <v-icon
                             class="mr-1"
-                            :disabled="!storyConf.steps || !storyConf.steps.length"
+                            :disabled="!currentStory.steps || !currentStory.steps.length"
                             @click="saveStoryToBackend"
                             v-on="on"
                         >
@@ -393,7 +407,7 @@ export default {
                 </v-tooltip>
                 <p />
                 <v-alert
-                    v-show="!storyConf.steps || !storyConf.steps.length"
+                    v-show="!currentStory.steps || !currentStory.steps.length"
                     type="info"
                 >
                     {{

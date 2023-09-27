@@ -19,20 +19,11 @@ export default {
         return {
             constants,
             view: constants.storyCreationViews.STORY_CREATION,
-            stepToEdit: null
+            stepToEdit: {}
         };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters))
-    },
-    mounted () {
-        if (Object.hasOwn(this.storyConf, "storyId")) {
-            // console.log(this.storyConf);
-        }
-        else {
-            this.setStoryConf({...this.constants.emptyStoryConf});
-        }
-
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -71,9 +62,9 @@ export default {
 
         <StepForm
             v-if="view === constants.storyCreationViews.STEP_CREATION"
-            :is-editing="Boolean(stepToEdit)"
-            :initial-step="stepToEdit"
+            :edited-step="stepToEdit"
             @return="returnToStoryForm"
+            v-on="$listeners"
         />
 
         <div
@@ -106,9 +97,14 @@ export default {
     max-height: calc(72vh - 40px);
 
     &-header {
+        position: fixed;
         display: flex;
         align-items: center;
         justify-content: center;
+        width: var(--initialToolWidth);
+        @media (max-width: 767px) {
+            width: var(--initialToolWidthMobile);
+        }
 
         > button {
             position: absolute;
