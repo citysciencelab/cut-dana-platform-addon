@@ -189,7 +189,7 @@ export default {
                     </template>
                     <span>
                         {{
-                            $t("additional:modules.tools.dataNarrator.create")
+                            $t("additional:modules.tools.dataNarrator.label.importStory")
                         }}
                     </span>
                 </v-tooltip>
@@ -235,7 +235,7 @@ export default {
                 <ImportStory @closeImportForm="closeImportForm" />
             </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="!importForm">
             <v-item-group
                 id="tool-storyTellingTool-modeSelection"
             >

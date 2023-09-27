@@ -35,7 +35,8 @@
           "pitch": "Pitch",
           "autoPLay": "Autoplay",
           "on": "an",
-          "off": "aus"
+          "off": "aus",
+          "importStory": "Story importieren"
         },
         "creator": {
           "edit": "Bearbeiten",
@@ -57,7 +58,8 @@
           "sendNoSteps": "Story abschicken ist erst möglich sobald mindestens ein Schritt zur Story hinzugefügt wurde.",
           "sendNoHTML": "Das Absenden eines Unterkapitels ist erst möglich sobald Inhalt hinzugefügt wurde.",
           "storyNotSaved": "Ihre Story konnte nicht gespeichert werden.",
-          "noIntervalOnScrolly": "Scrollbare Stories können kein Autoplay Intervall haben."
+          "noIntervalOnScrolly": "Scrollbare Stories können kein Autoplay Intervall haben.",
+          "storyNotImported": "Die Story konnte nicht importiert werden."
         },
         "error": {
           "chapterNumberAlreadyExists": "Ein Kapitel mit dieser Nummer existiert bereits. Bitte wählen Sie eine andere Nummer.",

@@ -35,7 +35,8 @@
           "pitch": "Pitch",
           "autoPLay": "autoplay",
           "on": "on",
-          "off": "off"
+          "off": "off",
+          "importStory": "Import Story"
         },
         "creator": {
           "edit": "Edit",
@@ -57,7 +58,8 @@
           "sendNoSteps": "Submitting a story is only possible once at least one step has been added to the story.",
           "sendNoHTML": "Submitting a step is only possible if you have added content.",
           "storyNotSaved": "Your story could not be saved.",
-          "noIntervalOnScrolly": "Scrollable stories can't have an autoplay interval."
+          "noIntervalOnScrolly": "Scrollable stories can't have an autoplay interval.",
+          "storyNotImported": "Your story could not be imported."
         },
         "error": {
           "chapterNumberAlreadyExists": "A chapter with this number already exists. Please try out a different number.",
