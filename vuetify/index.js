@@ -1,12 +1,18 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
+import { HomeIcon } from "@heroicons/vue/outline"
 
 Vue.use(Vuetify);
 
 const opts = {
     icons: {
-        iconfont: "md"
+        iconfont: "md",
+        values: {
+            home: {
+                component: HomeIcon,
+            }
+        }
     },
     theme: {
         themes: {
