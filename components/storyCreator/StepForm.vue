@@ -9,12 +9,16 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import uuid from "uuid";
+import { rawLayerList } from "@masterportal/masterportalapi";
+
 
 export default {
     name: "StepForm",
+
     components: {
-        VueEditor
+        VueEditor,
     },
+
     props: {
         // The initial values for a step to edit
         editedStep: {
@@ -119,6 +123,17 @@ export default {
          * @returns {Object[]} layers including id and name
          */
         layerOptions () {
+
+            const lL = rawLayerList.getLayerList();
+
+            lL.forEach(layer => {
+                // add layer to 
+                if (layer.typ === "WMS") {
+                    console.log(layer, layer.typ);
+                    // Radio.trigger("Parser", "addLayer", layer)
+                }
+            })
+
             const layerList = Radio.request(
                 "ModelList",
                 "getModelsByAttributes",
@@ -657,6 +672,7 @@ export default {
                             @click="step.navigation3D.cameraPosition = get3DMapCenter()['cameraPosition']"
                         >
                             <v-icon>add_circle</v-icon>
+                            <!-- <PlusCircle class=""></PlusCircle> -->
                         </button>
                         <button
                             type="button"
@@ -835,14 +851,20 @@ export default {
                             class="btn"
                             @click="step.centerCoordinate = center()"
                         >
-                            <v-icon>add_circle</v-icon>
+                            <!-- <v-icon>add_circle</v-icon> -->
+                            <svg xmlns="http://www.w3.org/2000/svg"  id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </button>
                         <button
                             type="button"
                             class="btn"
                             @click="step.centerCoordinate = null"
                         >
-                            <v-icon>backspace</v-icon>
+                            <!-- <v-icon>backspace</v-icon> -->
+                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -888,18 +910,24 @@ export default {
 
                     <div class="input-group">
                         <button
-                            type="button"
+                        type="button"
                             class="btn"
                             @click="step.zoomLevel = zoom()"
                         >
-                            <v-icon>add_circle</v-icon>
+                            <!-- <v-icon>add_circle</v-icon> -->
+                            <svg xmlns="http://www.w3.org/2000/svg"  id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </button>
                         <button
-                            type="button"
+                        type="button"
                             class="btn"
                             @click="step.zoomLevel = null"
                         >
-                            <v-icon>backspace</v-icon>
+                            <!-- <v-icon>backspace</v-icon> -->
+                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -993,14 +1021,17 @@ export default {
             <div class="tool-dataNarrator-creator-actions">
                 <v-tooltip top>
                     <template #activator="{ on }">
-                        <v-icon
+                        <span
                             id="reset-button"
                             class="mr-1"
                             @click="$emit('return')"
                             v-on="on"
                         >
-                            cancel
-                        </v-icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </span>
+
                     </template>
                     <span>
                         {{
@@ -1011,14 +1042,16 @@ export default {
 
                 <v-tooltip top>
                     <template #activator="{ on }">
-                        <v-icon
+                        <span
                             id="delete-button"
                             class="mr-1"
                             @click="onDeleteStep"
                             v-on="on"
                         >
-                            delete
-                        </v-icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </span>
                     </template>
                     <span>
                         {{
@@ -1028,15 +1061,19 @@ export default {
                 </v-tooltip>
                 <v-tooltip top>
                     <template #activator="{ on }">
-                        <v-icon
+
+                        <span
                             id="save-button"
                             class="mr-1"
                             :disabled="!isValid"
                             @click="onSubmit"
                             v-on="on"
                         >
-                            save
-                        </v-icon>
+                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </span>
+                        
                     </template>
                     <span>
                         {{
@@ -1061,6 +1098,11 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+
+#heroicon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
 #tool-dataNarrator-creator-stepForm {
     max-width: 460px;
 
