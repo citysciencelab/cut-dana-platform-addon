@@ -50,7 +50,8 @@
         "success": {
           "storyCreated": "Story erfolgreich erstellt.",
           "storyDeleted": " Story gelöscht.",
-          "storyShared": "Die Story-URL wurde in den Puffer kopiert."
+          "storyShared": "Die Story-URL wurde in den Puffer kopiert.",
+          "storyImported": "Die Story wurde erfolgreich importiert."
         },
         "warning": {
           "mapMoved": "Die eingetragene Position entspricht nicht der aktuellen Ansicht der Karte.",

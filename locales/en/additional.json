@@ -50,7 +50,8 @@
         "success": {
           "storyCreated": "Story created.",
           "storyDeleted": "Story deleted.",
-          "storyShared": "Story URL was copied into buffer."
+          "storyShared": "Story URL was copied into buffer.",
+          "storyImported": "Story imported."
         },
         "warning": {
           "mapMoved": "The entered position doesn't match the current map view.",

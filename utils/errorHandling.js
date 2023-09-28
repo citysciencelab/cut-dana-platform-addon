@@ -20,7 +20,7 @@ export default function errorHandling (error) {
     }
     else {
         // Something happened in setting up the request that triggered an Error
-        console.error("Error", error.message);
+        console.error("Error", error);
     }
     console.error(error.config);
 }
