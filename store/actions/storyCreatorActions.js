@@ -5,6 +5,7 @@ import uuid from "uuid";
 
 import {getHTMLContentReference} from "../../utils/getReference.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
+import dataURLtoFile from "../../utils/dataURLtoFile.js";
 
 
 /**
@@ -176,7 +177,7 @@ function downloadStoryFiles ({state}) {
                 );
 
                 // Replace the image src in the HTML with a relative path to the image
-                html = html.replace(image.dataUrl, `assets/${imageFilePath}`);
+                html = html.replace(image.dataUrl, imageFilePath);
             }
 
             // Update HTML file name in the storyConf
@@ -205,54 +206,15 @@ function downloadStoryFiles ({state}) {
 }
 
 /**
- * Parses a step reference to an array with the major and minor step
- * @param {String} stepReference the step reference to parse
- * @returns {Integer[]} array with major and minor step "step_1-2" => [1, 2]
- */
-function parseStepReference (stepReference) {
-    const step = stepReference.split("_")[1].split("-");
-
-    return [parseInt(step[0], 10), parseInt(step[1], 10)];
-}
-
-/**
- * Converts a base64 string to a file
- * @param {String} dataurl base64 string
- * @param {String} filename the name of the file
- * @returns {File} the file
- */
-function dataURLtoFile (dataurl, filename) {
-    const arr = dataurl.split(","),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]);
-    let n = bstr.length;
-
-    /* eslint-disable one-var */
-    // It depends on previous code, so it's not possible to move it to the top
-    const u8arr = new Uint8Array(n);
-    /* eslint-enable */
-
-    while (n) {
-        u8arr[n - 1] = bstr.charCodeAt(n - 1);
-        n -= 1; // to make eslint happy
-    }
-    return new File([u8arr], filename, {type: mime});
-}
-
-/**
  * Uploads an image to the backend
- * @param {String} backendUrl the url of the backend
- * @param {String} image_dataURL the image as base64 string
- * @param {String} stepReference the step reference for the query url
- * @param {Number} storyID the id of the story
- * @param {String} imageID the id of the image
+ * @param {String} pathPrefix the url of the backend and story
+ * @param {Object} image object with image data
  * @returns {Promise} returns a promise that resolves when the image is uploaded
  */
-function postStoryImage (backendUrl, image_dataURL, stepReference, storyID, imageID) {
-    const step = parseStepReference(stepReference),
-        query_url = backendUrl + "/images/" + storyID + "/" + step[0] + "/" + step[1] + "/" + imageID,
+function postStoryImage (pathPrefix, image) {
+    const query_url = `${pathPrefix}${image.associatedChapter}/${image.stepNumber}/${image.imageId}`,
         // generate file from base64 string
-        file = dataURLtoFile(image_dataURL),
+        file = dataURLtoFile(image.dataUrl),
         // put file into form data
         data = new FormData(),
         config = {
@@ -272,28 +234,36 @@ function postStoryImage (backendUrl, image_dataURL, stepReference, storyID, imag
  * @returns {Array} returns the updated steps
  */
 function prepareHtml (story, images) {
-    const imageArray = [];
+    const imageArray = [],
+        htmlArray = [];
 
     story.steps = story.steps.map((step) => {
-        let html = step.html;
+        const html = step.html;
 
         if (Object.hasOwn(images, step._id) && images[step._id]?.length > 0) {
-            const stepRef = getHTMLContentReference(step.associatedChapter, step.stepNumber);
 
             for (const image of images[step._id]) {
                 const imageId = new Date().valueOf() + "_" + uuid.v4();
 
-                image.imageId = imageId;
-                image.stepRef = stepRef;
-                imageArray.push(image);
-                html = html.replaceAll(image.dataUrl, imageId);
+                imageArray.push({
+                    ...image,
+                    imageId: imageId,
+                    associatedChapter: step.associatedChapter,
+                    stepNumber: step.stepNumber
+                });
+
+                htmlArray.push({
+                    html: html.replaceAll(image.dataUrl, imageId),
+                    associatedChapter: step.associatedChapter,
+                    stepNumber: step.stepNumber
+                });
             }
         }
-        step.html = html;
+        delete step.html;
         delete step._id;
         return step;
     });
-    return [story, imageArray];
+    return [story, imageArray, htmlArray];
 }
 
 
@@ -308,7 +278,7 @@ function uploadStoryFiles ({state}) {
     const backendUrl = state.backendConfig.url,
         requestConf = {url: backendUrl + "/stories"},
 
-        [story, imageArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages);
+        [story, imageArray, htmlArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages);
 
     // If it's string, than it was uploaded previously and we have to keep it
     // otherwise, new titleImage should be uploaded
@@ -317,7 +287,8 @@ function uploadStoryFiles ({state}) {
     }
 
     requestConf.data = story;
-    let storyId = state.currentStoryId;
+    let storyId = state.currentStoryId,
+        imagePathPrefix = `${backendUrl}/images/`;
 
     if (storyId) {
         requestConf.url += "/" + storyId;
@@ -331,21 +302,38 @@ function uploadStoryFiles ({state}) {
     return axios(requestConf).then((response) => {
         // Save entire story
         storyId ||= response.data.storyId;
+        imagePathPrefix += storyId + "/";
     }).then(() => {
         // Upload and replace images in story
         const imageUploads = imageArray.map((image) => {
-            // Images in steps
-            return postStoryImage(backendUrl, image.dataUrl, image.stepRef, storyId, image.imageId);
+            return postStoryImage(imagePathPrefix, image);
         });
 
         if (state.currentStory.titleImage && typeof state.currentStory.titleImage !== "string") {
             const imageId = new Date().valueOf() + "_" + uuid.v4();
 
             getDataUrlFromFile(state.currentStory.titleImage).then((dataUrl) => {
-                imageUploads.push(postStoryImage(backendUrl, dataUrl, "step_0-0", storyId, imageId));
+                const image = {
+                    dataUrl: dataUrl,
+                    imageId: imageId,
+                    associatedChapter: 0,
+                    stepNumber: 0
+                };
+
+                imageUploads.push(postStoryImage(imagePathPrefix, image));
             });
         }
         return Promise.all(imageUploads);
+    }).then(() => {
+        // Upload html parts
+        const pathPrefix = `${backendUrl}/stories/${storyId}/`,
+            htmlUploads = htmlArray.map((element) => {
+                const query_url = `${pathPrefix}${element.associatedChapter}/${element.stepNumber}/html`;
+
+                return axios.patch(query_url, {html: element.html});
+            });
+
+        return Promise.all(htmlUploads);
     });
 }
 

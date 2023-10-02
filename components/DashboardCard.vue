@@ -5,13 +5,18 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 import mutations from "../store/mutationsDataNarrator";
 import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
+import ImportStory from "./storyCreator/ImportStory.vue";
 
 export default {
     name: "DashboardCard",
+    components: {
+        ImportStory
+    },
     data () {
         return {
             constants,
-            storyList: {}
+            storyList: {},
+            importForm: false
         };
     },
     computed: {
@@ -131,6 +136,10 @@ export default {
             };
 
             this.$emit("confirm", "deleteStory", deleteStory);
+        },
+
+        closeImportForm () {
+            this.importForm = false;
         }
     }
 };
@@ -142,13 +151,13 @@ export default {
             <v-col
                 id="title-element"
                 class="text-h5"
-                cols="9"
+                cols="8"
             >
                 {{
                     $t("additional:modules.tools.dataNarrator.dashboardView.title")
                 }}
             </v-col>
-            <v-col cols="3">
+            <v-col cols="4">
                 <v-tooltip left>
                     <template #activator="{ on }">
                         <v-icon
@@ -163,6 +172,24 @@ export default {
                     <span>
                         {{
                             $t("additional:modules.tools.dataNarrator.create")
+                        }}
+                    </span>
+                </v-tooltip>
+
+                <v-tooltip left>
+                    <template #activator="{ on }">
+                        <v-icon
+                            id="import-button"
+                            class="mr-1"
+                            @click="importForm = true"
+                            v-on="on"
+                        >
+                            exit_to_app
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.label.importStory")
                         }}
                     </span>
                 </v-tooltip>
@@ -203,7 +230,12 @@ export default {
                 </v-tooltip>
             </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="importForm">
+            <v-col cols="12">
+                <ImportStory @closeImportForm="closeImportForm" />
+            </v-col>
+        </v-row>
+        <v-row v-if="!importForm">
             <v-item-group
                 id="tool-storyTellingTool-modeSelection"
             >
