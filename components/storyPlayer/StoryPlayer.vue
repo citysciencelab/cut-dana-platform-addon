@@ -11,14 +11,16 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {EventEmitter} from "../../utils/EventEmitter";
+import TOCMenu from "./TOCMenu.vue";
 
 export default {
     name: "StoryPlayer",
     components: {
         ClassicPlayer,
         ScrollyTeller,
-        StoryNavigation
+        StoryNavigation,
         // DipasPlayer
+        TOCMenu
     },
     props: {
         // Whether the story player is in preview mode or not
@@ -459,6 +461,7 @@ export default {
         v-else
         id="tool-dataNarrator-tableOfContents"
     >
+        <!-- <TOCMenu :current-step-index="currentStepIndex"/> -->
         <h1>{{ currentStory.title }}</h1>
 
         <h2>
@@ -468,6 +471,7 @@ export default {
         </h2>
 
         <ol class="tableOfContents">
+
             <li
                 v-for="chapter in currentStory.chapters"
                 :key="'chapter_'+chapter.chapterNumber"
