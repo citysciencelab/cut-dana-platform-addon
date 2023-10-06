@@ -10,6 +10,13 @@ import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import uuid from "uuid";
 import { rawLayerList } from "@masterportal/masterportalapi";
+import {
+    mdiCancel,
+    mdiTrashCanOutline,
+    mdiCheck,
+    mdiPinOutline,
+    mdiBackspaceOutline
+  } from '@mdi/js'
 
 
 export default {
@@ -54,6 +61,13 @@ export default {
                 ],
                 heading: null,
                 pitch: null
+            },
+            icons: {
+                mdiCancel,
+                mdiTrashCanOutline,
+                mdiCheck,
+                mdiPinOutline,
+                mdiBackspaceOutline
             }
         };
     },
@@ -671,8 +685,7 @@ export default {
                             class="btn"
                             @click="step.navigation3D.cameraPosition = get3DMapCenter()['cameraPosition']"
                         >
-                            <v-icon>add_circle</v-icon>
-                            <!-- <PlusCircle class=""></PlusCircle> -->
+                            <v-icon>{{ icons.mdiPinOutline }}</v-icon>
                         </button>
                         <button
                             type="button"
@@ -728,7 +741,7 @@ export default {
                             class="btn"
                             @click="step.navigation3D.heading = get3DMapCenter()['heading']"
                         >
-                            <v-icon>add_circle</v-icon>
+                        <v-icon>{{ icons.mdiPinOutline }}</v-icon>
                         </button>
                         <button
                             type="button"
@@ -845,28 +858,41 @@ export default {
                         readonly
                     >
 
-                    <div class="input-group">
-                        <button
-                            type="button"
-                            class="btn"
-                            @click="step.centerCoordinate = center()"
-                        >
-                            <!-- <v-icon>add_circle</v-icon> -->
-                            <svg xmlns="http://www.w3.org/2000/svg"  id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </button>
-                        <button
-                            type="button"
-                            class="btn"
-                            @click="step.centerCoordinate = null"
-                        >
-                            <!-- <v-icon>backspace</v-icon> -->
-                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
-                            </svg>
-                        </button>
+                    <div class="input-group d-flex justify-content-center">
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+                                <v-icon
+                                    class="ml-2 mr-1"
+                                    v-on="on"
+                                    @click="step.centerCoordinate = center()"
+                                >
+                                    {{ icons.mdiPinOutline }}
+                                </v-icon>
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.share")
+                                }}
+                            </span>
+                        </v-tooltip>
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+                                <v-icon
+                                    class="ml-2 mr-1"
+                                    v-on="on"
+                                    @click="step.centerCoordinate = null"
+                                >
+                                {{ icons.mdiBackspaceOutline }}
+                                </v-icon>
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.share")
+                                }}
+                            </span>
+                        </v-tooltip>
                     </div>
+
                 </div>
                 <p
                     v-if="
@@ -908,27 +934,39 @@ export default {
                         readonly
                     >
 
-                    <div class="input-group">
-                        <button
-                        type="button"
-                            class="btn"
-                            @click="step.zoomLevel = zoom()"
-                        >
-                            <!-- <v-icon>add_circle</v-icon> -->
-                            <svg xmlns="http://www.w3.org/2000/svg"  id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </button>
-                        <button
-                        type="button"
-                            class="btn"
-                            @click="step.zoomLevel = null"
-                        >
-                            <!-- <v-icon>backspace</v-icon> -->
-                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
-                            </svg>
-                        </button>
+                    <div class="input-group d-flex justify-content-center">
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+                                <v-icon
+                                    class="ml-2 mr-1"
+                                    v-on="on"
+                                    @click="step.zoomLevel = zoom()"
+                                >
+                                {{ icons.mdiPinOutline }}
+                                </v-icon>
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.share")
+                                }}
+                            </span>
+                        </v-tooltip>
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+                                <v-icon
+                                    class="ml-2 mr-1"
+                                    v-on="on"
+                                    @click="step.zoomLevel = null"
+                                >
+                                {{ icons.mdiBackspaceOutline }}
+                                </v-icon>
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.share")
+                                }}
+                            </span>
+                        </v-tooltip>
                     </div>
                 </div>
                 <p
@@ -1027,9 +1065,8 @@ export default {
                             @click="$emit('return')"
                             v-on="on"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <v-icon>{{ icons.mdiCancel }}</v-icon>
+
                         </span>
 
                     </template>
@@ -1048,9 +1085,7 @@ export default {
                             @click="onDeleteStep"
                             v-on="on"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
+                        <v-icon>{{ icons.mdiTrashCanOutline }}</v-icon>
                         </span>
                     </template>
                     <span>
@@ -1069,9 +1104,8 @@ export default {
                             @click="onSubmit"
                             v-on="on"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" id="heroicon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
+                        <v-icon>{{icons.mdiCheck}}</v-icon>
+
                         </span>
                         
                     </template>

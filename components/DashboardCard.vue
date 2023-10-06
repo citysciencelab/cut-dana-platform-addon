@@ -10,7 +10,7 @@ import {
     mdiAccount,
     mdiPencil,
     mdiShareVariant,
-    mdiDelete,
+    mdiTrashCanOutline,
   } from '@mdi/js'
 
 export default {
@@ -24,7 +24,7 @@ export default {
                 mdiAccount,
                 mdiPencil,
                 mdiShareVariant,
-                mdiDelete,
+                mdiDelete: mdiTrashCanOutline,
             },
             constants,
             storyList: {},
