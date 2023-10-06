@@ -241,10 +241,11 @@ export default {
             >
                 <v-col
                     v-for="(item, i) in storyList"
-                    :key="i"
-                    cols="12"
+                    :key="item._id"
+                    :cols="12"
+                    :class="i !== storyList.length - 1 ? 'mb-1' : ''" class="pa-2"
                 >
-                    <v-item v-slot="{ toggle }">
+                    <v-item v-slot="{ toggle }" >
                         <v-card>
                             <div class="d-flex flex-no-wrap justify-space-between">
                                 <div>
