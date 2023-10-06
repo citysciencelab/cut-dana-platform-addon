@@ -78,7 +78,6 @@ export default {
         },
 
         progress() {
-            console.log(this.currentStepIndex, this.currentStory.steps);
             return (this.currentStepIndex + 1) / this.currentStory.steps.length * 100;
         }
     },

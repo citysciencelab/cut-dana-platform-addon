@@ -4,6 +4,8 @@ import {getStepReference} from "../../utils/getReference";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
+import { mdiChevronLeft, mdiChevronRight } from "@mdi/js";
+import { SensorThingsHttp } from "../../../../../src/utils/sensorThingsHttp";
 
 export default {
     name: "StoryNavigation",
@@ -30,11 +32,37 @@ export default {
     },
     data () {
         return {
+            icons: {
+                mdiChevronLeft,
+                mdiChevronRight
+            },
             getStepReference
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+
+        /**
+         * Get the amount of steps in the current chapter
+         * @returns {number}
+         */
+        currentChapterStepCount () {
+            return this.steps.filter(
+                step => step.associatedChapter === this.currentChapter
+            ).length;
+        },
+
+        /**
+         * get current step index in the current chapter
+         * @returns {number}
+         */
+        currentChapterStepIndex () {
+            // Get all steps before the current step that are not in the current chapter
+            const previousStepsNotInCurrentChapter =  this.steps.filter(step => step.associatedChapter < this.currentChapter);
+            
+            // Return the number of steps in the chapter up to and including the current step
+            return this.currentStepIndex - previousStepsNotInCurrentChapter.length;
+        }
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -72,24 +100,8 @@ export default {
 </script>
 
 <template lang="html">
-    <div id="tool-dataNarrator-navigation">
-        <v-btn
-            class="story-navigation-button"
-            :disabled="currentStepIndex <= 0"
-            depressed
-            rounded
-            @click="selectPreviousStep"
-        >
-            <v-icon>arrow_left</v-icon>
-        </v-btn>
-
-        <v-slide-group
-            :value="currentStepIndex + 1"
-            show-arrows
-            center-active
-            @change="index => $emit('change', index > 0 ? index - 1 : null)"
-        >
-            <v-slide-item>
+    <div id="tool-dataNarrator-navigation" class="d-flex justify-content-between">
+        <v-slide-item>
                 <v-btn
                     class="story-navigation-step-button"
                     depressed
@@ -98,68 +110,35 @@ export default {
                 >
                     <v-icon>list</v-icon>
                 </v-btn>
-            </v-slide-item>
+        </v-slide-item>
 
-            <v-slide-item>
-                <v-btn
-                    class="story-navigation-step-button"
-                    depressed
-                    rounded
-                    @click="$parent.$emit('share-story', currentStoryId, currentStepIndex)"
-                >
-                    <v-icon>share</v-icon>
-                </v-btn>
-            </v-slide-item>
-
-            <v-slide-item
-                v-for="(step, stepIndex) in steps"
-                :key="getStepReference(step.associatedChapter, step.stepNumber)"
-                v-slot="{ active, toggle }"
-                :value="stepIndex + 1"
+        <div class="d-flex">
+            <v-btn
+                class="story-navigation-button"
+                :disabled="currentStepIndex <= 0"
+                depressed
+                rounded
+                icon
+                @click="selectPreviousStep"
             >
-                <v-btn
-                    :input-value="active"
-                    class="story-navigation-step-button"
-                    active-class="primary white--text"
-                    :class="{
-                        currentChapter:
-                            step.associatedChapter === currentChapter,
-                        hidden:
-                            step.associatedChapter !== currentChapter &&
-                            step.stepNumber !== 1
-                    }"
-                    depressed
-                    rounded
-                    @click="toggle"
-                >
-                    <template v-if="step.associatedChapter === currentChapter">
-                        <span>
-                            {{
-                                getStepReference(
-                                    step.associatedChapter,
-                                    step.stepNumber
-                                )
-                            }}
-                        </span>
-                    </template>
-                    <template v-else>
-                        <span>
-                            {{ step.associatedChapter }}
-                        </span>
-                    </template>
-                </v-btn>
-            </v-slide-item>
-        </v-slide-group>
+                <v-icon>{{ icons.mdiChevronLeft }}</v-icon>
+            </v-btn>
+            <!-- show the current step index from the current chapter -->
+            <div class="d-flex justify-content-center align-items-center">
+                {{ currentChapterStepIndex + 1 }} / {{ currentChapterStepCount }}
+            </div>
+            <v-btn
+                class="story-navigation-button"
+                :disabled="currentStepIndex >= steps.length - 1"
+                depressed
+                rounded
+                icon
+                @click="selectNextStep"
+            >
+                <v-icon>{{ icons.mdiChevronRight }}</v-icon>
+            </v-btn>
+        </div>
 
-        <v-btn
-            class="story-navigation-button"
-            :disabled="currentStepIndex >= steps.length - 1"
-            depressed
-            rounded
-            @click="selectNextStep"
-        >
-            <v-icon>arrow_right</v-icon>
-        </v-btn>
     </div>
 </template>
 

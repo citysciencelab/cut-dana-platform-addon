@@ -255,7 +255,7 @@ export default {
                     v-for="(item, i) in storyList"
                     :key="item._id"
                     :cols="12"
-                    :class="i !== storyList.length - 1 ? 'mb-1' : ''" class="pa-2"
+                    :class="i !== storyList.length - 1 ? '' : ''" class="py-2"
                     elevation="2"
                 >
                     <v-item v-slot="{ toggle }" >

@@ -121,7 +121,7 @@ export default {
             class="stepper"
             :class="{ active: index === currentIndex}"
         >
-            <StoryMenu :initial-auto-play="currentStory.storyInterval !== null" />
+            <StoryMenu :initial-auto-play="currentStory.storyInterval !== null" :current-step-index="currentStepIndex" />
             <h1 v-if="step.title">
                 {{ step.title }}
             </h1>

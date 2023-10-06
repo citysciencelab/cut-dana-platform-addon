@@ -11,7 +11,12 @@ export default {
         initialAutoPlay: {
             type: Boolean,
             default: false
+        },
+        currentStepIndex: {
+            type: Number,
+            default: 0
         }
+        
     },
     data () {
         return {
@@ -84,6 +89,21 @@ export default {
                     </span>
                 </v-tooltip>
             </span>
+        </span>
+        <span
+            role="button"
+            tabindex="0"
+            @click="$parent.$parent.$emit('share-story', currentStoryId, currentStepIndex)"
+        >
+            <v-tooltip left>
+                <template #activator="{ on, attrs }">
+                    <v-icon
+                        v-bind="attrs"
+                        v-on="on"
+                    >share</v-icon>
+                </template>
+                <span>share</span>
+            </v-tooltip>
         </span>
         <span
             role="button"

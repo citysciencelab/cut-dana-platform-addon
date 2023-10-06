@@ -449,7 +449,7 @@ export default {
 </script>
 
 <template lang="html">
-    <div id="tool-dataNarrator-creator-stepForm">
+    <div id="tool-dataNarrator-creator-stepForm" class="mb-8">
         <h4>
             {{
                 $t("additional:modules.tools.dataNarrator.createStoryStep")
@@ -1056,69 +1056,104 @@ export default {
                 </div>
             </div>
 
-            <div class="tool-dataNarrator-creator-actions">
-                <v-tooltip top>
-                    <template #activator="{ on }">
-                        <span
-                            id="reset-button"
-                            class="mr-1"
-                            @click="$emit('return')"
-                            v-on="on"
-                        >
-                            <v-icon>{{ icons.mdiCancel }}</v-icon>
+            <v-footer
+                class="tool-dataNarrator-creator-actions"
+                :padless="true"
+            >
+                <v-card
+                    flat
+                    tile
+                    width="100%"
+                    class="lighten-1 text-center"
+                >
+                    <v-card-text>
+                                        
+                        <v-tooltip top>
+                            <template #activator="{ on }">
 
-                        </span>
+                                <span
+                                    id="cancel-button"
+                                    class="mr-1"
+                                    @click="$emit('return')"
+                                    v-on="on"
+                                >
+                                <v-btn
+                                    class=""
+                                    icon
+                                >
+                                    <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
+                                </v-btn>
 
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.button.cancel")
-                        }}
-                    </span>
-                </v-tooltip>
+                                </span>
+                                
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.cancel")
+                                }}
+                            </span>
+                        </v-tooltip>
+                        <v-tooltip top>
+                            <template #activator="{ on }">
 
-                <v-tooltip top>
-                    <template #activator="{ on }">
-                        <span
-                            id="delete-button"
-                            class="mr-1"
-                            @click="onDeleteStep"
-                            v-on="on"
-                        >
-                        <v-icon>{{ icons.mdiTrashCanOutline }}</v-icon>
-                        </span>
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.button.deleteStep")
-                        }}
-                    </span>
-                </v-tooltip>
-                <v-tooltip top>
-                    <template #activator="{ on }">
+                                <span
+                                    id="delete-button"
+                                    class="mr-1"
+                                    @click="onDeleteStep"
+                                    v-on="on"
+                                >
+                                <v-btn
+                                    class=""
+                                    icon
+                                >
+                                    <v-icon size="24px">{{ icons.mdiTrashCanOutline }}</v-icon>
+                                </v-btn>
 
-                        <span
-                            id="save-button"
-                            class="mr-1"
-                            :disabled="!isValid"
-                            @click="onSubmit"
-                            v-on="on"
-                        >
-                        <v-icon>{{icons.mdiCheck}}</v-icon>
+                                </span>
+                                
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.deleteStep")
+                                }}
+                            </span>
+                        </v-tooltip>
+                        <v-tooltip top>
+                            <template #activator="{ on }">
 
-                        </span>
-                        
-                    </template>
-                    <span>
-                        {{
-                            $t(editedStep
-                                ? "additional:modules.tools.dataNarrator.button.submitEditStep"
-                                : "additional:modules.tools.dataNarrator.button.submitAddStep")
-                        }}
-                    </span>
-                </v-tooltip>
-            </div>
-            <p />
+                                <span
+                                    id="save-button"
+                                    class="mr-1"
+                                    :disabled="!isValid"
+                                    @click="onSubmit"
+                                    v-on="on"
+                                >
+                                <v-btn
+                                    class=""
+                                    icon
+                                >
+
+                                    <v-icon size="24px">{{icons.mdiCheck}}</v-icon>
+                                </v-btn>
+
+                                </span>
+                                
+                            </template>
+                            <span>
+                                {{
+                                    $t(editedStep
+                                        ? "additional:modules.tools.dataNarrator.button.submitEditStep"
+                                        : "additional:modules.tools.dataNarrator.button.submitAddStep")
+                                }}
+                            </span>
+                        </v-tooltip>
+
+
+
+                    </v-card-text>
+
+                </v-card>
+            </v-footer>
             <v-alert
                 v-show="!isValid"
                 type="info"
