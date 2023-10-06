@@ -72,8 +72,14 @@ export default {
                 )
             );
         },
+
         stepsCopy () {
             return {...this.currentStory.steps};
+        },
+
+        progress() {
+            console.log(this.currentStepIndex, this.currentStory.steps);
+            return (this.currentStepIndex + 1) / this.currentStory.steps.length * 100;
         }
     },
     watch: {
@@ -421,6 +427,7 @@ export default {
         v-if="currentStory !== undefined && currentStory.steps && currentStep"
         id="tool-dataNarrator-player"
     >
+        <v-progress-linear :value="progress" ></v-progress-linear>
         <ScrollyTeller
             v-if="showMode === 'scrolly'"
             :current-step-index="currentStepIndex"
