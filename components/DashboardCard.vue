@@ -244,10 +244,11 @@ export default {
                     :key="item._id"
                     :cols="12"
                     :class="i !== storyList.length - 1 ? 'mb-1' : ''" class="pa-2"
+                    elevation="2"
                 >
                     <v-item v-slot="{ toggle }" >
                         <v-card>
-                            <div class="d-flex flex-no-wrap justify-space-between">
+                            <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
                                 <div>
                                     <div class="row">
                                         <v-col
