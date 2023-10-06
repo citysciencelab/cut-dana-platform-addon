@@ -6,6 +6,12 @@ import mutations from "../store/mutationsDataNarrator";
 import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import ImportStory from "./storyCreator/ImportStory.vue";
+import {
+    mdiAccount,
+    mdiPencil,
+    mdiShareVariant,
+    mdiDelete,
+  } from '@mdi/js'
 
 export default {
     name: "DashboardCard",
@@ -14,6 +20,12 @@ export default {
     },
     data () {
         return {
+            icons: {
+                mdiAccount,
+                mdiPencil,
+                mdiShareVariant,
+                mdiDelete,
+            },
             constants,
             storyList: {},
             importForm: false
@@ -330,7 +342,7 @@ export default {
                                                         v-on="on"
                                                         @click="onStoryEditById(item._id), toggle()"
                                                     >
-                                                        edit_note
+                                                        {{ icons.mdiPencil }}
                                                     </v-icon>
                                                 </template>
                                                 <span>
@@ -347,7 +359,7 @@ export default {
                                                         v-on="on"
                                                         @click="onStoryDeleteById(item._id), toggle()"
                                                     >
-                                                        playlist_remove
+                                                        {{ icons.mdiDelete }}
                                                     </v-icon>
                                                 </template>
                                                 <span>
