@@ -101,16 +101,27 @@ export default {
 
 <template lang="html">
     <div id="tool-dataNarrator-navigation" class="d-flex justify-content-between">
-        <v-slide-item>
-                <v-btn
-                    class="story-navigation-step-button"
-                    depressed
-                    rounded
-                    @click="$emit('change', null)"
-                >
-                    <v-icon>list</v-icon>
-                </v-btn>
-        </v-slide-item>
+        <!-- <v-btn
+            class="story-navigation-step-button"
+            depressed
+            rounded
+            @click="$emit('change', null)"
+        >
+            <v-icon>list</v-icon>
+        </v-btn> -->
+        <div class="d-flex align-items-center">
+            <v-btn
+                small
+                depressed
+                @click="$emit('change', null)"
+            >
+                <v-icon left>
+                    list
+                </v-icon>
+                Table of contents
+            </v-btn>
+        </div>
+
 
         <div class="d-flex">
             <v-btn
