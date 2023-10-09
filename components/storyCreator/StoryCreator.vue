@@ -96,15 +96,16 @@ export default {
     grid-gap: 20px;
     max-height: calc(72vh - 40px);
 
+    
+
     &-header {
-        position: fixed;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: var(--initialToolWidth);
-        @media (max-width: 767px) {
-            width: var(--initialToolWidthMobile);
-        }
+        // width: var(--initialToolWidth);
+        // @media (max-width: 767px) {
+        //     width: var(--initialToolWidthMobile);
+        // }
 
         > button {
             position: absolute;
