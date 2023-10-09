@@ -10,8 +10,8 @@ import {
     mdiAccount,
     mdiPencil,
     mdiShareVariant,
-    mdiTrashCanOutline,
-  } from '@mdi/js'
+    mdiTrashCanOutline
+} from "@mdi/js";
 
 export default {
     name: "DashboardCard",
@@ -24,7 +24,7 @@ export default {
                 mdiAccount,
                 mdiPencil,
                 mdiShareVariant,
-                mdiDelete: mdiTrashCanOutline,
+                mdiDelete: mdiTrashCanOutline
             },
             constants,
             storyList: {},
@@ -80,7 +80,10 @@ export default {
          * @returns {void}
          */
         createStory () {
-            this.setCurrentStory({chapters: [], steps: [], displayType: "classic"});
+            this.setCurrentStory({
+                ...constants.emptyStory,
+                author: this.$store.state.Tools.Login.screenName || "anonymous"
+            });
             this.setCurrentStoryId(null);
             this.setMode(constants.storyTellingModes.CREATE);
         },
@@ -255,10 +258,11 @@ export default {
                     v-for="(item, i) in storyList"
                     :key="item._id"
                     :cols="12"
-                    :class="i !== storyList.length - 1 ? '' : ''" class="py-2"
+                    :class="i !== storyList.length - 1 ? '' : ''"
+                    class="py-2"
                     elevation="2"
                 >
-                    <v-item v-slot="{ toggle }" >
+                    <v-item v-slot="{ toggle }">
                         <v-card>
                             <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
                                 <div>

@@ -20,7 +20,7 @@ const storyTellingModes = {
     },
     emptyStory = {
         storyInterval: 0,
-        titleImage: "",
+        displayType: "classic",
         chapters: [],
         steps: []
     },
