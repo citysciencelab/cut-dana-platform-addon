@@ -143,20 +143,18 @@ export default {
             lL.forEach(layer => {
                 // add layer to 
                 if (layer.typ === "WMS") {
-                    console.log(layer, layer.typ);
+                    // console.log(layer, layer.typ);
                     // Radio.trigger("Parser", "addLayer", layer)
                 }
             })
 
-            const layerList = Radio.request(
-                "ModelList",
-                "getModelsByAttributes",
-                {isVisibleInTree: true}
-            );
+            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"});
+            console.log(layerList);
+            
 
             return layerList.map(layer => ({
                 value: layer.id,
-                text: layer.attributes.name
+                text: layer.name
             }));
         },
 
