@@ -259,7 +259,6 @@ export default {
         :resizable-window="resizableWindow"
         :deactivate-gfi="deactivateGFI"
         :initial-width="initialWidth"
-        :initial-width-mobile="initialWidthMobile"
     >
         <template #toolBody>
             <v-app

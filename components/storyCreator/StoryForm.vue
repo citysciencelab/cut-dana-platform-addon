@@ -8,6 +8,16 @@ import mutations from "../../store/mutationsDataNarrator";
 import errorHandling from "../../utils/errorHandling";
 import {BFormTags} from "bootstrap-vue";
 
+import {
+    mdiCancel,
+    mdiTrashCanOutline,
+    mdiCheck,
+    mdiPinOutline,
+    mdiBackspaceOutline,
+    mdiDownload,
+    mdiEyeOutline
+  } from '@mdi/js'
+
 export default {
     name: "StoryForm",
     components: {
@@ -20,8 +30,16 @@ export default {
             hasCover: false,
             minInterval: 0,
             maxInterval: 59,
-            notSaving: true
-
+            notSaving: true,
+            icons: {
+                mdiCancel,
+                mdiTrashCanOutline,
+                mdiCheck,
+                mdiPinOutline,
+                mdiBackspaceOutline,
+                mdiDownload,
+                mdiEyeOutline
+            }
         };
     },
     computed: {
@@ -386,79 +404,131 @@ export default {
                 color="lime"
             />
 
-            <div
+            <v-footer
                 v-if="notSaving"
                 class="tool-dataNarrator-creator-actions"
+                :padless="true"
             >
-                <v-tooltip top>
-                    <template #activator="{ on }">
-                        <v-icon
-                            id="reset-button"
-                            class="mr-1"
-                            @click="$emit('reset-tool')"
-                            v-on="on"
-                        >
-                            cancel
-                        </v-icon>
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.button.cancel")
-                        }}
-                    </span>
-                </v-tooltip>
-                <v-tooltip top>
-                    <template #activator="{ on }">
-                        <v-icon
-                            class="mr-1"
-                            :disabled="!currentStory.steps || !currentStory.steps.length"
-                            @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
-                            v-on="on"
-                        >
-                            preview
-                        </v-icon>
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.button.previewStory")
-                        }}
-                    </span>
-                </v-tooltip>
-                <v-tooltip top>
-                    <template #activator="{ on }">
-                        <v-icon
-                            class="mr-1"
-                            :disabled="!currentStory.steps || !currentStory.steps.length"
-                            @click="downloadStoryFiles"
-                            v-on="on"
-                        >
-                            download
-                        </v-icon>
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.button.downloadStory")
-                        }}
-                    </span>
-                </v-tooltip>
-                <v-tooltip top>
-                    <template #activator="{ on }">
-                        <v-icon
-                            class="mr-1"
-                            :disabled="!currentStory.steps || !currentStory.steps.length"
-                            @click="saveStoryToBackend"
-                            v-on="on"
-                        >
-                            save
-                        </v-icon>
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.button.uploadStory")
-                        }}
-                    </span>
-                </v-tooltip>
-                <p />
+                <v-card
+                    v-if="notSaving"
+                    flat
+                    tile
+                    width="100%"
+                    class="lighten-1 text-center"
+                >
+                    <v-card-text>
+       
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+
+                                <span
+                                    id="reset-button"
+                                    class="mr-1"
+                                    @click="$emit('reset-tool')"
+                                    v-on="on"
+                                >
+                                <v-btn
+                                    class=""
+                                    icon
+                                >
+                                    <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
+                                </v-btn>
+
+                                </span>
+                                
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.cancel")
+                                }}
+                            </span>
+                        </v-tooltip>
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+
+                                <span
+                                    id="preview-button"
+                                    :disabled="!currentStory.steps || !currentStory.steps.length"
+                                    @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
+                                    v-on="on"
+                                >
+                                <v-btn
+                                    class=""
+                                    icon
+                                >
+                                    <v-icon size="24px">{{ icons.mdiEyeOutline }}</v-icon>
+                                </v-btn>
+
+                                </span>
+                                
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.previewStory")
+                                }}
+                            </span>
+                        </v-tooltip>
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+
+                                <span
+                                    id="download-button"
+                                    class="mr-1"
+                                    :disabled="!currentStory.steps || !currentStory.steps.length"
+                                    @click="downloadStoryFiles"
+                                    v-on="on"
+                                >
+                                <v-btn
+                                    class=""
+                                    icon
+                                >
+                                    <v-icon size="24px">{{ icons.mdiDownload }}</v-icon>
+                                </v-btn>
+
+                                </span>
+                                
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.downloadStory")
+                                }}
+                            </span>
+                        </v-tooltip>
+
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+
+                                <span
+                                    id="save-button"
+                                    class="mr-1"
+                                    :disabled="!currentStory.steps || !currentStory.steps.length"
+                                    @click="saveStoryToBackend"
+                                    v-on="on"
+                                >
+                                <v-btn
+                                    class=""
+                                    icon
+                                >
+
+                                    <v-icon size="24px">{{icons.mdiCheck}}</v-icon>
+                                </v-btn>
+
+                                </span>
+                                
+                            </template>
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.uploadStory")
+                                }}
+                            </span>
+                        </v-tooltip>
+
+
+
+                    </v-card-text>
+
+                </v-card>
+
                 <v-alert
                     v-show="!currentStory.steps || !currentStory.steps.length"
                     type="info"
@@ -467,7 +537,7 @@ export default {
                         $t("additional:modules.tools.dataNarrator.warning.sendNoSteps")
                     }}
                 </v-alert>
-            </div>
+            </v-footer>
         </form>
     </div>
 </template>
