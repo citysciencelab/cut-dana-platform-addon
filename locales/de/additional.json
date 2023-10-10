@@ -39,7 +39,8 @@
           "importStory": "Story importieren",
           "private": "Privat",
           "sharedWith": "Geben Sie eine neue E-Mail ein und drücken Sie die Eingabetaste",
-          "sharedWithPlaceholder": "E-Mail hinzufügen"
+          "sharedWithPlaceholder": "E-Mail hinzufügen",
+          "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt."
         },
         "creator": {
           "edit": "Bearbeiten",

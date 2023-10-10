@@ -16,7 +16,7 @@ import {
     mdiBackspaceOutline,
     mdiDownload,
     mdiEyeOutline
-  } from '@mdi/js'
+} from "@mdi/js";
 
 export default {
     name: "StoryForm",
@@ -323,6 +323,7 @@ export default {
                     tag-pills
                     :placeholder="$t('additional:modules.tools.dataNarrator.label.sharedWithPlaceholder')"
                     :add-button-text="$t('additional:modules.tools.dataNarrator.button.addSharedWith')"
+                    :duplicate-tag-text="$t('additional:modules.tools.dataNarrator.label.sharedWithDuplicate')"
                 />
             </div>
 
@@ -417,25 +418,22 @@ export default {
                     class="lighten-1 text-center"
                 >
                     <v-card-text>
-       
                         <v-tooltip top>
                             <template #activator="{ on }">
-
                                 <span
                                     id="reset-button"
                                     class="mr-1"
                                     @click="$emit('reset-tool')"
                                     v-on="on"
                                 >
-                                <v-btn
-                                    class=""
-                                    icon
-                                >
-                                    <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
-                                </v-btn>
+                                    <v-btn
+                                        class=""
+                                        icon
+                                    >
+                                        <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
+                                    </v-btn>
 
                                 </span>
-                                
                             </template>
                             <span>
                                 {{
@@ -445,22 +443,20 @@ export default {
                         </v-tooltip>
                         <v-tooltip top>
                             <template #activator="{ on }">
-
                                 <span
                                     id="preview-button"
                                     :disabled="!currentStory.steps || !currentStory.steps.length"
                                     @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
                                     v-on="on"
                                 >
-                                <v-btn
-                                    class=""
-                                    icon
-                                >
-                                    <v-icon size="24px">{{ icons.mdiEyeOutline }}</v-icon>
-                                </v-btn>
+                                    <v-btn
+                                        class=""
+                                        icon
+                                    >
+                                        <v-icon size="24px">{{ icons.mdiEyeOutline }}</v-icon>
+                                    </v-btn>
 
                                 </span>
-                                
                             </template>
                             <span>
                                 {{
@@ -470,7 +466,6 @@ export default {
                         </v-tooltip>
                         <v-tooltip top>
                             <template #activator="{ on }">
-
                                 <span
                                     id="download-button"
                                     class="mr-1"
@@ -478,15 +473,14 @@ export default {
                                     @click="downloadStoryFiles"
                                     v-on="on"
                                 >
-                                <v-btn
-                                    class=""
-                                    icon
-                                >
-                                    <v-icon size="24px">{{ icons.mdiDownload }}</v-icon>
-                                </v-btn>
+                                    <v-btn
+                                        class=""
+                                        icon
+                                    >
+                                        <v-icon size="24px">{{ icons.mdiDownload }}</v-icon>
+                                    </v-btn>
 
                                 </span>
-                                
                             </template>
                             <span>
                                 {{
@@ -497,7 +491,6 @@ export default {
 
                         <v-tooltip top>
                             <template #activator="{ on }">
-
                                 <span
                                     id="save-button"
                                     class="mr-1"
@@ -505,16 +498,15 @@ export default {
                                     @click="saveStoryToBackend"
                                     v-on="on"
                                 >
-                                <v-btn
-                                    class=""
-                                    icon
-                                >
+                                    <v-btn
+                                        class=""
+                                        icon
+                                    >
 
-                                    <v-icon size="24px">{{icons.mdiCheck}}</v-icon>
-                                </v-btn>
+                                        <v-icon size="24px">{{ icons.mdiCheck }}</v-icon>
+                                    </v-btn>
 
                                 </span>
-                                
                             </template>
                             <span>
                                 {{
@@ -522,11 +514,7 @@ export default {
                                 }}
                             </span>
                         </v-tooltip>
-
-
-
                     </v-card-text>
-
                 </v-card>
 
                 <v-alert
