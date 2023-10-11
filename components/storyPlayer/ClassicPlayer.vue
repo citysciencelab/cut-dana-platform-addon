@@ -43,7 +43,10 @@ export default {
     <div
         id="classic-player"
     >
-        <StoryMenu :initial-auto-play="currentStory.storyInterval !== null" :current-step-index="currentStepIndex" />
+        <StoryMenu
+            :initial-auto-play="currentStory.storyInterval !== null"
+            :current-step-index="currentStepIndex"
+        />
 
         <h2 v-if="currentChapter">
             {{ currentChapter.chapterTitle }}

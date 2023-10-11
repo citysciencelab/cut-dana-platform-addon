@@ -16,7 +16,6 @@ export default {
             type: Number,
             default: 0
         }
-        
     },
     data () {
         return {
@@ -94,6 +93,7 @@ export default {
             role="button"
             tabindex="0"
             @click="$parent.$parent.$emit('share-story', currentStoryId, currentStepIndex)"
+            @keydown="() => {}"
         >
             <v-tooltip left>
                 <template #activator="{ on, attrs }">

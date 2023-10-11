@@ -423,16 +423,15 @@ export default {
                                 <span
                                     id="reset-button"
                                     class="mr-1"
-                                    @click="$emit('reset-tool')"
                                     v-on="on"
                                 >
                                     <v-btn
                                         class=""
                                         icon
+                                        @click="$emit('reset-tool')"
                                     >
                                         <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
                                     </v-btn>
-
                                 </span>
                             </template>
                             <span>
@@ -445,17 +444,16 @@ export default {
                             <template #activator="{ on }">
                                 <span
                                     id="preview-button"
-                                    :disabled="!currentStory.steps || !currentStory.steps.length"
-                                    @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
                                     v-on="on"
                                 >
                                     <v-btn
                                         class=""
                                         icon
+                                        :disabled="!currentStory.steps || !currentStory.steps.length"
+                                        @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
                                     >
                                         <v-icon size="24px">{{ icons.mdiEyeOutline }}</v-icon>
                                     </v-btn>
-
                                 </span>
                             </template>
                             <span>
@@ -469,17 +467,16 @@ export default {
                                 <span
                                     id="download-button"
                                     class="mr-1"
-                                    :disabled="!currentStory.steps || !currentStory.steps.length"
-                                    @click="downloadStoryFiles"
                                     v-on="on"
                                 >
                                     <v-btn
                                         class=""
                                         icon
+                                        :disabled="!currentStory.steps || !currentStory.steps.length"
+                                        @click="downloadStoryFiles"
                                     >
                                         <v-icon size="24px">{{ icons.mdiDownload }}</v-icon>
                                     </v-btn>
-
                                 </span>
                             </template>
                             <span>
@@ -494,13 +491,13 @@ export default {
                                 <span
                                     id="save-button"
                                     class="mr-1"
-                                    :disabled="!currentStory.steps || !currentStory.steps.length"
-                                    @click="saveStoryToBackend"
                                     v-on="on"
                                 >
                                     <v-btn
                                         class=""
                                         icon
+                                        :disabled="!currentStory.steps || !currentStory.steps.length"
+                                        @click="saveStoryToBackend"
                                     >
 
                                         <v-icon size="24px">{{ icons.mdiCheck }}</v-icon>

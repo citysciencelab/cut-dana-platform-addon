@@ -15,7 +15,6 @@ import mutations from "../store/mutationsDataNarrator";
 import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import ImportStory from "./storyCreator/ImportStory.vue";
-import {convertSexagesimalToDecimal} from "../../../../src/utils/convertSexagesimalCoordinates";
 
 export default {
     name: "DashboardCard",

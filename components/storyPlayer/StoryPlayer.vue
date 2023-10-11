@@ -11,16 +11,16 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {EventEmitter} from "../../utils/EventEmitter";
-import TOCMenu from "./TOCMenu.vue";
+// import TOCMenu from "./TOCMenu.vue";
 
 export default {
     name: "StoryPlayer",
     components: {
         ClassicPlayer,
         ScrollyTeller,
-        StoryNavigation,
+        StoryNavigation
         // DipasPlayer
-        TOCMenu
+        // TOCMenu
     },
     props: {
         // Whether the story player is in preview mode or not
