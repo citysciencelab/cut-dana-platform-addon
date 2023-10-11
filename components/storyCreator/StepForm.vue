@@ -18,12 +18,15 @@ import {
     mdiBackspaceOutline
   } from '@mdi/js'
 
+import LayerSelector from "./LayerSelector.vue";
+
 
 export default {
     name: "StepForm",
 
     components: {
         VueEditor,
+        LayerSelector
     },
 
     props: {
@@ -138,25 +141,13 @@ export default {
          */
         layerOptions () {
 
-            // const lL = rawLayerList.getLayerList();
-
-            // lL.forEach(layer => {
-            //     // add layer to 
-            //     if (layer.typ === "WMS") {
-            //         // console.log(layer, layer.typ);
-            //         // Radio.trigger("Parser", "addLayer", layer)
-            //     }
-            // })
-
-
-
-            const lL = Radio.request(
+            const layerList = Radio.request(
                 "ModelList",
                 "getModelsByAttributes",
                 {type: "layer"}
             );
 
-            return lL.map(layer => ({
+            return layerList.map(layer => ({
                 value: layer.id,
                 text: layer.attributes.name
             }));
@@ -1000,7 +991,7 @@ export default {
                     }}
                 </label>
 
-                <v-select
+                <!-- <v-select
                     id="step-layer"
                     v-model="step.layers"
                     :items="layerOptions"
@@ -1008,7 +999,8 @@ export default {
                     dense
                     solo
                     hide-details
-                />
+                /> -->
+                <LayerSelector id="step-layer" :items="layerOptions" :selected="step.layers" />
             </div>
 
             <div class="form-group">

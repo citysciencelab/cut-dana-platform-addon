@@ -8,12 +8,14 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 export default {
     name: "LayerSelector",
     props: {
-
-        currentStepIndex: {
-            type: Number,
-            default: 0
+        items: {
+            type: Array,
+            default: []
+        },
+        selected: {
+            type: Array,
+            default: []
         }
-    
     },
     data () {
         return {
@@ -21,56 +23,36 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        // console.log all the props
+        // ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        
     },
     created () {
         
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-        
 
-        scrollToStep(stepIndex) {
-            document.getElementsByClassName("stepper")[stepIndex].scrollIntoView({ block: "center" });
-            this.$parent.$emit("close-toc");
-        }
     }
 };
 </script>
 
 <template>
-    <div id="TOC-menu">
-        <span
-            role="button"
-            tabindex="0"
-            @click="scrollToStep(currentStepIndex)"
-            @keydown="scrollToStep(currentStepIndex)"
-        >
-            <v-tooltip left>
-                <template #activator="{ on, attrs }">
-                    <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                    >close
-                    </v-icon>
-                </template>
-                <span>close</span>
-            </v-tooltip>
-        </span>
+    <div id="LayerSelector">
+        <v-select
+            v-model="selected"
+            :items="items"
+            multiple
+            dense
+            solo
+            hide-details
+        />
     </div>
 </template>
 
 <style lang="scss" scoped>
-#TOC-menu {
-    position: absolute;
-    width: 100%;
-    text-align: end;
 
-    .v-icon {
-        font-size: 1.3rem;
-        cursor: pointer;
-    }
+#LayerSelector {
+
 }
 
 </style>
