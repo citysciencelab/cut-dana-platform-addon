@@ -213,7 +213,10 @@ export default {
                         }}
                     </span>
                 </v-tooltip>
-                <v-tooltip left>
+                <v-tooltip
+                    v-if="$store.state.Tools.Login.screenName"
+                    left
+                >
                     <template #activator="{ on }">
                         <v-icon
                             size="24px"
