@@ -1,4 +1,5 @@
 <script>
+import {EventEmitter} from "../../utils/EventEmitter";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
@@ -12,6 +13,7 @@ export default {
             type: Number,
             default: 0
         }
+    
     },
     data () {
         return {
@@ -21,13 +23,16 @@ export default {
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters))
     },
-
+    created () {
+        
+    },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        
 
-        scrollToStep (stepIndex) {
-            document.getElementsByClassName("stepper")[stepIndex].scrollIntoView({lock: "center"});
+        scrollToStep(stepIndex) {
+            document.getElementsByClassName("stepper")[stepIndex].scrollIntoView({ block: "center" });
             this.$parent.$emit("close-toc");
         }
     }

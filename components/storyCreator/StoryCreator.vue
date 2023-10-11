@@ -96,6 +96,8 @@ export default {
     grid-gap: 20px;
     max-height: calc(72vh - 40px);
 
+    
+
     &-header {
         display: flex;
         align-items: center;
