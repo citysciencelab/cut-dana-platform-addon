@@ -118,7 +118,9 @@ export default {
                 <v-icon left>
                     list
                 </v-icon>
-                Table of contents
+                {{
+                    $t("additional:modules.tools.dataNarrator.tableOfContents")
+                }}
             </v-btn>
         </div>
 
