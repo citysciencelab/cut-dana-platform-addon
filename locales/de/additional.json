@@ -41,7 +41,9 @@
           "sharedWith": "Geben Sie eine neue E-Mail ein und drücken Sie die Eingabetaste",
           "sharedWithPlaceholder": "E-Mail hinzufügen",
           "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt.",
-          "clickToSwitch": "Klicken Sie auf "
+          "clickToSwitch": "Klicken Sie auf ",
+          "myStories": "Meine Stories",
+          "allStories": "Alle Stories"
         },
         "creator": {
           "edit": "Bearbeiten",
@@ -49,7 +51,6 @@
         },
         "dashboardView": {
           "title": "Story Dashboard",
-          "refresh": "Dashboard aktualisieren",
           "total": "Die Anzahl der Stories beträgt: "
         },
         "success": {

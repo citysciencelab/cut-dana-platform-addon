@@ -7,7 +7,9 @@ import {
     mdiAccount,
     mdiPencil,
     mdiShareVariant,
-    mdiTrashCanOutline
+    mdiTrashCanOutline,
+    mdiAccountArrowDown,
+    mdiFormatListBulletedType
 } from "@mdi/js";
 
 import * as constants from "../store/constantsDataNarrator";
@@ -27,13 +29,16 @@ export default {
                 mdiAccount,
                 mdiPencil,
                 mdiShareVariant,
+                mdiAccountArrowDown,
+                mdiFormatListBulletedType,
                 mdiDelete: mdiTrashCanOutline
             },
             constants,
             storyList: {},
             importForm: false,
             languages: Object.keys(Config.portalLanguage?.languages),
-            languageToFlag: {"en": "gb", "de": "de"}
+            languageToFlag: {"en": "gb", "de": "de"},
+            storyListMode: "all"
         };
     },
     computed: {
@@ -70,12 +75,14 @@ export default {
 
         /**
          * Refreshes the list of stories
+         * @param {String} mode Story filter
          * @returns {void}
          */
-        refreshStoryList () {
+        refreshStoryList (mode = "all") {
             axios
-                .get(this.backendConfig.url + "/stories")
+                .get(this.backendConfig.url + "/stories?mode=" + mode)
                 .then((response) => {
+                    this.storyListMode = mode;
                     this.storyList = response.data;
                 });
         },
@@ -186,16 +193,47 @@ export default {
         <v-row id="title-row">
             <v-col
                 id="title-element"
-                class="text-h5"
+                class="d-flex justify-begin align-center"
                 cols="7"
             >
-                {{
-                    $t("additional:modules.tools.dataNarrator.dashboardView.title")
-                }}
+                <v-tooltip left>
+                    <template #activator="{ on }">
+                        <v-icon
+                            size="24px"
+                            :color="storyListMode === 'all' ? 'info' : ''"
+                            @click="refreshStoryList('all')"
+                            v-on="on"
+                        >
+                            {{ icons.mdiFormatListBulletedType }}
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.label.allStories")
+                        }}
+                    </span>
+                </v-tooltip>
+                <v-tooltip left>
+                    <template #activator="{ on }">
+                        <v-icon
+                            size="24px"
+                            :color="storyListMode === 'my' ? 'info' : ''"
+                            @click="refreshStoryList('my')"
+                            v-on="on"
+                        >
+                            {{ icons.mdiAccountArrowDown }}
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.label.myStories")
+                        }}
+                    </span>
+                </v-tooltip>
             </v-col>
             <v-col
                 cols="5"
-                class="right"
+                class="d-flex justify-end align-center"
             >
                 <v-tooltip left>
                     <template #activator="{ on }">
@@ -246,24 +284,6 @@ export default {
                     <span>
                         {{
                             $t("additional:modules.tools.dataNarrator.dashboardView.total") + storyList.length
-                        }}
-                    </span>
-                </v-tooltip>
-
-                <v-tooltip left>
-                    <template #activator="{ on }">
-                        <v-icon
-                            id="refresh-button"
-                            class="mr-1"
-                            @click="refreshStoryList()"
-                            v-on="on"
-                        >
-                            autorenew
-                        </v-icon>
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.dashboardView.refresh")
                         }}
                     </span>
                 </v-tooltip>
@@ -383,7 +403,10 @@ export default {
                                                 </span>
                                             </v-tooltip>
 
-                                            <v-tooltip top>
+                                            <v-tooltip
+                                                v-if="item.editable"
+                                                top
+                                            >
                                                 <template #activator="{ on }">
                                                     <v-icon
                                                         id="edit-button"
@@ -400,7 +423,11 @@ export default {
                                                     }}
                                                 </span>
                                             </v-tooltip>
-                                            <v-tooltip top>
+
+                                            <v-tooltip
+                                                v-if="item.editable"
+                                                top
+                                            >
                                                 <template #activator="{ on }">
                                                     <v-icon
                                                         id="delete-button"
