@@ -17,7 +17,8 @@ import {
     mdiBackspaceOutline
 } from "@mdi/js";
 
-import LayerSelector from "./LayerSelector.vue";
+// import LayerSelector from "./LayerSelector.vue";
+import LayerSelectorOld from "./LayerSelectorOld.vue";
 
 
 export default {
@@ -25,7 +26,8 @@ export default {
 
     components: {
         VueEditor,
-        LayerSelector
+        // LayerSelector,
+        LayerSelectorOld
     },
 
     props: {
@@ -146,7 +148,12 @@ export default {
                 {type: "layer"}
             );
 
-            return layerList.map(layer => layer.toJSON());
+            // return layerList.map(layer => layer.toJSON()); // use this for the new layer selector
+
+            return layerList.map(layer => ({ // use this for the old layer selector
+                value: layer.id,
+                text: layer.attributes.name
+            }));
         },
 
         /**
@@ -998,11 +1005,16 @@ export default {
                     solo
                     hide-details
                 /> -->
-                <LayerSelector
+                <LayerSelectorOld
                     id="step-layer"
                     :items="layerOptions"
                     :selected.sync="step.layers"
                 />
+                <!-- <LayerSelector
+                    id="step-layer"
+                    :items="layerOptions"
+                    :selected.sync="step.layers"
+                /> -->
             </div>
 
             <div class="form-group">
