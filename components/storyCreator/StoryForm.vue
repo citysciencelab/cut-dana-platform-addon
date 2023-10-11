@@ -6,6 +6,7 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import errorHandling from "../../utils/errorHandling";
+import {BFormTags} from "bootstrap-vue";
 
 import {
     mdiCancel,
@@ -19,7 +20,9 @@ import {
 
 export default {
     name: "StoryForm",
-    components: {},
+    components: {
+        BFormTags
+    },
     data () {
         return {
             constants,
@@ -179,6 +182,7 @@ export default {
                     v-model="currentStory.author"
                     class="form-control"
                     type="text"
+                    disabled
                 >
             </div>
 
@@ -276,6 +280,51 @@ export default {
                     }}
                 </v-alert>
                 -->
+            </div>
+
+            <div
+
+                class="form-group"
+            >
+                <label
+                    class="form-label"
+                    for="story-private"
+                >
+                    {{
+                        $t(
+                            "additional:modules.tools.dataNarrator.label.private"
+                        )
+                    }}
+                </label>
+
+                <input
+                    id="story-private"
+                    v-model="currentStory.private"
+                    class="checkbox"
+                    type="checkbox"
+                >
+            </div>
+
+            <div
+                v-if="currentStory?.private"
+                class="form-group"
+            >
+                <label for="sharedWith">{{
+                    $t(
+                        "additional:modules.tools.dataNarrator.label.sharedWith"
+                    )
+                }}</label>
+                <BFormTags
+                    v-model="currentStory.sharedWith"
+                    class="form-control"
+                    input-type="email"
+                    input-id="sharedWith"
+                    tag-variant="primary"
+                    tag-pills
+                    :placeholder="$t('additional:modules.tools.dataNarrator.label.sharedWithPlaceholder')"
+                    :add-button-text="$t('additional:modules.tools.dataNarrator.button.addSharedWith')"
+                    :duplicate-tag-text="$t('additional:modules.tools.dataNarrator.label.sharedWithDuplicate')"
+                />
             </div>
 
             <div class="form-group">
@@ -478,7 +527,7 @@ export default {
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #tool-dataNarrator-creator-storyForm {
     max-width: 460px;
 
@@ -505,6 +554,30 @@ export default {
         padding-left: 5px;
         max-height: 30px;
         max-width: 70px;
+    }
+
+    .b-form-tags {
+
+        .sr-only {
+            display: none !important;
+        }
+
+        .b-form-tags-list {
+            display: inline-block !important;
+            padding-left: 0;
+
+            .badge {
+                // color: black !important;
+                background-color: #2196f3 !important;
+                font-size: 1em !important;
+                border-radius: 1em;
+                margin-right: 0.25em;
+
+                .b-form-tag-remove {
+                    padding-left: 0.5em !important;
+                }
+            }
+        }
     }
 }
 </style>

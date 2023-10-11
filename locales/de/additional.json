@@ -36,7 +36,12 @@
           "autoPLay": "Autoplay",
           "on": "an",
           "off": "aus",
-          "importStory": "Story importieren"
+          "importStory": "Story importieren",
+          "private": "Privat",
+          "sharedWith": "Geben Sie eine neue E-Mail ein und drücken Sie die Eingabetaste",
+          "sharedWithPlaceholder": "E-Mail hinzufügen",
+          "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt.",
+          "clickToSwitch": "Klicken Sie auf "
         },
         "creator": {
           "edit": "Bearbeiten",
@@ -97,7 +102,8 @@
           "previewStory": "Vorschau",
           "downloadStory": "Story herunterladen",
           "uploadStory": "Story abschicken",
-          "share": "Story teilen"
+          "share": "Story teilen",
+          "addSharedWith": "Hinzufügen"
         },
         "newChapter": "Neues Kapitel"
       }
