@@ -377,41 +377,27 @@ export default {
                 });
             }
 
-            const layerList = Radio.request("ModelList", "getModelsByAttributes", { isVisibleInTree: true });
-            const enabledLayers = Radio.request("ModelList", "getModelsByAttributes", { isVisibleInTree: true, isSelected: true })
-            const stepLayers = this.currentStep.layers || [];
+            const layerList = Radio.request(
+                "ModelList",
+                "getModelsByAttributes",
+                {isVisibleInTree: true}
+            );
 
-            for (const layer of enabledLayers) {
-                this.disableLayer(layer);
-            }
+            // Updates the map layers
+            for (const layer of layerList) {
+                const stepLayers = this.currentStep.layers || [],
+                    isStepLayer = stepLayers.includes(layer.id) ||
+                                        stepLayers.some(l => l.includes(layer.id));
 
-            for (const layer in stepLayers) {
-                if (stepLayers.hasOwnProperty(layer)) {
-                    const layerId = stepLayers[layer];
-
-                    if (layerId) {
-                        const layerModel = layerList.find(({id}) => id === layerId);
-
-                        if (layerModel) {
-                            this.enableLayer(layerModel);
-                        }
-                    }
+                // if (isStepLayer && !layer.attributes.isVisibleInMap) {
+                if (isStepLayer) {
+                    this.enableLayer(layer);
+                }
+                // else if (!isStepLayer && layer.attributes.isVisibleInMap) {
+                else if (!isStepLayer) {
+                    this.disableLayer(layer);
                 }
             }
-
-            
-
-            // // Updates the map layers
-            // for (const layer of layerList) {
-            //     const layerId = layer.id;
-            //     const isStepLayer = stepLayers.indexOf(layerId) !== -1 || stepLayers.some(l => l.indexOf(layerId) !== -1);
-
-            //     if (isStepLayer) {
-            //         this.enableLayer(layer);
-            //     } else {
-            //         this.disableLayer(layer);
-            //     }
-            // }
 
 
             Radio.trigger("Menu", "rerender");
