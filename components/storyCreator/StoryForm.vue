@@ -283,7 +283,7 @@ export default {
             </div>
 
             <div
-                v-if="$store.state.Tools.Login.screenName"
+
                 class="form-group"
             >
                 <label

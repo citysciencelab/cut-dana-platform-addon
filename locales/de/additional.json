@@ -40,7 +40,8 @@
           "private": "Privat",
           "sharedWith": "Geben Sie eine neue E-Mail ein und drücken Sie die Eingabetaste",
           "sharedWithPlaceholder": "E-Mail hinzufügen",
-          "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt."
+          "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt.",
+          "clickToSwitch": "Klicken Sie auf "
         },
         "creator": {
           "edit": "Bearbeiten",

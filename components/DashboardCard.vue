@@ -1,17 +1,21 @@
 <script>
-import * as constants from "../store/constantsDataNarrator";
 import axios from "axios";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import mutations from "../store/mutationsDataNarrator";
-import actions from "../store/actionsDataNarrator";
-import getters from "../store/gettersDataNarrator";
-import ImportStory from "./storyCreator/ImportStory.vue";
+import {countryCodeEmoji} from "country-code-emoji";
+
 import {
     mdiAccount,
     mdiPencil,
     mdiShareVariant,
     mdiTrashCanOutline
 } from "@mdi/js";
+
+import * as constants from "../store/constantsDataNarrator";
+import mutations from "../store/mutationsDataNarrator";
+import actions from "../store/actionsDataNarrator";
+import getters from "../store/gettersDataNarrator";
+import ImportStory from "./storyCreator/ImportStory.vue";
+import {convertSexagesimalToDecimal} from "../../../../src/utils/convertSexagesimalCoordinates";
 
 export default {
     name: "DashboardCard",
@@ -28,7 +32,9 @@ export default {
             },
             constants,
             storyList: {},
-            importForm: false
+            importForm: false,
+            languages: Object.keys(Config.portalLanguage?.languages),
+            languageToFlag: {"en": "gb", "de": "de"}
         };
     },
     computed: {
@@ -155,6 +161,22 @@ export default {
 
         closeImportForm () {
             this.importForm = false;
+        },
+
+        changeToNextLanguage () {
+            i18next.changeLanguage(this.nextLanguage());
+        },
+        nextLanguage () {
+            const currentIndex = this.languages.indexOf(i18next.language),
+                nextIndex = currentIndex === this.languages.length - 1 ? 0 : currentIndex + 1;
+
+            return this.languages[nextIndex] || i18next.language;
+        },
+        nextFlag () {
+            return countryCodeEmoji(this.languageToFlag[this.nextLanguage()]);
+        },
+        currentFlag () {
+            return countryCodeEmoji(this.languageToFlag[i18next.language]);
         }
     }
 };
@@ -166,13 +188,16 @@ export default {
             <v-col
                 id="title-element"
                 class="text-h5"
-                cols="8"
+                cols="7"
             >
                 {{
                     $t("additional:modules.tools.dataNarrator.dashboardView.title")
                 }}
             </v-col>
-            <v-col cols="4">
+            <v-col
+                cols="5"
+                class="right"
+            >
                 <v-tooltip left>
                     <template #activator="{ on }">
                         <v-icon
@@ -240,6 +265,27 @@ export default {
                     <span>
                         {{
                             $t("additional:modules.tools.dataNarrator.dashboardView.refresh")
+                        }}
+                    </span>
+                </v-tooltip>
+
+                <v-tooltip left>
+                    <template #activator="{ on }">
+                        <span
+                            id="language-button"
+                            class="mr-1 text-h5"
+                            tabindex="0"
+                            role="button"
+                            @click="changeToNextLanguage()"
+                            @keypress="changeToNextLanguage()"
+                            v-on="on"
+                        >
+                            {{ currentFlag() }}
+                        </span>
+                    </template>
+                    <span>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.label.clickToSwitch") + nextFlag()
                         }}
                     </span>
                 </v-tooltip>
