@@ -454,6 +454,7 @@ export default {
             :current-chapter="currentChapter"
             :current-step="currentStep"
             :loaded-content="loadedContent"
+            :is-preview="isPreview"
         />
 
         <StoryNavigation

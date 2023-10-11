@@ -15,6 +15,10 @@ export default {
         currentStepIndex: {
             type: Number,
             default: 0
+        },
+        isPreview: {
+            type: Boolean,
+            default: false
         }
         
     },
@@ -106,6 +110,7 @@ export default {
             </v-tooltip>
         </span>
         <span
+            v-if="!isPreview"
             role="button"
             tabindex="0"
             @click="reset"

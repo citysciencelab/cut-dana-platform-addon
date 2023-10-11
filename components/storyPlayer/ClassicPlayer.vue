@@ -27,6 +27,10 @@ export default {
         loadedContent: {
             type: String,
             default: null
+        },
+        isPreview: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -43,7 +47,7 @@ export default {
     <div
         id="classic-player"
     >
-        <StoryMenu :initial-auto-play="currentStory.storyInterval !== null" :current-step-index="currentStepIndex" />
+        <StoryMenu :initial-auto-play="currentStory.storyInterval !== null" :current-step-index="currentStepIndex" :is-preview="isPreview" />
 
         <h2 v-if="currentChapter">
             {{ currentChapter.chapterTitle }}
