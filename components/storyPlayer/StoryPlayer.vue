@@ -11,16 +11,16 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {EventEmitter} from "../../utils/EventEmitter";
-import TOCMenu from "./TOCMenu.vue";
+// import TOCMenu from "./TOCMenu.vue";
 
 export default {
     name: "StoryPlayer",
     components: {
         ClassicPlayer,
         ScrollyTeller,
-        StoryNavigation,
+        StoryNavigation
         // DipasPlayer
-        TOCMenu
+        // TOCMenu
     },
     props: {
         // Whether the story player is in preview mode or not
@@ -79,7 +79,7 @@ export default {
             return {...this.currentStory.steps};
         },
 
-        progress() {
+        progress () {
             return (this.currentStepIndex + 1) / this.currentStory.steps.length * 100;
         }
     },
@@ -377,29 +377,23 @@ export default {
                 });
             }
 
-            const layerList = Radio.request("ModelList", "getModelsByAttributes", { isVisibleInTree: true });
-            const enabledLayers = Radio.request("ModelList", "getModelsByAttributes", { isVisibleInTree: true, isSelected: true })
-            const stepLayers = this.currentStep.layers || [];
+            const layerList = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true}),
+                enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true}),
+                stepLayers = this.currentStep.layers || [];
 
             for (const layer of enabledLayers) {
                 this.disableLayer(layer);
             }
 
-            for (const layer in stepLayers) {
-                if (stepLayers.hasOwnProperty(layer)) {
-                    const layerId = stepLayers[layer];
+            for (const layer of stepLayers) {
+                if (layer.id) {
+                    const layerModel = layerList.find(({id}) => id === layer.id);
 
-                    if (layerId) {
-                        const layerModel = layerList.find(({id}) => id === layerId);
-
-                        if (layerModel) {
-                            this.enableLayer(layerModel);
-                        }
+                    if (layerModel) {
+                        this.enableLayer(layerModel);
                     }
                 }
             }
-
-            
 
             // // Updates the map layers
             // for (const layer of layerList) {
@@ -442,7 +436,7 @@ export default {
         v-if="currentStory !== undefined && currentStory.steps && currentStep"
         id="tool-dataNarrator-player"
     >
-        <v-progress-linear :value="progress" ></v-progress-linear>
+        <v-progress-linear :value="progress" />
         <ScrollyTeller
             v-if="showMode === 'scrolly'"
             :current-step-index="currentStepIndex"
@@ -486,7 +480,6 @@ export default {
         </h2>
 
         <ol class="tableOfContents">
-
             <li
                 v-for="chapter in currentStory.chapters"
                 :key="'chapter_'+chapter.chapterNumber"

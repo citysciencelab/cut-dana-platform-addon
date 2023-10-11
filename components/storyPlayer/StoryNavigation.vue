@@ -4,8 +4,8 @@ import {getStepReference} from "../../utils/getReference";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
-import { mdiChevronLeft, mdiChevronRight } from "@mdi/js";
-import { SensorThingsHttp } from "../../../../../src/utils/sensorThingsHttp";
+import {mdiChevronLeft, mdiChevronRight} from "@mdi/js";
+// import { SensorThingsHttp } from "../../../../../src/utils/sensorThingsHttp";
 
 export default {
     name: "StoryNavigation",
@@ -44,7 +44,7 @@ export default {
 
         /**
          * Get the amount of steps in the current chapter
-         * @returns {number}
+         * @returns {number} returns a number representing the amount of steps in the current chapter
          */
         currentChapterStepCount () {
             return this.steps.filter(
@@ -54,13 +54,13 @@ export default {
 
         /**
          * get current step index in the current chapter
-         * @returns {number}
+         * @returns {number} returns a number representing the current step index in the current chapter
          */
         currentChapterStepIndex () {
             // Get all steps before the current step that are not in the current chapter
-            const previousStepsNotInCurrentChapter =  this.steps.filter(step => step.associatedChapter < this.currentChapter);
-            
+            const previousStepsNotInCurrentChapter = this.steps.filter(step => step.associatedChapter < this.currentChapter);
             // Return the number of steps in the chapter up to and including the current step
+
             return this.currentStepIndex - previousStepsNotInCurrentChapter.length;
         }
     },
@@ -100,7 +100,10 @@ export default {
 </script>
 
 <template lang="html">
-    <div id="tool-dataNarrator-navigation" class="d-flex justify-content-between">
+    <div
+        id="tool-dataNarrator-navigation"
+        class="d-flex justify-content-between"
+    >
         <!-- <v-btn
             class="story-navigation-step-button"
             depressed
@@ -151,7 +154,6 @@ export default {
                 <v-icon>{{ icons.mdiChevronRight }}</v-icon>
             </v-btn>
         </div>
-
     </div>
 </template>
 

@@ -9,14 +9,13 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import uuid from "uuid";
-import { rawLayerList } from "@masterportal/masterportalapi";
 import {
     mdiCancel,
     mdiTrashCanOutline,
     mdiCheck,
     mdiPinOutline,
     mdiBackspaceOutline
-  } from '@mdi/js'
+} from "@mdi/js";
 
 import LayerSelector from "./LayerSelector.vue";
 
@@ -439,7 +438,10 @@ export default {
 </script>
 
 <template lang="html">
-    <div id="tool-dataNarrator-creator-stepForm" class="mb-8">
+    <div
+        id="tool-dataNarrator-creator-stepForm"
+        class="mb-8"
+    >
         <h4>
             {{
                 $t("additional:modules.tools.dataNarrator.createStoryStep")
@@ -731,7 +733,7 @@ export default {
                             class="btn"
                             @click="step.navigation3D.heading = get3DMapCenter()['heading']"
                         >
-                        <v-icon>{{ icons.mdiPinOutline }}</v-icon>
+                            <v-icon>{{ icons.mdiPinOutline }}</v-icon>
                         </button>
                         <button
                             type="button"
@@ -872,7 +874,7 @@ export default {
                                     v-on="on"
                                     @click="step.centerCoordinate = null"
                                 >
-                                {{ icons.mdiBackspaceOutline }}
+                                    {{ icons.mdiBackspaceOutline }}
                                 </v-icon>
                             </template>
                             <span>
@@ -882,7 +884,6 @@ export default {
                             </span>
                         </v-tooltip>
                     </div>
-
                 </div>
                 <p
                     v-if="
@@ -932,7 +933,7 @@ export default {
                                     v-on="on"
                                     @click="step.zoomLevel = zoom()"
                                 >
-                                {{ icons.mdiPinOutline }}
+                                    {{ icons.mdiPinOutline }}
                                 </v-icon>
                             </template>
                             <span>
@@ -948,7 +949,7 @@ export default {
                                     v-on="on"
                                     @click="step.zoomLevel = null"
                                 >
-                                {{ icons.mdiBackspaceOutline }}
+                                    {{ icons.mdiBackspaceOutline }}
                                 </v-icon>
                             </template>
                             <span>
@@ -997,7 +998,11 @@ export default {
                     solo
                     hide-details
                 /> -->
-                <LayerSelector id="step-layer" :items="layerOptions" :selected.sync="step.layers" />
+                <LayerSelector
+                    id="step-layer"
+                    :items="layerOptions"
+                    :selected.sync="step.layers"
+                />
             </div>
 
             <div class="form-group">
@@ -1058,25 +1063,21 @@ export default {
                     class="lighten-1 text-center"
                 >
                     <v-card-text>
-                                        
                         <v-tooltip top>
                             <template #activator="{ on }">
-
                                 <span
                                     id="cancel-button"
                                     class="mr-1"
-                                    @click="$emit('return')"
                                     v-on="on"
                                 >
-                                <v-btn
-                                    class=""
-                                    icon
-                                >
-                                    <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
-                                </v-btn>
-
+                                    <v-btn
+                                        class=""
+                                        icon
+                                        @click="$emit('return')"
+                                    >
+                                        <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
+                                    </v-btn>
                                 </span>
-                                
                             </template>
                             <span>
                                 {{
@@ -1086,22 +1087,19 @@ export default {
                         </v-tooltip>
                         <v-tooltip top>
                             <template #activator="{ on }">
-
                                 <span
                                     id="delete-button"
                                     class="mr-1"
-                                    @click="onDeleteStep"
                                     v-on="on"
                                 >
-                                <v-btn
-                                    class=""
-                                    icon
-                                >
-                                    <v-icon size="24px">{{ icons.mdiTrashCanOutline }}</v-icon>
-                                </v-btn>
-
+                                    <v-btn
+                                        class=""
+                                        icon
+                                        @click="onDeleteStep"
+                                    >
+                                        <v-icon size="24px">{{ icons.mdiTrashCanOutline }}</v-icon>
+                                    </v-btn>
                                 </span>
-                                
                             </template>
                             <span>
                                 {{
@@ -1111,24 +1109,21 @@ export default {
                         </v-tooltip>
                         <v-tooltip top>
                             <template #activator="{ on }">
-
                                 <span
                                     id="save-button"
                                     class="mr-1"
-                                    :disabled="!isValid"
-                                    @click="onSubmit"
                                     v-on="on"
                                 >
-                                <v-btn
-                                    class=""
-                                    icon
-                                >
+                                    <v-btn
+                                        class=""
+                                        icon
+                                        :disabled="!isValid"
+                                        @click="onSubmit"
+                                    >
 
-                                    <v-icon size="24px">{{icons.mdiCheck}}</v-icon>
-                                </v-btn>
-
+                                        <v-icon size="24px">{{ icons.mdiCheck }}</v-icon>
+                                    </v-btn>
                                 </span>
-                                
                             </template>
                             <span>
                                 {{
@@ -1138,11 +1133,7 @@ export default {
                                 }}
                             </span>
                         </v-tooltip>
-
-
-
                     </v-card-text>
-
                 </v-card>
             </v-footer>
             <v-alert
