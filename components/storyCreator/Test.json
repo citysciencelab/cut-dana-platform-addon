@@ -1,0 +1,10218 @@
+[
+	{
+		"id": 1,
+		"name": "Umwelt",
+		"children": [
+			{
+				"id": 0,
+				"name": "Geobasiskarten (grau-blau)",
+				"children": []
+			},
+			{
+				"id": 1,
+				"name": "Digitales Schrägluftbild Hamburg",
+				"children": []
+			},
+			{
+				"id": 2,
+				"name": "Straßenbaumkataster Hamburg",
+				"children": []
+			},
+			{
+				"id": 3,
+				"name": "Digitale Orthophotos (belaubt) Hamburg",
+				"children": []
+			},
+			{
+				"id": 4,
+				"name": "Einbau Ersatzbaustoffe",
+				"children": []
+			},
+			{
+				"id": 5,
+				"name": "Grundwasserflurabstand Max",
+				"children": []
+			},
+			{
+				"id": 6,
+				"name": "Grundwasserflurabstand Min",
+				"children": []
+			},
+			{
+				"id": 7,
+				"name": "Grundwassergleichen Max",
+				"children": []
+			},
+			{
+				"id": 8,
+				"name": "Grundwassergleichen Mittel",
+				"children": []
+			},
+			{
+				"id": 9,
+				"name": "Grundwassergleichen Min",
+				"children": []
+			},
+			{
+				"id": 10,
+				"name": "Hafengebietsgrenzen Hamburg",
+				"children": []
+			},
+			{
+				"id": 11,
+				"name": "Gewässerbauwerke Hamburg",
+				"children": []
+			},
+			{
+				"id": 12,
+				"name": "Digitale Karte 1: 5000 Hamburg",
+				"children": []
+			},
+			{
+				"id": 13,
+				"name": "Badegewässer (Daten) Hamburg",
+				"children": []
+			},
+			{
+				"id": 14,
+				"name": "Standorte von Windkraftanlagen in Hamburg",
+				"children": []
+			},
+			{
+				"id": 15,
+				"name": "Bodenversiegelung Hamburg",
+				"children": []
+			},
+			{
+				"id": 16,
+				"name": "Bodenformengesellschaften Hamburg",
+				"children": []
+			},
+			{
+				"id": 17,
+				"name": "SUB Historische Karten-Umringe",
+				"children": []
+			},
+			{
+				"id": 18,
+				"name": "Projekte zur Energiewende",
+				"children": []
+			},
+			{
+				"id": 19,
+				"name": "Bodenkunde-Horizonte",
+				"children": []
+			},
+			{
+				"id": 20,
+				"name": "Bodenkunde-Profile",
+				"children": []
+			},
+			{
+				"id": 21,
+				"name": "Landschaftsprogramm Hamburg",
+				"children": []
+			},
+			{
+				"id": 22,
+				"name": "Landschaftsprogramm / Freiraumverbund Hamburg",
+				"children": []
+			},
+			{
+				"id": 23,
+				"name": "Naturschutzgebiete in Hamburg",
+				"children": []
+			},
+			{
+				"id": 24,
+				"name": "Fauna-Flora-Habitat-Gebiete in Hamburg",
+				"children": []
+			},
+			{
+				"id": 25,
+				"name": "Vogelschutzgebiete in Hamburg",
+				"children": []
+			},
+			{
+				"id": 26,
+				"name": "Ramsargebiete in Hamburg",
+				"children": []
+			},
+			{
+				"id": 27,
+				"name": "Schutzgebiet Nationalpark Hamburgisches Wattenmeer",
+				"children": []
+			},
+			{
+				"id": 28,
+				"name": "Biosphärenreservate in Hamburg",
+				"children": []
+			},
+			{
+				"id": 29,
+				"name": "Landschaftsschutzgebiete in Hamburg",
+				"children": []
+			},
+			{
+				"id": 30,
+				"name": "Naturdenkmale in Hamburg",
+				"children": []
+			},
+			{
+				"id": 31,
+				"name": "Hamburger Gründachförderung - Zuschlag Innere Stadt",
+				"children": []
+			},
+			{
+				"id": 32,
+				"name": "Landschaftsprogramm Hamburg - Änderungsübersicht",
+				"children": []
+			},
+			{
+				"id": 33,
+				"name": "Virtuelle Passpunkte Hamburg",
+				"children": []
+			},
+			{
+				"id": 34,
+				"name": "Verbandsgrenzen Wasser- und Bodenverbände Hamburg",
+				"children": []
+			},
+			{
+				"id": 35,
+				"name": "Bohrarchiv",
+				"children": []
+			},
+			{
+				"id": 36,
+				"name": "Störfallbetriebe Hamburg",
+				"children": []
+			},
+			{
+				"id": 37,
+				"name": "Hamburger Trinkwasserdatenbank (ZTEIS)",
+				"children": []
+			},
+			{
+				"id": 38,
+				"name": "Geothermisch ausgewertete Bohrungen",
+				"children": []
+			},
+			{
+				"id": 39,
+				"name": "Hydrogeologische Profiltypen der ungesättigten Zone",
+				"children": []
+			},
+			{
+				"id": 40,
+				"name": "Grundwassergleichen UBKS 2008",
+				"children": []
+			},
+			{
+				"id": 41,
+				"name": "Grundwassergleichen OBKS 2008",
+				"children": []
+			},
+			{
+				"id": 42,
+				"name": "Nutzungsbedingungen Geothermie",
+				"children": []
+			},
+			{
+				"id": 43,
+				"name": "Temperatur in minus 100 mNHN",
+				"children": []
+			},
+			{
+				"id": 44,
+				"name": "Wärmeleitfähigkeit bis 100 m",
+				"children": []
+			},
+			{
+				"id": 45,
+				"name": "Wärmeleitfähigkeit bis 80 m",
+				"children": []
+			},
+			{
+				"id": 46,
+				"name": "Wärmeleitfähigkeit bis 60 m",
+				"children": []
+			},
+			{
+				"id": 47,
+				"name": "Wärmeleitfähigkeit bis 40 m",
+				"children": []
+			},
+			{
+				"id": 48,
+				"name": "Schwermetalldaten Hamburger Südosten",
+				"children": []
+			},
+			{
+				"id": 49,
+				"name": "Straßenbaumkataster Hamburger Hafen",
+				"children": []
+			},
+			{
+				"id": 50,
+				"name": "Hamburger Luftmessnetz (HaLm)",
+				"children": []
+			},
+			{
+				"id": 51,
+				"name": "ALKIS - Aufnahmepunktnester (Verwaltungspunkt)",
+				"children": []
+			},
+			{
+				"id": 52,
+				"name": "ALKIS - Aufnahmepunkte mit Anmessung",
+				"children": []
+			},
+			{
+				"id": 53,
+				"name": "Höhenpunkte (Gebrauchshöhen)",
+				"children": []
+			},
+			{
+				"id": 54,
+				"name": "Naturräume Geest und Marsch",
+				"children": []
+			},
+			{
+				"id": 55,
+				"name": "INSPIRE HH Hydro-Netzwerk ATKIS Basis-DLM",
+				"children": []
+			},
+			{
+				"id": 56,
+				"name": "Rabatt-Kampagne KEHR.WIEDER-Becher",
+				"children": []
+			},
+			{
+				"id": 57,
+				"name": "INSPIRE HH Adressen Hauskoordinaten",
+				"children": []
+			},
+			{
+				"id": 58,
+				"name": "INSPIRE HH Geografische Bezeichnungen",
+				"children": []
+			},
+			{
+				"id": 59,
+				"name": "INSPIRE HH Geografische Bezeichnungen ALKIS",
+				"children": []
+			},
+			{
+				"id": 60,
+				"name": "INSPIRE HH Geografische Bezeichnungen ATKIS Basis-DLM",
+				"children": []
+			},
+			{
+				"id": 61,
+				"name": "Temperatur in 100 m unter Gelände",
+				"children": []
+			},
+			{
+				"id": 62,
+				"name": "Anlagen nach der Industrieemissions-Richtlinie in Hamburg (IED-Anlagen Hamburg)",
+				"children": []
+			},
+			{
+				"id": 63,
+				"name": "Partnerkarte der UmweltPartnerschaft Hamburg",
+				"children": []
+			},
+			{
+				"id": 64,
+				"name": "Genehmigungsbedürftige Anlagen nach Bundes-Immissionsschutzgesetz (BImSchG-Anlagen Hamburg)",
+				"children": []
+			},
+			{
+				"id": 65,
+				"name": "Wärmekataster Hamburg – B-Pläne mit energetischen Vorgaben",
+				"children": []
+			},
+			{
+				"id": 66,
+				"name": "Wärmekataster Energieerzeugungsanlagen Hamburg",
+				"children": []
+			},
+			{
+				"id": 67,
+				"name": "Wärmekataster Gebiet mit Wärmenetz Hamburg",
+				"children": []
+			},
+			{
+				"id": 68,
+				"name": "Wärmekataster Heizungsart ZENSUS2011 Hamburg",
+				"children": []
+			},
+			{
+				"id": 69,
+				"name": "Wärmekataster Hamburg –Quartierssanierungsprojekte",
+				"children": []
+			},
+			{
+				"id": 70,
+				"name": "Hundeauslaufzonen für Hunde nach § 8 Hamburger HundeG",
+				"children": []
+			},
+			{
+				"id": 71,
+				"name": "Freilaufmöglichkeiten für geprüfte Hunde nach § 9 Hamburger HundeG",
+				"children": []
+			},
+			{
+				"id": 72,
+				"name": "INSPIRE HH Energiequellen",
+				"children": []
+			},
+			{
+				"id": 73,
+				"name": "INSPIRE HH Umweltüberwachung",
+				"children": []
+			},
+			{
+				"id": 74,
+				"name": "INSPIRE HH Boden ALKIS",
+				"children": []
+			},
+			{
+				"id": 75,
+				"name": "INSPIRE HH Gebäude ATKIS Basis-DLM",
+				"children": []
+			},
+			{
+				"id": 76,
+				"name": "INSPIRE HH Bodenbedeckung ALKIS",
+				"children": []
+			},
+			{
+				"id": 77,
+				"name": "Digitales Höhenmodell Hamburg DGM 1",
+				"children": []
+			},
+			{
+				"id": 78,
+				"name": "Digitale Orthophotos (belaubt) Hamburg mit Umland",
+				"children": []
+			},
+			{
+				"id": 79,
+				"name": "Internetstadtplan Hamburg",
+				"children": []
+			},
+			{
+				"id": 80,
+				"name": "Sozialräume Hamburg",
+				"children": []
+			},
+			{
+				"id": 81,
+				"name": "Geologische Profilschnitte Hamburg",
+				"children": []
+			},
+			{
+				"id": 82,
+				"name": "Geologische Karte Quartärbasis 1:50 000 Hamburg",
+				"children": []
+			},
+			{
+				"id": 83,
+				"name": "Geologische Karte Präquartärer Untergrund 1:50 000 Hamburg",
+				"children": []
+			},
+			{
+				"id": 84,
+				"name": "Geologische Karte 1:5 000 Hamburg",
+				"children": []
+			},
+			{
+				"id": 85,
+				"name": "Ruhige Gebiete Hamburg (§ 47d BImSchG)",
+				"children": []
+			},
+			{
+				"id": 86,
+				"name": "Ruheinseln Hamburg",
+				"children": []
+			},
+			{
+				"id": 87,
+				"name": "Verbreitung der Tiere Hamburgs",
+				"children": []
+			},
+			{
+				"id": 88,
+				"name": "HW-gefährdeter Bereich Tidegebiet Elbe Hamburg",
+				"children": []
+			},
+			{
+				"id": 89,
+				"name": "Trockenfallende Gewässer Hamburg",
+				"children": []
+			},
+			{
+				"id": 90,
+				"name": "Digitales Höhenmodell Hamburg Schummerungskarte / Geländerelief",
+				"children": []
+			},
+			{
+				"id": 91,
+				"name": "Solarpotenzialflächen Hamburg",
+				"children": []
+			},
+			{
+				"id": 92,
+				"name": "ALKIS - Flurstücke und Gebäude (gelb)",
+				"children": []
+			},
+			{
+				"id": 93,
+				"name": "ALKIS - Flurstücke und Gebäude (schwarz)",
+				"children": []
+			},
+			{
+				"id": 94,
+				"name": "Jahrgang 1925-1930",
+				"children": []
+			},
+			{
+				"id": 95,
+				"name": "Jahrgang 1930-1940",
+				"children": []
+			},
+			{
+				"id": 96,
+				"name": "Jahrgang 1940-1950",
+				"children": []
+			},
+			{
+				"id": 97,
+				"name": "Jahrgang 1950-1960",
+				"children": []
+			},
+			{
+				"id": 98,
+				"name": "Jahrgang 1960-1970",
+				"children": []
+			},
+			{
+				"id": 99,
+				"name": "Jahrgang 1970-1980",
+				"children": []
+			},
+			{
+				"id": 100,
+				"name": "Jahrgang 1980-1990",
+				"children": []
+			},
+			{
+				"id": 101,
+				"name": "Jahrgang 1990-2000",
+				"children": []
+			},
+			{
+				"id": 102,
+				"name": "Jahrgang 2005",
+				"children": []
+			},
+			{
+				"id": 103,
+				"name": "Jahrgang 2010",
+				"children": []
+			},
+			{
+				"id": 104,
+				"name": "Jahrgang 2015",
+				"children": []
+			},
+			{
+				"id": 105,
+				"name": "Jahrgang 2020",
+				"children": []
+			},
+			{
+				"id": 106,
+				"name": "Digitale Orthophotos Hamburg (RGB)",
+				"children": []
+			},
+			{
+				"id": 107,
+				"name": "Digitale Orthophotos Hamburg (CIR)",
+				"children": []
+			},
+			{
+				"id": 108,
+				"name": "Straßenverkehr Tag Abend Nacht 2022",
+				"children": []
+			},
+			{
+				"id": 109,
+				"name": "Straßenverkehr Nacht 2022",
+				"children": []
+			},
+			{
+				"id": 110,
+				"name": "TN_Vegetation",
+				"children": []
+			},
+			{
+				"id": 111,
+				"name": "TN_Siedlung",
+				"children": []
+			},
+			{
+				"id": 112,
+				"name": "UntergeordnetesGewaesser_Linie",
+				"children": []
+			},
+			{
+				"id": 113,
+				"name": "UntergeordnetesGewaesser_Flaeche",
+				"children": []
+			},
+			{
+				"id": 114,
+				"name": "TN_Gewaesser",
+				"children": []
+			},
+			{
+				"id": 115,
+				"name": "Bauwerke_Verkehrsbereich_Flaeche",
+				"children": []
+			},
+			{
+				"id": 116,
+				"name": "TN_Verkehr",
+				"children": []
+			},
+			{
+				"id": 117,
+				"name": "Bauwerke_Siedlungsflaechen_Flaeche",
+				"children": []
+			},
+			{
+				"id": 118,
+				"name": "Bauwerke_Verkehr_Flaeche",
+				"children": []
+			},
+			{
+				"id": 119,
+				"name": "Gebaeude",
+				"children": []
+			},
+			{
+				"id": 120,
+				"name": "Boeschung_Flaeche",
+				"children": []
+			},
+			{
+				"id": 121,
+				"name": "Boeschung_Linie",
+				"children": []
+			},
+			{
+				"id": 122,
+				"name": "Bauwerke_Verkehr_Linie2",
+				"children": []
+			},
+			{
+				"id": 123,
+				"name": "Bauwerke_Siedlungsflaechen_Linie",
+				"children": []
+			},
+			{
+				"id": 124,
+				"name": "Bauwerke_Verkehr_Linie1",
+				"children": []
+			},
+			{
+				"id": 125,
+				"name": "Bauwerke_Verkehr_Punkte",
+				"children": []
+			},
+			{
+				"id": 126,
+				"name": "Flurstuecksumringe",
+				"children": []
+			},
+			{
+				"id": 127,
+				"name": "Baeume",
+				"children": []
+			},
+			{
+				"id": 128,
+				"name": "Zuordnungspfeil",
+				"children": []
+			},
+			{
+				"id": 129,
+				"name": "Strassenname",
+				"children": []
+			},
+			{
+				"id": 130,
+				"name": "Flurstuecksnummer",
+				"children": []
+			},
+			{
+				"id": 131,
+				"name": "Geschosse",
+				"children": []
+			},
+			{
+				"id": 132,
+				"name": "Strassenname",
+				"children": []
+			},
+			{
+				"id": 133,
+				"name": "Hausnummer",
+				"children": []
+			},
+			{
+				"id": 134,
+				"name": "Flurstuecksnummer",
+				"children": []
+			},
+			{
+				"id": 135,
+				"name": "Geschosse",
+				"children": []
+			},
+			{
+				"id": 136,
+				"name": "Strassenname",
+				"children": []
+			},
+			{
+				"id": 137,
+				"name": "Hausnummer",
+				"children": []
+			},
+			{
+				"id": 138,
+				"name": "Flurstuecksnummer",
+				"children": []
+			},
+			{
+				"id": 139,
+				"name": "ALKIS Bezirke",
+				"children": []
+			},
+			{
+				"id": 140,
+				"name": "TN_Vegetation",
+				"children": []
+			},
+			{
+				"id": 141,
+				"name": "TN_Siedlung",
+				"children": []
+			},
+			{
+				"id": 142,
+				"name": "UntergeordnetesGewaesser_Linie",
+				"children": []
+			},
+			{
+				"id": 143,
+				"name": "UntergeordnetesGewaesser_Flaeche",
+				"children": []
+			},
+			{
+				"id": 144,
+				"name": "TN_Gewaesser",
+				"children": []
+			},
+			{
+				"id": 145,
+				"name": "Bauwerke_Verkehrsbereich_Flaeche",
+				"children": []
+			},
+			{
+				"id": 146,
+				"name": "TN_Verkehr",
+				"children": []
+			},
+			{
+				"id": 147,
+				"name": "Bauwerke_Siedlungsflaechen_Flaeche",
+				"children": []
+			},
+			{
+				"id": 148,
+				"name": "Bauwerke_Verkehr_Flaeche",
+				"children": []
+			},
+			{
+				"id": 149,
+				"name": "Gebaeude",
+				"children": []
+			},
+			{
+				"id": 150,
+				"name": "Boeschung_Flaeche",
+				"children": []
+			},
+			{
+				"id": 151,
+				"name": "Boeschung_Linie",
+				"children": []
+			},
+			{
+				"id": 152,
+				"name": "Bauwerke_Verkehr_Linie2",
+				"children": []
+			},
+			{
+				"id": 153,
+				"name": "Bauwerke_Siedlungsflaechen_Linie",
+				"children": []
+			},
+			{
+				"id": 154,
+				"name": "Bauwerke_Verkehr_Linie1",
+				"children": []
+			},
+			{
+				"id": 155,
+				"name": "Bauwerke_Verkehr_Punkte",
+				"children": []
+			},
+			{
+				"id": 156,
+				"name": "Flurstuecksumringe",
+				"children": []
+			},
+			{
+				"id": 157,
+				"name": "Baeume",
+				"children": []
+			},
+			{
+				"id": 158,
+				"name": "Zuordnungspfeil",
+				"children": []
+			},
+			{
+				"id": 159,
+				"name": "Strassenname",
+				"children": []
+			},
+			{
+				"id": 160,
+				"name": "Flurstuecksnummer",
+				"children": []
+			},
+			{
+				"id": 161,
+				"name": "Geschosse",
+				"children": []
+			},
+			{
+				"id": 162,
+				"name": "Strassenname",
+				"children": []
+			},
+			{
+				"id": 163,
+				"name": "Hausnummer",
+				"children": []
+			},
+			{
+				"id": 164,
+				"name": "Flurstuecksnummer",
+				"children": []
+			},
+			{
+				"id": 165,
+				"name": "Geschosse",
+				"children": []
+			},
+			{
+				"id": 166,
+				"name": "Strassenname",
+				"children": []
+			},
+			{
+				"id": 167,
+				"name": "Hausnummer",
+				"children": []
+			},
+			{
+				"id": 168,
+				"name": "Flurstuecksnummer",
+				"children": []
+			},
+			{
+				"id": 169,
+				"name": "ALKIS_Bezirke",
+				"children": []
+			},
+			{
+				"id": 170,
+				"name": "AX_Bauteil",
+				"children": []
+			},
+			{
+				"id": 171,
+				"name": "Geschosse_Bauteile",
+				"children": []
+			},
+			{
+				"id": 172,
+				"name": "Geschosse_Bauteile",
+				"children": []
+			},
+			{
+				"id": 173,
+				"name": "AX_Bauteil_unterirdisch",
+				"children": []
+			},
+			{
+				"id": 174,
+				"name": "Gebaeude_unterirdisch",
+				"children": []
+			},
+			{
+				"id": 175,
+				"name": "AX_Bauteil_unterirdisch",
+				"children": []
+			},
+			{
+				"id": 176,
+				"name": "Gebaeude_unterirdisch",
+				"children": []
+			},
+			{
+				"id": 177,
+				"name": "AX_Bauteil",
+				"children": []
+			},
+			{
+				"id": 178,
+				"name": "Geschosse_Bauteile",
+				"children": []
+			},
+			{
+				"id": 179,
+				"name": "Geschosse_Bauteile",
+				"children": []
+			},
+			{
+				"id": 180,
+				"name": "Strassenname",
+				"children": []
+			},
+			{
+				"id": 181,
+				"name": "Hausnummer",
+				"children": []
+			},
+			{
+				"id": 182,
+				"name": "Flurstuecksinfo",
+				"children": []
+			},
+			{
+				"id": 183,
+				"name": "Gebaeude",
+				"children": []
+			},
+			{
+				"id": 184,
+				"name": "Adresse",
+				"children": []
+			},
+			{
+				"id": 185,
+				"name": "Strassenschluessel",
+				"children": []
+			},
+			{
+				"id": 186,
+				"name": "HK- 4000- Fuss",
+				"children": []
+			},
+			{
+				"id": 187,
+				"name": "HK- 1000- Fuss",
+				"children": []
+			},
+			{
+				"id": 188,
+				"name": "HK- 250- Fuss",
+				"children": []
+			},
+			{
+				"id": 189,
+				"name": "HK- 1000- Meter",
+				"children": []
+			},
+			{
+				"id": 190,
+				"name": "HK- 500- Meter",
+				"children": []
+			},
+			{
+				"id": 191,
+				"name": "HK- 250- Meter",
+				"children": []
+			},
+			{
+				"id": 192,
+				"name": "HK- 200- Meter",
+				"children": []
+			},
+			{
+				"id": 193,
+				"name": "DTK 25 Regelblattschnitt GK3 transformiert in UTM32",
+				"children": []
+			},
+			{
+				"id": 194,
+				"name": "ETRS 89- UTM- 1 km",
+				"children": []
+			},
+			{
+				"id": 195,
+				"name": "DHDN- GK- 1 km",
+				"children": []
+			},
+			{
+				"id": 196,
+				"name": "ETRS 89- UTM- 100 m",
+				"children": []
+			},
+			{
+				"id": 197,
+				"name": "DOP5 - 250 - Meter",
+				"children": []
+			},
+			{
+				"id": 198,
+				"name": "Geobasiskarten (HamburgDE)",
+				"children": []
+			},
+			{
+				"id": 199,
+				"name": "M100000 (farbig)",
+				"children": []
+			},
+			{
+				"id": 200,
+				"name": "M60000 (farbig)",
+				"children": []
+			},
+			{
+				"id": 201,
+				"name": "M20000 (farbig)",
+				"children": []
+			},
+			{
+				"id": 202,
+				"name": "M5000 (farbig)",
+				"children": []
+			},
+			{
+				"id": 203,
+				"name": "M100000 (schwarz-grau)",
+				"children": []
+			},
+			{
+				"id": 204,
+				"name": "M60000 (schwarz-grau)",
+				"children": []
+			},
+			{
+				"id": 205,
+				"name": "M20000 (schwarz-grau)",
+				"children": []
+			},
+			{
+				"id": 206,
+				"name": "M5000 (schwarz-grau)",
+				"children": []
+			},
+			{
+				"id": 207,
+				"name": "M125000 (schwarz-grau)",
+				"children": []
+			},
+			{
+				"id": 208,
+				"name": "M40000 (schwarz-grau)",
+				"children": []
+			},
+			{
+				"id": 209,
+				"name": "M10000 (schwarz-grau)",
+				"children": []
+			},
+			{
+				"id": 210,
+				"name": "M2500 (schwarz-grau)",
+				"children": []
+			},
+			{
+				"id": 211,
+				"name": "M125000 (HamburgDE)",
+				"children": []
+			},
+			{
+				"id": 212,
+				"name": "M100000 (HamburgDE)",
+				"children": []
+			},
+			{
+				"id": 213,
+				"name": "M40000 (HamburgDE)",
+				"children": []
+			},
+			{
+				"id": 214,
+				"name": "M60000 (HamburgDE)",
+				"children": []
+			},
+			{
+				"id": 215,
+				"name": "M20000 (HamburgDE)",
+				"children": []
+			},
+			{
+				"id": 216,
+				"name": "M10000 (HamburgDE)",
+				"children": []
+			},
+			{
+				"id": 217,
+				"name": "M5000 (HamburgDE)",
+				"children": []
+			},
+			{
+				"id": 218,
+				"name": "M2500 (HamburgDE)",
+				"children": []
+			},
+			{
+				"id": 219,
+				"name": "M125000 (Schriftplatte)",
+				"children": []
+			},
+			{
+				"id": 220,
+				"name": "M100000 (Schriftplatte)",
+				"children": []
+			},
+			{
+				"id": 221,
+				"name": "M60000 (Schriftplatte)",
+				"children": []
+			},
+			{
+				"id": 222,
+				"name": "M40000 (Schriftplatte)",
+				"children": []
+			},
+			{
+				"id": 223,
+				"name": "M20000 (Schriftplatte)",
+				"children": []
+			},
+			{
+				"id": 224,
+				"name": "M10000 (Schriftplatte)",
+				"children": []
+			},
+			{
+				"id": 225,
+				"name": "M5000 (Schriftplatte)",
+				"children": []
+			},
+			{
+				"id": 226,
+				"name": "M2500 (Schriftplatte)",
+				"children": []
+			},
+			{
+				"id": 227,
+				"name": "M125000 (farbig)",
+				"children": []
+			},
+			{
+				"id": 228,
+				"name": "M40000 (farbig)",
+				"children": []
+			},
+			{
+				"id": 229,
+				"name": "M10000 (farbig)",
+				"children": []
+			},
+			{
+				"id": 230,
+				"name": "M2500 (farbig)",
+				"children": []
+			},
+			{
+				"id": 231,
+				"name": "Blattschnitte",
+				"children": []
+			},
+			{
+				"id": 232,
+				"name": "Überschwemmungsgebiete",
+				"children": []
+			},
+			{
+				"id": 233,
+				"name": "alle AuBS - Flächen",
+				"children": []
+			},
+			{
+				"id": 234,
+				"name": "AuBS - Symbole",
+				"children": []
+			},
+			{
+				"id": 235,
+				"name": "Flächen mit Klärungsbedarf",
+				"children": []
+			},
+			{
+				"id": 236,
+				"name": "Wertvolle Einzelbiotope",
+				"children": []
+			},
+			{
+				"id": 237,
+				"name": "Eignungsgebiete für Windenergieanlagen",
+				"children": []
+			},
+			{
+				"id": 238,
+				"name": "Natura 2000",
+				"children": []
+			},
+			{
+				"id": 239,
+				"name": "AuBS - Änderungen",
+				"children": []
+			},
+			{
+				"id": 240,
+				"name": "AuBS - Schutzgebietsflächen",
+				"children": []
+			},
+			{
+				"id": 241,
+				"name": "Prüfflächen für den Biotopverbund",
+				"children": []
+			},
+			{
+				"id": 242,
+				"name": "Sonstige Verbundbeziehungen",
+				"children": []
+			},
+			{
+				"id": 243,
+				"name": "Vorrangige Prüfbereiche zur Verringerung von Barrierewirkungen",
+				"children": []
+			},
+			{
+				"id": 244,
+				"name": "Länderübergreifender Biotopverbund Feuchtlebensräume",
+				"children": []
+			},
+			{
+				"id": 245,
+				"name": "Länderübergreifender Biotopverbund Gewässerlebensräume",
+				"children": []
+			},
+			{
+				"id": 246,
+				"name": "Länderübergreifender Biotopverbund Trockenlebensräume",
+				"children": []
+			},
+			{
+				"id": 247,
+				"name": "Länderübergreifender Biotopverbund Waldlebensräume",
+				"children": []
+			},
+			{
+				"id": 248,
+				"name": "Biotopverbund Neuwerk",
+				"children": []
+			},
+			{
+				"id": 249,
+				"name": "Linearer Biotopverbund",
+				"children": []
+			},
+			{
+				"id": 250,
+				"name": "Flächen des Biotopverbunds",
+				"children": []
+			},
+			{
+				"id": 251,
+				"name": "AuBS - Schutzgebietspunkte (ND, LSG, NSG, Nationalpark)",
+				"children": []
+			},
+			{
+				"id": 252,
+				"name": "Sturmflut 1962",
+				"children": []
+			},
+			{
+				"id": 253,
+				"name": "Überschwemmungen bei der Sturmflut 1962",
+				"children": []
+			},
+			{
+				"id": 254,
+				"name": "Ausgleichsflächen",
+				"children": []
+			},
+			{
+				"id": 255,
+				"name": "Ausgleichspunkte",
+				"children": []
+			},
+			{
+				"id": 256,
+				"name": "ALKIS",
+				"children": []
+			},
+			{
+				"id": 257,
+				"name": "MRH250",
+				"children": []
+			},
+			{
+				"id": 258,
+				"name": "DISK60",
+				"children": []
+			},
+			{
+				"id": 259,
+				"name": "DISK20",
+				"children": []
+			},
+			{
+				"id": 260,
+				"name": "DK5 Blattwerk in Gauß-Krüger",
+				"children": []
+			},
+			{
+				"id": 261,
+				"name": "DK5 Blattwerk in UTM",
+				"children": []
+			},
+			{
+				"id": 262,
+				"name": "DGM in UTM",
+				"children": []
+			},
+			{
+				"id": 263,
+				"name": "DGM in Gauß-Krüger",
+				"children": []
+			},
+			{
+				"id": 264,
+				"name": "DK5",
+				"children": []
+			},
+			{
+				"id": 265,
+				"name": "DOP10",
+				"children": []
+			},
+			{
+				"id": 266,
+				"name": "DOP20",
+				"children": []
+			},
+			{
+				"id": 267,
+				"name": "DOP40",
+				"children": []
+			},
+			{
+				"id": 268,
+				"name": "DTK25",
+				"children": []
+			},
+			{
+				"id": 269,
+				"name": "DTK50",
+				"children": []
+			},
+			{
+				"id": 270,
+				"name": "Verzeichnis öffentlicher Grünanlagen",
+				"children": []
+			},
+			{
+				"id": 271,
+				"name": "Kleingartenanlagen",
+				"children": []
+			},
+			{
+				"id": 272,
+				"name": "Friedhöfe",
+				"children": []
+			},
+			{
+				"id": 273,
+				"name": "Schutzwürdige Böden Lebensraumfunktion",
+				"children": []
+			},
+			{
+				"id": 274,
+				"name": "Schutzwürdige Böden Archiv Kulturgeschichte",
+				"children": []
+			},
+			{
+				"id": 275,
+				"name": "Schutzwürdige Böden Archiv Naturgeschichte",
+				"children": []
+			},
+			{
+				"id": 276,
+				"name": "Moorböden an der Oberfläche",
+				"children": []
+			},
+			{
+				"id": 277,
+				"name": "Wasserbuch historisch",
+				"children": []
+			},
+			{
+				"id": 278,
+				"name": "Wasserbuch",
+				"children": []
+			},
+			{
+				"id": 279,
+				"name": "Bruchkanten Polyline",
+				"children": []
+			},
+			{
+				"id": 280,
+				"name": "Bruchkanten Polygon",
+				"children": []
+			},
+			{
+				"id": 281,
+				"name": "Flächenhafte Biotope weitere Biotope",
+				"children": []
+			},
+			{
+				"id": 282,
+				"name": "Linienhafte Biotope weitere Biotope",
+				"children": []
+			},
+			{
+				"id": 283,
+				"name": "Punkthafte Biotope weitere Biotope",
+				"children": []
+			},
+			{
+				"id": 284,
+				"name": "Flächenhafte Biotope vollständig geschützt",
+				"children": []
+			},
+			{
+				"id": 285,
+				"name": "Flächenhafte Biotope teilweise geschützt",
+				"children": []
+			},
+			{
+				"id": 286,
+				"name": "Linienhafte Biotope vollständig geschützt",
+				"children": []
+			},
+			{
+				"id": 287,
+				"name": "Linienhafte Biotope teilweise geschützt",
+				"children": []
+			},
+			{
+				"id": 288,
+				"name": "Punkthafte Biotope vollständig geschützt",
+				"children": []
+			},
+			{
+				"id": 289,
+				"name": "Sehnen",
+				"children": []
+			},
+			{
+				"id": 290,
+				"name": "Grenzpunkte",
+				"children": []
+			},
+			{
+				"id": 291,
+				"name": "Tag Schutzzone 2",
+				"children": []
+			},
+			{
+				"id": 292,
+				"name": "Tag Schutzzone 1",
+				"children": []
+			},
+			{
+				"id": 293,
+				"name": "Nacht Schutzzone",
+				"children": []
+			},
+			{
+				"id": 294,
+				"name": "Tag",
+				"children": []
+			},
+			{
+				"id": 295,
+				"name": "Nacht",
+				"children": []
+			},
+			{
+				"id": 296,
+				"name": "Gewässer",
+				"children": []
+			},
+			{
+				"id": 297,
+				"name": "Vegetation",
+				"children": []
+			},
+			{
+				"id": 298,
+				"name": "Verkehr",
+				"children": []
+			},
+			{
+				"id": 299,
+				"name": "Siedlung",
+				"children": []
+			},
+			{
+				"id": 300,
+				"name": "Brunnen Bohrungen (flächenartig)",
+				"children": []
+			},
+			{
+				"id": 301,
+				"name": "Gebäudeflächen",
+				"children": []
+			},
+			{
+				"id": 302,
+				"name": "Brunnen Bohrungen (punktartig)",
+				"children": []
+			},
+			{
+				"id": 303,
+				"name": "Cadastral Parcel",
+				"children": []
+			},
+			{
+				"id": 304,
+				"name": "Cadastral Zoning",
+				"children": []
+			},
+			{
+				"id": 305,
+				"name": "Pflanzstandorte 2011",
+				"children": []
+			},
+			{
+				"id": 306,
+				"name": "Pflanzstandorte 2012",
+				"children": []
+			},
+			{
+				"id": 307,
+				"name": "Pflanzstandorte 2013",
+				"children": []
+			},
+			{
+				"id": 308,
+				"name": "Pflanzstandorte 2014",
+				"children": []
+			},
+			{
+				"id": 309,
+				"name": "Pflanzstandorte aktuell",
+				"children": []
+			},
+			{
+				"id": 310,
+				"name": "Pflanzstandorte aktuell gepflanzt / ausgespendet",
+				"children": []
+			},
+			{
+				"id": 311,
+				"name": "Pflanzstandorte 2015",
+				"children": []
+			},
+			{
+				"id": 312,
+				"name": "Pflanzstandorte 2016",
+				"children": []
+			},
+			{
+				"id": 313,
+				"name": "Pflanzstandorte 2017",
+				"children": []
+			},
+			{
+				"id": 314,
+				"name": "Pflanzstandorte 2018",
+				"children": []
+			},
+			{
+				"id": 315,
+				"name": "Pflanzstandorte 2019",
+				"children": []
+			},
+			{
+				"id": 316,
+				"name": "Pflanzstandorte 2020",
+				"children": []
+			},
+			{
+				"id": 317,
+				"name": "Pflanzstandorte 2021",
+				"children": []
+			},
+			{
+				"id": 318,
+				"name": "Pflanzstandorte 2022",
+				"children": []
+			},
+			{
+				"id": 319,
+				"name": "Vermessungskarten 1916-1925",
+				"children": []
+			},
+			{
+				"id": 320,
+				"name": "Vermessungskarten 1911-1915",
+				"children": []
+			},
+			{
+				"id": 321,
+				"name": "Vermessungskarten 1900-1910",
+				"children": []
+			},
+			{
+				"id": 322,
+				"name": "Vermessungskarten 1890-1899",
+				"children": []
+			},
+			{
+				"id": 323,
+				"name": "Vermessungskarten 1879-1889",
+				"children": []
+			},
+			{
+				"id": 324,
+				"name": "Bodenschätzung Flächen",
+				"children": []
+			},
+			{
+				"id": 325,
+				"name": "Bodenschätzung Landesmustervergleichsstück Flächen",
+				"children": []
+			},
+			{
+				"id": 326,
+				"name": "Bodenschätzung Linien",
+				"children": []
+			},
+			{
+				"id": 327,
+				"name": "Bodenschätzung Landesmustervergleichsstück Punkte",
+				"children": []
+			},
+			{
+				"id": 328,
+				"name": "Bodenschätzung Grablöcher",
+				"children": []
+			},
+			{
+				"id": 329,
+				"name": "Bodenschätzung Texte",
+				"children": []
+			},
+			{
+				"id": 330,
+				"name": "Bodenschätzung Signaturen",
+				"children": []
+			},
+			{
+				"id": 331,
+				"name": "Versickerungspotential mit Gefälle",
+				"children": []
+			},
+			{
+				"id": 332,
+				"name": "Versickerungspotential",
+				"children": []
+			},
+			{
+				"id": 333,
+				"name": "Versickerungsfähige Tiefe (GLA-Bohrungen)",
+				"children": []
+			},
+			{
+				"id": 334,
+				"name": "Versickerungspotential mit GW-Flurabstand kleiner 1m",
+				"children": []
+			},
+			{
+				"id": 335,
+				"name": "Recyclinghöfe",
+				"children": []
+			},
+			{
+				"id": 336,
+				"name": "Altpapier-Depotcontainer (blau)",
+				"children": []
+			},
+			{
+				"id": 337,
+				"name": "Altglas-Depotcontainer (grün)",
+				"children": []
+			},
+			{
+				"id": 338,
+				"name": "Wertstoff-Depotcontainer (gelb)",
+				"children": []
+			},
+			{
+				"id": 339,
+				"name": "Elektrokleingeräte-Depotcontainer (orange)",
+				"children": []
+			},
+			{
+				"id": 340,
+				"name": "Protected Sites - Cultural",
+				"children": []
+			},
+			{
+				"id": 341,
+				"name": "Protected Sites",
+				"children": []
+			},
+			{
+				"id": 342,
+				"name": "Protected Sites - Biosphere Reserve",
+				"children": []
+			},
+			{
+				"id": 343,
+				"name": "Protected Sites - Habitat Species Management Area",
+				"children": []
+			},
+			{
+				"id": 344,
+				"name": "Protected Sites - IUCN",
+				"children": []
+			},
+			{
+				"id": 345,
+				"name": "Protected Sites - Monument",
+				"children": []
+			},
+			{
+				"id": 346,
+				"name": "Protected Sites - National Monuments Record",
+				"children": []
+			},
+			{
+				"id": 347,
+				"name": "Protected Sites - Natura 2000",
+				"children": []
+			},
+			{
+				"id": 348,
+				"name": "Protected Sites - Natural Monument",
+				"children": []
+			},
+			{
+				"id": 349,
+				"name": "Protected Sites - Protected Landscape or Seascape",
+				"children": []
+			},
+			{
+				"id": 350,
+				"name": "Protected Sites - Ramsar",
+				"children": []
+			},
+			{
+				"id": 351,
+				"name": "Protected Sites - Special Area Of Conservation",
+				"children": []
+			},
+			{
+				"id": 352,
+				"name": "Protected Sites - Special Protection Area",
+				"children": []
+			},
+			{
+				"id": 353,
+				"name": "Protected Sites - UNESCO man and biosphere programme",
+				"children": []
+			},
+			{
+				"id": 354,
+				"name": "Protected Sites - UNESCOWorldHeritage",
+				"children": []
+			},
+			{
+				"id": 355,
+				"name": "Protected Sites - National Park",
+				"children": []
+			},
+			{
+				"id": 356,
+				"name": "Bodenaufschüttungen",
+				"children": []
+			},
+			{
+				"id": 357,
+				"name": "Moorböden an der Oberfläche",
+				"children": []
+			},
+			{
+				"id": 358,
+				"name": "Oberflächennahe Torfe bis 1 m Tiefe",
+				"children": []
+			},
+			{
+				"id": 359,
+				"name": "Begrabene Torfe im Untergrund",
+				"children": []
+			},
+			{
+				"id": 360,
+				"name": "Administrative Unit",
+				"children": []
+			},
+			{
+				"id": 361,
+				"name": "Administrative boundary",
+				"children": []
+			},
+			{
+				"id": 362,
+				"name": "Waterbody",
+				"children": []
+			},
+			{
+				"id": 363,
+				"name": "Wetlands",
+				"children": []
+			},
+			{
+				"id": 364,
+				"name": "Man-made Object Crossing",
+				"children": []
+			},
+			{
+				"id": 365,
+				"name": "Man-made Object DamOrWeir",
+				"children": []
+			},
+			{
+				"id": 366,
+				"name": "Man-made Object Lock",
+				"children": []
+			},
+			{
+				"id": 367,
+				"name": "Man-made Object ShorelineConstruction",
+				"children": []
+			},
+			{
+				"id": 368,
+				"name": "Man-made Object Embankment",
+				"children": []
+			},
+			{
+				"id": 369,
+				"name": "Man-made Object",
+				"children": []
+			},
+			{
+				"id": 370,
+				"name": "Man-made Object Sluice",
+				"children": []
+			},
+			{
+				"id": 371,
+				"name": "Waterbody Watercourse",
+				"children": []
+			},
+			{
+				"id": 372,
+				"name": "Waterbody StandingWater",
+				"children": []
+			},
+			{
+				"id": 373,
+				"name": "Man-made Object",
+				"children": []
+			},
+			{
+				"id": 374,
+				"name": "Waterbody",
+				"children": []
+			},
+			{
+				"id": 375,
+				"name": "Wetlands",
+				"children": []
+			},
+			{
+				"id": 376,
+				"name": "Man-made Object Crossing",
+				"children": []
+			},
+			{
+				"id": 377,
+				"name": "Man-made Object DamOrWeir",
+				"children": []
+			},
+			{
+				"id": 378,
+				"name": "Man-made Object Lock",
+				"children": []
+			},
+			{
+				"id": 379,
+				"name": "Man-made Object ShorelineConstruction",
+				"children": []
+			},
+			{
+				"id": 380,
+				"name": "Man-made Object Sluice",
+				"children": []
+			},
+			{
+				"id": 381,
+				"name": "Man-made Object Embankment",
+				"children": []
+			},
+			{
+				"id": 382,
+				"name": "Waterbody Watercourse",
+				"children": []
+			},
+			{
+				"id": 383,
+				"name": "Waterbody StandingWater",
+				"children": []
+			},
+			{
+				"id": 384,
+				"name": "Autobahn",
+				"children": []
+			},
+			{
+				"id": 385,
+				"name": "Bundesstraße",
+				"children": []
+			},
+			{
+				"id": 386,
+				"name": "Bahn",
+				"children": []
+			},
+			{
+				"id": 387,
+				"name": "Ergänzungskorridore für Großsäuger (Rothirsch)",
+				"children": []
+			},
+			{
+				"id": 388,
+				"name": "Biotopverbundachsen [Feucht-, Trocken- und Waldlebensräume]",
+				"children": []
+			},
+			{
+				"id": 389,
+				"name": "Bedeutende Verbundachsen",
+				"children": []
+			},
+			{
+				"id": 390,
+				"name": "Biotopverbund ausserhalb der MRH",
+				"children": []
+			},
+			{
+				"id": 391,
+				"name": "Biotopverbund (generalisiert) [Feucht-, Trocken- und Waldlebensräume]",
+				"children": []
+			},
+			{
+				"id": 392,
+				"name": "Man-made Object Crossing",
+				"children": []
+			},
+			{
+				"id": 393,
+				"name": "Man-made Object DamOrWeir",
+				"children": []
+			},
+			{
+				"id": 394,
+				"name": "Man-made Object Ford",
+				"children": []
+			},
+			{
+				"id": 395,
+				"name": "Man-made Object Lock",
+				"children": []
+			},
+			{
+				"id": 396,
+				"name": "Man-made Object ShorelineConstruction",
+				"children": []
+			},
+			{
+				"id": 397,
+				"name": "Man-made Object Sluice",
+				"children": []
+			},
+			{
+				"id": 398,
+				"name": "Man-made Object",
+				"children": []
+			},
+			{
+				"id": 399,
+				"name": "Wasserschutzgebietszone III",
+				"children": []
+			},
+			{
+				"id": 400,
+				"name": "Wasserschutzgebietszone II",
+				"children": []
+			},
+			{
+				"id": 401,
+				"name": "Gewässerflächen",
+				"children": []
+			},
+			{
+				"id": 402,
+				"name": "Gewässernetz",
+				"children": []
+			},
+			{
+				"id": 403,
+				"name": "LAU Stadtbezirke",
+				"children": []
+			},
+			{
+				"id": 404,
+				"name": "LAU Stadt",
+				"children": []
+			},
+			{
+				"id": 405,
+				"name": "LAU Statistische Gebiete",
+				"children": []
+			},
+			{
+				"id": 406,
+				"name": "LAU Stadtteile",
+				"children": []
+			},
+			{
+				"id": 407,
+				"name": "2013-05 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 408,
+				"name": "2013-08 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 409,
+				"name": "2013-06 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 410,
+				"name": "2013-06 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 411,
+				"name": "2013-08 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 412,
+				"name": "2013-11 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 413,
+				"name": "2013-05 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 414,
+				"name": "2013-11 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 415,
+				"name": "2013-05 pH",
+				"children": []
+			},
+			{
+				"id": 416,
+				"name": "2013-06 pH",
+				"children": []
+			},
+			{
+				"id": 417,
+				"name": "2013-08 pH",
+				"children": []
+			},
+			{
+				"id": 418,
+				"name": "2013-11 pH",
+				"children": []
+			},
+			{
+				"id": 419,
+				"name": "2013-05 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 420,
+				"name": "2013-06 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 421,
+				"name": "2013-08 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 422,
+				"name": "2013-11 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 423,
+				"name": "2013-05 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 424,
+				"name": "2013-06 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 425,
+				"name": "2013-08 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 426,
+				"name": "2013-11 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 427,
+				"name": "2013-05 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 428,
+				"name": "2013-06 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 429,
+				"name": "2013-08 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 430,
+				"name": "2013-11 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 431,
+				"name": "2013-05 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 432,
+				"name": "2013-06 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 433,
+				"name": "2013-08 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 434,
+				"name": "2013-11 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 435,
+				"name": "2013-05 Gesamtphosphor [mg/l]",
+				"children": []
+			},
+			{
+				"id": 436,
+				"name": "2013-06 Gesamtphosphor [mg/l]",
+				"children": []
+			},
+			{
+				"id": 437,
+				"name": "2013-08 Gesamtphosphor [mg/l]",
+				"children": []
+			},
+			{
+				"id": 438,
+				"name": "2013-11 Gesamtphosphor [mg/l]",
+				"children": []
+			},
+			{
+				"id": 439,
+				"name": "2013-05 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 440,
+				"name": "2013-06 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 441,
+				"name": "2013-08 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 442,
+				"name": "2013-11 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 443,
+				"name": "2013-05 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 444,
+				"name": "2013-06 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 445,
+				"name": "2013-08 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 446,
+				"name": "2013-11 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 447,
+				"name": "2013-05 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 448,
+				"name": "2013-06 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 449,
+				"name": "2013-08 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 450,
+				"name": "2013-11 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 451,
+				"name": "2013-05 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 452,
+				"name": "2013-06 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 453,
+				"name": "2013-08 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 454,
+				"name": "2013-11 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 455,
+				"name": "2013-05 Crustaceen [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 456,
+				"name": "2013-06 Crustaceen [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 457,
+				"name": "2013-08 Crustaceen [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 458,
+				"name": "2013-05 Rotatorien [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 459,
+				"name": "2013-06 Rotatorien [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 460,
+				"name": "2013-08 Rotatorien [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 461,
+				"name": "Hypothetisches Wärmenetz Gebäude unsaniert",
+				"children": []
+			},
+			{
+				"id": 462,
+				"name": "Hypothetisches Wärmenetz Gebäude saniert",
+				"children": []
+			},
+			{
+				"id": 463,
+				"name": "Stromverbrauch",
+				"children": []
+			},
+			{
+				"id": 464,
+				"name": "Gebäudecluster mit Heizstromverbrauch",
+				"children": []
+			},
+			{
+				"id": 465,
+				"name": "Abs. Nutzwärmebedarf, Gebäude unsaniert",
+				"children": []
+			},
+			{
+				"id": 466,
+				"name": "Abs. Nutzwärmebedarf Baubl., Gebäude unsaniert",
+				"children": []
+			},
+			{
+				"id": 467,
+				"name": "Abs. Nutzwärmebedarf Baubl., Gebäude saniert",
+				"children": []
+			},
+			{
+				"id": 468,
+				"name": "Abs. Nutzwärmebedarf, Gebäude saniert",
+				"children": []
+			},
+			{
+				"id": 469,
+				"name": "Spez. Nutzwärmebedarf, Gebäude unsaniert ",
+				"children": []
+			},
+			{
+				"id": 470,
+				"name": "Wärmedichte, Gebäude saniert",
+				"children": []
+			},
+			{
+				"id": 471,
+				"name": "Spez. Nutzwärmebedarf, Gebäude saniert ",
+				"children": []
+			},
+			{
+				"id": 472,
+				"name": "Wärmedichte, Gebäude unsaniert",
+				"children": []
+			},
+			{
+				"id": 473,
+				"name": "Forsteinrichtung",
+				"children": []
+			},
+			{
+				"id": 474,
+				"name": "Forstwege",
+				"children": []
+			},
+			{
+				"id": 475,
+				"name": "Forsteinrichtung Beschriftung",
+				"children": []
+			},
+			{
+				"id": 476,
+				"name": "Wasserschutzgebiete 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 477,
+				"name": "EG-Vogelschutzgebiete 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 478,
+				"name": "Natur- und Landschaftsschutzgebiete 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 479,
+				"name": "betroffene Einwohner KüstenHW häufig 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 480,
+				"name": "Flächennutzung KüstenHW häufig 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 481,
+				"name": "FHH-Gebiete 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 482,
+				"name": "EG- Badegewässer 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 483,
+				"name": "Flächennutzung KüstenHW extrem 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 484,
+				"name": "Wasserstände HW-Ereignisse 2.HWRM 2019 [ab 1:25.000]",
+				"children": []
+			},
+			{
+				"id": 485,
+				"name": "Wassertiefen KüstenHW mittel 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 486,
+				"name": "Flächennutzung KüstenHW mittel 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 487,
+				"name": "betroffene Einwohner KüstenHW mittel 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 488,
+				"name": "betroffene Einwohner FlussHW mittel 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 489,
+				"name": "Flächennutzung FlussHW häufig 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 490,
+				"name": "Wassertiefen FlussHW selten 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 491,
+				"name": "Flächennutzung FlussHW mittel 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 492,
+				"name": "Wassertiefen FlussHW mittel 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 493,
+				"name": "betroffene Einwohner FlussHW häufig 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 494,
+				"name": "Wassertiefen FlussHW häufig 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 495,
+				"name": "Wassertiefen KüstenHW extrem 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 496,
+				"name": "Reduziertes Gewässernetz 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 497,
+				"name": "Risikogebiet Flusshochwasser 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 498,
+				"name": "betroffene Einwohner FlussHW selten 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 499,
+				"name": "Gewässerbauwerke 2.HWRM 2019 [ab 1:50.000]",
+				"children": []
+			},
+			{
+				"id": 500,
+				"name": "Einleitungen 2.HWRM 2019 [ab 1:50.000]",
+				"children": []
+			},
+			{
+				"id": 501,
+				"name": "betroffene Einwohner KüstenHW extrem 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 502,
+				"name": "Risikogebiet Küstenhochwasser 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 503,
+				"name": "Pegel 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 504,
+				"name": "Gewässerstationierung in Flussmetern 2.HWRM 2019 [ab 1:25.000]",
+				"children": []
+			},
+			{
+				"id": 505,
+				"name": "Wassertiefen KüstenHW häufig 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 506,
+				"name": "Flächennutzung FlussHW selten 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 507,
+				"name": "UNESCO-Weltkulturerbe",
+				"children": []
+			},
+			{
+				"id": 508,
+				"name": "IED-Anlagen 2.HWRM 2019 [ab 1:100.000]",
+				"children": []
+			},
+			{
+				"id": 509,
+				"name": "Öffentliche Hochwasserschutzanlagen 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 510,
+				"name": "Private Hochwasserschutzanlagen: Hafenpolder 2.HWRM 2019",
+				"children": []
+			},
+			{
+				"id": 511,
+				"name": "2014-05 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 512,
+				"name": "2014-08 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 513,
+				"name": "2014-07 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 514,
+				"name": "2014-09 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 515,
+				"name": "2014-05 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 516,
+				"name": "2014-07 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 517,
+				"name": "2014-08 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 518,
+				"name": "2014-09 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 519,
+				"name": "2014-05 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 520,
+				"name": "2014-07 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 521,
+				"name": "2014-11 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 522,
+				"name": "2014-08 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 523,
+				"name": "2014-09 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 524,
+				"name": "2014-11 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 525,
+				"name": "2014-09 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 526,
+				"name": "2014-11 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 527,
+				"name": "2014-05 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 528,
+				"name": "2014-07 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 529,
+				"name": "2014-05 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 530,
+				"name": "2014-08 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 531,
+				"name": "2014-09 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 532,
+				"name": "2014-11 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 533,
+				"name": "2014-05 Gesamtphosphor [mg/l]",
+				"children": []
+			},
+			{
+				"id": 534,
+				"name": "2014-07 Gesamtphosphor [mg/l]",
+				"children": []
+			},
+			{
+				"id": 535,
+				"name": "2014-05 pH",
+				"children": []
+			},
+			{
+				"id": 536,
+				"name": "2014-08 Gesamtphosphor [mg/l]",
+				"children": []
+			},
+			{
+				"id": 537,
+				"name": "2014-08 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 538,
+				"name": "2014-09 pH",
+				"children": []
+			},
+			{
+				"id": 539,
+				"name": "2014-05 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 540,
+				"name": "2014-11 Gesamtphosphor [mg/l]",
+				"children": []
+			},
+			{
+				"id": 541,
+				"name": "2014-09 Gesamtphosphor [mg/l]",
+				"children": []
+			},
+			{
+				"id": 542,
+				"name": "2014-07 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 543,
+				"name": "2014-08 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 544,
+				"name": "2014-09 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 545,
+				"name": "2014-11 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 546,
+				"name": "2014-05 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 547,
+				"name": "2014-07 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 548,
+				"name": "2014-08 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 549,
+				"name": "2014-09 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 550,
+				"name": "2014-07 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 551,
+				"name": "2014-07 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 552,
+				"name": "2014-07 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 553,
+				"name": "2014-11 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 554,
+				"name": "2014-09 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 555,
+				"name": "2014-08 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 556,
+				"name": "2014-11 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 557,
+				"name": "2014-11 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 558,
+				"name": "2014-07 pH",
+				"children": []
+			},
+			{
+				"id": 559,
+				"name": "2014-11 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 560,
+				"name": "2014-05 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 561,
+				"name": "2014-05 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 562,
+				"name": "2014-05 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 563,
+				"name": "2014-07 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 564,
+				"name": "2014-09 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 565,
+				"name": "2014-08 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 566,
+				"name": "2014-09 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 567,
+				"name": "2014-11 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 568,
+				"name": "2014-11 pH",
+				"children": []
+			},
+			{
+				"id": 569,
+				"name": "2014-05 Crustaceen [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 570,
+				"name": "2014-05 Rotatorien [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 571,
+				"name": "2014-08 pH",
+				"children": []
+			},
+			{
+				"id": 572,
+				"name": "2014-08 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 573,
+				"name": "2015-07 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 574,
+				"name": "2015-09 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 575,
+				"name": "2015-06 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 576,
+				"name": "2015-09 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 577,
+				"name": "2015-06 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 578,
+				"name": "2015-09 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 579,
+				"name": "2015-07 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 580,
+				"name": "2015-06 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 581,
+				"name": "2015-09 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 582,
+				"name": "2015-06 pH",
+				"children": []
+			},
+			{
+				"id": 583,
+				"name": "2015-06 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 584,
+				"name": "2015-07 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 585,
+				"name": "2015-07 pH",
+				"children": []
+			},
+			{
+				"id": 586,
+				"name": "2015-07 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 587,
+				"name": "2015-06 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 588,
+				"name": "2015-06 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 589,
+				"name": "2015-09 pH",
+				"children": []
+			},
+			{
+				"id": 590,
+				"name": "2015-06 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 591,
+				"name": "2015-07 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 592,
+				"name": "2015-09 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 593,
+				"name": "2015-07 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 594,
+				"name": "2015-09 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 595,
+				"name": "2015-06 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 596,
+				"name": "2015-07 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 597,
+				"name": "2015-09 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 598,
+				"name": "2015-06 Crustaceen [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 599,
+				"name": "2015-06 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 600,
+				"name": "2015-06 Rotatorien [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 601,
+				"name": "2015-09 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 602,
+				"name": "2015-07 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 603,
+				"name": "2015-09 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 604,
+				"name": "2015-07 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 605,
+				"name": "2015-06 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 606,
+				"name": "2015-07 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 607,
+				"name": "2015-09 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 608,
+				"name": "2015-07 Crustaceen [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 609,
+				"name": "2015-07 Rotatorien [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 610,
+				"name": "2017-05 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 611,
+				"name": "2017-06 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 612,
+				"name": "2017-07 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 613,
+				"name": "2017-05 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 614,
+				"name": "2017-05 pH",
+				"children": []
+			},
+			{
+				"id": 615,
+				"name": "2017-06 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 616,
+				"name": "2017-07 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 617,
+				"name": "2017-06 pH",
+				"children": []
+			},
+			{
+				"id": 618,
+				"name": "2017-07 pH",
+				"children": []
+			},
+			{
+				"id": 619,
+				"name": "2017-05 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 620,
+				"name": "2017-07 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 621,
+				"name": "2017-06 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 622,
+				"name": "2017-07 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 623,
+				"name": "2017-05 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 624,
+				"name": "2017-07 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 625,
+				"name": "2017-06 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 626,
+				"name": "2017-07 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 627,
+				"name": "2017-06 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 628,
+				"name": "2017-06 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 629,
+				"name": "2017-05 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 630,
+				"name": "2017-05 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 631,
+				"name": "2017-06 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 632,
+				"name": "2017-07 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 633,
+				"name": "2017-05 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 634,
+				"name": "2017-06 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 635,
+				"name": "2017-07 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 636,
+				"name": "2017-05 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 637,
+				"name": "2017-06 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 638,
+				"name": "2017-07 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 639,
+				"name": "2017-05 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 640,
+				"name": "2017-06 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 641,
+				"name": "2017-07 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 642,
+				"name": "2018-04 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 643,
+				"name": "2018-08 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 644,
+				"name": "2018-05 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 645,
+				"name": "2018-05 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 646,
+				"name": "2018-07 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 647,
+				"name": "2018-05 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 648,
+				"name": "2018-07 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 649,
+				"name": "2018-08 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 650,
+				"name": "2018-07 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 651,
+				"name": "2018-04 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 652,
+				"name": "2018-05 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 653,
+				"name": "2018-07 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 654,
+				"name": "2018-08 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 655,
+				"name": "2018-08 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 656,
+				"name": "2018-07 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 657,
+				"name": "2018-05 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 658,
+				"name": "2018-04 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 659,
+				"name": "2018-04 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 660,
+				"name": "2018-07 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 661,
+				"name": "2018-04 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 662,
+				"name": "2018-05 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 663,
+				"name": "2018-08 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 664,
+				"name": "2018-07 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 665,
+				"name": "2018-05 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 666,
+				"name": "2018-04 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 667,
+				"name": "2018-08 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 668,
+				"name": "2018-08 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 669,
+				"name": "2018-04 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 670,
+				"name": "2018-05 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 671,
+				"name": "2018-07 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 672,
+				"name": "2018-08 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 673,
+				"name": "2018-04 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 674,
+				"name": "2018-05 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 675,
+				"name": "2018-07 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 676,
+				"name": "2018-08 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 677,
+				"name": "2018-04 pH",
+				"children": []
+			},
+			{
+				"id": 678,
+				"name": "2018-05 pH",
+				"children": []
+			},
+			{
+				"id": 679,
+				"name": "2018-07 pH",
+				"children": []
+			},
+			{
+				"id": 680,
+				"name": "2018-08 pH",
+				"children": []
+			},
+			{
+				"id": 681,
+				"name": "2018-04 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 682,
+				"name": "2018-05 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 683,
+				"name": "2018-07 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 684,
+				"name": "2018-08 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 685,
+				"name": "2016-08 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 686,
+				"name": "2016-04 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 687,
+				"name": "2016-04 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 688,
+				"name": "2016-08 Leitfähigkeit [µS/cm]",
+				"children": []
+			},
+			{
+				"id": 689,
+				"name": "2013-08 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 690,
+				"name": "2016-08 Crustaceen [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 691,
+				"name": "2016-08 Rotatorien [Ind/l]",
+				"children": []
+			},
+			{
+				"id": 692,
+				"name": "2016-08 pH",
+				"children": []
+			},
+			{
+				"id": 693,
+				"name": "2016-04 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 694,
+				"name": "2016-08 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 695,
+				"name": "2016-04 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 696,
+				"name": "2016-04 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 697,
+				"name": "2016-08 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 698,
+				"name": "2016-04 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 699,
+				"name": "2016-04 pH",
+				"children": []
+			},
+			{
+				"id": 700,
+				"name": "2016-04 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 701,
+				"name": "2016-08 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 702,
+				"name": "2016-04 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 703,
+				"name": "2016-04 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 704,
+				"name": "2016-08 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 705,
+				"name": "2016-08 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 706,
+				"name": "2016-08 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 707,
+				"name": "2016-08 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 708,
+				"name": "2016-04 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 709,
+				"name": "Flächenländer IP",
+				"children": []
+			},
+			{
+				"id": 710,
+				"name": "Flächenländer Nachnutzer",
+				"children": []
+			},
+			{
+				"id": 711,
+				"name": "Institutionen national IP",
+				"children": []
+			},
+			{
+				"id": 712,
+				"name": "Kreise und Regionen IP",
+				"children": []
+			},
+			{
+				"id": 713,
+				"name": "Kreise und Regionen Nachnutzer",
+				"children": []
+			},
+			{
+				"id": 714,
+				"name": "Städte und Gemeinden IP",
+				"children": []
+			},
+			{
+				"id": 715,
+				"name": "Städte und Gemeinden Nachnutzer",
+				"children": []
+			},
+			{
+				"id": 716,
+				"name": "Deichkilometer",
+				"children": []
+			},
+			{
+				"id": 717,
+				"name": "Deichlinie/Hauptdeichlinie",
+				"children": []
+			},
+			{
+				"id": 718,
+				"name": "Grundgrenze Deich",
+				"children": []
+			},
+			{
+				"id": 719,
+				"name": "Bauwerksspezifikationen",
+				"children": []
+			},
+			{
+				"id": 720,
+				"name": "Deichverteidigung",
+				"children": []
+			},
+			{
+				"id": 721,
+				"name": "GeologicUnit",
+				"children": []
+			},
+			{
+				"id": 722,
+				"name": "Geology",
+				"children": []
+			},
+			{
+				"id": 723,
+				"name": "GK50 Petrographie",
+				"children": []
+			},
+			{
+				"id": 724,
+				"name": "GK5",
+				"children": []
+			},
+			{
+				"id": 725,
+				"name": "GK50 Praequartaer",
+				"children": []
+			},
+			{
+				"id": 726,
+				"name": "Soils",
+				"children": []
+			},
+			{
+				"id": 727,
+				"name": "Observed Soil Profile",
+				"children": []
+			},
+			{
+				"id": 728,
+				"name": "Building Part",
+				"children": []
+			},
+			{
+				"id": 729,
+				"name": "Building",
+				"children": []
+			},
+			{
+				"id": 730,
+				"name": "Bannwaldfläche NSG Heuckenlock",
+				"children": []
+			},
+			{
+				"id": 731,
+				"name": "Bannwald des Stadtwaldes Hamburg",
+				"children": []
+			},
+			{
+				"id": 732,
+				"name": "Übrige Waldflächen größer als 1 Hektar",
+				"children": []
+			},
+			{
+				"id": 733,
+				"name": "Flächen des Stadtwaldes Hamburg",
+				"children": []
+			},
+			{
+				"id": 734,
+				"name": "Wälder mit Bodenschutzfunktion",
+				"children": []
+			},
+			{
+				"id": 735,
+				"name": "Erholungswälder",
+				"children": []
+			},
+			{
+				"id": 736,
+				"name": "Wälder mit regionaler Klimaschutzwirkung",
+				"children": []
+			},
+			{
+				"id": 737,
+				"name": "Wälder mit Sichtschutzfunktion",
+				"children": []
+			},
+			{
+				"id": 738,
+				"name": "Compensation Surfaces",
+				"children": []
+			},
+			{
+				"id": 739,
+				"name": "Waterfront Area",
+				"children": []
+			},
+			{
+				"id": 740,
+				"name": "Water and Soil Association",
+				"children": []
+			},
+			{
+				"id": 741,
+				"name": "Building Protection Area",
+				"children": []
+			},
+			{
+				"id": 742,
+				"name": "Aircraft Noise Restriction Zone",
+				"children": []
+			},
+			{
+				"id": 743,
+				"name": "Netz Echtzeit Zoom5",
+				"children": []
+			},
+			{
+				"id": 744,
+				"name": "Pfeile Echtzeit Zoom5",
+				"children": []
+			},
+			{
+				"id": 745,
+				"name": "Netz Echtzeit Zoom4",
+				"children": []
+			},
+			{
+				"id": 746,
+				"name": "Pfeile Echtzeit Zoom4",
+				"children": []
+			},
+			{
+				"id": 747,
+				"name": "Netz Echtzeit Zoom3",
+				"children": []
+			},
+			{
+				"id": 748,
+				"name": "Pfeile Echtzeit Zoom3",
+				"children": []
+			},
+			{
+				"id": 749,
+				"name": "Netz Echtzeit Zoom2",
+				"children": []
+			},
+			{
+				"id": 750,
+				"name": "Pfeile Echtzeit Zoom2",
+				"children": []
+			},
+			{
+				"id": 751,
+				"name": "Netz Echtzeit Zoom1",
+				"children": []
+			},
+			{
+				"id": 752,
+				"name": "Pfeile Echtzeit Zoom1",
+				"children": []
+			},
+			{
+				"id": 753,
+				"name": "Netz Echtzeit Zoom0",
+				"children": []
+			},
+			{
+				"id": 754,
+				"name": "Pfeile Echtzeit Zoom0",
+				"children": []
+			},
+			{
+				"id": 755,
+				"name": "Text Echtzeit Zoom1",
+				"children": []
+			},
+			{
+				"id": 756,
+				"name": "Genese",
+				"children": []
+			},
+			{
+				"id": 757,
+				"name": "Geologische Kartiereinheit",
+				"children": []
+			},
+			{
+				"id": 758,
+				"name": "Kaltzeiten",
+				"children": []
+			},
+			{
+				"id": 759,
+				"name": "Petrographie",
+				"children": []
+			},
+			{
+				"id": 760,
+				"name": "2019-04 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 761,
+				"name": "2019-04 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 762,
+				"name": "2019-04 Leitfähigkeit [µg/cm]",
+				"children": []
+			},
+			{
+				"id": 763,
+				"name": "2019-04 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 764,
+				"name": "2019-04 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 765,
+				"name": "2019-04 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 766,
+				"name": "2019-04 pH",
+				"children": []
+			},
+			{
+				"id": 767,
+				"name": "2019-04 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 768,
+				"name": "2019-04 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 769,
+				"name": "2019-04 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 770,
+				"name": "2019-04 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 771,
+				"name": "2019-06 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 772,
+				"name": "2019-06 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 773,
+				"name": "2019-06 Leitfähigkeit [µg/cm]",
+				"children": []
+			},
+			{
+				"id": 774,
+				"name": "2019-06 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 775,
+				"name": "2019-06 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 776,
+				"name": "2019-06 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 777,
+				"name": "2019-06 pH",
+				"children": []
+			},
+			{
+				"id": 778,
+				"name": "2019-06 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 779,
+				"name": "2019-06 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 780,
+				"name": "2019-06 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 781,
+				"name": "2019-06 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 782,
+				"name": "2019-08 Ammonium [mg/l]",
+				"children": []
+			},
+			{
+				"id": 783,
+				"name": "2019-08 Chlorophyll [µg/l]",
+				"children": []
+			},
+			{
+				"id": 784,
+				"name": "2019-08 Leitfähigkeit [µg/cm]",
+				"children": []
+			},
+			{
+				"id": 785,
+				"name": "2019-08 Nitrat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 786,
+				"name": "2019-08 Nitrit [mg/l]",
+				"children": []
+			},
+			{
+				"id": 787,
+				"name": "2019-08 Sauerstoff [mg/l]",
+				"children": []
+			},
+			{
+				"id": 788,
+				"name": "2019-08 pH",
+				"children": []
+			},
+			{
+				"id": 789,
+				"name": "2019-08 Phosphat [mg/l]",
+				"children": []
+			},
+			{
+				"id": 790,
+				"name": "2019-08 Temperatur [°C]",
+				"children": []
+			},
+			{
+				"id": 791,
+				"name": "2019-08 TOC [mg/l]",
+				"children": []
+			},
+			{
+				"id": 792,
+				"name": "2019-08 Trübung [FNU]",
+				"children": []
+			},
+			{
+				"id": 793,
+				"name": "Kühlleistung des Bodens an Sommertagen",
+				"children": []
+			},
+			{
+				"id": 794,
+				"name": "Grenze zwischen Geest- und Marschgebieten",
+				"children": []
+			},
+			{
+				"id": 795,
+				"name": "Wanderrouten entlang 1. und 2. Grüner Ring",
+				"children": []
+			},
+			{
+				"id": 796,
+				"name": "Tipps in den Landschaftsachsen",
+				"children": []
+			},
+			{
+				"id": 797,
+				"name": "Wanderrouten durch die Landschaftsachsen",
+				"children": []
+			},
+			{
+				"id": 798,
+				"name": "2 Gesamtstädtisch bedeutsame Grünverbindungen",
+				"children": []
+			},
+			{
+				"id": 799,
+				"name": "6 Grüne Ringe",
+				"children": []
+			},
+			{
+				"id": 800,
+				"name": "1 Hauptwegenetz des Freiraumverbundes",
+				"children": []
+			},
+			{
+				"id": 801,
+				"name": "7 Landschaftsachsen bis inkl. 2. Grüner Ring",
+				"children": []
+			},
+			{
+				"id": 802,
+				"name": "5 Öffentliche Parkanlagen und Spielplätze außerhalb des 2. Grünen Rings",
+				"children": []
+			},
+			{
+				"id": 803,
+				"name": "4 Öffentliche Parkanlagen und Spielplätze bis inkl. 2. Grüner Ring",
+				"children": []
+			},
+			{
+				"id": 804,
+				"name": "3 Potenzialflächen ohne Kompensation",
+				"children": []
+			},
+			{
+				"id": 805,
+				"name": "Senkentiefen",
+				"children": []
+			},
+			{
+				"id": 806,
+				"name": "Fließwege & Fließpfeile",
+				"children": []
+			},
+			{
+				"id": 807,
+				"name": "Ertragsmesszahlen – 01.01.2022",
+				"children": []
+			},
+			{
+				"id": 808,
+				"name": "Ertragsmesszahlen – 01.01.2023",
+				"children": []
+			},
+			{
+				"id": 809,
+				"name": "2019",
+				"children": []
+			},
+			{
+				"id": 810,
+				"name": "2011",
+				"children": []
+			},
+			{
+				"id": 811,
+				"name": "2013",
+				"children": []
+			},
+			{
+				"id": 812,
+				"name": "2016",
+				"children": []
+			},
+			{
+				"id": 813,
+				"name": "2010",
+				"children": []
+			},
+			{
+				"id": 814,
+				"name": "2011",
+				"children": []
+			},
+			{
+				"id": 815,
+				"name": "2012",
+				"children": []
+			},
+			{
+				"id": 816,
+				"name": "2013",
+				"children": []
+			},
+			{
+				"id": 817,
+				"name": "2014",
+				"children": []
+			},
+			{
+				"id": 818,
+				"name": "2015",
+				"children": []
+			},
+			{
+				"id": 819,
+				"name": "2016",
+				"children": []
+			},
+			{
+				"id": 820,
+				"name": "2017",
+				"children": []
+			},
+			{
+				"id": 821,
+				"name": "2018",
+				"children": []
+			},
+			{
+				"id": 822,
+				"name": "2020",
+				"children": []
+			},
+			{
+				"id": 823,
+				"name": "2021",
+				"children": []
+			},
+			{
+				"id": 824,
+				"name": "FairCup",
+				"children": []
+			},
+			{
+				"id": 825,
+				"name": "REBOWL",
+				"children": []
+			},
+			{
+				"id": 826,
+				"name": "reCIRCLE",
+				"children": []
+			},
+			{
+				"id": 827,
+				"name": "RELEVO",
+				"children": []
+			},
+			{
+				"id": 828,
+				"name": "Tiffin Loop",
+				"children": []
+			},
+			{
+				"id": 829,
+				"name": "Vytal",
+				"children": []
+			},
+			{
+				"id": 830,
+				"name": "2016",
+				"children": []
+			},
+			{
+				"id": 831,
+				"name": "2010",
+				"children": []
+			},
+			{
+				"id": 832,
+				"name": "2011",
+				"children": []
+			},
+			{
+				"id": 833,
+				"name": "2012",
+				"children": []
+			},
+			{
+				"id": 834,
+				"name": "2013",
+				"children": []
+			},
+			{
+				"id": 835,
+				"name": "2014",
+				"children": []
+			},
+			{
+				"id": 836,
+				"name": "2015",
+				"children": []
+			},
+			{
+				"id": 837,
+				"name": "2017",
+				"children": []
+			},
+			{
+				"id": 838,
+				"name": "Grundwasserneubildung Mittlere Rate 1961-1990 (Klimareferenzperiode)",
+				"children": []
+			},
+			{
+				"id": 839,
+				"name": "Grundwasserneubildung Mittlere Rate 1991-2019",
+				"children": []
+			},
+			{
+				"id": 840,
+				"name": "Grundwasserneubildung des hydrologischen Jahres 2019 (MIN)",
+				"children": []
+			},
+			{
+				"id": 841,
+				"name": "Grundwasserneubildung des hydrologischen Jahres 2018 (MAX)",
+				"children": []
+			},
+			{
+				"id": 842,
+				"name": "Einzugsgebiete 4. Ordnung",
+				"children": []
+			},
+			{
+				"id": 843,
+				"name": "Einzugsgebiete 5. Ordnung",
+				"children": []
+			},
+			{
+				"id": 844,
+				"name": "Einzugsgebiete 6. Ordnung",
+				"children": []
+			},
+			{
+				"id": 845,
+				"name": "Einzugsgebiete 7. Ordnung",
+				"children": []
+			},
+			{
+				"id": 846,
+				"name": "Bearbeitungsgebiete",
+				"children": []
+			},
+			{
+				"id": 847,
+				"name": "FGG Durchgängigkeit Bauwerke 2013",
+				"children": []
+			},
+			{
+				"id": 848,
+				"name": "FGG Durchgängigkeit Bauwerke 2021",
+				"children": []
+			},
+			{
+				"id": 849,
+				"name": "FGG Durchgängigkeit Handlungsziel",
+				"children": []
+			},
+			{
+				"id": 850,
+				"name": "Fliessgewässer",
+				"children": []
+			},
+			{
+				"id": 851,
+				"name": "Grundwasserkörper in Hauptgrundwasserleitern",
+				"children": []
+			},
+			{
+				"id": 852,
+				"name": "GW-Messstellen",
+				"children": []
+			},
+			{
+				"id": 853,
+				"name": "Küsten- und Übergangsgewässer",
+				"children": []
+			},
+			{
+				"id": 854,
+				"name": "OWK Messstellen",
+				"children": []
+			},
+			{
+				"id": 855,
+				"name": "OWK Einzugsgebiete",
+				"children": []
+			},
+			{
+				"id": 856,
+				"name": "Planungsraum",
+				"children": []
+			},
+			{
+				"id": 857,
+				"name": "Seen",
+				"children": []
+			},
+			{
+				"id": 858,
+				"name": "Tiefe Grundwasserkörper",
+				"children": []
+			},
+			{
+				"id": 859,
+				"name": "Chemischer Zustand der Grundwasserwasserkörper in Hauptgrundwasserleitern",
+				"children": []
+			},
+			{
+				"id": 860,
+				"name": "Chemischer Zustand der tiefen Grundwasserkörper",
+				"children": []
+			},
+			{
+				"id": 861,
+				"name": "Chemischer Zustand der Oberflächenwasserkörper",
+				"children": []
+			},
+			{
+				"id": 862,
+				"name": "Chemischer Zustand der Seen",
+				"children": []
+			},
+			{
+				"id": 863,
+				"name": "Durchgängigkeit der Oberflächenwasserkörper",
+				"children": []
+			},
+			{
+				"id": 864,
+				"name": "Mengenmäßiger Zustand der Grundwasserwasserkörper in Hauptgrundwasserleitern",
+				"children": []
+			},
+			{
+				"id": 865,
+				"name": "Mengenmäßiger Zustand der tiefen Grundwasserkörper",
+				"children": []
+			},
+			{
+				"id": 866,
+				"name": "Ökologisches Potenzial der Oberflächenwasserkörper",
+				"children": []
+			},
+			{
+				"id": 867,
+				"name": "Ökologisches Potenzial der Seen",
+				"children": []
+			},
+			{
+				"id": 868,
+				"name": "Umgesetzte Maßnahmen im 1. Bewirtschaftungsplan",
+				"children": []
+			},
+			{
+				"id": 869,
+				"name": "Chemischer Zustand der Grundwasserwasserkörper in Hauptgrundwasserleitern",
+				"children": []
+			},
+			{
+				"id": 870,
+				"name": "Chemischer Zustand der tiefen Grundwasserkörper",
+				"children": []
+			},
+			{
+				"id": 871,
+				"name": "Chemischer Zustand der Oberflächenwasserkörper",
+				"children": []
+			},
+			{
+				"id": 872,
+				"name": "Chemischer Zustand der Seen",
+				"children": []
+			},
+			{
+				"id": 873,
+				"name": "Durchgängigkeit der Oberflächenwasserkörper",
+				"children": []
+			},
+			{
+				"id": 874,
+				"name": "Mengenmäßiger Zustand der Grundwasserwasserkörper in Hauptgrundwasserleitern",
+				"children": []
+			},
+			{
+				"id": 875,
+				"name": "Mengenmäßiger Zustand der tiefen Grundwasserkörper",
+				"children": []
+			},
+			{
+				"id": 876,
+				"name": "Ökologisches Potenzial der Oberflächenwasserkörper",
+				"children": []
+			},
+			{
+				"id": 877,
+				"name": "Ökologisches Potenzial der Seen",
+				"children": []
+			},
+			{
+				"id": 878,
+				"name": "Umgesetzte Maßnahmen im 2. Bewirtschaftungsplan",
+				"children": []
+			},
+			{
+				"id": 879,
+				"name": "Chemischer Zustand der Grundwasserwasserkörper in Hauptgrundwasserleitern",
+				"children": []
+			},
+			{
+				"id": 880,
+				"name": "Chemischer Zustand der tiefen Grundwasserkörper",
+				"children": []
+			},
+			{
+				"id": 881,
+				"name": "Chemischer Zustand der Oberflächenwasserkörper",
+				"children": []
+			},
+			{
+				"id": 882,
+				"name": "Chemischer Zustand der Seen",
+				"children": []
+			},
+			{
+				"id": 883,
+				"name": "Durchgängigkeit der Oberflächenwasserkörper",
+				"children": []
+			},
+			{
+				"id": 884,
+				"name": "Gewässer mit Pflege- und Entwicklungsplänen",
+				"children": []
+			},
+			{
+				"id": 885,
+				"name": "Mengenmäßiger Zustand der Grundwasserwasserkörper in Hauptgrundwasserleitern",
+				"children": []
+			},
+			{
+				"id": 886,
+				"name": "Mengenmäßiger Zustand der tiefen Grundwasserkörper",
+				"children": []
+			},
+			{
+				"id": 887,
+				"name": "Ökologisches Potenzial der Oberflächenwasserkörper",
+				"children": []
+			},
+			{
+				"id": 888,
+				"name": "Ökologisches Potenzial der Seen",
+				"children": []
+			},
+			{
+				"id": 889,
+				"name": "Geplante Maßnahmen im 3. Bewirtschaftungsplan",
+				"children": []
+			},
+			{
+				"id": 890,
+				"name": "Gebiete des Hamburger Hafens nach Hafenverkehrs- und Schifffahrtsgesetz: Flächen",
+				"children": []
+			},
+			{
+				"id": 891,
+				"name": "Gebiete des Hamburger Hafens nach Hafenverkehrs- und Schifffahrtsgesetz: Grenzen",
+				"children": []
+			},
+			{
+				"id": 892,
+				"name": "Schiffbare Gewässer\t\t\t",
+				"children": []
+			},
+			{
+				"id": 893,
+				"name": "Senatsgewässer",
+				"children": []
+			},
+			{
+				"id": 894,
+				"name": "Zuständigkeiten für Genehmigungen für das Errichten oder Verändern von Anlagen in, an oder über Gewässern gemäß § 15 HWaG ",
+				"children": []
+			},
+			{
+				"id": 895,
+				"name": "Zuständigkeiten für die Zulassung und Überwachung von Einleitungen nach §§10 und 57 WHG",
+				"children": []
+			},
+			{
+				"id": 896,
+				"name": "SRI-05 Fließgeschwindigkeit intensiver Starkregen",
+				"children": []
+			},
+			{
+				"id": 897,
+				"name": "SRI-05 Wassertiefe intensiver Starkregen",
+				"children": []
+			},
+			{
+				"id": 898,
+				"name": "SRI-07 Wassertiefe außergewöhnlicher Starkregen",
+				"children": []
+			},
+			{
+				"id": 899,
+				"name": "SRI-07 Fließgeschwindigkeit außergewöhnlicher Starkregen",
+				"children": []
+			},
+			{
+				"id": 900,
+				"name": "SRI-12 Fließgeschwindigkeit extremer Starkregen",
+				"children": []
+			},
+			{
+				"id": 901,
+				"name": "SRI-12 Wassertiefe extremer Starkregen",
+				"children": []
+			},
+			{
+				"id": 902,
+				"name": "Satellitenbilder Sentinel-2 RGB",
+				"children": []
+			},
+			{
+				"id": 903,
+				"name": "Satellitenbilder Sentinel-2 CIR",
+				"children": []
+			},
+			{
+				"id": 904,
+				"name": "Satellitenbilder Sentinel-2 NDVI",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 2,
+		"name": "Regionen und Städte",
+		"children": [
+			{
+				"id": 905,
+				"name": "Hamburger Amtsgerichte",
+				"children": []
+			},
+			{
+				"id": 906,
+				"name": "Hamburger Finanzamtbezirke",
+				"children": []
+			},
+			{
+				"id": 907,
+				"name": "Städtebauliche Erhaltungsverordnungen Hamburg",
+				"children": []
+			},
+			{
+				"id": 908,
+				"name": "Wohnungsbauprojekte",
+				"children": []
+			},
+			{
+				"id": 909,
+				"name": "Wohnbauflächenpotenziale Hamburg",
+				"children": []
+			},
+			{
+				"id": 910,
+				"name": "Fertiggestellte Wohnungen",
+				"children": []
+			},
+			{
+				"id": 911,
+				"name": "Notunterkünfte Hamburg",
+				"children": []
+			},
+			{
+				"id": 912,
+				"name": "Kooperationsprojekte mit Hamburger Nachbargemeinden und -kreisen",
+				"children": []
+			},
+			{
+				"id": 913,
+				"name": "Flächennutzungsplan Hamburg",
+				"children": []
+			},
+			{
+				"id": 914,
+				"name": "Hamburger Wohnlagenverzeichnis",
+				"children": []
+			},
+			{
+				"id": 915,
+				"name": "Rasterplan - Bebauungspläne Hamburg",
+				"children": []
+			},
+			{
+				"id": 916,
+				"name": "Milieugebiete Hamburg",
+				"children": []
+			},
+			{
+				"id": 917,
+				"name": "Gestaltungsverordnungen Hamburg",
+				"children": []
+			},
+			{
+				"id": 918,
+				"name": "Von der Hamburger Verwaltung erreichbare Videokommunikationssysteme",
+				"children": []
+			},
+			{
+				"id": 919,
+				"name": "Abwasserentsorgungsgebiet HAMBURG WASSER",
+				"children": []
+			},
+			{
+				"id": 920,
+				"name": "Wasserversorgungsgebiet HAMBURG WASSER",
+				"children": []
+			},
+			{
+				"id": 921,
+				"name": "Rettungspunkte in Hamburger Waldgebieten",
+				"children": []
+			},
+			{
+				"id": 922,
+				"name": "INSPIRE HH Produktions- und Industrieanlagen",
+				"children": []
+			},
+			{
+				"id": 923,
+				"name": "INSPIRE HH Bodennutzung ALKIS",
+				"children": []
+			},
+			{
+				"id": 924,
+				"name": "Werbeanlagen Hamburg",
+				"children": []
+			},
+			{
+				"id": 925,
+				"name": "Online Beantragung Luftfahrthindernisse Hamburg",
+				"children": []
+			},
+			{
+				"id": 926,
+				"name": "Übernahme der Wegebaulast Hamburg",
+				"children": []
+			},
+			{
+				"id": 927,
+				"name": "IoT Registry Hamburg",
+				"children": []
+			},
+			{
+				"id": 928,
+				"name": "Bauschutzbereich § 12 LuftVG Hamburg",
+				"children": []
+			},
+			{
+				"id": 929,
+				"name": "Gebietsgrenzen Polizeikommissariate",
+				"children": []
+			},
+			{
+				"id": 930,
+				"name": "Standorte Polizeikommissariate",
+				"children": []
+			},
+			{
+				"id": 931,
+				"name": "Orginalzustand",
+				"children": []
+			},
+			{
+				"id": 932,
+				"name": "Fortschreibung",
+				"children": []
+			},
+			{
+				"id": 933,
+				"name": "Baugenehmigungen in Hamburg",
+				"children": []
+			},
+			{
+				"id": 934,
+				"name": "Bezirke Baugenehmigungen Hamburg",
+				"children": []
+			},
+			{
+				"id": 935,
+				"name": "Geförderte Mietwohnungen 2011",
+				"children": []
+			},
+			{
+				"id": 936,
+				"name": "Geförderte Mietwohnungen 2012",
+				"children": []
+			},
+			{
+				"id": 937,
+				"name": "Geförderte Mietwohnungen 2013",
+				"children": []
+			},
+			{
+				"id": 938,
+				"name": "Geförderte Mietwohnungen 2014",
+				"children": []
+			},
+			{
+				"id": 939,
+				"name": "Geförderte Mietwohnungen 2015",
+				"children": []
+			},
+			{
+				"id": 940,
+				"name": "Sondervermögen Stadt und Hafen, Hafencity (085-3000)",
+				"children": []
+			},
+			{
+				"id": 941,
+				"name": "Sondervermögen Schulimmobilien (085-0945)",
+				"children": []
+			},
+			{
+				"id": 942,
+				"name": "Grundstücksgleiche Rechte (083)",
+				"children": []
+			},
+			{
+				"id": 943,
+				"name": "Landesbetriebe gem §26 LHO (082-2742)",
+				"children": []
+			},
+			{
+				"id": 944,
+				"name": "Verwaltungsvermögen - Straßen, Plätze, Wege, Deiche (080)",
+				"children": []
+			},
+			{
+				"id": 945,
+				"name": "Verwaltungsvermögen - Gewässer (080)",
+				"children": []
+			},
+			{
+				"id": 946,
+				"name": "Verwaltungsvermögen Sonstiges (080)",
+				"children": []
+			},
+			{
+				"id": 947,
+				"name": "AGV belastet mit Erbbaurecht (081-2902)",
+				"children": []
+			},
+			{
+				"id": 948,
+				"name": "AGV ohne Erbbaurecht (081-2901)",
+				"children": []
+			},
+			{
+				"id": 949,
+				"name": "Verwaltungsvermögen belastet mit Erbbaurecht (084)",
+				"children": []
+			},
+			{
+				"id": 950,
+				"name": "Sondervermögen für Naturschutz und Landschaftspflege (085-3020)",
+				"children": []
+			},
+			{
+				"id": 951,
+				"name": "Landesbetriebe gem §26 LHO belastet mit Erbbaurecht (082)",
+				"children": []
+			},
+			{
+				"id": 952,
+				"name": "Sondervermögen Stadt und Hafen, Hafencity belastet mit Erbbaurecht (085-3001)",
+				"children": []
+			},
+			{
+				"id": 953,
+				"name": "Festgestellte Bebauungspläne (PLIS)",
+				"children": []
+			},
+			{
+				"id": 954,
+				"name": "Bebauungspläne im Verfahren",
+				"children": []
+			},
+			{
+				"id": 955,
+				"name": "Ensemble",
+				"children": []
+			},
+			{
+				"id": 956,
+				"name": "Gartendenkmal",
+				"children": []
+			},
+			{
+				"id": 957,
+				"name": "Gewässer",
+				"children": []
+			},
+			{
+				"id": 958,
+				"name": "Baudenkmal",
+				"children": []
+			},
+			{
+				"id": 959,
+				"name": "Grenzsteine",
+				"children": []
+			},
+			{
+				"id": 960,
+				"name": "Denkmalobjekt symbolhaft (Statuen, Brunnen, Kräne etc.)",
+				"children": []
+			},
+			{
+				"id": 961,
+				"name": "Tafeln",
+				"children": []
+			},
+			{
+				"id": 962,
+				"name": "Baudenkmal unterirdisch",
+				"children": []
+			},
+			{
+				"id": 963,
+				"name": "Welterbe Kernzone",
+				"children": []
+			},
+			{
+				"id": 964,
+				"name": "Welterbe Pufferzone",
+				"children": []
+			},
+			{
+				"id": 965,
+				"name": "Jüdischer Friedhof Altona - Grabmal",
+				"children": []
+			},
+			{
+				"id": 966,
+				"name": "Außenanlage (Straßenpflaster, Wege, Platzgestaltung etc.)",
+				"children": []
+			},
+			{
+				"id": 967,
+				"name": "Jüdischer Friedhof Altona - Quadrant",
+				"children": []
+			},
+			{
+				"id": 968,
+				"name": "Bodendenkmäler",
+				"children": []
+			},
+			{
+				"id": 969,
+				"name": "Historische Orts- und Stadtkerne",
+				"children": []
+			},
+			{
+				"id": 970,
+				"name": "Hügelgräbergruppen",
+				"children": []
+			},
+			{
+				"id": 971,
+				"name": "Archäologisch bedeutsame Landschaften",
+				"children": []
+			},
+			{
+				"id": 972,
+				"name": "Archäologische Vorbehaltsflächen",
+				"children": []
+			},
+			{
+				"id": 973,
+				"name": "Grabungsschutzgebiete",
+				"children": []
+			},
+			{
+				"id": 974,
+				"name": "Untersuchungsflächen",
+				"children": []
+			},
+			{
+				"id": 975,
+				"name": "Erwartungsflächen",
+				"children": []
+			},
+			{
+				"id": 976,
+				"name": "weitere archäologische Fundplätze",
+				"children": []
+			},
+			{
+				"id": 977,
+				"name": "Festgestellte Änderungen – Berichtigungen – Nachrichtliche Übernahmen seit 1997",
+				"children": []
+			},
+			{
+				"id": 978,
+				"name": "Änderungen im Verfahren – vorgesehene Berichtigungen",
+				"children": []
+			},
+			{
+				"id": 979,
+				"name": "Gemarkungen",
+				"children": []
+			},
+			{
+				"id": 980,
+				"name": "Ortsteile",
+				"children": []
+			},
+			{
+				"id": 981,
+				"name": "Stadtteile",
+				"children": []
+			},
+			{
+				"id": 982,
+				"name": "Bezirke",
+				"children": []
+			},
+			{
+				"id": 983,
+				"name": "Landesgrenze",
+				"children": []
+			},
+			{
+				"id": 984,
+				"name": "Baublöcke",
+				"children": []
+			},
+			{
+				"id": 985,
+				"name": "Stadtwerkstatt Wohnen",
+				"children": []
+			},
+			{
+				"id": 986,
+				"name": "Stadtwerkstatt Gewerbe",
+				"children": []
+			},
+			{
+				"id": 987,
+				"name": "Stadtwerkstatt Natur",
+				"children": []
+			},
+			{
+				"id": 988,
+				"name": "Stadtwerkstatt Sport",
+				"children": []
+			},
+			{
+				"id": 989,
+				"name": "Stadtwerkstatt Bildung",
+				"children": []
+			},
+			{
+				"id": 990,
+				"name": "Stadtwerkstatt Wirtschaft",
+				"children": []
+			},
+			{
+				"id": 991,
+				"name": "Stadtwerkstatt Umwelt",
+				"children": []
+			},
+			{
+				"id": 992,
+				"name": "Stadtwerkstatt Verkehr",
+				"children": []
+			},
+			{
+				"id": 993,
+				"name": "Stadtwerkstatt Verfahren",
+				"children": []
+			},
+			{
+				"id": 994,
+				"name": "Stadtwerkstatt ohne Thema",
+				"children": []
+			},
+			{
+				"id": 995,
+				"name": "Wohnfläche je Einwohnerin und Einwohner 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 996,
+				"name": "Wohnungsgröße 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 997,
+				"name": "Wohnungen in Ein- und Zweifamilienhäusern in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 998,
+				"name": "Wohnungen 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 999,
+				"name": "Einfamilienhaeuser",
+				"children": []
+			},
+			{
+				"id": 1000,
+				"name": "Mehrfamilienhäuser",
+				"children": []
+			},
+			{
+				"id": 1001,
+				"name": "Läden",
+				"children": []
+			},
+			{
+				"id": 1002,
+				"name": "Bürohäuser",
+				"children": []
+			},
+			{
+				"id": 1003,
+				"name": "Produktion und Logistik",
+				"children": []
+			},
+			{
+				"id": 1004,
+				"name": "Siedlungsplanung im fluglärmbelasteten Bereich des Flughafens Hamburg Bereich 2",
+				"children": []
+			},
+			{
+				"id": 1005,
+				"name": "Siedlungsplanung im fluglärmbelasteten Bereich des Flughafens Hamburg Bereich 1",
+				"children": []
+			},
+			{
+				"id": 1006,
+				"name": "Soziale Stadt",
+				"children": []
+			},
+			{
+				"id": 1007,
+				"name": "Aktive Stadt- und Ortsteilzentren",
+				"children": []
+			},
+			{
+				"id": 1008,
+				"name": "Sanierungsgebiet",
+				"children": []
+			},
+			{
+				"id": 1009,
+				"name": "Zukunft Stadtgrün",
+				"children": []
+			},
+			{
+				"id": 1010,
+				"name": "Fördergebiet in Vorbereitung",
+				"children": []
+			},
+			{
+				"id": 1011,
+				"name": "Gebiet vorbereitender Untersuchungen",
+				"children": []
+			},
+			{
+				"id": 1012,
+				"name": "Lebendige Zentren",
+				"children": []
+			},
+			{
+				"id": 1013,
+				"name": "Sozialer Zusammenhalt",
+				"children": []
+			},
+			{
+				"id": 1014,
+				"name": "Wachstum und nachhaltige Erneuerung",
+				"children": []
+			},
+			{
+				"id": 1015,
+				"name": "SozErhVo in Kraft",
+				"children": []
+			},
+			{
+				"id": 1016,
+				"name": "SozErhVo in Aufstellung",
+				"children": []
+			},
+			{
+				"id": 1017,
+				"name": "Gewässerfläche Hafenentwicklungsgesetz",
+				"children": []
+			},
+			{
+				"id": 1018,
+				"name": "Ausschlussflächen",
+				"children": []
+			},
+			{
+				"id": 1019,
+				"name": "Eignungsflächen für Hausboote und schwimmende Häuser",
+				"children": []
+			},
+			{
+				"id": 1020,
+				"name": "Hafengebiet",
+				"children": []
+			},
+			{
+				"id": 1021,
+				"name": "Jobcenter TAH Hamburg",
+				"children": []
+			},
+			{
+				"id": 1022,
+				"name": "Jobcenter TAH Hamburg AlGII Ü25",
+				"children": []
+			},
+			{
+				"id": 1023,
+				"name": "XPlanung Bebauungspläne - Vektordarstellung",
+				"children": []
+			},
+			{
+				"id": 1024,
+				"name": "Erhaltungsbereiche aus Bebauungsplänen",
+				"children": []
+			},
+			{
+				"id": 1025,
+				"name": "Festsetzungen und Kennzeichnungen (BP-Fachschema)",
+				"children": []
+			},
+			{
+				"id": 1026,
+				"name": "Nachrichtl. Übernahmen (SO-Fachschema)",
+				"children": []
+			},
+			{
+				"id": 1027,
+				"name": "Backstein Kategorien",
+				"children": []
+			},
+			{
+				"id": 1028,
+				"name": "Backstein Gebäude Kulturdenkmal",
+				"children": []
+			},
+			{
+				"id": 1029,
+				"name": "Spatial Plan",
+				"children": []
+			},
+			{
+				"id": 1030,
+				"name": "Zoning Element",
+				"children": []
+			},
+			{
+				"id": 1031,
+				"name": "Supplementary Regulation",
+				"children": []
+			},
+			{
+				"id": 1032,
+				"name": "Berufsfeuerwehr",
+				"children": []
+			},
+			{
+				"id": 1033,
+				"name": "Freiwillige Feuerwehr",
+				"children": []
+			},
+			{
+				"id": 1034,
+				"name": "Magistralen Hamburg Übersicht",
+				"children": []
+			},
+			{
+				"id": 1035,
+				"name": "Magistralen Hamburg Nummerierung",
+				"children": []
+			},
+			{
+				"id": 1036,
+				"name": "Magistrale 01",
+				"children": []
+			},
+			{
+				"id": 1037,
+				"name": "Magistrale 02",
+				"children": []
+			},
+			{
+				"id": 1038,
+				"name": "Magistrale 03",
+				"children": []
+			},
+			{
+				"id": 1039,
+				"name": "Magistrale 04",
+				"children": []
+			},
+			{
+				"id": 1040,
+				"name": "Magistrale 05",
+				"children": []
+			},
+			{
+				"id": 1041,
+				"name": "Magistrale 06",
+				"children": []
+			},
+			{
+				"id": 1042,
+				"name": "Magistrale 07",
+				"children": []
+			},
+			{
+				"id": 1043,
+				"name": "Magistrale 08",
+				"children": []
+			},
+			{
+				"id": 1044,
+				"name": "Magistrale 09",
+				"children": []
+			},
+			{
+				"id": 1045,
+				"name": "Magistrale 10",
+				"children": []
+			},
+			{
+				"id": 1046,
+				"name": "Magistrale 11",
+				"children": []
+			},
+			{
+				"id": 1047,
+				"name": "Magistrale 12",
+				"children": []
+			},
+			{
+				"id": 1048,
+				"name": "Utility and governmental services",
+				"children": []
+			},
+			{
+				"id": 1049,
+				"name": "Primary Education",
+				"children": []
+			},
+			{
+				"id": 1050,
+				"name": "Child Care Service",
+				"children": []
+			},
+			{
+				"id": 1051,
+				"name": "Hospital Service",
+				"children": []
+			},
+			{
+				"id": 1052,
+				"name": "Police Service",
+				"children": []
+			},
+			{
+				"id": 1053,
+				"name": "Specialized Administration Office",
+				"children": []
+			},
+			{
+				"id": 1054,
+				"name": "Fire Station",
+				"children": []
+			},
+			{
+				"id": 1055,
+				"name": "Lower Secondary Education",
+				"children": []
+			},
+			{
+				"id": 1056,
+				"name": "Civil Protection Site",
+				"children": []
+			},
+			{
+				"id": 1057,
+				"name": "Upper Secondary Education",
+				"children": []
+			},
+			{
+				"id": 1058,
+				"name": "Environemental Management Facility",
+				"children": []
+			},
+			{
+				"id": 1059,
+				"name": "Haltestellen Linien Ausbauziel B",
+				"children": []
+			},
+			{
+				"id": 1060,
+				"name": "Linien Ausbauziel A",
+				"children": []
+			},
+			{
+				"id": 1061,
+				"name": "Linien Ausbauziel B",
+				"children": []
+			},
+			{
+				"id": 1062,
+				"name": "Clever Cities Corridors",
+				"children": []
+			},
+			{
+				"id": 1063,
+				"name": "Clever Cities Planning Areas",
+				"children": []
+			},
+			{
+				"id": 1064,
+				"name": "Clever Cities Active Projects",
+				"children": []
+			},
+			{
+				"id": 1065,
+				"name": "RISE Fördergebiet Neuwiedenthal (ehemalig)",
+				"children": []
+			},
+			{
+				"id": 1066,
+				"name": "Projekte im ehemaligen RISE Fördergebiet Neuwiedenthal",
+				"children": []
+			},
+			{
+				"id": 1067,
+				"name": "RISE-Fördergebiet Harburger Innenstadt/ Eißendorf-Ost",
+				"children": []
+			},
+			{
+				"id": 1068,
+				"name": "Projekte im RISE-Fördergebiet Harburger Innenstadt/ Eißendorf-Ost",
+				"children": []
+			},
+			{
+				"id": 1069,
+				"name": "RISE-Fördergebiet Wilstorf",
+				"children": []
+			},
+			{
+				"id": 1070,
+				"name": "Projekte im RISE-Fördergebiet Wilstorf",
+				"children": []
+			},
+			{
+				"id": 1071,
+				"name": "Begrenzungslinien",
+				"children": []
+			},
+			{
+				"id": 1072,
+				"name": "Bemaßungspfeile",
+				"children": []
+			},
+			{
+				"id": 1073,
+				"name": "Anfluggrundlinie",
+				"children": []
+			},
+			{
+				"id": 1074,
+				"name": "Abwasserknoten",
+				"children": []
+			},
+			{
+				"id": 1075,
+				"name": "Deckelhöhe",
+				"children": []
+			},
+			{
+				"id": 1076,
+				"name": "Dimension Haltung",
+				"children": []
+			},
+			{
+				"id": 1077,
+				"name": "Fließpfeil Haltung",
+				"children": []
+			},
+			{
+				"id": 1078,
+				"name": "Freitext Haltung",
+				"children": []
+			},
+			{
+				"id": 1079,
+				"name": "Freitext Knoten",
+				"children": []
+			},
+			{
+				"id": 1080,
+				"name": "Haltung",
+				"children": []
+			},
+			{
+				"id": 1081,
+				"name": "Sohlenhöhe",
+				"children": []
+			},
+			{
+				"id": 1082,
+				"name": "Sohlenhöhe nach Schacht",
+				"children": []
+			},
+			{
+				"id": 1083,
+				"name": "Sohlenhöhe von Schacht",
+				"children": []
+			},
+			{
+				"id": 1084,
+				"name": "Regenwasserbehandlungsanlage",
+				"children": []
+			},
+			{
+				"id": 1085,
+				"name": "Regenrückhaltebecken",
+				"children": []
+			},
+			{
+				"id": 1086,
+				"name": "Discounter",
+				"children": []
+			},
+			{
+				"id": 1087,
+				"name": "Drogeriemarkt",
+				"children": []
+			},
+			{
+				"id": 1088,
+				"name": "SB-Warenhaus",
+				"children": []
+			},
+			{
+				"id": 1089,
+				"name": "Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1090,
+				"name": "übrige Lebensmittelanbieter",
+				"children": []
+			},
+			{
+				"id": 1091,
+				"name": "übrige nahversorgungsrelevante Anbieter",
+				"children": []
+			},
+			{
+				"id": 1092,
+				"name": "Wochenmarkt",
+				"children": []
+			},
+			{
+				"id": 1093,
+				"name": "Autozubehör, Motorradzubehör, -bekleidung",
+				"children": []
+			},
+			{
+				"id": 1094,
+				"name": "Bekleidung, Schuhe, Sport",
+				"children": []
+			},
+			{
+				"id": 1095,
+				"name": "Blumen, zoolog. Bedarf",
+				"children": []
+			},
+			{
+				"id": 1096,
+				"name": "Bücher, Schreib-, Spielwaren",
+				"children": []
+			},
+			{
+				"id": 1097,
+				"name": "Elektrowaren",
+				"children": []
+			},
+			{
+				"id": 1098,
+				"name": "Gesundheit, Körperpflege",
+				"children": []
+			},
+			{
+				"id": 1099,
+				"name": "Hausrat, Einrichtung, Möbel",
+				"children": []
+			},
+			{
+				"id": 1100,
+				"name": "Bau-, Heimwerker-, Gartenbedarf",
+				"children": []
+			},
+			{
+				"id": 1101,
+				"name": "Optik, Hörgeräte",
+				"children": []
+			},
+			{
+				"id": 1102,
+				"name": "sonstiges Sortiment",
+				"children": []
+			},
+			{
+				"id": 1103,
+				"name": "Sportgeräte und Zubehör",
+				"children": []
+			},
+			{
+				"id": 1104,
+				"name": "Teppiche, Bodenbeläge",
+				"children": []
+			},
+			{
+				"id": 1105,
+				"name": "Uhren, Schmuck",
+				"children": []
+			},
+			{
+				"id": 1106,
+				"name": "Zentrenfunktionen - Dienstleistungen",
+				"children": []
+			},
+			{
+				"id": 1107,
+				"name": "Fachmarktstandorte",
+				"children": []
+			},
+			{
+				"id": 1108,
+				"name": "Zentrenfunktionen - Freizeit und Kultur - Kulturelle Einrichtung",
+				"children": []
+			},
+			{
+				"id": 1109,
+				"name": "Zentrenfunktionen - Freizeit und Kultur - Religiöse Einrichtung",
+				"children": []
+			},
+			{
+				"id": 1110,
+				"name": "Zentrenfunktionen - Freizeit und Kultur - sonstige Einrichtungen",
+				"children": []
+			},
+			{
+				"id": 1111,
+				"name": "Zentrenfunktionen - Freizeit und Kultur - Spielhallen/Wettbüros/Sportsbar",
+				"children": []
+			},
+			{
+				"id": 1112,
+				"name": "Zentrenfunktionen - Freizeit und Kultur - Sport",
+				"children": []
+			},
+			{
+				"id": 1113,
+				"name": "Zentrenfunktionen - Gastronomie/Hotellerie - Hotel und weitere Beherbergungsbetriebe",
+				"children": []
+			},
+			{
+				"id": 1114,
+				"name": "Zentrenfunktionen - Gastronomie/Hotellerie - Kneipe/Bar/Café",
+				"children": []
+			},
+			{
+				"id": 1115,
+				"name": "Zentrenfunktionen - Gastronomie/Hotellerie - Restaurant/Imbiss",
+				"children": []
+			},
+			{
+				"id": 1116,
+				"name": "Zentrenfunktionen - Gastronomie/Hotellerie - sonstige Gastronomie",
+				"children": []
+			},
+			{
+				"id": 1117,
+				"name": "Nahversorgungslagen (NVL)",
+				"children": []
+			},
+			{
+				"id": 1118,
+				"name": "Zentraler Versorgungsbereich (ZVB)",
+				"children": []
+			},
+			{
+				"id": 1119,
+				"name": "Zentraler Versorgungsbereich (ZVB) - Versorgungsradius 500 Meter",
+				"children": []
+			},
+			{
+				"id": 1120,
+				"name": "Zentraler Versorgungsbereich (ZVB) - Versorgungsradius 800 Meter",
+				"children": []
+			},
+			{
+				"id": 1121,
+				"name": "Art der Maßnahme\t\t\t",
+				"children": []
+			},
+			{
+				"id": 1122,
+				"name": "Wertstufe\t\t\t",
+				"children": []
+			},
+			{
+				"id": 1123,
+				"name": "Sozialmonitoring 2020",
+				"children": []
+			},
+			{
+				"id": 1124,
+				"name": "Sozialmonitoring 2019",
+				"children": []
+			},
+			{
+				"id": 1125,
+				"name": "Sozialmonitoring 2018",
+				"children": []
+			},
+			{
+				"id": 1126,
+				"name": "Sozialmonitoring 2017",
+				"children": []
+			},
+			{
+				"id": 1127,
+				"name": "Sozialmonitoring 2016",
+				"children": []
+			},
+			{
+				"id": 1128,
+				"name": "Sozialmonitoring 2015",
+				"children": []
+			},
+			{
+				"id": 1129,
+				"name": "Sozialmonitoring 2014",
+				"children": []
+			},
+			{
+				"id": 1130,
+				"name": "Sozialmonitoring 2013",
+				"children": []
+			},
+			{
+				"id": 1131,
+				"name": "Sozialmonitoring 2021",
+				"children": []
+			},
+			{
+				"id": 1132,
+				"name": "Sozialmonitoring 2022",
+				"children": []
+			},
+			{
+				"id": 1133,
+				"name": "Grasbrook und nördliche Veddel",
+				"children": []
+			},
+			{
+				"id": 1134,
+				"name": "Hafencity",
+				"children": []
+			},
+			{
+				"id": 1135,
+				"name": "Mitte Altona",
+				"children": []
+			},
+			{
+				"id": 1136,
+				"name": "Science City Hamburg Bahrenfeld",
+				"children": []
+			},
+			{
+				"id": 1137,
+				"name": "Deutsche Bahn AG",
+				"children": []
+			},
+			{
+				"id": 1138,
+				"name": "Bundesanstalt für Immobilienaufgaben",
+				"children": []
+			},
+			{
+				"id": 1139,
+				"name": "BRD sonstige",
+				"children": []
+			},
+			{
+				"id": 1140,
+				"name": "RRB Biotoptypen",
+				"children": []
+			},
+			{
+				"id": 1141,
+				"name": "Isolepis setacea Standorte",
+				"children": []
+			},
+			{
+				"id": 1142,
+				"name": "Plangebiet",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 3,
+		"name": "Verkehr",
+		"children": [
+			{
+				"id": 1143,
+				"name": "Lichtsignalanlagen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1144,
+				"name": "Positivnetz Lang-LKW Hamburg",
+				"children": []
+			},
+			{
+				"id": 1145,
+				"name": "Baustellen auf Hauptverkehrs-und Bundesfernstraßen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1146,
+				"name": "Verkehrskameras Hamburg",
+				"children": []
+			},
+			{
+				"id": 1147,
+				"name": "Motorradstellplätze Hamburg",
+				"children": []
+			},
+			{
+				"id": 1148,
+				"name": "Behindertenstellplätze Hamburg",
+				"children": []
+			},
+			{
+				"id": 1149,
+				"name": "Park + Ride Anlagen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1150,
+				"name": "Reisebusparkplätze Hamburg",
+				"children": []
+			},
+			{
+				"id": 1151,
+				"name": "Parkhäuser Hamburg",
+				"children": []
+			},
+			{
+				"id": 1152,
+				"name": "Strategisches Straßennetz Hamburg",
+				"children": []
+			},
+			{
+				"id": 1153,
+				"name": "MRH eMobility",
+				"children": []
+			},
+			{
+				"id": 1154,
+				"name": "Bedarfsumleitungen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1155,
+				"name": "Mautstraßen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1156,
+				"name": "Hauptverkehrsstraßen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1157,
+				"name": "Gefahrgutstraßen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1158,
+				"name": "Bezirksstraßen mit gesamtstädtischer Bedeutung (BSGB) Hamburg",
+				"children": []
+			},
+			{
+				"id": 1159,
+				"name": "ZEB-Netz der Hauptverkehrsstraßen und Bezirksstraßen mit gesamtstädtischer Bedeutung Hamburg",
+				"children": []
+			},
+			{
+				"id": 1160,
+				"name": "Dauerzählstellen (Rad) Hamburg",
+				"children": []
+			},
+			{
+				"id": 1161,
+				"name": "Bike + Ride Anlagen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1162,
+				"name": "Autobahnkilometrierung Hamburg",
+				"children": []
+			},
+			{
+				"id": 1163,
+				"name": "Taxenstände Hamburg",
+				"children": []
+			},
+			{
+				"id": 1164,
+				"name": "Teststrecke für Automatisiertes und Vernetztes Fahren Hamburg (TAVF-HH)",
+				"children": []
+			},
+			{
+				"id": 1165,
+				"name": "Fahrradluftstationen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1166,
+				"name": "Bezirksrouten Eimsbüttel Hamburg",
+				"children": []
+			},
+			{
+				"id": 1167,
+				"name": "Parkscheinautomaten Hamburg",
+				"children": []
+			},
+			{
+				"id": 1168,
+				"name": "INSPIRE HH Verkehrsnetze HH-SIB",
+				"children": []
+			},
+			{
+				"id": 1169,
+				"name": "Elektro Ladestandorte Hamburg",
+				"children": []
+			},
+			{
+				"id": 1170,
+				"name": "Winterdienst für den Radverkehr durch HPA Hamburg",
+				"children": []
+			},
+			{
+				"id": 1171,
+				"name": "Verkehrsdaten Rad (Infrarotdetektoren) Hamburg",
+				"children": []
+			},
+			{
+				"id": 1172,
+				"name": "Verkehrszellen Verkehrsmodell Hamburg",
+				"children": []
+			},
+			{
+				"id": 1173,
+				"name": "Straßenquerschnittsflächen SIB Hamburg",
+				"children": []
+			},
+			{
+				"id": 1174,
+				"name": "Verkehrsdaten Kfz (Infrarotdetektoren) Hamburg",
+				"children": []
+			},
+			{
+				"id": 1175,
+				"name": "Verkehrslage Hamburg",
+				"children": []
+			},
+			{
+				"id": 1176,
+				"name": "Verkehrsstärken Bedarfszählstellen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1177,
+				"name": "Bewohnerparkgebiete Hamburg",
+				"children": []
+			},
+			{
+				"id": 1178,
+				"name": "Parkverbotszonen E-Scooter Hamburg",
+				"children": []
+			},
+			{
+				"id": 1179,
+				"name": "Kreisverkehre Hamburg",
+				"children": []
+			},
+			{
+				"id": 1180,
+				"name": "Straßendeckschichttypen nach RLS-19 in Hamburg",
+				"children": []
+			},
+			{
+				"id": 1181,
+				"name": "Einbahnstraßen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1182,
+				"name": "Soll-Belastungsklassen Straßenoberbau Hamburg",
+				"children": []
+			},
+			{
+				"id": 1183,
+				"name": "Dalben Binnenhafen Hamburg-Harburg",
+				"children": []
+			},
+			{
+				"id": 1184,
+				"name": "Öffentlicher Parkraum Hamburg",
+				"children": []
+			},
+			{
+				"id": 1185,
+				"name": "Großraum- und Schwertransport-Routen in Hamburg",
+				"children": []
+			},
+			{
+				"id": 1186,
+				"name": "Detailskizzen",
+				"children": []
+			},
+			{
+				"id": 1187,
+				"name": "Poldata Linien",
+				"children": []
+			},
+			{
+				"id": 1188,
+				"name": "Poldata Texte",
+				"children": []
+			},
+			{
+				"id": 1189,
+				"name": "Gemeindestraßen Beschriftung",
+				"children": []
+			},
+			{
+				"id": 1190,
+				"name": "Bundesstraßen Freie Strecke",
+				"children": []
+			},
+			{
+				"id": 1191,
+				"name": "BAB Beschriftung",
+				"children": []
+			},
+			{
+				"id": 1192,
+				"name": "Europastraßen Beschriftung",
+				"children": []
+			},
+			{
+				"id": 1193,
+				"name": "Nullpunkte",
+				"children": []
+			},
+			{
+				"id": 1194,
+				"name": "Gemeindestraßen",
+				"children": []
+			},
+			{
+				"id": 1195,
+				"name": "BAB",
+				"children": []
+			},
+			{
+				"id": 1196,
+				"name": "Europastraßen",
+				"children": []
+			},
+			{
+				"id": 1197,
+				"name": "Bundesstraßen Ortsdurchfahrt",
+				"children": []
+			},
+			{
+				"id": 1198,
+				"name": "Bundesstraßen Ortsduchfahrt Beschriftung",
+				"children": []
+			},
+			{
+				"id": 1199,
+				"name": "Bundesstraßen Freie Strecke Beschriftung",
+				"children": []
+			},
+			{
+				"id": 1200,
+				"name": "Verkehrslage auf Autobahnen",
+				"children": []
+			},
+			{
+				"id": 1201,
+				"name": "Hamburger Autobahnabschnitte ohne Verkehrslagedaten",
+				"children": []
+			},
+			{
+				"id": 1202,
+				"name": "Rad - Pegel",
+				"children": []
+			},
+			{
+				"id": 1203,
+				"name": "Rad - Jährliche Zählstellen",
+				"children": []
+			},
+			{
+				"id": 1204,
+				"name": "Kfz - Bedarfszählstellen",
+				"children": []
+			},
+			{
+				"id": 1205,
+				"name": "Kfz - Dauerzählstellen",
+				"children": []
+			},
+			{
+				"id": 1206,
+				"name": "Kfz - Pegel",
+				"children": []
+			},
+			{
+				"id": 1207,
+				"name": "Kfz - Jährliche Zählstellen",
+				"children": []
+			},
+			{
+				"id": 1208,
+				"name": "Rad - Bedarfszählstellen",
+				"children": []
+			},
+			{
+				"id": 1209,
+				"name": "Fußgänger - Bedarfszählstellen",
+				"children": []
+			},
+			{
+				"id": 1210,
+				"name": "dynamic_stations",
+				"children": []
+			},
+			{
+				"id": 1211,
+				"name": "geofoxdb_bundr",
+				"children": []
+			},
+			{
+				"id": 1212,
+				"name": "geofoxdb_cambio",
+				"children": []
+			},
+			{
+				"id": 1213,
+				"name": "geofoxdb_europcar",
+				"children": []
+			},
+			{
+				"id": 1214,
+				"name": "geofoxdb_pundr",
+				"children": []
+			},
+			{
+				"id": 1215,
+				"name": "geofoxdb_servicestellen",
+				"children": []
+			},
+			{
+				"id": 1216,
+				"name": "Haltestellen",
+				"children": []
+			},
+			{
+				"id": 1217,
+				"name": "Nachtfahrplan Wochentags",
+				"children": []
+			},
+			{
+				"id": 1218,
+				"name": "Fährverbindungen",
+				"children": []
+			},
+			{
+				"id": 1219,
+				"name": "Bahnlinien",
+				"children": []
+			},
+			{
+				"id": 1220,
+				"name": "Buslinien",
+				"children": []
+			},
+			{
+				"id": 1221,
+				"name": "Busliniennummern",
+				"children": []
+			},
+			{
+				"id": 1222,
+				"name": "Sonderfahrplan",
+				"children": []
+			},
+			{
+				"id": 1223,
+				"name": "Nachtfahrplan Wochenende",
+				"children": []
+			},
+			{
+				"id": 1224,
+				"name": "geofoxdb_zahlgrenzen",
+				"children": []
+			},
+			{
+				"id": 1225,
+				"name": "geofoxdb_zahlgrenzen_gedehnt",
+				"children": []
+			},
+			{
+				"id": 1226,
+				"name": "geofoxdb_zahlgrenzen_gedehnt_nacht",
+				"children": []
+			},
+			{
+				"id": 1227,
+				"name": "geofoxdb_zahlgrenzen_gedehnt_normal",
+				"children": []
+			},
+			{
+				"id": 1228,
+				"name": "geofoxdb_zahlgrenzen_gedehnt_sonderfahrplan",
+				"children": []
+			},
+			{
+				"id": 1229,
+				"name": "geofoxdb_zahlgrenzen_gedehnt_we_nacht",
+				"children": []
+			},
+			{
+				"id": 1230,
+				"name": "geofoxdb_zahlgrenzen_nacht",
+				"children": []
+			},
+			{
+				"id": 1231,
+				"name": "geofoxdb_zahlgrenzen_normal",
+				"children": []
+			},
+			{
+				"id": 1232,
+				"name": "geofoxdb_zahlgrenzen_sonderfahrplan",
+				"children": []
+			},
+			{
+				"id": 1233,
+				"name": "geofoxdb_zahlgrenzen_we_nacht",
+				"children": []
+			},
+			{
+				"id": 1234,
+				"name": "geofoxdb_switchh_points",
+				"children": []
+			},
+			{
+				"id": 1235,
+				"name": "Tunnel Ebene -4",
+				"children": []
+			},
+			{
+				"id": 1236,
+				"name": "Tunnel Ebene -3",
+				"children": []
+			},
+			{
+				"id": 1237,
+				"name": "Tunnel Ebene -2",
+				"children": []
+			},
+			{
+				"id": 1238,
+				"name": "Tunnel Ebene -1",
+				"children": []
+			},
+			{
+				"id": 1239,
+				"name": "U-Bahn Notausstieg",
+				"children": []
+			},
+			{
+				"id": 1240,
+				"name": "Verlegung WR - Fläche",
+				"children": []
+			},
+			{
+				"id": 1241,
+				"name": "Verlegung WR - Linie",
+				"children": []
+			},
+			{
+				"id": 1242,
+				"name": "Drohnenflugverbotszonen Krankenhäuser",
+				"children": []
+			},
+			{
+				"id": 1243,
+				"name": "Hubschrauberlandplätze",
+				"children": []
+			},
+			{
+				"id": 1244,
+				"name": "Drohnenflugverbotszonen Flugplätze",
+				"children": []
+			},
+			{
+				"id": 1245,
+				"name": "Verkehrsmengen DTV auf Bundesautobahnen 2019",
+				"children": []
+			},
+			{
+				"id": 1246,
+				"name": "Verkehrsmengen DTVw auf Bundesautobahnen 2013",
+				"children": []
+			},
+			{
+				"id": 1247,
+				"name": "Verkehrsmengen DTV auf Hauptverkehrsstraßen 2019",
+				"children": []
+			},
+			{
+				"id": 1248,
+				"name": "Verkehrsmengen DTVw auf Hauptverkehrsstraßen 2014",
+				"children": []
+			},
+			{
+				"id": 1249,
+				"name": "Durchschnittliche werktägliche Verkehrsstärken (Mo-Fr)",
+				"children": []
+			},
+			{
+				"id": 1250,
+				"name": "Durchschnittliche tägliche Verkehrsstärken (Mo-So)",
+				"children": []
+			},
+			{
+				"id": 1251,
+				"name": "Unbekannt",
+				"children": []
+			},
+			{
+				"id": 1252,
+				"name": "Busstreifen",
+				"children": []
+			},
+			{
+				"id": 1253,
+				"name": "Busanlagen",
+				"children": []
+			},
+			{
+				"id": 1254,
+				"name": "Befahrbare Fußgängerzonen",
+				"children": []
+			},
+			{
+				"id": 1255,
+				"name": "Spezialflächen",
+				"children": []
+			},
+			{
+				"id": 1256,
+				"name": "Parkanlagen",
+				"children": []
+			},
+			{
+				"id": 1257,
+				"name": "Sonstige Straßen",
+				"children": []
+			},
+			{
+				"id": 1258,
+				"name": "Radwege",
+				"children": []
+			},
+			{
+				"id": 1259,
+				"name": "Mischwirtschaftswege",
+				"children": []
+			},
+			{
+				"id": 1260,
+				"name": "Waldwirtschaftswege",
+				"children": []
+			},
+			{
+				"id": 1261,
+				"name": "Befahrbare Wohnwege",
+				"children": []
+			},
+			{
+				"id": 1262,
+				"name": "Wege in Grün- und Erholungsanlagen",
+				"children": []
+			},
+			{
+				"id": 1263,
+				"name": "Feldwirtschaftswege",
+				"children": []
+			},
+			{
+				"id": 1264,
+				"name": "Kombinierte Rad- und Fußwege",
+				"children": []
+			},
+			{
+				"id": 1265,
+				"name": "Fußwege",
+				"children": []
+			},
+			{
+				"id": 1266,
+				"name": "Kommunaltrassen (Busse und Taxen)",
+				"children": []
+			},
+			{
+				"id": 1267,
+				"name": "Stadtstraßen",
+				"children": []
+			},
+			{
+				"id": 1268,
+				"name": "Bundesstraßen - Ast (Ortsdurchfahrt)",
+				"children": []
+			},
+			{
+				"id": 1269,
+				"name": "Bundesstraßen - Ortsdurchfahrt",
+				"children": []
+			},
+			{
+				"id": 1270,
+				"name": "Bundesstraßen - Ast (Freie Strecke)",
+				"children": []
+			},
+			{
+				"id": 1271,
+				"name": "Bundesstraßen - Freie Strecke",
+				"children": []
+			},
+			{
+				"id": 1272,
+				"name": "BAB - Rastanlage",
+				"children": []
+			},
+			{
+				"id": 1273,
+				"name": "BAB - Ast",
+				"children": []
+			},
+			{
+				"id": 1274,
+				"name": "BAB - Betriebsstrecke",
+				"children": []
+			},
+			{
+				"id": 1275,
+				"name": "Nullpunkte",
+				"children": []
+			},
+			{
+				"id": 1276,
+				"name": "Verbreiterungs-, Neben - und Sonstige Flächen",
+				"children": []
+			},
+			{
+				"id": 1277,
+				"name": "Nullpunktorte",
+				"children": []
+			},
+			{
+				"id": 1278,
+				"name": "Dienststellenstandorte SBV",
+				"children": []
+			},
+			{
+				"id": 1279,
+				"name": "Dienststellenstandorte SBV - Beschriftung",
+				"children": []
+			},
+			{
+				"id": 1280,
+				"name": "SWIS-Sensoren",
+				"children": []
+			},
+			{
+				"id": 1281,
+				"name": "DWD-Kennung",
+				"children": []
+			},
+			{
+				"id": 1282,
+				"name": "HansE: Geförderte Ladesäulen für Elektrofahrzeuge",
+				"children": []
+			},
+			{
+				"id": 1283,
+				"name": "HansE: Potentiale Normalladen",
+				"children": []
+			},
+			{
+				"id": 1284,
+				"name": "HansE: Potentiale Schnellladen",
+				"children": []
+			},
+			{
+				"id": 1285,
+				"name": "RoadLink Default Style",
+				"children": []
+			},
+			{
+				"id": 1286,
+				"name": "Road Service Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1287,
+				"name": "Aerodrome Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1288,
+				"name": "Apron Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1289,
+				"name": "Runway Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1290,
+				"name": "Taxiway Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1291,
+				"name": "Railway Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1292,
+				"name": "Railway Station Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1293,
+				"name": "Road Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1294,
+				"name": "Waterway Link Default Style",
+				"children": []
+			},
+			{
+				"id": 1295,
+				"name": "Aerodrome Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1296,
+				"name": "Apron Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1297,
+				"name": "Runway Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1298,
+				"name": "Taxiway Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1299,
+				"name": "Railway Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1300,
+				"name": "Railway Link Default Style",
+				"children": []
+			},
+			{
+				"id": 1301,
+				"name": "Railway Station Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1302,
+				"name": "RoadLink Default Style",
+				"children": []
+			},
+			{
+				"id": 1303,
+				"name": "Road Service Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1304,
+				"name": "Road Area Default Style",
+				"children": []
+			},
+			{
+				"id": 1305,
+				"name": "Zählstellenbereiche SVZ",
+				"children": []
+			},
+			{
+				"id": 1306,
+				"name": "Zählstellennummern",
+				"children": []
+			},
+			{
+				"id": 1307,
+				"name": "Gebiet der Metropolregion Hamburg",
+				"children": []
+			},
+			{
+				"id": 1308,
+				"name": "MRH Kreisgrenzen generalisiert",
+				"children": []
+			},
+			{
+				"id": 1309,
+				"name": "MRH Samtgemeinde- und Ämtergrenzen generalisiert",
+				"children": []
+			},
+			{
+				"id": 1310,
+				"name": "Auspendler aus Hamburg 2015",
+				"children": []
+			},
+			{
+				"id": 1311,
+				"name": "Einpendler nach Hamburg 2015",
+				"children": []
+			},
+			{
+				"id": 1312,
+				"name": "Pendler außerhalb von Hamburg 2015",
+				"children": []
+			},
+			{
+				"id": 1313,
+				"name": "MRH Städte",
+				"children": []
+			},
+			{
+				"id": 1314,
+				"name": "Einpendler nach Hamburg auf Kreisebene 2017",
+				"children": []
+			},
+			{
+				"id": 1315,
+				"name": "Pendlerverflechtung zwischen Land-/Kreisen (ohne Hamburg) 2017",
+				"children": []
+			},
+			{
+				"id": 1316,
+				"name": "Auspendler aus Hamburg auf Städte- und Gemeindeebene 2017",
+				"children": []
+			},
+			{
+				"id": 1317,
+				"name": "Einpendler nach Hamburg auf Städte- und Gemeindeebene 2017",
+				"children": []
+			},
+			{
+				"id": 1318,
+				"name": "MRH Samtgemeinden und Ämter",
+				"children": []
+			},
+			{
+				"id": 1319,
+				"name": "Einpendler nach Hamburg auf Kreisebene 2019",
+				"children": []
+			},
+			{
+				"id": 1320,
+				"name": "Einpendler nach Hamburg auf Kreisebene 2020",
+				"children": []
+			},
+			{
+				"id": 1321,
+				"name": "Pendlerverflechtung zwischen Land-/Kreisen (ohne Hamburg) 2019",
+				"children": []
+			},
+			{
+				"id": 1322,
+				"name": "Pendlerverflechtung zwischen Land-/Kreisen (ohne Hamburg) 2010",
+				"children": []
+			},
+			{
+				"id": 1323,
+				"name": "Auspendler aus Hamburg auf Städte- und Gemeindeebene 2019",
+				"children": []
+			},
+			{
+				"id": 1324,
+				"name": "Auspendler aus Hamburg auf Städte- und Gemeindeebene 2020",
+				"children": []
+			},
+			{
+				"id": 1325,
+				"name": "Einpendler nach Hamburg auf Städte- und Gemeindeebene 2019",
+				"children": []
+			},
+			{
+				"id": 1326,
+				"name": "Einpendler nach Hamburg auf Städte- und Gemeindeebene 2020",
+				"children": []
+			},
+			{
+				"id": 1327,
+				"name": "Widmung Liniendarstellung",
+				"children": []
+			},
+			{
+				"id": 1328,
+				"name": "Widmung Flächendarstellung",
+				"children": []
+			},
+			{
+				"id": 1329,
+				"name": "ZEB 2016 - Gebrauchswert",
+				"children": []
+			},
+			{
+				"id": 1330,
+				"name": "ZEB 2016 - Gesamtwert",
+				"children": []
+			},
+			{
+				"id": 1331,
+				"name": "ZEB 2016 - Substanzwert",
+				"children": []
+			},
+			{
+				"id": 1332,
+				"name": "ZEB 2014 - Gebrauchswert",
+				"children": []
+			},
+			{
+				"id": 1333,
+				"name": "ZEB 2014 - Gesamtwert",
+				"children": []
+			},
+			{
+				"id": 1334,
+				"name": "ZEB 2014 - Substanzwert",
+				"children": []
+			},
+			{
+				"id": 1335,
+				"name": "ZEB 2018 - Gebrauchswert",
+				"children": []
+			},
+			{
+				"id": 1336,
+				"name": "ZEB 2018 - Gesamtwert",
+				"children": []
+			},
+			{
+				"id": 1337,
+				"name": "ZEB 2018 - Substanzwert",
+				"children": []
+			},
+			{
+				"id": 1338,
+				"name": "ZEB 2020 - Gesamtwert",
+				"children": []
+			},
+			{
+				"id": 1339,
+				"name": "ZEB 2020 - Substanzwert",
+				"children": []
+			},
+			{
+				"id": 1340,
+				"name": "ZEB 2020 - Gebrauchswert",
+				"children": []
+			},
+			{
+				"id": 1341,
+				"name": "ZEB 2021 - Gesamtwert",
+				"children": []
+			},
+			{
+				"id": 1342,
+				"name": "ZEB 2021 - Gebrauchswert",
+				"children": []
+			},
+			{
+				"id": 1343,
+				"name": "ZEB 2021 - Substanzwert",
+				"children": []
+			},
+			{
+				"id": 1344,
+				"name": "HEAT Integrationsstufe 2",
+				"children": []
+			},
+			{
+				"id": 1345,
+				"name": "HEAT Integrationsstufe 3",
+				"children": []
+			},
+			{
+				"id": 1346,
+				"name": "Ring 1",
+				"children": []
+			},
+			{
+				"id": 1347,
+				"name": "Ring 3",
+				"children": []
+			},
+			{
+				"id": 1348,
+				"name": "Ring 2",
+				"children": []
+			},
+			{
+				"id": 1349,
+				"name": "Mit dem Pkw in 30 Minuten erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1350,
+				"name": "Mit dem Pkw in 30 Minuten erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1351,
+				"name": "Mit dem Rad in 30 Minuten erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1352,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1353,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1354,
+				"name": "Zu Fuß in 30 Minuten erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1355,
+				"name": "Mit dem Rad in 30 Minuten erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1356,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1357,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1358,
+				"name": "Zu Fuß in 30 Minuten erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1359,
+				"name": "Mit dem Pkw in 30 Kilometern erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1360,
+				"name": "Zu Fuß in einem Kilometer erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1361,
+				"name": "Mit dem Pkw in 30 Kilometern erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1362,
+				"name": "Zu Fuß in einem Kilometer erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1363,
+				"name": "Reisezeit mit dem Rad zum nächsten Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1364,
+				"name": "Gehzeit zum nächsten Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1365,
+				"name": "Reisezeit mit dem ÖV zum nächsten Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1366,
+				"name": "Reisezeit mit dem Pkw zum nächsten Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1367,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1368,
+				"name": "Mit dem Pkw in 30 Minuten erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1369,
+				"name": "Mit dem Rad in 30 Minuten erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1370,
+				"name": "Reisezeit mit dem Rad zum nächsten Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1371,
+				"name": "Gehzeit zum nächsten Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1372,
+				"name": "Reisezeit mit dem ÖV zum nächsten Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1373,
+				"name": "Reisezeit mit dem Pkw zum nächsten Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1374,
+				"name": "Zu Fuß in 30 Minuten erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1375,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1376,
+				"name": "Mit dem Pkw in 30 Kilometern erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1377,
+				"name": "Zu Fuß in einem Kilometer erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1378,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1379,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1380,
+				"name": "Mit dem Pkw in 30 Minuten erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1381,
+				"name": "Mit dem Pkw in 30 Kilometern erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1382,
+				"name": "Mit dem Rad in 30 Minuten erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1383,
+				"name": "Zu Fuß in 30 Minuten erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1384,
+				"name": "Zu Fuß in einem Kilometer erreichbare Läden",
+				"children": []
+			},
+			{
+				"id": 1385,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1386,
+				"name": "Mit dem Rad in 30 Minuten erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1387,
+				"name": "Mit dem Pkw in 30 Minuten erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1388,
+				"name": "Mit dem Rad in 30 Minuten erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1389,
+				"name": "Zu Fuß in 30 Minuten erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1390,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1391,
+				"name": "Mit dem Pkw in 30 Minuten erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1392,
+				"name": "Zu Fuß in 30 Minuten erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1393,
+				"name": "Zu Fuß in einem Kilometer erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1394,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1395,
+				"name": "Mit dem Pkw in 30 Kilometern erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1396,
+				"name": "Zu Fuß in 30 Minuten erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1397,
+				"name": "Zu Fuß in einem Kilometer erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1398,
+				"name": "Mit dem Rad in 30 Minuten erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1399,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1400,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1401,
+				"name": "Mit dem Pkw in 30 Minuten erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1402,
+				"name": "Mit dem Pkw in 30 Kilometern erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1403,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1404,
+				"name": "Mit dem Pkw in 30 Kilometern erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1405,
+				"name": "Zu Fuß in einem Kilometer erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1406,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1407,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1408,
+				"name": "Mit dem Rad in 30 Minuten erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1409,
+				"name": "Mit dem Pkw in 30 Kilometern erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1410,
+				"name": "Mit dem Pkw in 30 Minuten erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1411,
+				"name": "Zu Fuß in 30 Minuten erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1412,
+				"name": "Zu Fuß in einem Kilometer erreichbare Freizeitgelegenheiten",
+				"children": []
+			},
+			{
+				"id": 1413,
+				"name": "Reisezeit mit dem Rad zum nächsten Mittelzentrum",
+				"children": []
+			},
+			{
+				"id": 1414,
+				"name": "Reisezeit mit dem ÖV zum nächsten Mittelzentrum",
+				"children": []
+			},
+			{
+				"id": 1415,
+				"name": "Reisezeit mit dem Pkw zum nächsten Mittelzentrum",
+				"children": []
+			},
+			{
+				"id": 1416,
+				"name": "Reisezeit mit dem Rad zum nächsten Oberzentrum",
+				"children": []
+			},
+			{
+				"id": 1417,
+				"name": "Reisezeit mit dem ÖV zum nächsten Oberzentrum",
+				"children": []
+			},
+			{
+				"id": 1418,
+				"name": "Reisezeit mit dem Pkw zum nächsten Oberzentrum",
+				"children": []
+			},
+			{
+				"id": 1419,
+				"name": "Gehzeit zum nächsten Mittelzentrum",
+				"children": []
+			},
+			{
+				"id": 1420,
+				"name": "Gehzeit zum nächsten Oberzentrum",
+				"children": []
+			},
+			{
+				"id": 1421,
+				"name": "Reisezeit mit dem Rad zum nächsten Mittelzentrum",
+				"children": []
+			},
+			{
+				"id": 1422,
+				"name": "Reisezeit mit dem ÖV zum nächsten Mittelzentrum",
+				"children": []
+			},
+			{
+				"id": 1423,
+				"name": "Reisezeit mit dem Pkw zum nächsten Mittelzentrum",
+				"children": []
+			},
+			{
+				"id": 1424,
+				"name": "Gehzeit zum nächsten Mittelzentrum",
+				"children": []
+			},
+			{
+				"id": 1425,
+				"name": "Reisezeit mit dem Rad zum nächsten Oberzentrum",
+				"children": []
+			},
+			{
+				"id": 1426,
+				"name": "Reisezeit mit dem ÖV zum nächsten Oberzentrum",
+				"children": []
+			},
+			{
+				"id": 1427,
+				"name": "Reisezeit mit dem Pkw zum nächsten Oberzentrum",
+				"children": []
+			},
+			{
+				"id": 1428,
+				"name": "Gehzeit zum nächsten Oberzentrum",
+				"children": []
+			},
+			{
+				"id": 1429,
+				"name": "Reisezeit mit dem Rad zum nächsten Krankenhaus",
+				"children": []
+			},
+			{
+				"id": 1430,
+				"name": "Reisezeit mit dem Rad zur nächsten Apotheke",
+				"children": []
+			},
+			{
+				"id": 1431,
+				"name": "Gehzeit zur nächsten Apotheke",
+				"children": []
+			},
+			{
+				"id": 1432,
+				"name": "Reisezeit mit dem ÖV zur nächsten Apotheke",
+				"children": []
+			},
+			{
+				"id": 1433,
+				"name": "Reisezeit mit dem Pkw zur nächsten Apotheke",
+				"children": []
+			},
+			{
+				"id": 1434,
+				"name": "Reisezeit mit dem Rad zum nächsten Hausarzt",
+				"children": []
+			},
+			{
+				"id": 1435,
+				"name": "Gehzeit zum nächsten Hausarzt",
+				"children": []
+			},
+			{
+				"id": 1436,
+				"name": "Reisezeit mit dem ÖV zum nächsten Hausarzt",
+				"children": []
+			},
+			{
+				"id": 1437,
+				"name": "Reisezeit mit dem Pkw zum nächsten Hausarzt",
+				"children": []
+			},
+			{
+				"id": 1438,
+				"name": "Gehzeit zum nächsten Krankenhaus",
+				"children": []
+			},
+			{
+				"id": 1439,
+				"name": "Reisezeit mit dem ÖV zum nächsten Krankenhaus",
+				"children": []
+			},
+			{
+				"id": 1440,
+				"name": "Reisezeit mit dem Pkw zum nächsten Krankenhaus",
+				"children": []
+			},
+			{
+				"id": 1441,
+				"name": "Reisezeit mit dem Rad zur nächsten Apotheke",
+				"children": []
+			},
+			{
+				"id": 1442,
+				"name": "Gehzeit zur nächsten Apotheke",
+				"children": []
+			},
+			{
+				"id": 1443,
+				"name": "Reisezeit mit dem ÖV zur nächsten Apotheke",
+				"children": []
+			},
+			{
+				"id": 1444,
+				"name": "Reisezeit mit dem Pkw zur nächsten Apotheke",
+				"children": []
+			},
+			{
+				"id": 1445,
+				"name": "Reisezeit mit dem Rad zum nächsten Augenarzt",
+				"children": []
+			},
+			{
+				"id": 1446,
+				"name": "Gehzeit zum nächsten Augenarzt",
+				"children": []
+			},
+			{
+				"id": 1447,
+				"name": "Reisezeit mit dem ÖV zum nächsten Augenarzt",
+				"children": []
+			},
+			{
+				"id": 1448,
+				"name": "Reisezeit mit dem Pkw zum nächsten Augenarzt",
+				"children": []
+			},
+			{
+				"id": 1449,
+				"name": "Reisezeit mit dem Rad zum nächsten Augenarzt",
+				"children": []
+			},
+			{
+				"id": 1450,
+				"name": "Gehzeit zum nächsten Augenarzt",
+				"children": []
+			},
+			{
+				"id": 1451,
+				"name": "Reisezeit mit dem ÖV zum nächsten Augenarzt",
+				"children": []
+			},
+			{
+				"id": 1452,
+				"name": "Reisezeit mit dem Pkw zum nächsten Augenarzt",
+				"children": []
+			},
+			{
+				"id": 1453,
+				"name": "Reisezeit mit dem Rad zum nächsten Hausarzt",
+				"children": []
+			},
+			{
+				"id": 1454,
+				"name": "Gehzeit zum nächsten Hausarzt",
+				"children": []
+			},
+			{
+				"id": 1455,
+				"name": "Reisezeit mit dem ÖV zum nächsten Hausarzt",
+				"children": []
+			},
+			{
+				"id": 1456,
+				"name": "Reisezeit mit dem Pkw zum nächsten Hausarzt",
+				"children": []
+			},
+			{
+				"id": 1457,
+				"name": "Reisezeit mit dem Rad zum nächsten Internist",
+				"children": []
+			},
+			{
+				"id": 1458,
+				"name": "Gehzeit zum nächsten Internist",
+				"children": []
+			},
+			{
+				"id": 1459,
+				"name": "Reisezeit mit dem ÖV zum nächsten Internist",
+				"children": []
+			},
+			{
+				"id": 1460,
+				"name": "Reisezeit mit dem Pkw zum nächsten Internist",
+				"children": []
+			},
+			{
+				"id": 1461,
+				"name": "Reisezeit mit dem Rad zum nächsten Internist",
+				"children": []
+			},
+			{
+				"id": 1462,
+				"name": "Gehzeit zum nächsten Internist",
+				"children": []
+			},
+			{
+				"id": 1463,
+				"name": "Reisezeit mit dem ÖV zum nächsten Internist",
+				"children": []
+			},
+			{
+				"id": 1464,
+				"name": "Reisezeit mit dem Pkw zum nächsten Internist",
+				"children": []
+			},
+			{
+				"id": 1465,
+				"name": "Reisezeit mit dem Rad zum nächsten Kinderarzt",
+				"children": []
+			},
+			{
+				"id": 1466,
+				"name": "Gehzeit zum nächsten Kinderarzt",
+				"children": []
+			},
+			{
+				"id": 1467,
+				"name": "Reisezeit mit dem ÖV zum nächsten Kinderarzt",
+				"children": []
+			},
+			{
+				"id": 1468,
+				"name": "Reisezeit mit dem Pkw zum nächsten Kinderarzt",
+				"children": []
+			},
+			{
+				"id": 1469,
+				"name": "Reisezeit mit dem Rad zum nächsten Kinderarzt",
+				"children": []
+			},
+			{
+				"id": 1470,
+				"name": "Gehzeit zum nächsten Kinderarzt",
+				"children": []
+			},
+			{
+				"id": 1471,
+				"name": "Reisezeit mit dem ÖV zum nächsten Kinderarzt",
+				"children": []
+			},
+			{
+				"id": 1472,
+				"name": "Reisezeit mit dem Pkw zum nächsten Kinderarzt",
+				"children": []
+			},
+			{
+				"id": 1473,
+				"name": "Reisezeit mit dem Rad zum nächsten Krankenhaus",
+				"children": []
+			},
+			{
+				"id": 1474,
+				"name": "Gehzeit zum nächsten Krankenhaus",
+				"children": []
+			},
+			{
+				"id": 1475,
+				"name": "Reisezeit mit dem ÖV zum nächsten Krankenhaus",
+				"children": []
+			},
+			{
+				"id": 1476,
+				"name": "Reisezeit mit dem Pkw zum nächsten Krankenhaus",
+				"children": []
+			},
+			{
+				"id": 1477,
+				"name": "Reisezeit mit dem Rad zum nächsten Orthopäden",
+				"children": []
+			},
+			{
+				"id": 1478,
+				"name": "Gehzeit zum nächsten Orthopäden",
+				"children": []
+			},
+			{
+				"id": 1479,
+				"name": "Reisezeit mit dem ÖV zum nächsten Orthopäden",
+				"children": []
+			},
+			{
+				"id": 1480,
+				"name": "Reisezeit mit dem Pkw zum nächsten Orthopäden",
+				"children": []
+			},
+			{
+				"id": 1481,
+				"name": "Reisezeit mit dem Rad zum nächsten Orthopäden",
+				"children": []
+			},
+			{
+				"id": 1482,
+				"name": "Gehzeit zum nächsten Orthopäden",
+				"children": []
+			},
+			{
+				"id": 1483,
+				"name": "Reisezeit mit dem ÖV zum nächsten Orthopäden",
+				"children": []
+			},
+			{
+				"id": 1484,
+				"name": "Reisezeit mit dem Pkw zum nächsten Orthopäden",
+				"children": []
+			},
+			{
+				"id": 1485,
+				"name": "Reisezeit mit dem ÖV zur nächsten Kita",
+				"children": []
+			},
+			{
+				"id": 1486,
+				"name": "Gehzeit zur nächsten Kita",
+				"children": []
+			},
+			{
+				"id": 1487,
+				"name": "Reisezeit mit dem Rad zur nächsten Kita",
+				"children": []
+			},
+			{
+				"id": 1488,
+				"name": "Reisezeit mit dem Pkw zur nächsten Kita",
+				"children": []
+			},
+			{
+				"id": 1489,
+				"name": "Reisezeit mit dem Rad zur nächsten Kita",
+				"children": []
+			},
+			{
+				"id": 1490,
+				"name": "Gehzeit zur nächsten Kita",
+				"children": []
+			},
+			{
+				"id": 1491,
+				"name": "Reisezeit mit dem ÖV zur nächsten Kita",
+				"children": []
+			},
+			{
+				"id": 1492,
+				"name": "Reisezeit mit dem Pkw zur nächsten Kita",
+				"children": []
+			},
+			{
+				"id": 1493,
+				"name": "Reisezeit mit dem Rad zum nächsten Fernbahnhof",
+				"children": []
+			},
+			{
+				"id": 1494,
+				"name": "Gehzeit zum nächsten Bahnhof",
+				"children": []
+			},
+			{
+				"id": 1495,
+				"name": "Reisezeit mit dem ÖV zum nächsten Fernbahnhof",
+				"children": []
+			},
+			{
+				"id": 1496,
+				"name": "Reisezeit mit dem Pkw zum nächsten Bahnhof",
+				"children": []
+			},
+			{
+				"id": 1497,
+				"name": "Reisezeit mit dem Pkw zum nächsten Fernbahnhof",
+				"children": []
+			},
+			{
+				"id": 1498,
+				"name": "Reisezeit mit dem ÖV zum Hamburger Hauptbahnhof",
+				"children": []
+			},
+			{
+				"id": 1499,
+				"name": "Reisezeit mit dem Rad zum nächsten Bahnhof",
+				"children": []
+			},
+			{
+				"id": 1500,
+				"name": "Reisezeit mit dem Rad zum Hamburger Flughafen",
+				"children": []
+			},
+			{
+				"id": 1501,
+				"name": "Reisezeit mit dem Pkw zum Hamburger Flughafen",
+				"children": []
+			},
+			{
+				"id": 1502,
+				"name": "Reisezeit mit dem ÖV zum Hamburger Flughafen",
+				"children": []
+			},
+			{
+				"id": 1503,
+				"name": "Gehzeit zum Hamburger Hauptbahnhof",
+				"children": []
+			},
+			{
+				"id": 1504,
+				"name": "Reisezeit mit dem Pkw zum Hamburger Hauptbahnhof",
+				"children": []
+			},
+			{
+				"id": 1505,
+				"name": "Reisezeit mit dem ÖV zum nächsten Bahnhof",
+				"children": []
+			},
+			{
+				"id": 1506,
+				"name": "Gehzeit zum nächsten Fernbahnhof",
+				"children": []
+			},
+			{
+				"id": 1507,
+				"name": "Reisezeit mit dem Rad zum Hamburger Hauptbahnhof",
+				"children": []
+			},
+			{
+				"id": 1508,
+				"name": "Anzahl Abfahrten je Haltestelle am Montag",
+				"children": []
+			},
+			{
+				"id": 1509,
+				"name": "Anzahl Abfahrten je Haltestelle am Sonntag",
+				"children": []
+			},
+			{
+				"id": 1510,
+				"name": "Gehzeit zum Hamburger Flughafen",
+				"children": []
+			},
+			{
+				"id": 1511,
+				"name": "Reisezeit mit dem Rad zum nächsten Bahnhof",
+				"children": []
+			},
+			{
+				"id": 1512,
+				"name": "Gehzeit zum nächsten Bahnhof",
+				"children": []
+			},
+			{
+				"id": 1513,
+				"name": "Reisezeit mit dem ÖV zum nächsten Fernbahnhof",
+				"children": []
+			},
+			{
+				"id": 1514,
+				"name": "Reisezeit mit dem Pkw zum nächsten Bahnhof",
+				"children": []
+			},
+			{
+				"id": 1515,
+				"name": "Reisezeit mit dem Rad zum nächsten Fernbahnhof",
+				"children": []
+			},
+			{
+				"id": 1516,
+				"name": "Gehzeit zum nächsten Fernbahnhof",
+				"children": []
+			},
+			{
+				"id": 1517,
+				"name": "Reisezeit mit dem ÖV zum nächsten Bahnhof",
+				"children": []
+			},
+			{
+				"id": 1518,
+				"name": "Reisezeit mit dem Pkw zum nächsten Fernbahnhof",
+				"children": []
+			},
+			{
+				"id": 1519,
+				"name": "Reisezeit mit dem Rad zum Hamburger Hauptbahnhof",
+				"children": []
+			},
+			{
+				"id": 1520,
+				"name": "Gehzeit zum Hamburger Hauptbahnhof",
+				"children": []
+			},
+			{
+				"id": 1521,
+				"name": "Reisezeit mit dem ÖV zum Hamburger Hauptbahnhof",
+				"children": []
+			},
+			{
+				"id": 1522,
+				"name": "Reisezeit mit dem Pkw zum Hamburger Hauptbahnhof",
+				"children": []
+			},
+			{
+				"id": 1523,
+				"name": "Reisezeit mit dem Rad zum Hamburger Flughafen",
+				"children": []
+			},
+			{
+				"id": 1524,
+				"name": "Reisezeit mit dem ÖV zum Hamburger Flughafen",
+				"children": []
+			},
+			{
+				"id": 1525,
+				"name": "Reisezeit mit dem Pkw zum Hamburger Flughafen",
+				"children": []
+			},
+			{
+				"id": 1526,
+				"name": "Gehzeit zum Hamburger Flughafen",
+				"children": []
+			},
+			{
+				"id": 1527,
+				"name": "Anzahl Abfahrten je Haltestelle am Dienstag",
+				"children": []
+			},
+			{
+				"id": 1528,
+				"name": "Reisezeit mit dem Pkw zur nächsten PuR Station",
+				"children": []
+			},
+			{
+				"id": 1529,
+				"name": "Reisezeit mit dem Pkw zur nächsten PuR Station",
+				"children": []
+			},
+			{
+				"id": 1530,
+				"name": "Arbeitsplätze im Umkreis von einem Kilometer",
+				"children": []
+			},
+			{
+				"id": 1531,
+				"name": "Einwohner im Umkreis von einem Kilometer",
+				"children": []
+			},
+			{
+				"id": 1532,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1533,
+				"name": "Mit dem ÖV in 30 Minuten erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1534,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Arbeitsplätze",
+				"children": []
+			},
+			{
+				"id": 1535,
+				"name": "Mit dem ÖV ohne Umstieg erreichbare Einwohner",
+				"children": []
+			},
+			{
+				"id": 1536,
+				"name": "Gehstrecke zur nächsten Haltestelle",
+				"children": []
+			},
+			{
+				"id": 1537,
+				"name": "Gehstrecke zur nächsten Haltestelle",
+				"children": []
+			},
+			{
+				"id": 1538,
+				"name": "Gehzeit zur nächsten Haltestelle",
+				"children": []
+			},
+			{
+				"id": 1539,
+				"name": "Reisezeit mit dem Rad zur nächsten Haltestelle",
+				"children": []
+			},
+			{
+				"id": 1540,
+				"name": "Gehzeit zur nächsten Haltestelle",
+				"children": []
+			},
+			{
+				"id": 1541,
+				"name": "Reisezeit mit dem Rad zur nächsten Haltestelle",
+				"children": []
+			},
+			{
+				"id": 1542,
+				"name": "Reisezeit mit dem Rad zur nächsten Förderschule",
+				"children": []
+			},
+			{
+				"id": 1543,
+				"name": "Gehzeit zur nächsten Förderschule",
+				"children": []
+			},
+			{
+				"id": 1544,
+				"name": "Reisezeit mit dem ÖV zur nächsten Förderschule",
+				"children": []
+			},
+			{
+				"id": 1545,
+				"name": "Reisezeit mit dem Pkw zur nächsten Förderschule",
+				"children": []
+			},
+			{
+				"id": 1546,
+				"name": "Reisezeit mit dem Rad zur nächsten Förderschule",
+				"children": []
+			},
+			{
+				"id": 1547,
+				"name": "Gehzeit zur nächsten Förderschule",
+				"children": []
+			},
+			{
+				"id": 1548,
+				"name": "Reisezeit mit dem ÖV zur nächsten Förderschule",
+				"children": []
+			},
+			{
+				"id": 1549,
+				"name": "Reisezeit mit dem Pkw zur nächsten Förderschule",
+				"children": []
+			},
+			{
+				"id": 1550,
+				"name": "Reisezeit mit dem Rad zur nächsten Grundschule",
+				"children": []
+			},
+			{
+				"id": 1551,
+				"name": "Gehzeit zur nächsten Grundschule",
+				"children": []
+			},
+			{
+				"id": 1552,
+				"name": "Reisezeit mit dem ÖV zur nächsten Grundschule",
+				"children": []
+			},
+			{
+				"id": 1553,
+				"name": "Reisezeit mit dem Pkw zur nächsten Grundschule",
+				"children": []
+			},
+			{
+				"id": 1554,
+				"name": "Reisezeit mit dem Rad zur nächsten Grundschule",
+				"children": []
+			},
+			{
+				"id": 1555,
+				"name": "Gehzeit zur nächsten Grundschule",
+				"children": []
+			},
+			{
+				"id": 1556,
+				"name": "Reisezeit mit dem ÖV zur nächsten Grundschule",
+				"children": []
+			},
+			{
+				"id": 1557,
+				"name": "Reisezeit mit dem Pkw zur nächsten Grundschule",
+				"children": []
+			},
+			{
+				"id": 1558,
+				"name": "Reisezeit mit dem Rad zur nächsten Hochschule",
+				"children": []
+			},
+			{
+				"id": 1559,
+				"name": "Gehzeit zur nächsten Hochschule",
+				"children": []
+			},
+			{
+				"id": 1560,
+				"name": "Reisezeit mit dem ÖV zur nächsten Hochschule",
+				"children": []
+			},
+			{
+				"id": 1561,
+				"name": "Reisezeit mit dem Pkw zur nächsten Hochschule",
+				"children": []
+			},
+			{
+				"id": 1562,
+				"name": "Reisezeit mit dem Rad zur nächsten Hochschule",
+				"children": []
+			},
+			{
+				"id": 1563,
+				"name": "Gehzeit zur nächsten Hochschule",
+				"children": []
+			},
+			{
+				"id": 1564,
+				"name": "Reisezeit mit dem ÖV zur nächsten Hochschule",
+				"children": []
+			},
+			{
+				"id": 1565,
+				"name": "Reisezeit mit dem Pkw zur nächsten Hochschule",
+				"children": []
+			},
+			{
+				"id": 1566,
+				"name": "Reisezeit mit dem Rad zur nächsten Oberstufe",
+				"children": []
+			},
+			{
+				"id": 1567,
+				"name": "Gehzeit zur nächsten zur nächsten Oberstufe",
+				"children": []
+			},
+			{
+				"id": 1568,
+				"name": "Reisezeit mit dem ÖV zur nächsten Oberstufe",
+				"children": []
+			},
+			{
+				"id": 1569,
+				"name": "Reisezeit mit dem Pkw zur nächsten Oberstufe",
+				"children": []
+			},
+			{
+				"id": 1570,
+				"name": "Reisezeit mit dem Rad zur nächsten Oberstufe",
+				"children": []
+			},
+			{
+				"id": 1571,
+				"name": "Gehzeit zur nächsten zur nächsten Oberstufe",
+				"children": []
+			},
+			{
+				"id": 1572,
+				"name": "Reisezeit mit dem ÖV zur nächsten Oberstufe",
+				"children": []
+			},
+			{
+				"id": 1573,
+				"name": "Reisezeit mit dem Pkw zur nächsten Oberstufe",
+				"children": []
+			},
+			{
+				"id": 1574,
+				"name": "Reisezeit mit dem Rad zur nächsten Weiterführenden Schule",
+				"children": []
+			},
+			{
+				"id": 1575,
+				"name": "Gehzeit zur nächsten Weiterführenden Schule",
+				"children": []
+			},
+			{
+				"id": 1576,
+				"name": "Reisezeit mit dem ÖV zur nächsten Weiterführenden Schule",
+				"children": []
+			},
+			{
+				"id": 1577,
+				"name": "Reisezeit mit dem Pkw zur nächsten Weiterführenden Schule",
+				"children": []
+			},
+			{
+				"id": 1578,
+				"name": "Reisezeit mit dem Rad zur nächsten Weiterführenden Schule",
+				"children": []
+			},
+			{
+				"id": 1579,
+				"name": "Gehzeit zur nächsten Weiterführenden Schule",
+				"children": []
+			},
+			{
+				"id": 1580,
+				"name": "Reisezeit mit dem ÖV zur nächsten Weiterführenden Schule",
+				"children": []
+			},
+			{
+				"id": 1581,
+				"name": "Reisezeit mit dem Pkw zur nächsten Weiterführenden Schule",
+				"children": []
+			},
+			{
+				"id": 1582,
+				"name": "Dynamisches Koordinierungsnetz - Kritische Straßenabschnitte",
+				"children": []
+			},
+			{
+				"id": 1583,
+				"name": "Dynamisches Koordinierungsnetz - Bundesautobahnen",
+				"children": []
+			},
+			{
+				"id": 1584,
+				"name": "Dynamisches Koordinierungsnetz - Hauptverkehrsstraßen",
+				"children": []
+			},
+			{
+				"id": 1585,
+				"name": "Apotheken",
+				"children": []
+			},
+			{
+				"id": 1586,
+				"name": "Supermarkt",
+				"children": []
+			},
+			{
+				"id": 1587,
+				"name": "Fernbahnhöfe",
+				"children": []
+			},
+			{
+				"id": 1588,
+				"name": "Flughafen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1589,
+				"name": "Hochschulen",
+				"children": []
+			},
+			{
+				"id": 1590,
+				"name": "Grundschule",
+				"children": []
+			},
+			{
+				"id": 1591,
+				"name": "Bahnnetz",
+				"children": []
+			},
+			{
+				"id": 1592,
+				"name": "Krankenhaus",
+				"children": []
+			},
+			{
+				"id": 1593,
+				"name": "Weiterführende Schulen",
+				"children": []
+			},
+			{
+				"id": 1594,
+				"name": "Bahnstationen",
+				"children": []
+			},
+			{
+				"id": 1595,
+				"name": "Autobahnen",
+				"children": []
+			},
+			{
+				"id": 1596,
+				"name": "Grenze der Metropolregion Hamburg",
+				"children": []
+			},
+			{
+				"id": 1597,
+				"name": "Haltestellen",
+				"children": []
+			},
+			{
+				"id": 1598,
+				"name": "Mittelzentrum",
+				"children": []
+			},
+			{
+				"id": 1599,
+				"name": "Hauptbahnhof Hamburg",
+				"children": []
+			},
+			{
+				"id": 1600,
+				"name": "Förderschulen",
+				"children": []
+			},
+			{
+				"id": 1601,
+				"name": "Gemeinden",
+				"children": []
+			},
+			{
+				"id": 1602,
+				"name": "Kita",
+				"children": []
+			},
+			{
+				"id": 1603,
+				"name": "Oberstufe",
+				"children": []
+			},
+			{
+				"id": 1604,
+				"name": "Kreise",
+				"children": []
+			},
+			{
+				"id": 1605,
+				"name": "Anzahl der Einwohner",
+				"children": []
+			},
+			{
+				"id": 1606,
+				"name": "Oberzentrum",
+				"children": []
+			},
+			{
+				"id": 1607,
+				"name": "Park und Ride",
+				"children": []
+			},
+			{
+				"id": 1608,
+				"name": "Anzahl der Freizeitziele",
+				"children": []
+			},
+			{
+				"id": 1609,
+				"name": "Straßenflächen - Nutzung",
+				"children": []
+			},
+			{
+				"id": 1610,
+				"name": "Straßenflächen - Nutzung - weitere Ebenen",
+				"children": []
+			},
+			{
+				"id": 1611,
+				"name": "Straßenflächen - Oberfläche",
+				"children": []
+			},
+			{
+				"id": 1612,
+				"name": "Straßenflächen - Oberfläche - weitere Ebenen",
+				"children": []
+			},
+			{
+				"id": 1613,
+				"name": "Bauwerke in Planung",
+				"children": []
+			},
+			{
+				"id": 1614,
+				"name": "ehemalige Bauwerke",
+				"children": []
+			},
+			{
+				"id": 1615,
+				"name": "Fußgängerbrücken",
+				"children": []
+			},
+			{
+				"id": 1616,
+				"name": "Straßenbrücken",
+				"children": []
+			},
+			{
+				"id": 1617,
+				"name": "Lärmschutzbauwerke",
+				"children": []
+			},
+			{
+				"id": 1618,
+				"name": "Verkehrszeichenbrücken",
+				"children": []
+			},
+			{
+				"id": 1619,
+				"name": "sonstige Bauwerke",
+				"children": []
+			},
+			{
+				"id": 1620,
+				"name": "Tunnel",
+				"children": []
+			},
+			{
+				"id": 1621,
+				"name": "Stützbauwerke",
+				"children": []
+			},
+			{
+				"id": 1622,
+				"name": "FHH",
+				"children": []
+			},
+			{
+				"id": 1623,
+				"name": "Anzahl frei verfügbarer E-Lastenräder je StadtRad-Station",
+				"children": []
+			},
+			{
+				"id": 1624,
+				"name": "Anzahl frei verfügbarer Fahrräder je StadtRad-Station",
+				"children": []
+			},
+			{
+				"id": 1625,
+				"name": "2: Fahrbahn Feuchtsalz",
+				"children": []
+			},
+			{
+				"id": 1626,
+				"name": "1: Radwege",
+				"children": []
+			},
+			{
+				"id": 1627,
+				"name": "Veloroute 1",
+				"children": []
+			},
+			{
+				"id": 1628,
+				"name": "Veloroute 10",
+				"children": []
+			},
+			{
+				"id": 1629,
+				"name": "Veloroute 11",
+				"children": []
+			},
+			{
+				"id": 1630,
+				"name": "Veloroute 12",
+				"children": []
+			},
+			{
+				"id": 1631,
+				"name": "Veloroute 13",
+				"children": []
+			},
+			{
+				"id": 1632,
+				"name": "Veloroute 14",
+				"children": []
+			},
+			{
+				"id": 1633,
+				"name": "Veloroute 2",
+				"children": []
+			},
+			{
+				"id": 1634,
+				"name": "Veloroute 3",
+				"children": []
+			},
+			{
+				"id": 1635,
+				"name": "Veloroute 4",
+				"children": []
+			},
+			{
+				"id": 1636,
+				"name": "Veloroute 5",
+				"children": []
+			},
+			{
+				"id": 1637,
+				"name": "Veloroute 6",
+				"children": []
+			},
+			{
+				"id": 1638,
+				"name": "Veloroute 7",
+				"children": []
+			},
+			{
+				"id": 1639,
+				"name": "Veloroute 8",
+				"children": []
+			},
+			{
+				"id": 1640,
+				"name": "Veloroute 9",
+				"children": []
+			},
+			{
+				"id": 1641,
+				"name": "Velorouten Übersicht",
+				"children": []
+			},
+			{
+				"id": 1642,
+				"name": "Velorouten Verbindungsstrecke",
+				"children": []
+			},
+			{
+				"id": 1643,
+				"name": "Freizeitroute 1",
+				"children": []
+			},
+			{
+				"id": 1644,
+				"name": "Freizeitroute 10",
+				"children": []
+			},
+			{
+				"id": 1645,
+				"name": "Freizeitroute 11",
+				"children": []
+			},
+			{
+				"id": 1646,
+				"name": "Freizeitroute 12",
+				"children": []
+			},
+			{
+				"id": 1647,
+				"name": "Freizeitroute 13",
+				"children": []
+			},
+			{
+				"id": 1648,
+				"name": "Freizeitroute 14",
+				"children": []
+			},
+			{
+				"id": 1649,
+				"name": "Freizeitroute 2",
+				"children": []
+			},
+			{
+				"id": 1650,
+				"name": "Freizeitroute 3",
+				"children": []
+			},
+			{
+				"id": 1651,
+				"name": "Freizeitroute 4",
+				"children": []
+			},
+			{
+				"id": 1652,
+				"name": "Freizeitroute 5",
+				"children": []
+			},
+			{
+				"id": 1653,
+				"name": "Freizeitroute 6",
+				"children": []
+			},
+			{
+				"id": 1654,
+				"name": "Freizeitroute 7",
+				"children": []
+			},
+			{
+				"id": 1655,
+				"name": "Freizeitroute 8",
+				"children": []
+			},
+			{
+				"id": 1656,
+				"name": "Freizeitroute 9",
+				"children": []
+			},
+			{
+				"id": 1657,
+				"name": "Freizeitrouten Übersicht",
+				"children": []
+			},
+			{
+				"id": 1658,
+				"name": "Radfernwege Übersicht",
+				"children": []
+			},
+			{
+				"id": 1659,
+				"name": "Elberadweg",
+				"children": []
+			},
+			{
+				"id": 1660,
+				"name": "Erster Grüner Ring",
+				"children": []
+			},
+			{
+				"id": 1661,
+				"name": "Radfernweg Hamburg Bremen",
+				"children": []
+			},
+			{
+				"id": 1662,
+				"name": "Radfernweg Hamburg Rügen",
+				"children": []
+			},
+			{
+				"id": 1663,
+				"name": "Radfernweg Leine Heideradweg",
+				"children": []
+			},
+			{
+				"id": 1664,
+				"name": "Radfernweg Nordsee",
+				"children": []
+			},
+			{
+				"id": 1665,
+				"name": "Fahrradstraßen",
+				"children": []
+			},
+			{
+				"id": 1666,
+				"name": "Wege in Grünflächen",
+				"children": []
+			},
+			{
+				"id": 1667,
+				"name": "Straßen mit Mischverkehr",
+				"children": []
+			},
+			{
+				"id": 1668,
+				"name": "Radwege",
+				"children": []
+			},
+			{
+				"id": 1669,
+				"name": "Schiebestrecken",
+				"children": []
+			},
+			{
+				"id": 1670,
+				"name": "Sonstige",
+				"children": []
+			},
+			{
+				"id": 1671,
+				"name": "Radfahr- und Schutzstreifen",
+				"children": []
+			},
+			{
+				"id": 1672,
+				"name": "Zulässige Höchstgeschwindigkeiten",
+				"children": []
+			},
+			{
+				"id": 1673,
+				"name": "Tempo-20-Zonen",
+				"children": []
+			},
+			{
+				"id": 1674,
+				"name": "Sonderregelungen zulässige Höchstgeschwindigkeiten",
+				"children": []
+			},
+			{
+				"id": 1675,
+				"name": "Tempo-30-Zonen",
+				"children": []
+			},
+			{
+				"id": 1676,
+				"name": "Verkehrsberuhigte Bereiche",
+				"children": []
+			},
+			{
+				"id": 1677,
+				"name": "Modal Split Bezirke",
+				"children": []
+			},
+			{
+				"id": 1678,
+				"name": "Modal Split gesamt",
+				"children": []
+			},
+			{
+				"id": 1679,
+				"name": "Modal Split Stadtregionen",
+				"children": []
+			},
+			{
+				"id": 1680,
+				"name": "Projekte mit Bezug zum Dialogforum Schiene Hamburg-Altona",
+				"children": []
+			},
+			{
+				"id": 1681,
+				"name": "Verlauf nördliche Güterumgehungsbahn",
+				"children": []
+			},
+			{
+				"id": 1682,
+				"name": "Radverkehrsmengen (Stadtradeln) 2018",
+				"children": []
+			},
+			{
+				"id": 1683,
+				"name": "Radverkehrsmengen (Stadtradeln) 2019",
+				"children": []
+			},
+			{
+				"id": 1684,
+				"name": "Radverkehrsmengen (Stadtradeln) 2020",
+				"children": []
+			},
+			{
+				"id": 1685,
+				"name": "Beschriftung Streckennummer",
+				"children": []
+			},
+			{
+				"id": 1686,
+				"name": "Beschriftung Gleisnummer",
+				"children": []
+			},
+			{
+				"id": 1687,
+				"name": "zurückgebaut/außer Betrieb",
+				"children": []
+			},
+			{
+				"id": 1688,
+				"name": "Fernbahn, elektrifiziert",
+				"children": []
+			},
+			{
+				"id": 1689,
+				"name": "Fernbahn, nicht elektrifiziert/unbekannt",
+				"children": []
+			},
+			{
+				"id": 1690,
+				"name": "S-Bahn",
+				"children": []
+			},
+			{
+				"id": 1691,
+				"name": "Schmalspur-Bahn",
+				"children": []
+			},
+			{
+				"id": 1692,
+				"name": "Straßen-/Stadtbahn",
+				"children": []
+			},
+			{
+				"id": 1693,
+				"name": "U-Bahn",
+				"children": []
+			},
+			{
+				"id": 1694,
+				"name": "RSW Ahrensburg",
+				"children": []
+			},
+			{
+				"id": 1695,
+				"name": "RSW Bad Bramstedt",
+				"children": []
+			},
+			{
+				"id": 1696,
+				"name": "RSW Elmshorn",
+				"children": []
+			},
+			{
+				"id": 1697,
+				"name": "RSW Geesthacht",
+				"children": []
+			},
+			{
+				"id": 1698,
+				"name": "RSW Lübeck",
+				"children": []
+			},
+			{
+				"id": 1699,
+				"name": "RSW Lüneburg",
+				"children": []
+			},
+			{
+				"id": 1700,
+				"name": "RSW Schwerin Wismar",
+				"children": []
+			},
+			{
+				"id": 1701,
+				"name": "RSW Stade",
+				"children": []
+			},
+			{
+				"id": 1702,
+				"name": "RSW Tostedt",
+				"children": []
+			},
+			{
+				"id": 1703,
+				"name": "Car auxiliary signal (beta)",
+				"children": []
+			},
+			{
+				"id": 1704,
+				"name": "Bus checkout (beta)",
+				"children": []
+			},
+			{
+				"id": 1705,
+				"name": "Bus pre request (beta)",
+				"children": []
+			},
+			{
+				"id": 1706,
+				"name": "Bus request (beta)",
+				"children": []
+			},
+			{
+				"id": 1707,
+				"name": "Cycle second (beta)",
+				"children": []
+			},
+			{
+				"id": 1708,
+				"name": "Cyclist primary signal (beta)",
+				"children": []
+			},
+			{
+				"id": 1709,
+				"name": "Pedestrian acoustic signal request (beta)",
+				"children": []
+			},
+			{
+				"id": 1710,
+				"name": "Car detector (beta)",
+				"children": []
+			},
+			{
+				"id": 1711,
+				"name": "Cyclist signal request (beta)",
+				"children": []
+			},
+			{
+				"id": 1712,
+				"name": "Pedestrian signal request (beta)",
+				"children": []
+			},
+			{
+				"id": 1713,
+				"name": "Car Primary Signal (beta)",
+				"children": []
+			},
+			{
+				"id": 1714,
+				"name": "Pedestrian acoustic signal (beta)",
+				"children": []
+			},
+			{
+				"id": 1715,
+				"name": "Pedestrian primary signal (beta)",
+				"children": []
+			},
+			{
+				"id": 1716,
+				"name": "Car secondary signal (beta)",
+				"children": []
+			},
+			{
+				"id": 1717,
+				"name": "Signal program (beta)",
+				"children": []
+			},
+			{
+				"id": 1718,
+				"name": " HPA (VRU-Schutz)",
+				"children": []
+			},
+			{
+				"id": 1719,
+				"name": " HPA (V2X(SPaT))",
+				"children": []
+			},
+			{
+				"id": 1720,
+				"name": " HPA (Ampelprognose)",
+				"children": []
+			},
+			{
+				"id": 1721,
+				"name": " aVME (Verkehrszählung Kfz)",
+				"children": []
+			},
+			{
+				"id": 1722,
+				"name": " BiDiMoVe (Bus-Priorisierung)",
+				"children": []
+			},
+			{
+				"id": 1723,
+				"name": " BiDiMoVe (V2X(SPaT))",
+				"children": []
+			},
+			{
+				"id": 1724,
+				"name": " BiDiMoVe (VRU-Schutz)",
+				"children": []
+			},
+			{
+				"id": 1725,
+				"name": " HaRaZäN (Verkehrszählung Rad)",
+				"children": []
+			},
+			{
+				"id": 1726,
+				"name": " PrioBike-HH (Rad-Priorisierung)",
+				"children": []
+			},
+			{
+				"id": 1727,
+				"name": " PrioBike-HH (Grüne Welle Rad)",
+				"children": []
+			},
+			{
+				"id": 1728,
+				"name": " PrioBike-HH (VRU-Schutz)",
+				"children": []
+			},
+			{
+				"id": 1729,
+				"name": " ROKS-HH (Ampelprognose)",
+				"children": []
+			},
+			{
+				"id": 1730,
+				"name": " ROKS-HH (Bus-Priorisierung)",
+				"children": []
+			},
+			{
+				"id": 1731,
+				"name": " ROKS-HH (V2X(SPaT))",
+				"children": []
+			},
+			{
+				"id": 1732,
+				"name": " TAVF-HH (Ampelprognose)",
+				"children": []
+			},
+			{
+				"id": 1733,
+				"name": " TAVF-HH (Bus-Priorisierung)",
+				"children": []
+			},
+			{
+				"id": 1734,
+				"name": " TAVF-HH (Einsatzfahrzeug-Priorisierung)",
+				"children": []
+			},
+			{
+				"id": 1735,
+				"name": " TAVF-HH (Kooperative Verkehrssteuerung)",
+				"children": []
+			},
+			{
+				"id": 1736,
+				"name": " TAVF-HH (V2X-Klappbrücke)",
+				"children": []
+			},
+			{
+				"id": 1737,
+				"name": " TAVF-HH (V2X(SPaT))",
+				"children": []
+			},
+			{
+				"id": 1738,
+				"name": " TAVF-HH (VRU-Schutz)",
+				"children": []
+			},
+			{
+				"id": 1739,
+				"name": " TLF 2.0 (Open Traffic Data)",
+				"children": []
+			},
+			{
+				"id": 1740,
+				"name": "Projektgebiet - BiDiMoVe",
+				"children": []
+			},
+			{
+				"id": 1741,
+				"name": "Projektgebiet - HPA",
+				"children": []
+			},
+			{
+				"id": 1742,
+				"name": "Projektgebiet - ROKS-HH",
+				"children": []
+			},
+			{
+				"id": 1743,
+				"name": "Projektgebiet - TAVF-HH",
+				"children": []
+			},
+			{
+				"id": 1744,
+				"name": "Projektgebiet - TLF 2.0",
+				"children": []
+			},
+			{
+				"id": 1745,
+				"name": " PrioBike-HH (Geschwindigkeitssäule)",
+				"children": []
+			},
+			{
+				"id": 1746,
+				"name": "Radverkehrsmengen - aktuelles Jahr (DB Rad+)",
+				"children": []
+			},
+			{
+				"id": 1747,
+				"name": "Radverkehrsmengen - letzte Woche (DB Rad+)",
+				"children": []
+			},
+			{
+				"id": 1748,
+				"name": "Radverkehrsmengen - Jahr 2022 (DB Rad+)",
+				"children": []
+			},
+			{
+				"id": 1749,
+				"name": "Bundesstraßenverwaltung",
+				"children": []
+			},
+			{
+				"id": 1750,
+				"name": "Bundeswasserstraßenverwaltung",
+				"children": []
+			},
+			{
+				"id": 1751,
+				"name": "Bahnhaltestellen für Einzugsbereiche",
+				"children": []
+			},
+			{
+				"id": 1752,
+				"name": "Bushaltestellen für Einzugsbereiche",
+				"children": []
+			},
+			{
+				"id": 1753,
+				"name": "Fährhaltestellen für Einzugsbereiche",
+				"children": []
+			},
+			{
+				"id": 1754,
+				"name": "Einzugsbereiche Fernverkehr",
+				"children": []
+			},
+			{
+				"id": 1755,
+				"name": "Einzugsbereiche Regionalverkehr",
+				"children": []
+			},
+			{
+				"id": 1756,
+				"name": "Einzugsbereiche S-Bahn",
+				"children": []
+			},
+			{
+				"id": 1757,
+				"name": "Einzugsbereiche U-Bahn",
+				"children": []
+			},
+			{
+				"id": 1758,
+				"name": "Einzugsbereiche Expressbus",
+				"children": []
+			},
+			{
+				"id": 1759,
+				"name": "Einzugsbereiche Metrobus",
+				"children": []
+			},
+			{
+				"id": 1760,
+				"name": "Einzugsbereiche Nachtbus",
+				"children": []
+			},
+			{
+				"id": 1761,
+				"name": "Einzugsbereiche Stadtbus",
+				"children": []
+			},
+			{
+				"id": 1762,
+				"name": "Einzugsbereiche Fähre",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 4,
+		"name": "Bildung, Kultur und Sport",
+		"children": [
+			{
+				"id": 1763,
+				"name": "Plätze",
+				"children": []
+			},
+			{
+				"id": 1764,
+				"name": "Parkanlagen",
+				"children": []
+			},
+			{
+				"id": 1765,
+				"name": "Spielplätze",
+				"children": []
+			},
+			{
+				"id": 1766,
+				"name": "MRH Golfplätze",
+				"children": []
+			},
+			{
+				"id": 1767,
+				"name": "MRH Historische Kulturlandschaften",
+				"children": []
+			},
+			{
+				"id": 1768,
+				"name": "MRH Programmkinos",
+				"children": []
+			},
+			{
+				"id": 1769,
+				"name": "MRH Sportboothäfen",
+				"children": []
+			},
+			{
+				"id": 1770,
+				"name": "Eventlotse Daten Hamburg",
+				"children": []
+			},
+			{
+				"id": 1771,
+				"name": "Schulsporthallen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1772,
+				"name": "Spass im und am Wasser - 2. Grüner Ring Hamburg",
+				"children": []
+			},
+			{
+				"id": 1773,
+				"name": "Stammdaten Hamburger Sportstätten",
+				"children": []
+			},
+			{
+				"id": 1774,
+				"name": "Öffentliche Bibliotheken Hamburg",
+				"children": []
+			},
+			{
+				"id": 1775,
+				"name": "MRH Grenzgeschichte(n)",
+				"children": []
+			},
+			{
+				"id": 1776,
+				"name": "Jacobusweg Hamburg",
+				"children": []
+			},
+			{
+				"id": 1777,
+				"name": "100 Jahre Stadtgruen Icons",
+				"children": []
+			},
+			{
+				"id": 1778,
+				"name": "100 Jahre Stadtgruen Strecke",
+				"children": []
+			},
+			{
+				"id": 1779,
+				"name": "100 Jahre Stadtgruen Umring",
+				"children": []
+			},
+			{
+				"id": 1780,
+				"name": "Bauwerke",
+				"children": []
+			},
+			{
+				"id": 1781,
+				"name": "Bergbau",
+				"children": []
+			},
+			{
+				"id": 1782,
+				"name": "Geologische Objekte",
+				"children": []
+			},
+			{
+				"id": 1783,
+				"name": "Landschaftsform",
+				"children": []
+			},
+			{
+				"id": 1784,
+				"name": "Geotope in Hamburg",
+				"children": []
+			},
+			{
+				"id": 1785,
+				"name": "Sehenswerte Objekte",
+				"children": []
+			},
+			{
+				"id": 1786,
+				"name": "Stein und Fels",
+				"children": []
+			},
+			{
+				"id": 1787,
+				"name": "Unsichtbares Objekt",
+				"children": []
+			},
+			{
+				"id": 1788,
+				"name": "Wasser und Wasserbau",
+				"children": []
+			},
+			{
+				"id": 1789,
+				"name": "Lieblingsplätze am Wasser",
+				"children": []
+			},
+			{
+				"id": 1790,
+				"name": "Lieblingsplätze im Grünen",
+				"children": []
+			},
+			{
+				"id": 1791,
+				"name": "Naturerlebnisse",
+				"children": []
+			},
+			{
+				"id": 1792,
+				"name": "100 Lieblingsplaetze fuer Aktive",
+				"children": []
+			},
+			{
+				"id": 1793,
+				"name": "Lieblingsplätze für Aktive",
+				"children": []
+			},
+			{
+				"id": 1794,
+				"name": "Club-Kataster Hamburg",
+				"children": []
+			},
+			{
+				"id": 1795,
+				"name": "Club-Kataster Hamburg Historie",
+				"children": []
+			},
+			{
+				"id": 1796,
+				"name": "Club-Kataster Hamburg Neu",
+				"children": []
+			},
+			{
+				"id": 1797,
+				"name": "Spielstätten mit Veranstaltungen",
+				"children": []
+			},
+			{
+				"id": 1798,
+				"name": "Spielstätten ohne Veranstaltungen",
+				"children": []
+			},
+			{
+				"id": 1799,
+				"name": "Tage der Industriekultur am Wasser",
+				"children": []
+			},
+			{
+				"id": 1800,
+				"name": "Bewässerungsanlagen",
+				"children": []
+			},
+			{
+				"id": 1801,
+				"name": "Brücken",
+				"children": []
+			},
+			{
+				"id": 1802,
+				"name": "Fabriken",
+				"children": []
+			},
+			{
+				"id": 1803,
+				"name": "Hafenanlagen",
+				"children": []
+			},
+			{
+				"id": 1804,
+				"name": "Kraftwerke",
+				"children": []
+			},
+			{
+				"id": 1805,
+				"name": "Leuchttürme",
+				"children": []
+			},
+			{
+				"id": 1806,
+				"name": "Museen",
+				"children": []
+			},
+			{
+				"id": 1807,
+				"name": "Schiffe",
+				"children": []
+			},
+			{
+				"id": 1808,
+				"name": "Schleusen",
+				"children": []
+			},
+			{
+				"id": 1809,
+				"name": "Schöpfwerke",
+				"children": []
+			},
+			{
+				"id": 1810,
+				"name": "Wassermühlen",
+				"children": []
+			},
+			{
+				"id": 1811,
+				"name": "Wassertechnik",
+				"children": []
+			},
+			{
+				"id": 1812,
+				"name": "Werften",
+				"children": []
+			},
+			{
+				"id": 1813,
+				"name": "Route Geesthacht",
+				"children": []
+			},
+			{
+				"id": 1814,
+				"name": "Route Lauenburg",
+				"children": []
+			},
+			{
+				"id": 1815,
+				"name": "Route Neumünster",
+				"children": []
+			},
+			{
+				"id": 1816,
+				"name": "Route Schwerin",
+				"children": []
+			},
+			{
+				"id": 1817,
+				"name": "Sportvereine",
+				"children": []
+			},
+			{
+				"id": 1818,
+				"name": "Therapeutisches Krafttraining",
+				"children": []
+			},
+			{
+				"id": 1819,
+				"name": "Bürgerhäuser, Bürgertreffs, Stadtteilkulturzentren",
+				"children": []
+			},
+			{
+				"id": 1820,
+				"name": "Kino, Theater, Museen",
+				"children": []
+			},
+			{
+				"id": 1821,
+				"name": "Religiöse Gemeinschaften",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 5,
+		"name": "Bevölkerung und Gesellschaft",
+		"children": [
+			{
+				"id": 1822,
+				"name": "Statistische Gebiete in Hamburg",
+				"children": []
+			},
+			{
+				"id": 1823,
+				"name": "Unterbringung unbegleiteter minderjähriger Flüchtlinge Hamburg",
+				"children": []
+			},
+			{
+				"id": 1824,
+				"name": "Evakuierungsgebiete sturmflutgefährdete Bereiche Hamburgs",
+				"children": []
+			},
+			{
+				"id": 1825,
+				"name": "Einwohner-Gitter (1ha) mit den Einwohner/-innen am 09.05.2011 für die Metropolregion Hamburg, Zensus 2011",
+				"children": []
+			},
+			{
+				"id": 1826,
+				"name": "Übernachtungs- und Versorgungsangebote für obdachlose und wohnungslose Menschen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1827,
+				"name": "Beratungsstellen für Wohnungsnotfälle Hamburg",
+				"children": []
+			},
+			{
+				"id": 1828,
+				"name": "Begegnungsstätten der Ambulanten Sozialpsychiatrie Hamburg",
+				"children": []
+			},
+			{
+				"id": 1829,
+				"name": "Angebote und Nutzung der Jugendsozialarbeit Hamburg",
+				"children": []
+			},
+			{
+				"id": 1830,
+				"name": "Angebote und Nutzung der Offenen Kinder- und Jugendarbeit Hamburg",
+				"children": []
+			},
+			{
+				"id": 1831,
+				"name": "Heiratsorte Eimsbüttel Hamburg",
+				"children": []
+			},
+			{
+				"id": 1832,
+				"name": "Frauenberatung Hamburg",
+				"children": []
+			},
+			{
+				"id": 1833,
+				"name": "Jugend aktiv plus Hamburg",
+				"children": []
+			},
+			{
+				"id": 1834,
+				"name": "Sozialräumliche Integrationsnetzwerke (SIN) Hamburg",
+				"children": []
+			},
+			{
+				"id": 1835,
+				"name": "Allgemeiner Sozialer Dienst (ASD) Hamburg",
+				"children": []
+			},
+			{
+				"id": 1836,
+				"name": "Opferberatungsstellen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1837,
+				"name": "Werkstätten für Menschen mit Behinderung Hamburg",
+				"children": []
+			},
+			{
+				"id": 1838,
+				"name": "Wasserrettungspunkte Hamburg",
+				"children": []
+			},
+			{
+				"id": 1839,
+				"name": "Standorte Schutzsuchende Ukraine Hamburg",
+				"children": []
+			},
+			{
+				"id": 1840,
+				"name": "Kindertagesstätten",
+				"children": []
+			},
+			{
+				"id": 1841,
+				"name": "Kindertagesstätten Details",
+				"children": []
+			},
+			{
+				"id": 1842,
+				"name": "Eigentümerquote",
+				"children": []
+			},
+			{
+				"id": 1843,
+				"name": "Durchschnittliche Wohnungsgröße in m²",
+				"children": []
+			},
+			{
+				"id": 1844,
+				"name": "Anteil der Wohngebäude im Besitz einer oder mehrerer Privatperson (en)",
+				"children": []
+			},
+			{
+				"id": 1845,
+				"name": "Anteil der Wohngebäude mit einer oder zwei Wohnung (en)",
+				"children": []
+			},
+			{
+				"id": 1846,
+				"name": "Anteil der freistehenden Ein- und Mehrfamilienhäuser",
+				"children": []
+			},
+			{
+				"id": 1847,
+				"name": "Anteil der Wohngebäude mit Baujahr 1990 und später",
+				"children": []
+			},
+			{
+				"id": 1848,
+				"name": "Anteil der Personen im Dienstleistungsbetrieb",
+				"children": []
+			},
+			{
+				"id": 1849,
+				"name": "Anteil der Selbstständigen insgesamt",
+				"children": []
+			},
+			{
+				"id": 1850,
+				"name": "Erwerbslosenquote",
+				"children": []
+			},
+			{
+				"id": 1851,
+				"name": "Anteil der Personen ab 15 Jahre mit Hochschulabschluss",
+				"children": []
+			},
+			{
+				"id": 1852,
+				"name": "Anteil der Personen ab 15 Jahre mit Hochschul- / Fachhochschulreife",
+				"children": []
+			},
+			{
+				"id": 1853,
+				"name": "Anteil der Bevölkerung mit Migrationshintergrund",
+				"children": []
+			},
+			{
+				"id": 1854,
+				"name": "Anteil der Ledigen",
+				"children": []
+			},
+			{
+				"id": 1855,
+				"name": "Bevölkerungsdichte (Einwohner je km²)",
+				"children": []
+			},
+			{
+				"id": 1856,
+				"name": "Arbeitslose in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1857,
+				"name": "Sozialversicherungspflichtig Beschäftigte in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1858,
+				"name": "Bevölkerungdichte in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1859,
+				"name": "Alleinerziehende in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1860,
+				"name": "Haushalte mit Kindern in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1861,
+				"name": "Einpersonenhaushalte in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1862,
+				"name": "Personen je Haushalt 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1863,
+				"name": "Haushalte 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1864,
+				"name": "Unter 18 Jährige mit Migrationshintergrund in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1865,
+				"name": "Bevölkerung mit Migrationshintergrung in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1866,
+				"name": "Ausländerinnen und Ausländer in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1867,
+				"name": "65 Jahre und älter in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1868,
+				"name": "Unter 18 Jährige in Prozent 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1869,
+				"name": "Bevölkerung absolut 31.12.2014",
+				"children": []
+			},
+			{
+				"id": 1870,
+				"name": "Bestehende Flüchtlingsunterkünfte mit der Perspektive Wohnen",
+				"children": []
+			},
+			{
+				"id": 1871,
+				"name": "Geplante Flüchtlingsunterkünfte mit der Perspektive Wohnen",
+				"children": []
+			},
+			{
+				"id": 1872,
+				"name": "Bestehende Erstaufnahmeeinrichtungen",
+				"children": []
+			},
+			{
+				"id": 1873,
+				"name": "Geplante Erstaufnahmeeinrichtungen",
+				"children": []
+			},
+			{
+				"id": 1874,
+				"name": "Bestehende öfftl. rechtl. Unterbringung",
+				"children": []
+			},
+			{
+				"id": 1875,
+				"name": "Geplante öfftl. rechtl. Unterbringung",
+				"children": []
+			},
+			{
+				"id": 1876,
+				"name": "Elternlotsenprojekt",
+				"children": []
+			},
+			{
+				"id": 1877,
+				"name": "Elternschule",
+				"children": []
+			},
+			{
+				"id": 1878,
+				"name": "Eltern-Kind-Zentrum",
+				"children": []
+			},
+			{
+				"id": 1879,
+				"name": "Familienteam",
+				"children": []
+			},
+			{
+				"id": 1880,
+				"name": "Institutionelle Erziehungsberatung",
+				"children": []
+			},
+			{
+				"id": 1881,
+				"name": "Kinder- und Familienzentrum",
+				"children": []
+			},
+			{
+				"id": 1882,
+				"name": "Konfessionelle Familienbildungsstätte",
+				"children": []
+			},
+			{
+				"id": 1883,
+				"name": "Mütterzentrum",
+				"children": []
+			},
+			{
+				"id": 1884,
+				"name": "Sonstige",
+				"children": []
+			},
+			{
+				"id": 1885,
+				"name": "Überregionale Beratungsstelle",
+				"children": []
+			},
+			{
+				"id": 1886,
+				"name": "Praktische Hilfe nach Geburt",
+				"children": []
+			},
+			{
+				"id": 1887,
+				"name": "Überregionale Projekte",
+				"children": []
+			},
+			{
+				"id": 1888,
+				"name": "Entwicklungspsychologische Beratung",
+				"children": []
+			},
+			{
+				"id": 1889,
+				"name": "Hausbesuchsprogramm",
+				"children": []
+			},
+			{
+				"id": 1890,
+				"name": "Jobcenter",
+				"children": []
+			},
+			{
+				"id": 1891,
+				"name": "Jugendberufsagentur",
+				"children": []
+			},
+			{
+				"id": 1892,
+				"name": "W.I.R.",
+				"children": []
+			},
+			{
+				"id": 1893,
+				"name": "Freiwilligenagenturen",
+				"children": []
+			},
+			{
+				"id": 1894,
+				"name": "Mehrgenerationenhäuser",
+				"children": []
+			},
+			{
+				"id": 1895,
+				"name": "Gesundheitsberatung",
+				"children": []
+			},
+			{
+				"id": 1896,
+				"name": "Lebenslagenberatung",
+				"children": []
+			},
+			{
+				"id": 1897,
+				"name": "Schuldnerberatung",
+				"children": []
+			},
+			{
+				"id": 1898,
+				"name": "Begleitung von Kindern und Jugendlichen in außerschulischen Angeboten",
+				"children": []
+			},
+			{
+				"id": 1899,
+				"name": "Berufliche Integration und Unterstützung einer selbstständigen Lebensführung",
+				"children": []
+			},
+			{
+				"id": 1900,
+				"name": "Familienrat",
+				"children": []
+			},
+			{
+				"id": 1901,
+				"name": "Frühe Hilfen und Unterstützung von Familien an biographischen Übergängen",
+				"children": []
+			},
+			{
+				"id": 1902,
+				"name": "Schulbezogene Angebote",
+				"children": []
+			},
+			{
+				"id": 1903,
+				"name": "Tagespflegebörse",
+				"children": []
+			},
+			{
+				"id": 1904,
+				"name": "Abteilung Kindertagesbetreuung",
+				"children": []
+			},
+			{
+				"id": 1905,
+				"name": "Kooperation Schule-Jugendhilfe - Integrierte Angebote",
+				"children": []
+			},
+			{
+				"id": 1906,
+				"name": "Kooperation Schule-Jugendhilfe - Temporäre Lerngruppe",
+				"children": []
+			},
+			{
+				"id": 1907,
+				"name": "Kooperation Schule-Jugendhilfe - 2. Chance",
+				"children": []
+			},
+			{
+				"id": 1908,
+				"name": "ESF+ Den sozialen Arbeitsmarkt stärken",
+				"children": []
+			},
+			{
+				"id": 1909,
+				"name": "ESF EU REACT Projekte",
+				"children": []
+			},
+			{
+				"id": 1910,
+				"name": "ESF+ Förderperiode 2021-2027",
+				"children": []
+			},
+			{
+				"id": 1911,
+				"name": "ESF FP14-20 verlängerte Projekte",
+				"children": []
+			},
+			{
+				"id": 1912,
+				"name": "Amira - Beratung bei Diskriminierung",
+				"children": []
+			},
+			{
+				"id": 1913,
+				"name": "Flüchtlingszentrum",
+				"children": []
+			},
+			{
+				"id": 1914,
+				"name": "Integrationsangebote für Zugewanderte",
+				"children": []
+			},
+			{
+				"id": 1915,
+				"name": "Bevölkerungsprognosen auf Ebene der Stadtteile Hamburgs",
+				"children": []
+			},
+			{
+				"id": 1916,
+				"name": "Bevölkerungsprognosen auf der Bezirksebene Hamburgs",
+				"children": []
+			},
+			{
+				"id": 1917,
+				"name": "Bevölkerungsprognosen in Hamburg gesamt",
+				"children": []
+			},
+			{
+				"id": 1918,
+				"name": "Ehrenamt",
+				"children": []
+			},
+			{
+				"id": 1919,
+				"name": "Essen auf Rädern",
+				"children": []
+			},
+			{
+				"id": 1920,
+				"name": "Hausnotruf",
+				"children": []
+			},
+			{
+				"id": 1921,
+				"name": "Anerkennungsberatung",
+				"children": []
+			},
+			{
+				"id": 1922,
+				"name": "Fachkräftezuwanderung",
+				"children": []
+			},
+			{
+				"id": 1923,
+				"name": "Faire Integration",
+				"children": []
+			},
+			{
+				"id": 1924,
+				"name": "Frauenprojekte",
+				"children": []
+			},
+			{
+				"id": 1925,
+				"name": "Interkulturelle Öffnung",
+				"children": []
+			},
+			{
+				"id": 1926,
+				"name": "Koordination",
+				"children": []
+			},
+			{
+				"id": 1927,
+				"name": "Qualifizierungsprojekte",
+				"children": []
+			},
+			{
+				"id": 1928,
+				"name": "Senior:innenkreise und –gruppen",
+				"children": []
+			},
+			{
+				"id": 1929,
+				"name": "Senior:innentreffs",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 6,
+		"name": "Wissenschaft und Technologie",
+		"children": [
+			{
+				"id": 1930,
+				"name": "Angebote und Nutzung der Jugendmusikschulen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1931,
+				"name": "Planungsregionen Schulentwicklungsplan (SEPL) Hamburg",
+				"children": []
+			},
+			{
+				"id": 1932,
+				"name": "Eingänge der Schulen Hamburgs",
+				"children": []
+			},
+			{
+				"id": 1933,
+				"name": "Berufsschulen in Hamburg",
+				"children": []
+			},
+			{
+				"id": 1934,
+				"name": "Schulen in Hamburg",
+				"children": []
+			},
+			{
+				"id": 1935,
+				"name": "Nicht Staatliche Schulen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1936,
+				"name": "Staatliche Schulen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1937,
+				"name": "Tafeln Bille",
+				"children": []
+			},
+			{
+				"id": 1938,
+				"name": "Wege Bille",
+				"children": []
+			},
+			{
+				"id": 1939,
+				"name": "Parkplätze Bille",
+				"children": []
+			},
+			{
+				"id": 1940,
+				"name": "Wege Boberg",
+				"children": []
+			},
+			{
+				"id": 1941,
+				"name": "Tafeln Boberg",
+				"children": []
+			},
+			{
+				"id": 1942,
+				"name": "Wege Harburg",
+				"children": []
+			},
+			{
+				"id": 1943,
+				"name": "Tafeln Harburg",
+				"children": []
+			},
+			{
+				"id": 1944,
+				"name": "Parkplätze Harburg",
+				"children": []
+			},
+			{
+				"id": 1945,
+				"name": "Wege Wohldorf",
+				"children": []
+			},
+			{
+				"id": 1946,
+				"name": "Tafeln Wohldorf",
+				"children": []
+			},
+			{
+				"id": 1947,
+				"name": "Parkplätze Wohldorf",
+				"children": []
+			},
+			{
+				"id": 1948,
+				"name": "Forschungseinrichtungen",
+				"children": []
+			},
+			{
+				"id": 1949,
+				"name": "Hochschulen",
+				"children": []
+			},
+			{
+				"id": 1950,
+				"name": "project area",
+				"children": []
+			},
+			{
+				"id": 1951,
+				"name": "retrofitting area",
+				"children": []
+			},
+			{
+				"id": 1952,
+				"name": "high performance area",
+				"children": []
+			},
+			{
+				"id": 1953,
+				"name": "Forschungseinrichtungen",
+				"children": []
+			},
+			{
+				"id": 1954,
+				"name": "Hochschulen",
+				"children": []
+			},
+			{
+				"id": 1955,
+				"name": "HAW Energiecampus - Verbrauch Hausanschluss elektrisch",
+				"children": []
+			},
+			{
+				"id": 1956,
+				"name": "HAW Energiecampus - Erzeugung Photovoltaik elektrisch",
+				"children": []
+			},
+			{
+				"id": 1957,
+				"name": "HAW Energiecampus - Erzeugung BHKW elektrisch",
+				"children": []
+			},
+			{
+				"id": 1958,
+				"name": "HAW Energiecampus - Erzeugung BHKW thermisch",
+				"children": []
+			},
+			{
+				"id": 1959,
+				"name": "HAW Energiecampus - Verbrauch Elektrolyse elektrisch",
+				"children": []
+			},
+			{
+				"id": 1960,
+				"name": "HAW Energiecampus - Verbrauch Kältemaschine elektrisch",
+				"children": []
+			},
+			{
+				"id": 1961,
+				"name": "HAW Energiecampus - Gesamtertrag Photovoltaik elektrisch",
+				"children": []
+			},
+			{
+				"id": 1962,
+				"name": "HAW Energiecampus - Verbrauch Elektroautoladestation",
+				"children": []
+			},
+			{
+				"id": 1963,
+				"name": "HAW Energiecampus - Verbrauch Methanisierungsanlage elektrisch",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 7,
+		"name": "Gesundheit",
+		"children": [
+			{
+				"id": 1964,
+				"name": "Krankenhäuser Hamburg",
+				"children": []
+			},
+			{
+				"id": 1965,
+				"name": "Vollstationäre Pflegeeinrichtungen Hamburg",
+				"children": []
+			},
+			{
+				"id": 1966,
+				"name": "Demenz Eimsbüttel Hamburg",
+				"children": []
+			},
+			{
+				"id": 1967,
+				"name": "Pflegestützpunkte Hamburg",
+				"children": []
+			},
+			{
+				"id": 1968,
+				"name": "Prävention und sexuelle Gesundheit Hamburg",
+				"children": []
+			},
+			{
+				"id": 1969,
+				"name": "Hospize",
+				"children": []
+			},
+			{
+				"id": 1970,
+				"name": "Trauerbegleitung",
+				"children": []
+			},
+			{
+				"id": 1971,
+				"name": "Behindertenhilfe",
+				"children": []
+			},
+			{
+				"id": 1972,
+				"name": "Beratungsstellen zu Wohnen und Pflege",
+				"children": []
+			},
+			{
+				"id": 1973,
+				"name": "Betreutes Wohnen",
+				"children": []
+			},
+			{
+				"id": 1974,
+				"name": "Pflegedienste",
+				"children": []
+			},
+			{
+				"id": 1975,
+				"name": "Service-Wohnen",
+				"children": []
+			},
+			{
+				"id": 1976,
+				"name": "Tagespflege",
+				"children": []
+			},
+			{
+				"id": 1977,
+				"name": "Eingliederungshilfeeinrichtung Drogen und Sucht",
+				"children": []
+			},
+			{
+				"id": 1978,
+				"name": "Kinder- und Jugendsuchtberatung",
+				"children": []
+			},
+			{
+				"id": 1979,
+				"name": "Niedrigschwellige Suchtberatung",
+				"children": []
+			},
+			{
+				"id": 1980,
+				"name": "Suchtberatung",
+				"children": []
+			},
+			{
+				"id": 1981,
+				"name": "Suchtrehabilitation stationär",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 8,
+		"name": "Justiz, Rechtssystem und öffentliche Sicherheit",
+		"children": [
+			{
+				"id": 1982,
+				"name": "Lärmschutzbereich Nacht-Schutzzone",
+				"children": []
+			},
+			{
+				"id": 1983,
+				"name": "Lärmschutzbereich Tag-Schutzzone 2",
+				"children": []
+			},
+			{
+				"id": 1984,
+				"name": "Lärmschutzbereich Tag-Schutzzone 1",
+				"children": []
+			},
+			{
+				"id": 1985,
+				"name": "Überschwemmungsgebiete (ALKIS)",
+				"children": []
+			},
+			{
+				"id": 1986,
+				"name": "Wasser- und Bodenverbände",
+				"children": []
+			},
+			{
+				"id": 1987,
+				"name": "Wasserrecht",
+				"children": []
+			},
+			{
+				"id": 1988,
+				"name": "Besonderes Vorkaufsrecht",
+				"children": []
+			},
+			{
+				"id": 1989,
+				"name": "Sanierungsgebiete",
+				"children": []
+			},
+			{
+				"id": 1990,
+				"name": "Umlegungsgebiete",
+				"children": []
+			},
+			{
+				"id": 1991,
+				"name": "vorbereitende Untersuchung Städtebauliche Entwicklungsmaßnahme",
+				"children": []
+			},
+			{
+				"id": 1992,
+				"name": "Denkmalschutzrecht",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 9,
+		"name": "Regierung und öffentlicher Sektor",
+		"children": [
+			{
+				"id": 1993,
+				"name": "Bürgerschaftswahl 15.02.2015 - AFD Stimmen in Prozent",
+				"children": []
+			},
+			{
+				"id": 1994,
+				"name": "Bürgerschaftswahl 15.02.2015 - FDP Stimmen in Prozent",
+				"children": []
+			},
+			{
+				"id": 1995,
+				"name": "Bürgerschaftswahl 15.02.2015 - DIE LINKE Stimmen in Prozent",
+				"children": []
+			},
+			{
+				"id": 1996,
+				"name": "Bürgerschaftswahl 15.02.2015 - GRÜNE Stimmen in Prozent",
+				"children": []
+			},
+			{
+				"id": 1997,
+				"name": "Bürgerschaftswahl 15.02.2015 - SPD Stimmen in Prozent",
+				"children": []
+			},
+			{
+				"id": 1998,
+				"name": "Bürgerschaftswahl 15.02.2015 - CDU Stimmen in Prozent",
+				"children": []
+			},
+			{
+				"id": 1999,
+				"name": "Bürgerschaftswahl 15.02.2015 - Wahlbeteiligung in Prozent",
+				"children": []
+			},
+			{
+				"id": 2000,
+				"name": "Hamburg Wahllokale",
+				"children": []
+			},
+			{
+				"id": 2001,
+				"name": "Hamburg Wahlbezirke",
+				"children": []
+			},
+			{
+				"id": 2002,
+				"name": "Hamburg Bundestagswahlkreise",
+				"children": []
+			},
+			{
+				"id": 2003,
+				"name": "Hamburg Bezirksversammlungswahlkreise",
+				"children": []
+			},
+			{
+				"id": 2004,
+				"name": "Hamburg Bürgerschaftswahlkreise",
+				"children": []
+			},
+			{
+				"id": 2005,
+				"name": "Schleswig-Holstein Bundestagswahlkreise",
+				"children": []
+			},
+			{
+				"id": 2006,
+				"name": "Schleswig-Holstein Landtagswahlkreise",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 10,
+		"name": "Sonstiges",
+		"children": [
+			{
+				"id": 2007,
+				"name": "basemap.de Web Raster Farbe",
+				"children": []
+			},
+			{
+				"id": 2008,
+				"name": "basemap.de Web Raster Grau",
+				"children": []
+			},
+			{
+				"id": 2009,
+				"name": "Nachtaufnahme Hamburg",
+				"children": []
+			},
+			{
+				"id": 2010,
+				"name": "Pegelonline",
+				"children": []
+			},
+			{
+				"id": 2011,
+				"name": "Pegelnamen (WSV)",
+				"children": []
+			},
+			{
+				"id": 2012,
+				"name": "Pegelmessstelle (WSV)",
+				"children": []
+			},
+			{
+				"id": 2013,
+				"name": "Wasserstand (WSV)",
+				"children": []
+			},
+			{
+				"id": 2014,
+				"name": "Aktuelle Wasserst�nde (WSV)",
+				"children": []
+			},
+			{
+				"id": 2015,
+				"name": "TopPlusOpen",
+				"children": []
+			},
+			{
+				"id": 2016,
+				"name": "TopPlusOpen Graustufen",
+				"children": []
+			},
+			{
+				"id": 2017,
+				"name": "TopPlusOpen P50",
+				"children": []
+			},
+			{
+				"id": 2018,
+				"name": "TopPlusOpen P50 Graustufen",
+				"children": []
+			},
+			{
+				"id": 2019,
+				"name": "TopPlusOpen P25",
+				"children": []
+			},
+			{
+				"id": 2020,
+				"name": "TopPlusOpen P25 Graustufen",
+				"children": []
+			},
+			{
+				"id": 2021,
+				"name": "TopPlusOpen P17.5",
+				"children": []
+			},
+			{
+				"id": 2022,
+				"name": "TopPlusOpen P17.5 Graustufen",
+				"children": []
+			},
+			{
+				"id": 2023,
+				"name": "TopPlusOpen P10",
+				"children": []
+			},
+			{
+				"id": 2024,
+				"name": "TopPlusOpen P10 Graustufen",
+				"children": []
+			},
+			{
+				"id": 2025,
+				"name": "TopPlusOpen P5",
+				"children": []
+			},
+			{
+				"id": 2026,
+				"name": "TopPlusOpen P5 Graustufen",
+				"children": []
+			},
+			{
+				"id": 2027,
+				"name": "Quartiere",
+				"children": []
+			},
+			{
+				"id": 2028,
+				"name": "Stadtbereiche",
+				"children": []
+			}
+		]
+	},
+	{
+		"id": 11,
+		"name": "Wirtschaft und Finanzen",
+		"children": [
+			{
+				"id": 2029,
+				"name": "Hamburger Ausbildungsbetriebe in der Vermessungstechnik",
+				"children": []
+			}
+		]
+	}
+]

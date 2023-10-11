@@ -147,10 +147,7 @@ export default {
                 {type: "layer"}
             );
 
-            return layerList.map(layer => ({
-                value: layer.id,
-                text: layer.attributes.name
-            }));
+            return layerList.map(layer => layer.toJSON());
         },
 
         /**
@@ -1000,7 +997,7 @@ export default {
                     solo
                     hide-details
                 /> -->
-                <LayerSelector id="step-layer" :items="layerOptions" :selected="step.layers" />
+                <LayerSelector id="step-layer" :items="layerOptions" :selected.sync="step.layers" />
             </div>
 
             <div class="form-group">
