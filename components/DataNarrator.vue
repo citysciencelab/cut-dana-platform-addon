@@ -84,6 +84,18 @@ export default {
         else {
             this.setMode(constants.storyTellingModes.DASHBOARD);
         }
+
+        const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"});
+        layerList.forEach((layer, index) => {
+            layer.isVisibleInTree = true; 
+            Radio.trigger("ModelList", "addModelsByAttributes", layer);
+        })
+        // const lL = Radio.request("ModelList", "getItemsByAttributes", {type: "layer"});
+        // lL.forEach((layer, index) => {
+        //     layer.setIsVisibleInTree(true);
+        // })
+
+
         this.activateTool();
     },
     methods: {

@@ -138,23 +138,27 @@ export default {
          */
         layerOptions () {
 
-            const lL = rawLayerList.getLayerList();
+            // const lL = rawLayerList.getLayerList();
 
-            lL.forEach(layer => {
-                // add layer to 
-                if (layer.typ === "WMS") {
-                    // console.log(layer, layer.typ);
-                    // Radio.trigger("Parser", "addLayer", layer)
-                }
-            })
+            // lL.forEach(layer => {
+            //     // add layer to 
+            //     if (layer.typ === "WMS") {
+            //         // console.log(layer, layer.typ);
+            //         // Radio.trigger("Parser", "addLayer", layer)
+            //     }
+            // })
 
-            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"});
-            console.log(layerList);
-            
 
-            return layerList.map(layer => ({
+
+            const lL = Radio.request(
+                "ModelList",
+                "getModelsByAttributes",
+                {type: "layer"}
+            );
+
+            return lL.map(layer => ({
                 value: layer.id,
-                text: layer.name
+                text: layer.attributes.name
             }));
         },
 
