@@ -1,7 +1,6 @@
 <script>
 import axios from "axios";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import {countryCodeEmoji} from "country-code-emoji";
 
 import {
     mdiAccount,
@@ -9,20 +8,22 @@ import {
     mdiShareVariant,
     mdiTrashCanOutline,
     mdiAccountArrowDown,
-    mdiFormatListBulletedType
+    mdiFormatListBulletedType,
+    mdiLogout,
+    mdiLogin
 } from "@mdi/js";
 
 import * as constants from "../store/constantsDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
-import ImportStory from "./storyCreator/ImportStory.vue";
+// import ImportStory from "./storyCreator/ImportStory.vue";
 
 export default {
     name: "DashboardCard",
-    components: {
-        ImportStory
-    },
+    // components: {
+    //     ImportStory
+    // },
     data () {
         return {
             icons: {
@@ -31,18 +32,21 @@ export default {
                 mdiShareVariant,
                 mdiAccountArrowDown,
                 mdiFormatListBulletedType,
-                mdiDelete: mdiTrashCanOutline
+                mdiDelete: mdiTrashCanOutline,
+                mdiLogout,
+                mdiLogin
             },
             constants,
             storyList: {},
             importForm: false,
             languages: Object.keys(Config.portalLanguage?.languages),
-            languageToFlag: {"en": "gb", "de": "de"},
             storyListMode: "all"
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Tools/Login", ["loggedIn"]),
+        ...mapActions("Tools/Login", ["logout"])
     },
     watch: {
         "backendConfig": { // Can be unavailable when the component is mounted
@@ -178,11 +182,15 @@ export default {
 
             return this.languages[nextIndex] || i18next.language;
         },
-        nextFlag () {
-            return countryCodeEmoji(this.languageToFlag[this.nextLanguage()]);
+        currentLanguage () {
+            return i18next.language;
         },
-        currentFlag () {
-            return countryCodeEmoji(this.languageToFlag[i18next.language]);
+        openLoginWindow () {
+            /* eslint-disable chai-friendly/no-unused-expressions */
+            this.loggedIn ?
+                this.logout() :
+                this.$store.commit("Tools/Login/setActive", true);
+            /* eslint-enable chai-friendly/no-unused-expressions */
         }
     }
 };
@@ -256,7 +264,7 @@ export default {
                     </span>
                 </v-tooltip>
 
-                <v-tooltip left>
+                <!-- <v-tooltip left>
                     <template #activator="{ on }">
                         <v-icon
                             id="import-button"
@@ -272,7 +280,7 @@ export default {
                             $t("additional:modules.tools.dataNarrator.label.importStory")
                         }}
                     </span>
-                </v-tooltip>
+                </v-tooltip> -->
 
                 <v-tooltip left>
                     <template #activator="{ on }">
@@ -295,19 +303,39 @@ export default {
                     <template #activator="{ on }">
                         <span
                             id="language-button"
-                            class="mr-1 text-h5"
+                            class="mr-1 text-h5 text-warning"
                             tabindex="0"
                             role="button"
                             @click="changeToNextLanguage()"
                             @keypress="changeToNextLanguage()"
                             v-on="on"
                         >
-                            {{ currentFlag() }}
+                            {{ currentLanguage() }}
                         </span>
                     </template>
                     <span>
                         {{
-                            $t("additional:modules.tools.dataNarrator.label.clickToSwitch") + nextFlag()
+                            $t("additional:modules.tools.dataNarrator.label.clickToSwitch") + nextLanguage()
+                        }}
+                    </span>
+                </v-tooltip>
+
+                <v-tooltip left>
+                    <template #activator="{ on }">
+                        <v-icon
+                            id="login-button"
+                            class="mr-1"
+                            @click="openLoginWindow()"
+                            v-on="on"
+                        >
+                            {{ loggedIn ? icons.mdiLogout : icons.mdiLogin }}
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{
+                            loggedIn ?
+                                $t("common:modules.login.logout") :
+                                $t("common:modules.login.login")
                         }}
                     </span>
                 </v-tooltip>
