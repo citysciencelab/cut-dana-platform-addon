@@ -57,7 +57,8 @@
           "storyCreated": "Story erfolgreich erstellt.",
           "storyDeleted": " Story gelöscht.",
           "storyShared": "Die Story-URL wurde in den Puffer kopiert.",
-          "storyImported": "Die Story wurde erfolgreich importiert."
+          "storyImported": "Die Story wurde erfolgreich importiert.",
+          "loggedOut": "Sie wurden abgemeldet"
         },
         "warning": {
           "mapMoved": "Die eingetragene Position entspricht nicht der aktuellen Ansicht der Karte.",

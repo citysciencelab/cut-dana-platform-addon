@@ -45,14 +45,13 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters("Tools/Login", ["loggedIn"]),
-        ...mapActions("Tools/Login", ["logout"])
+        ...mapGetters("Tools/Login", ["loggedIn"])
     },
     watch: {
         "backendConfig": { // Can be unavailable when the component is mounted
             handler (conf) {
                 if (conf.url) { // check if it is available
-                    this.refreshStoryList();
+                    this.refreshStoryList("all");
                 }
             },
             immediate: true // make this watch function is called when component created
@@ -186,11 +185,18 @@ export default {
             return i18next.language;
         },
         openLoginWindow () {
-            /* eslint-disable chai-friendly/no-unused-expressions */
-            this.loggedIn ?
-                this.logout() :
+            if (!this.loggedIn) {
                 this.$store.commit("Tools/Login/setActive", true);
-            /* eslint-enable chai-friendly/no-unused-expressions */
+            }
+            else {
+                this.$store.dispatch("Tools/Login/logout");
+                this.refreshStoryList("all");
+                this.$root.snackB.show({
+                    message: this.$t(
+                        "additional:modules.tools.dataNarrator.success.loggedOut"
+                    ), color: "green"
+                });
+            }
         }
     }
 };
