@@ -385,12 +385,6 @@ export default {
                 this.disableLayer(enabledLayer);
             }
 
-            // // Updates the map layers
-            // for (const layer of layerList) {
-            //     const stepLayers = this.currentStep.layers || [],
-            //         isStepLayer = stepLayers.includes(layer.id) ||
-            //                             stepLayers.some(l => l.includes(layer.id));
-
 
             for (const layer of stepLayers) {
                 // check if model is already in modelList
@@ -410,25 +404,14 @@ export default {
                 }
             }
 
-            // // Updates the map layers
-            // for (const layer of layerList) {
-            //     const layerId = layer.id;
-            //     const isStepLayer = stepLayers.indexOf(layerId) !== -1 || stepLayers.some(l => l.indexOf(layerId) !== -1);
 
-            //     if (isStepLayer) {
-            //         this.enableLayer(layer);
-            //     } else {
-            //         this.disableLayer(layer);
-            //     }
-            // }
+            Radio.trigger("Menu", "rerender");
+            this.loadedContent = this.currentStep.html;
 
-            // // if (isStepLayer && !layer.attributes.isVisibleInMap) {
-            // if (isStepLayer) {
-            //     this.enableLayer(layer);
-            // }
-            // // else if (!isStepLayer && layer.attributes.isVisibleInMap) {
-            // else if (!isStepLayer) {
-            //     this.disableLayer(layer);
+            setTimeout(() => {
+                Radio.trigger("Menu", "rerender");
+            }, 500);
+
             if (!this.currentStep.is3D) {
                 // Activates or deactivates tools
                 const interactionAddons = this.currentStep.interactionAddons || [];
