@@ -41,7 +41,9 @@
           "sharedWith": "Type a new email and press enter",
           "sharedWithPlaceholder": "Add email",
           "sharedWithDuplicate": "This email is already added",
-          "clickToSwitch": "Click to "
+          "clickToSwitch": "Click to ",
+          "myStories": "My Stories",
+          "allStories": "All Stories"
         },
         "creator": {
           "edit": "Edit",
@@ -49,14 +51,14 @@
         },
         "dashboardView": {
           "title": "Story Dashboard",
-          "refresh": "Refresh Dashboard",
           "total": "The total number of stories is: "
         },
         "success": {
           "storyCreated": "Story created.",
           "storyDeleted": "Story deleted.",
           "storyShared": "Story URL was copied into buffer.",
-          "storyImported": "Story imported."
+          "storyImported": "Story imported.",
+          "loggedOut": "You've Been Logged Out"
         },
         "warning": {
           "mapMoved": "The entered position doesn't match the current map view.",
