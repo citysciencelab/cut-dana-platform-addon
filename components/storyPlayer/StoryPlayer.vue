@@ -381,11 +381,15 @@ export default {
                 enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true}),
                 stepLayers = this.currentStep.layers || [];
 
-            // Updates the map layers
-            for (const layer of layerList) {
-                const stepLayers = this.currentStep.layers || [],
-                    isStepLayer = stepLayers.includes(layer.id) ||
-                                        stepLayers.some(l => l.includes(layer.id));
+            for (const enabledLayer of enabledLayers) {
+                this.disableLayer(enabledLayer);
+            }
+
+            // // Updates the map layers
+            // for (const layer of layerList) {
+            //     const stepLayers = this.currentStep.layers || [],
+            //         isStepLayer = stepLayers.includes(layer.id) ||
+            //                             stepLayers.some(l => l.includes(layer.id));
 
 
             for (const layer of stepLayers) {
@@ -394,7 +398,6 @@ export default {
 
 
                 if (layerModels.length === 0) {
-                    // filter layer object in layerList to add to ModelList
                     const foundLayer = layerList.find(l => l.id === layer.toString());
 
                     foundLayer.isVisibleInTree = true;
@@ -419,14 +422,13 @@ export default {
             //     }
             // }
 
-
-            Radio.trigger("Menu", "rerender");
-            this.loadedContent = this.currentStep.html;
-
-            setTimeout(() => {
-                Radio.trigger("Menu", "rerender");
-            }, 500);
-
+            // // if (isStepLayer && !layer.attributes.isVisibleInMap) {
+            // if (isStepLayer) {
+            //     this.enableLayer(layer);
+            // }
+            // // else if (!isStepLayer && layer.attributes.isVisibleInMap) {
+            // else if (!isStepLayer) {
+            //     this.disableLayer(layer);
             if (!this.currentStep.is3D) {
                 // Activates or deactivates tools
                 const interactionAddons = this.currentStep.interactionAddons || [];
