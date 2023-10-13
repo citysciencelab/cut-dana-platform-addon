@@ -36,7 +36,12 @@
           "autoPLay": "autoplay",
           "on": "on",
           "off": "off",
-          "importStory": "Import Story"
+          "importStory": "Import Story",
+          "private": "Private",
+          "sharedWith": "Type a new email and press enter",
+          "sharedWithPlaceholder": "Add email",
+          "sharedWithDuplicate": "This email is already added",
+          "clickToSwitch": "Click to "
         },
         "creator": {
           "edit": "Edit",
@@ -97,7 +102,8 @@
           "previewStory": "Preview Story",
           "downloadStory": "Download Story",
           "uploadStory": "Upload Story",
-          "share": "Share Story"
+          "share": "Share Story",
+          "addSharedWith": "Add"
         },
         "newChapter": "New Chapter"
       }

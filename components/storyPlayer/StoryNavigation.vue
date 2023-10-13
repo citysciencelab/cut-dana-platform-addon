@@ -5,7 +5,6 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {mdiChevronLeft, mdiChevronRight} from "@mdi/js";
-// import { SensorThingsHttp } from "../../../../../src/utils/sensorThingsHttp";
 
 export default {
     name: "StoryNavigation",

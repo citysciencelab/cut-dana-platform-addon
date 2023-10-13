@@ -9,6 +9,8 @@
   "dependencies": {
     "@heroicons/vue": "^1.0.6",
     "@mdi/js": "^7.2.96",
+    "bootstrap-vue": "^2.23.1",
+    "country-code-emoji": "^2.3.0",
     "file-saver": "^2.0.5",
     "intersection-observer": "^0.12.2",
     "jszip": "^3.7.1",

@@ -381,9 +381,11 @@ export default {
                 enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true}),
                 stepLayers = this.currentStep.layers || [];
 
-            for (const layer of enabledLayers) {
-                this.disableLayer(layer);
-            }
+            // Updates the map layers
+            for (const layer of layerList) {
+                const stepLayers = this.currentStep.layers || [],
+                    isStepLayer = stepLayers.includes(layer.id) ||
+                                        stepLayers.some(l => l.includes(layer.id));
 
 
             for (const layer of stepLayers) {
