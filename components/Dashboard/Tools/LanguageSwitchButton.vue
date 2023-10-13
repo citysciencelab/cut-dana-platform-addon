@@ -1,6 +1,4 @@
 <script>
-
-
 export default {
     name: "LanguageSwitchButton",
     data () {

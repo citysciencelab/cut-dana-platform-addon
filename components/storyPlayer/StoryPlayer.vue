@@ -432,6 +432,7 @@ export default {
         <ScrollyTeller
             v-if="showMode === 'scrolly'"
             :current-step-index="currentStepIndex"
+            v-on="$listeners"
         />
 
         <ClassicPlayer
@@ -440,6 +441,7 @@ export default {
             :current-chapter="currentChapter"
             :current-step="currentStep"
             :loaded-content="loadedContent"
+            v-on="$listeners"
         />
 
         <StoryNavigation

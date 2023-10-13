@@ -1,12 +1,17 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
+
 import ToolTemplate from "../../../../src/modules/tools/ToolTemplate.vue";
-import StoryCreator from "./storyCreator/StoryCreator.vue";
-import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
+// login module
+import OIDC from "../../../../src/modules/tools/login/utils/utilsOIDC";
+
 import * as constants from "../store/constantsDataNarrator";
 import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
+
+import StoryCreator from "./storyCreator/StoryCreator.vue";
+import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
 import SnackBar from "./SnackBar.vue";
 import DashboardPanel from "./Dashboard/DashboardPanel.vue";
 import {EventEmitter} from "../utils/EventEmitter";
@@ -23,24 +28,33 @@ export default {
     data () {
         return {
             constants,
-            stepIndex: 0
-            // modeOptions: null
+            stepIndex: 0,
+            isAdmin: false,
+            uid: null
         };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Tools/Login", ["accessToken"]),
         ...mapGetters(["uiStyle"])
     },
     watch: {
-        /**
-         * Listens to the active property change.
-         * @param {Boolean} isActive Value deciding whether the tool gets activated or deactivated.
-         * @returns {void}
-         */
-        active (isActive) {
-            if (isActive) {
-                // this.setFocusToFirstControl();
-            }
+        "accessToken": {
+            handler (accessToken) {
+                if (accessToken) {
+                    const payload = OIDC.parseJwt(accessToken);
+
+                    this.uid = payload.sub;
+                    if (payload.realm_access.roles.includes("admin")) {
+                        this.isAdmin = true;
+                    }
+                }
+                else {
+                    this.isAdmin = false;
+                    this.uid = null;
+                }
+            },
+            immediate: true
         }
     },
     created () {
@@ -243,6 +257,8 @@ export default {
             >
                 <DashboardPanel
                     v-if="!mode || mode === constants.storyTellingModes.DASHBOARD"
+                    :is-admin="isAdmin"
+                    :uid="uid"
                     @confirm="confirmDialog"
                     @share-story="shareStory"
                     @reset-step-index="stepIndex = 0"

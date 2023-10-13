@@ -92,7 +92,7 @@ export default {
         <span
             role="button"
             tabindex="0"
-            @click="$parent.$parent.$emit('share-story', currentStoryId, currentStepIndex)"
+            @click="$emit('share-story', currentStoryId, currentStepIndex)"
             @keydown="() => {}"
         >
             <v-tooltip left>
