@@ -8,13 +8,13 @@ import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 import SnackBar from "./SnackBar.vue";
-import DashboardCard from "./DashboardCard.vue";
+import DashboardPanel from "./Dashboard/DashboardPanel.vue";
 import {EventEmitter} from "../utils/EventEmitter";
 
 export default {
     name: "DataNarrator",
     components: {
-        DashboardCard,
+        DashboardPanel,
         SnackBar,
         ToolTemplate,
         StoryCreator,
@@ -105,32 +105,7 @@ export default {
                     toolWindow.style.display = "block";
                 }
             }
-            // if (this.storyConf.isNoCreateMode) {
-            //     this.modeOptions.filter(element => element.mode !== "play").forEach(element => {
-            //         element.visible = false;
-            //     });
-            // }
         },
-
-        /**
-         * The story telling tool options
-         * @returns {Object[]} mode options (icon, title and disabled)
-         */
-        // createModeOptions () {
-        //     this.modeOptions = Object.values(this.constants.storyTellingModes).map(
-        //         mode => ({
-        //             mode,
-        //             icon: this.constants.storyTellingModeIcons[mode],
-        //             title: this.$t(
-        //                 "additional:modules.tools.dataNarrator." + mode
-        //             ),
-        //             disabled:
-        //                 mode === this.constants.storyTellingModes.PLAY &&
-        //                 !this.storyConfURL,
-        //             visible: true
-        //         })
-        //     );
-        // },
 
         confirmOnlyWhenCreatingStory (actionCallback) {
             if (this.isCreatingStory()) {
@@ -266,7 +241,7 @@ export default {
                 id="tool-dataNarrator"
                 :class="mode"
             >
-                <DashboardCard
+                <DashboardPanel
                     v-if="!mode || mode === constants.storyTellingModes.DASHBOARD"
                     @confirm="confirmDialog"
                     @share-story="shareStory"

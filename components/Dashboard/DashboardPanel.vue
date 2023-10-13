@@ -13,17 +13,19 @@ import {
     mdiLogin
 } from "@mdi/js";
 
-import * as constants from "../store/constantsDataNarrator";
-import mutations from "../store/mutationsDataNarrator";
-import actions from "../store/actionsDataNarrator";
-import getters from "../store/gettersDataNarrator";
+import * as constants from "../../store/constantsDataNarrator";
+import mutations from "../../store/mutationsDataNarrator";
+import actions from "../../store/actionsDataNarrator";
+import getters from "../../store/gettersDataNarrator";
+import LanguageSwitchButton from "./LanguageSwitchButton.vue";
 // import ImportStory from "./storyCreator/ImportStory.vue";
 
 export default {
-    name: "DashboardCard",
-    // components: {
-    //     ImportStory
-    // },
+    name: "DashboardPanel",
+    components: {
+        LanguageSwitchButton
+        // ImportStory
+    },
     data () {
         return {
             icons: {
@@ -39,7 +41,6 @@ export default {
             constants,
             storyList: {},
             importForm: false,
-            languages: Object.keys(Config.portalLanguage?.languages),
             storyListMode: "all"
         };
     },
@@ -55,6 +56,17 @@ export default {
                 }
             },
             immediate: true // make this watch function is called when component created
+        },
+        "loggedIn": {
+            handler (loggedIn) {
+                if (loggedIn) {
+                    this.refreshStoryList("my");
+                }
+                else {
+                    this.refreshStoryList("all");
+                }
+            },
+            immediate: true
         }
     },
     mounted () {
@@ -172,18 +184,6 @@ export default {
             this.importForm = false;
         },
 
-        changeToNextLanguage () {
-            i18next.changeLanguage(this.nextLanguage());
-        },
-        nextLanguage () {
-            const currentIndex = this.languages.indexOf(i18next.language),
-                nextIndex = currentIndex === this.languages.length - 1 ? 0 : currentIndex + 1;
-
-            return this.languages[nextIndex] || i18next.language;
-        },
-        currentLanguage () {
-            return i18next.language;
-        },
         openLoginWindow () {
             if (!this.loggedIn) {
                 this.$store.commit("Tools/Login/setActive", true);
@@ -305,26 +305,7 @@ export default {
                     </span>
                 </v-tooltip>
 
-                <v-tooltip left>
-                    <template #activator="{ on }">
-                        <span
-                            id="language-button"
-                            class="mr-1 text-h5 text-warning"
-                            tabindex="0"
-                            role="button"
-                            @click="changeToNextLanguage()"
-                            @keypress="changeToNextLanguage()"
-                            v-on="on"
-                        >
-                            {{ currentLanguage() }}
-                        </span>
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.label.clickToSwitch") + nextLanguage()
-                        }}
-                    </span>
-                </v-tooltip>
+                <LanguageSwitchButton />
 
                 <v-tooltip left>
                     <template #activator="{ on }">
