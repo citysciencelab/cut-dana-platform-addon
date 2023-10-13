@@ -142,17 +142,13 @@ export default {
          */
         layerOptions () {
 
-            const layerList = Radio.request(
-                "ModelList",
-                "getModelsByAttributes",
-                {type: "layer"}
-            );
+            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"});
 
             // return layerList.map(layer => layer.toJSON()); // use this for the new layer selector
 
             return layerList.map(layer => ({ // use this for the old layer selector
                 value: layer.id,
-                text: layer.attributes.name
+                text: layer.name
             }));
         },
 
@@ -190,28 +186,53 @@ export default {
          */
         "step.layers" (newSelectedLayerIds) {
             const selectedLayerIds = newSelectedLayerIds.map(Number),
-                layerList = Radio.request(
-                    "ModelList",
-                    "getModelsByAttributes",
-                    {isVisibleInTree: true}
-                );
+                layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
+                selectedItems = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true});
 
-            for (const layer of layerList) {
-                if (
-                    selectedLayerIds.includes(Number(layer.attributes.id)) &&
-                    !layer.attributes.isVisibleInMap
-                ) {
-                    layer.setIsVisibleInMap(true);
-                    layer.set("isSelected", true);
+            for (const selectedItem of selectedItems) {
+                selectedItem.setIsVisibleInMap(false);
+                selectedItem.set("isSelected", false);
+            }
+
+
+            for (const layer of selectedLayerIds) {
+                // check if model is already in modelList
+                let layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.toString()});
+
+
+                // console.log(layerModel, layerList);
+
+                if (layerModels.length === 0) {
+                    // filter layer object in layerList to add to ModelList
+                    const foundLayer = layerList.find(l => l.id === layer.toString());
+
+                    foundLayer.isVisibleInTree = true;
+                    Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
+                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
                 }
-                else if (
-                    !selectedLayerIds.includes(Number(layer.attributes.id)) &&
-                    layer.attributes.isVisibleInMap
-                ) {
-                    layer.setIsVisibleInMap(false);
-                    layer.set("isSelected", false);
+
+                for (const layerModel of layerModels) {
+                    layerModel.setIsVisibleInMap(true);
+                    layerModel.set("isSelected", true);
                 }
             }
+
+            // for (const layer of layerList) {
+            //     if (
+            //         selectedLayerIds.includes(Number(layer.attributes.id)) &&
+            //         !layer.attributes.isVisibleInMap
+            //     ) {
+            //         layer.setIsVisibleInMap(true);
+            //         layer.set("isSelected", true);
+            //     }
+            //     else if (
+            //         !selectedLayerIds.includes(Number(layer.attributes.id)) &&
+            //         layer.attributes.isVisibleInMap
+            //     ) {
+            //         layer.setIsVisibleInMap(false);
+            //         layer.set("isSelected", false);
+            //     }
+            // }
 
             this.is3DLayerActive = Radio.request(
                 "ModelList",

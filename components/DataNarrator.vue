@@ -66,8 +66,7 @@ export default {
             this.setBackendConfig({url: this.$store.state.Tools.DataNarrator.backendURL});
         }
 
-        const url = new URL(window.location.href),
-            layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"});
+        const url = new URL(window.location.href);
 
         if (url.searchParams.get("role") !== null) {
             const role = url.searchParams.get("role").toLowerCase();
@@ -88,10 +87,10 @@ export default {
 
         // const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"});
 
-        layerList.forEach((layer) => {
-            layer.isVisibleInTree = true;
-            Radio.trigger("ModelList", "addModelsByAttributes", layer);
-        });
+        // layerList.forEach((layer) => {
+        //     layer.isVisibleInTree = true;
+        //     Radio.trigger("ModelList", "addModelsByAttributes", layer);
+        // });
         // const lL = Radio.request("ModelList", "getItemsByAttributes", {type: "layer"});
         // lL.forEach((layer, index) => {
         //     layer.setIsVisibleInTree(true);

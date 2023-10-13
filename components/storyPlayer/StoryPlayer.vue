@@ -132,7 +132,7 @@ export default {
     beforeDestroy () {
         // Hides all story layers
         const layerList = Radio.request("ModelList", "getModelsByAttributes", {
-            isVisibleInTree: true
+            isVisibleInTree: true, isSelected: true
         });
 
         for (const layer of layerList) {
@@ -377,7 +377,7 @@ export default {
                 });
             }
 
-            const layerList = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true}),
+            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
                 enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true}),
                 stepLayers = this.currentStep.layers || [];
 
@@ -385,13 +385,23 @@ export default {
                 this.disableLayer(layer);
             }
 
-            for (const layer of stepLayers) {
-                if (layer.id) {
-                    const layerModel = layerList.find(({id}) => id === layer.id);
 
-                    if (layerModel) {
-                        this.enableLayer(layerModel);
-                    }
+            for (const layer of stepLayers) {
+                // check if model is already in modelList
+                let layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.toString()});
+
+
+                if (layerModels.length === 0) {
+                    // filter layer object in layerList to add to ModelList
+                    const foundLayer = layerList.find(l => l.id === layer.toString());
+
+                    foundLayer.isVisibleInTree = true;
+                    Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
+                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
+                }
+
+                for (const layerModel of layerModels) {
+                    this.enableLayer(layerModel);
                 }
             }
 
