@@ -869,7 +869,7 @@ export default {
                             </template>
                             <span>
                                 {{
-                                    $t("additional:modules.tools.dataNarrator.button.share")
+                                    $t("additional:modules.tools.dataNarrator.label.centerCoordinate")
                                 }}
                             </span>
                         </v-tooltip>
@@ -885,7 +885,7 @@ export default {
                             </template>
                             <span>
                                 {{
-                                    $t("additional:modules.tools.dataNarrator.button.share")
+                                    $t("additional:modules.tools.dataNarrator.label.centerCoordinate")
                                 }}
                             </span>
                         </v-tooltip>
@@ -944,7 +944,7 @@ export default {
                             </template>
                             <span>
                                 {{
-                                    $t("additional:modules.tools.dataNarrator.button.share")
+                                    $t("additional:modules.tools.dataNarrator.label.zoomLevel")
                                 }}
                             </span>
                         </v-tooltip>
@@ -960,7 +960,7 @@ export default {
                             </template>
                             <span>
                                 {{
-                                    $t("additional:modules.tools.dataNarrator.button.share")
+                                    $t("additional:modules.tools.dataNarrator.label.zoomLevel")
                                 }}
                             </span>
                         </v-tooltip>
