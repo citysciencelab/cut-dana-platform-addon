@@ -554,11 +554,7 @@ export default {
                     class="form-label required"
                     for="step-title"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.stepTitle"
-                        )
-                    }}
+                    {{ $t("additional:modules.tools.dataNarrator.label.stepTitle") }}
                 </label>
 
                 <input
@@ -574,11 +570,7 @@ export default {
                     class="form-label"
                     for="step-width"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.stepWidth"
-                        )
-                    }}
+                    {{ $t("additional:modules.tools.dataNarrator.label.stepWidth") }}
                 </label>
 
                 <input
@@ -598,11 +590,7 @@ export default {
                     class="form-label"
                     for="step-visible"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.visible"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.visible" ) }}
                 </label>
 
                 <input
@@ -622,11 +610,7 @@ export default {
                     class="form-label"
                     for="step-is3d"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.is3D"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.is3D" ) }}
                 </label>
                 <input
                     id="step-is3d"
@@ -645,11 +629,7 @@ export default {
                     class="form-label"
                     for="step-3d-center"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.centerCoordinate3D"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.centerCoordinate3D" ) }}
                 </label>
                 <div
                     class="stepForm-inputs-centerCoordinate stepForm-inputs-3d-position"
@@ -699,11 +679,7 @@ export default {
                     class="text-warning"
                 >
                     <small>
-                        {{
-                            $t(
-                                "additional:modules.tools.dataNarrator.warning.mapMoved"
-                            )
-                        }}
+                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
                     </small>
                 </p>
             </div>
@@ -715,11 +691,7 @@ export default {
                     class="form-label"
                     for="step-3d-heading"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.heading"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.heading" ) }}
                 </label>
 
                 <div
@@ -757,11 +729,7 @@ export default {
                     class="text-warning"
                 >
                     <small>
-                        {{
-                            $t(
-                                "additional:modules.tools.dataNarrator.warning.mapMoved"
-                            )
-                        }}
+                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
                     </small>
                 </p>
             </div>
@@ -773,11 +741,7 @@ export default {
                     class="form-label"
                     for="step-3d-pitch"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.pitch"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.pitch" ) }}
                 </label>
                 <div
                     class="stepForm-inputs-centerCoordinate stepForm-3d-others"
@@ -815,11 +779,7 @@ export default {
                     class="text-warning"
                 >
                     <small>
-                        {{
-                            $t(
-                                "additional:modules.tools.dataNarrator.warning.mapMoved"
-                            )
-                        }}
+                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
                     </small>
                 </p>
             </div>
@@ -832,11 +792,7 @@ export default {
                     class="form-label"
                     for="step-center"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.centerCoordinate"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.centerCoordinate" ) }}
                 </label>
 
                 <div class="stepForm-inputs-centerCoordinate">
@@ -868,9 +824,7 @@ export default {
                                 </v-icon>
                             </template>
                             <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.label.centerCoordinate")
-                                }}
+                                {{ $t("additional:modules.tools.dataNarrator.label.centerCoordinate") }}
                             </span>
                         </v-tooltip>
                         <v-tooltip top>
@@ -884,26 +838,17 @@ export default {
                                 </v-icon>
                             </template>
                             <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.label.centerCoordinate")
-                                }}
+                                {{ $t("additional:modules.tools.dataNarrator.label.centerCoordinate") }}
                             </span>
                         </v-tooltip>
                     </div>
                 </div>
                 <p
-                    v-if="
-                        step.centerCoordinate &&
-                            step.centerCoordinate !== center()
-                    "
+                    v-if="step.centerCoordinate && step.centerCoordinate !== center() "
                     class="text-warning"
                 >
                     <small>
-                        {{
-                            $t(
-                                "additional:modules.tools.dataNarrator.warning.mapMoved"
-                            )
-                        }}
+                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
                     </small>
                 </p>
             </div>
@@ -916,11 +861,7 @@ export default {
                     class="form-label"
                     for="step-zoom"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.zoomLevel"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.zoomLevel" ) }}
                 </label>
 
                 <div class="stepForm-inputs-zoomLevel">
@@ -943,9 +884,7 @@ export default {
                                 </v-icon>
                             </template>
                             <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.label.zoomLevel")
-                                }}
+                                {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
                             </span>
                         </v-tooltip>
                         <v-tooltip top>
@@ -959,26 +898,17 @@ export default {
                                 </v-icon>
                             </template>
                             <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.label.zoomLevel")
-                                }}
+                                {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
                             </span>
                         </v-tooltip>
                     </div>
                 </div>
                 <p
-                    v-if="
-                        step.zoomLevel !== null &&
-                            step.zoomLevel !== zoom()
-                    "
+                    v-if="step.zoomLevel !== null && step.zoomLevel !== zoom()"
                     class="text-warning"
                 >
                     <small>
-                        {{
-                            $t(
-                                "additional:modules.tools.dataNarrator.warning.mapZoomed"
-                            )
-                        }}
+                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapZoomed" ) }}
                     </small>
                 </p>
             </div>
@@ -988,11 +918,7 @@ export default {
                     class="form-label"
                     for="step-layer"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.layers"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
                 </label>
 
                 <v-select
@@ -1011,11 +937,7 @@ export default {
                     class="form-label"
                     for="step-addons"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.interactionAddons"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.interactionAddons" ) }}
                 </label>
 
                 <v-select
@@ -1034,11 +956,7 @@ export default {
                     class="form-label required"
                     for="step-vue-editor"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.htmlContent"
-                        )
-                    }}
+                    {{ $t( "additional:modules.tools.dataNarrator.label.htmlContent" ) }}
                 </label>
 
                 <div class="stepForm-inputs-htmlEditor">
@@ -1082,9 +1000,7 @@ export default {
                                 </span>
                             </template>
                             <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.button.cancel")
-                                }}
+                                {{ $t("additional:modules.tools.dataNarrator.button.cancel") }}
                             </span>
                         </v-tooltip>
                         <v-tooltip top>
@@ -1104,9 +1020,7 @@ export default {
                                 </span>
                             </template>
                             <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.button.deleteStep")
-                                }}
+                                {{ $t("additional:modules.tools.dataNarrator.button.deleteStep") }}
                             </span>
                         </v-tooltip>
                         <v-tooltip top>
@@ -1142,9 +1056,7 @@ export default {
                 v-show="!isValid"
                 type="info"
             >
-                {{
-                    $t("additional:modules.tools.dataNarrator.warning.sendNoHTML")
-                }}
+                {{ $t("additional:modules.tools.dataNarrator.warning.sendNoHTML") }}
             </v-alert>
         </form>
     </div>
