@@ -1,24 +1,23 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {
+    mdiBackspaceOutline,
+    mdiCancel,
+    mdiCheck,
+    mdiPinOutline,
+    mdiTrashCanOutline
+} from "@mdi/js";
+import uuid from "uuid";
 import {VueEditor} from "vue2-editor";
+import {mapActions, mapGetters, mapMutations} from "vuex";
+import actions from "../../store/actionsDataNarrator";
 import * as constants from "../../store/constantsDataNarrator";
+import getters from "../../store/gettersDataNarrator";
+import mutations from "../../store/mutationsDataNarrator";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
 import getFileExtension from "../../utils/getFileExtension";
 import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
-import actions from "../../store/actionsDataNarrator";
-import getters from "../../store/gettersDataNarrator";
-import mutations from "../../store/mutationsDataNarrator";
-import uuid from "uuid";
-import {
-    mdiCancel,
-    mdiTrashCanOutline,
-    mdiCheck,
-    mdiPinOutline,
-    mdiBackspaceOutline
-} from "@mdi/js";
 
-// import LayerSelector from "./LayerSelector.vue";
-import LayerSelectorOld from "./LayerSelectorOld.vue";
+import LayerSelector from "./LayerSelector.vue";
 
 
 export default {
@@ -26,8 +25,8 @@ export default {
 
     components: {
         VueEditor,
-        // LayerSelector,
-        LayerSelectorOld
+        LayerSelector
+        // LayerSelectorOld
     },
 
     props: {
@@ -146,10 +145,7 @@ export default {
 
             // return layerList.map(layer => layer.toJSON()); // use this for the new layer selector
 
-            return layerList.map(layer => ({ // use this for the old layer selector
-                value: layer.id,
-                text: layer.name
-            }));
+            return layerList.map(layer => layer);
         },
 
         /**
@@ -1026,16 +1022,16 @@ export default {
                     solo
                     hide-details
                 /> -->
-                <LayerSelectorOld
-                    id="step-layer"
-                    :items="layerOptions"
-                    :selected.sync="step.layers"
-                />
-                <!-- <LayerSelector
+                <!-- <LayerSelectorOld
                     id="step-layer"
                     :items="layerOptions"
                     :selected.sync="step.layers"
                 /> -->
+                <LayerSelector
+                    id="step-layer"
+                    :items="layerOptions"
+                    :selected.sync="step.layers"
+                />
             </div>
 
             <div class="form-group">

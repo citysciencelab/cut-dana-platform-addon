@@ -1,5 +1,5 @@
 <script>
-
+import {mdiAccount} from "@mdi/js";
 export default {
     name: "LayerSelector",
     props: {
@@ -11,6 +11,13 @@ export default {
             type: Array,
             default: () => []
         }
+    },
+    data () {
+        return {
+            icons: {
+                account: mdiAccount
+            }
+        };
     },
     computed: {
         // console.log all the props
@@ -45,11 +52,9 @@ export default {
 
     methods: {
         updateSelectedItems (selectedIds) {
+            console.log(selectedIds);
             // Filter the original items based on the selected IDs
-            const selectedItems = this.items.filter(item => selectedIds.includes(item.id)).map(item => ({
-                value: item.id,
-                text: item.name
-            }));
+            const selectedItems = selectedIds.map(id => id.toString());
 
             this.$emit("update:selected", selectedItems);
         }

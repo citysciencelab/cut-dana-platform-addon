@@ -11,6 +11,9 @@ const opts = {
                 primary: "#66afe9"
             }
         }
+    },
+    icons: {
+        iconfont: "mdiSvg"
     }
 };
 
