@@ -124,6 +124,7 @@ export default {
             <StoryMenu
                 :initial-auto-play="currentStory.storyInterval !== null"
                 :current-step-index="currentStepIndex"
+                v-on="$listeners"
             />
             <h1 v-if="step.title">
                 {{ step.title }}

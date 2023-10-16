@@ -1,9 +1,9 @@
 <script>
-import StoryMenu from "./StoryMenu.vue";
-import getters from "../../store/gettersDataNarrator";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import mutations from "../../store/mutationsDataNarrator";
 import actions from "../../store/actionsDataNarrator";
+import getters from "../../store/gettersDataNarrator";
+import mutations from "../../store/mutationsDataNarrator";
+import StoryMenu from "./StoryMenu.vue";
 
 export default {
     name: "ClassicPlayer",
@@ -51,6 +51,7 @@ export default {
             :initial-auto-play="currentStory.storyInterval !== null"
             :current-step-index="currentStepIndex"
             :is-preview="isPreview"
+            v-on="$listeners"
         />
 
         <h2 v-if="currentChapter">

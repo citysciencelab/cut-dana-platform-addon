@@ -41,9 +41,12 @@
           "sharedWith": "Type a new email and press enter",
           "sharedWithPlaceholder": "Add email",
           "sharedWithDuplicate": "This email is already added",
-          "clickToSwitch": "Click to ",
-          "myStories": "My Stories",
-          "allStories": "All Stories"
+          "clickToSwitch": "Click to "
+        },
+        "storyList": {
+          "all":  "All Stories",
+          "my": "My Stories",
+          "featured": "Featured"
         },
         "creator": {
           "edit": "Edit",
@@ -105,7 +108,8 @@
           "downloadStory": "Download Story",
           "uploadStory": "Upload Story",
           "share": "Share Story",
-          "addSharedWith": "Add"
+          "addSharedWith": "Add",
+          "featured": "Featured"
         },
         "newChapter": "New Chapter"
       }

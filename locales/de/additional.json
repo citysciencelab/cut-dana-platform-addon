@@ -41,9 +41,12 @@
           "sharedWith": "Geben Sie eine neue E-Mail ein und drücken Sie die Eingabetaste",
           "sharedWithPlaceholder": "E-Mail hinzufügen",
           "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt.",
-          "clickToSwitch": "Klicken Sie auf ",
-          "myStories": "Meine Stories",
-          "allStories": "Alle Stories"
+          "clickToSwitch": "Klicken Sie auf "
+        },
+        "storyList": {
+          "all":  "Alle Stories",
+          "my": "Meine Stories",
+          "featured": "Vorgestellt"
         },
         "creator": {
           "edit": "Bearbeiten",
@@ -105,7 +108,8 @@
           "downloadStory": "Story herunterladen",
           "uploadStory": "Story abschicken",
           "share": "Story teilen",
-          "addSharedWith": "Hinzufügen"
+          "addSharedWith": "Hinzufügen",
+          "featured": "Vorgestellt"
         },
         "newChapter": "Neues Kapitel"
       }

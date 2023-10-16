@@ -1,16 +1,16 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import ClassicPlayer from "./ClassicPlayer.vue";
-import StoryNavigation from "./StoryNavigation.vue";
 import ScrollyTeller from "./ScrollyTeller.vue";
+import StoryNavigation from "./StoryNavigation.vue";
 // import DipasPlayer from "./DipasPlayer.vue";
-import fetchDataFromUrl from "../../utils/getStoryFromUrl";
-import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 import store from "../../../../../src/app-store";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {EventEmitter} from "../../utils/EventEmitter";
+import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
+import fetchDataFromUrl from "../../utils/getStoryFromUrl";
 // import TOCMenu from "./TOCMenu.vue";
 
 export default {
@@ -437,6 +437,7 @@ export default {
         <ScrollyTeller
             v-if="showMode === 'scrolly'"
             :current-step-index="currentStepIndex"
+            v-on="$listeners"
         />
 
         <ClassicPlayer
@@ -446,6 +447,7 @@ export default {
             :current-step="currentStep"
             :loaded-content="loadedContent"
             :is-preview="isPreview"
+            v-on="$listeners"
         />
 
         <StoryNavigation

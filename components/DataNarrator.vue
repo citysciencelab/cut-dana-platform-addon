@@ -1,20 +1,25 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
+
 import ToolTemplate from "../../../../src/modules/tools/ToolTemplate.vue";
-import StoryCreator from "./storyCreator/StoryCreator.vue";
-import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
+// login module
+import OIDC from "../../../../src/modules/tools/login/utils/utilsOIDC";
+
 import * as constants from "../store/constantsDataNarrator";
 import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
+
+import StoryCreator from "./storyCreator/StoryCreator.vue";
+import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
 import SnackBar from "./SnackBar.vue";
-import DashboardCard from "./DashboardCard.vue";
+import DashboardPanel from "./Dashboard/DashboardPanel.vue";
 import {EventEmitter} from "../utils/EventEmitter";
 
 export default {
     name: "DataNarrator",
     components: {
-        DashboardCard,
+        DashboardPanel,
         SnackBar,
         ToolTemplate,
         StoryCreator,
@@ -23,24 +28,33 @@ export default {
     data () {
         return {
             constants,
-            stepIndex: 0
-            // modeOptions: null
+            stepIndex: 0,
+            isAdmin: false,
+            uid: null
         };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Tools/Login", ["accessToken"]),
         ...mapGetters(["uiStyle"])
     },
     watch: {
-        /**
-         * Listens to the active property change.
-         * @param {Boolean} isActive Value deciding whether the tool gets activated or deactivated.
-         * @returns {void}
-         */
-        active (isActive) {
-            if (isActive) {
-                // this.setFocusToFirstControl();
-            }
+        "accessToken": {
+            handler (accessToken) {
+                if (accessToken) {
+                    const payload = OIDC.parseJwt(accessToken);
+
+                    this.uid = payload.sub;
+                    if (payload.realm_access.roles.includes("admin")) {
+                        this.isAdmin = true;
+                    }
+                }
+                else {
+                    this.isAdmin = false;
+                    this.uid = null;
+                }
+            },
+            immediate: true
         }
     },
     created () {
@@ -105,32 +119,7 @@ export default {
                     toolWindow.style.display = "block";
                 }
             }
-            // if (this.storyConf.isNoCreateMode) {
-            //     this.modeOptions.filter(element => element.mode !== "play").forEach(element => {
-            //         element.visible = false;
-            //     });
-            // }
         },
-
-        /**
-         * The story telling tool options
-         * @returns {Object[]} mode options (icon, title and disabled)
-         */
-        // createModeOptions () {
-        //     this.modeOptions = Object.values(this.constants.storyTellingModes).map(
-        //         mode => ({
-        //             mode,
-        //             icon: this.constants.storyTellingModeIcons[mode],
-        //             title: this.$t(
-        //                 "additional:modules.tools.dataNarrator." + mode
-        //             ),
-        //             disabled:
-        //                 mode === this.constants.storyTellingModes.PLAY &&
-        //                 !this.storyConfURL,
-        //             visible: true
-        //         })
-        //     );
-        // },
 
         confirmOnlyWhenCreatingStory (actionCallback) {
             if (this.isCreatingStory()) {
@@ -266,8 +255,10 @@ export default {
                 id="tool-dataNarrator"
                 :class="mode"
             >
-                <DashboardCard
+                <DashboardPanel
                     v-if="!mode || mode === constants.storyTellingModes.DASHBOARD"
+                    :is-admin="isAdmin"
+                    :uid="uid"
                     @confirm="confirmDialog"
                     @share-story="shareStory"
                     @reset-step-index="stepIndex = 0"
