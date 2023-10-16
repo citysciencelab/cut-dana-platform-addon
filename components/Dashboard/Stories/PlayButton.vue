@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapMutations} from "vuex";
-import {mdiPresentationPlay} from "@mdi/js";
+import {mdiPlay} from "@mdi/js";
 
 import * as constants from "../../../store/constantsDataNarrator";
 import mutations from "../../../store/mutationsDataNarrator";
@@ -17,7 +17,7 @@ export default {
     data () {
         return {
             icons: {
-                mdiPresentationPlay
+                mdiPlay
             }
         };
     },
@@ -46,7 +46,7 @@ export default {
                 v-on="on"
                 @click="playStory()"
             >
-                {{ icons.mdiPresentationPlay }}
+                {{ icons.mdiPlay }}
             </v-icon>
         </template>
         <span>
