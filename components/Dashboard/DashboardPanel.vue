@@ -72,7 +72,7 @@ export default {
          * @param {String} mode Story filter
          * @returns {void}
          */
-        refreshStoryList (mode = null) {
+        refreshStoryList (mode = "all") {
             const newMode = mode || this.storyListMode;
 
             axios
@@ -175,7 +175,7 @@ export default {
             >
                 <v-col
                     v-for="(story, i) in storyList"
-                    :key="story._id"
+                    :key="story._id + story.updatedAt"
                     :cols="12"
                     :class="i !== storyList.length - 1 ? '' : ''"
                     class="py-2"

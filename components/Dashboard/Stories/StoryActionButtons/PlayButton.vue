@@ -2,9 +2,9 @@
 import {mapActions, mapMutations} from "vuex";
 import {mdiPlay} from "@mdi/js";
 
-import * as constants from "../../../store/constantsDataNarrator";
-import mutations from "../../../store/mutationsDataNarrator";
-import actions from "../../../store/actionsDataNarrator";
+import * as constants from "../../../../store/constantsDataNarrator";
+import mutations from "../../../../store/mutationsDataNarrator";
+import actions from "../../../../store/actionsDataNarrator";
 
 export default {
     name: "PlayButton",

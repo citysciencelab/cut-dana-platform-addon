@@ -1,9 +1,12 @@
 <script>
-import PlayButton from "./PlayButton.vue";
-import ShareButton from "./ShareButton.vue";
-import EditButton from "./EditButton.vue";
-import DeleteButton from "./DeleteButton.vue";
-import FeaturedButton from "./FeaturedButton.vue";
+import PlayButton from "./StoryActionButtons/PlayButton.vue";
+import ShareButton from "./StoryActionButtons/ShareButton.vue";
+import EditButton from "./StoryActionButtons/EditButton.vue";
+import DeleteButton from "./StoryActionButtons/DeleteButton.vue";
+import FeaturedButton from "./StoryActionButtons/FeaturedButton.vue";
+import ShareSettingsButton from "./StoryActionButtons/ShareSettingsButton.vue";
+
+import ShareSettingsForm from "./ShareSettingsForm.vue";
 
 export default {
     name: "StoryAltCard",
@@ -12,7 +15,9 @@ export default {
         ShareButton,
         EditButton,
         DeleteButton,
-        FeaturedButton
+        FeaturedButton,
+        ShareSettingsButton,
+        ShareSettingsForm
     },
     props: {
         story: {
@@ -27,6 +32,11 @@ export default {
             type: Boolean,
             default: false
         }
+    },
+    data () {
+        return {
+            shareSettings: false
+        };
     },
     methods: {
         editable () {
@@ -74,10 +84,17 @@ export default {
 
         <v-card-actions>
             <PlayButton :story-id="story._id" />
-            <v-spacer />
             <ShareButton
                 :story-id="story._id"
                 v-on="$listeners"
+            />
+
+            <v-spacer />
+
+            <ShareSettingsButton
+                v-if="editable()"
+                :story="story"
+                @toggle:shared-settings="shareSettings = !shareSettings"
             />
             <EditButton
                 v-if="editable()"
@@ -89,5 +106,12 @@ export default {
                 v-on="$listeners"
             />
         </v-card-actions>
+
+        <ShareSettingsForm
+            v-if="shareSettings"
+            :story="story"
+            @close:shared-settings="shareSettings = false"
+            v-on="$listeners"
+        />
     </v-card>
 </template>

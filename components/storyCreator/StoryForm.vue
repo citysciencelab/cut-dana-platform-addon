@@ -1,12 +1,15 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
+
 import * as constants from "../../store/constantsDataNarrator";
-import {getStepReference} from "../../utils/getReference";
+
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
+
 import errorHandling from "../../utils/errorHandling";
-import {BFormTags} from "bootstrap-vue";
+import {getStepReference} from "../../utils/getReference";
+import ShareSettings from "./inputs/ShareSettings.vue";
 
 import {
     mdiCancel,
@@ -21,7 +24,7 @@ import {
 export default {
     name: "StoryForm",
     components: {
-        BFormTags
+        ShareSettings
     },
     data () {
         return {
@@ -282,61 +285,19 @@ export default {
                 -->
             </div>
 
-            <div
-
-                class="form-group"
-            >
-                <label
-                    class="form-label"
-                    for="story-private"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.private"
-                        )
-                    }}
-                </label>
-
-                <input
-                    id="story-private"
-                    v-model="currentStory.private"
-                    class="checkbox"
-                    type="checkbox"
-                >
-            </div>
-
-            <div
-                v-if="currentStory?.private"
-                class="form-group"
-            >
-                <label for="sharedWith">{{
-                    $t(
-                        "additional:modules.tools.dataNarrator.label.sharedWith"
-                    )
-                }}</label>
-                <BFormTags
-                    v-model="currentStory.sharedWith"
-                    class="form-control"
-                    input-type="email"
-                    input-id="sharedWith"
-                    tag-variant="primary"
-                    tag-pills
-                    :placeholder="$t('additional:modules.tools.dataNarrator.label.sharedWithPlaceholder')"
-                    :add-button-text="$t('additional:modules.tools.dataNarrator.button.addSharedWith')"
-                    :duplicate-tag-text="$t('additional:modules.tools.dataNarrator.label.sharedWithDuplicate')"
-                />
-            </div>
+            <ShareSettings
+                :private-story="currentStory.private"
+                :shared-with="currentStory.sharedWith"
+                @update:private-story="newValue => currentStory.private = newValue"
+                @update:shared-with="newValue => currentStory.sharedWith = newValue"
+            />
 
             <div class="form-group">
                 <label
                     class="form-label"
                     for="slide-navigation"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.steps"
-                        )
-                    }}
+                    {{ $t("additional:modules.tools.dataNarrator.label.steps") }}
                 </label>
 
                 <v-slide-group

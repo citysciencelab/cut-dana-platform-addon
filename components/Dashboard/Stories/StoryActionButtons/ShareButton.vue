@@ -15,15 +15,6 @@ export default {
                 mdiShareAll
             }
         };
-    },
-    methods: {
-        /**
-         * Share the story that is selected
-         * @returns {void}
-         */
-        share () {
-            this.$emit("share-story", this.storyId, 0);
-        }
     }
 
 };
@@ -36,7 +27,7 @@ export default {
                 id="share-button"
                 class="ml-1 mr-1"
                 v-on="on"
-                @click="share()"
+                @click="$emit('share-story', storyId, 0)"
             >
                 {{ icons.mdiShareAll }}
             </v-icon>
