@@ -71,16 +71,6 @@ export default {
 
 <template>
     <div id="LayerSelector">
-        <!-- <v-select
-            v-model="selected"
-            :items="items"
-            multiple
-            dense
-            solo
-            hide-details
-            @input="updateSelectedItems"
-        /> -->
-
         <v-treeview
             :items="transformedItems"
             item-key="id"
