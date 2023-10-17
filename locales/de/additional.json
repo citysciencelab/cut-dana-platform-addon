@@ -46,7 +46,8 @@
         "storyList": {
           "all":  "Alle Stories",
           "my": "Meine Stories",
-          "featured": "Vorgestellt"
+          "featured": "Vorgestellt",
+          "popular": "Beliebt"
         },
         "creator": {
           "edit": "Bearbeiten",
