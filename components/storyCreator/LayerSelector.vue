@@ -26,13 +26,12 @@ export default {
             // console.log(this.items);
 
             this.items.forEach((item) => {
-                console.log(item);
 
                 let category;
 
                 // Extract the category from the datasets array
                 if (!item.datasets || !item.datasets[0]) {
-                    category = "Sonnstige";
+                    category = "Sonnstiges";
                 }
                 else {
                     category = item.datasets[0].kategorie_opendata[0];
