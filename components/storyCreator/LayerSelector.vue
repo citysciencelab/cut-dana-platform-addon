@@ -1,5 +1,4 @@
 <script>
-import {mdiAccount} from "@mdi/js";
 export default {
     name: "LayerSelector",
     props: {
@@ -14,9 +13,7 @@ export default {
     },
     data () {
         return {
-            icons: {
-                account: mdiAccount
-            }
+
         };
     },
     computed: {
@@ -26,15 +23,27 @@ export default {
             let id = 0;
             const categories = {};
 
+            // console.log(this.items);
+
             this.items.forEach((item) => {
+                console.log(item);
+
+                let category;
+
                 // Extract the category from the datasets array
-                const category = item.datasets[0].kategorie_opendata[0];
+                if (!item.datasets || !item.datasets[0]) {
+                    category = "Sonnstige";
+                }
+                else {
+                    category = item.datasets[0].kategorie_opendata[0];
+                }
 
                 if (!categories[category]) {
                     id++;
                     categories[category] = {
                         id: id,
                         name: category,
+                        disabled: true,
                         children: []
                     };
                 }
@@ -52,7 +61,6 @@ export default {
 
     methods: {
         updateSelectedItems (selectedIds) {
-            console.log(selectedIds);
             // Filter the original items based on the selected IDs
             const selectedItems = selectedIds.map(id => id.toString());
 
@@ -79,6 +87,7 @@ export default {
             item-key="id"
             item-text="name"
             item-children="children"
+            selection-type="independent"
             selectable
             @input="updateSelectedItems"
         />

@@ -143,8 +143,6 @@ export default {
 
             const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"});
 
-            // return layerList.map(layer => layer.toJSON()); // use this for the new layer selector
-
             return layerList.map(layer => layer);
         },
 
