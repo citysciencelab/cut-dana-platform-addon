@@ -238,7 +238,7 @@ function prepareHtml (story, images) {
         htmlArray = [];
 
     story.steps = story.steps.map((step) => {
-        const html = step.html;
+        let html = step.html;
 
         if (Object.hasOwn(images, step._id) && images[step._id]?.length > 0) {
 
@@ -252,13 +252,16 @@ function prepareHtml (story, images) {
                     stepNumber: step.stepNumber
                 });
 
-                htmlArray.push({
-                    html: html.replaceAll(image.dataUrl, imageId),
-                    associatedChapter: step.associatedChapter,
-                    stepNumber: step.stepNumber
-                });
+                html = html.replaceAll(image.dataUrl, imageId);
             }
         }
+
+        htmlArray.push({
+            html: html,
+            associatedChapter: step.associatedChapter,
+            stepNumber: step.stepNumber
+        });
+
         delete step.html;
         delete step._id;
         return step;
