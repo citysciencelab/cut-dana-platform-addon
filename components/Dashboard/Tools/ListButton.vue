@@ -1,8 +1,9 @@
 <script>
 import {
     mdiAccountArrowDown,
-    mdiFormatListBulletedType,
-    mdiPlaylistStar
+    mdiSortClockAscendingOutline,
+    mdiPlaylistStar,
+    mdiSortDescending
 } from "@mdi/js";
 
 export default {
@@ -21,8 +22,9 @@ export default {
         return {
             icons: {
                 mdiAccountArrowDown,
-                mdiFormatListBulletedType,
-                mdiPlaylistStar
+                mdiSortClockAscendingOutline,
+                mdiPlaylistStar,
+                mdiSortDescending
             }
         };
     },
@@ -34,7 +36,10 @@ export default {
             else if (this.mode === "featured") {
                 return this.icons.mdiPlaylistStar;
             }
-            return this.icons.mdiFormatListBulletedType;
+            else if (this.mode === "popular") {
+                return this.icons.mdiSortDescending;
+            }
+            return this.icons.mdiSortClockAscendingOutline;
         }
     }
 };

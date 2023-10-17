@@ -84,8 +84,8 @@ export default {
         },
 
         availableStoryListModes () {
-            const anonymousModes = ["all", "featured"],
-                loggedInModes = ["all", "featured", "my"];
+            const anonymousModes = ["all", "featured", "popular"],
+                loggedInModes = ["all", "featured", "popular", "my"];
 
             if (this.isAdmin || !this.uid) {
                 return anonymousModes;
