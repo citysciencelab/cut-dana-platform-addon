@@ -137,7 +137,7 @@ export default {
 
         /**
          * The layer options
-         * @returns {Object[]} layers including id and name
+         * @returns {Object[]} layers to select
          */
         layerOptions () {
 
