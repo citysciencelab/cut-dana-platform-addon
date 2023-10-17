@@ -43,7 +43,7 @@ export default {
 
         /**
          * Get the amount of steps in the current chapter
-         * @returns {number} The amount of steps in the current chapter
+         * @returns {number} returns a number representing the amount of steps in the current chapter
          */
         currentChapterStepCount () {
             return this.steps.filter(
@@ -53,7 +53,7 @@ export default {
 
         /**
          * get current step index in the current chapter
-         * @returns {number} The current step index in the current chapter
+         * @returns {number} returns a number representing the current step index in the current chapter
          */
         currentChapterStepIndex () {
             // Get all steps before the current step that are not in the current chapter
@@ -120,7 +120,9 @@ export default {
                 <v-icon left>
                     list
                 </v-icon>
-                Table of contents
+                {{
+                    $t("additional:modules.tools.dataNarrator.tableOfContents")
+                }}
             </v-btn>
         </div>
 

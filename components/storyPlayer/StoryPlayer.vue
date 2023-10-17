@@ -1,16 +1,16 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import ClassicPlayer from "./ClassicPlayer.vue";
-import StoryNavigation from "./StoryNavigation.vue";
 import ScrollyTeller from "./ScrollyTeller.vue";
+import StoryNavigation from "./StoryNavigation.vue";
 // import DipasPlayer from "./DipasPlayer.vue";
-import fetchDataFromUrl from "../../utils/getStoryFromUrl";
-import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 import store from "../../../../../src/app-store";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {EventEmitter} from "../../utils/EventEmitter";
+import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
+import fetchDataFromUrl from "../../utils/getStoryFromUrl";
 // import TOCMenu from "./TOCMenu.vue";
 
 export default {
@@ -132,7 +132,7 @@ export default {
     beforeDestroy () {
         // Hides all story layers
         const layerList = Radio.request("ModelList", "getModelsByAttributes", {
-            isVisibleInTree: true
+            isVisibleInTree: true, isSelected: true
         });
 
         for (const layer of layerList) {
@@ -377,25 +377,30 @@ export default {
                 });
             }
 
-            const layerList = Radio.request(
-                "ModelList",
-                "getModelsByAttributes",
-                {isVisibleInTree: true}
-            );
+            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
+                enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true}),
+                stepLayers = this.currentStep.layers || [];
 
-            // Updates the map layers
-            for (const layer of layerList) {
-                const stepLayers = this.currentStep.layers || [],
-                    isStepLayer = stepLayers.includes(layer.id) ||
-                                        stepLayers.some(l => l.includes(layer.id));
+            for (const enabledLayer of enabledLayers) {
+                this.disableLayer(enabledLayer);
+            }
 
-                // if (isStepLayer && !layer.attributes.isVisibleInMap) {
-                if (isStepLayer) {
-                    this.enableLayer(layer);
+
+            for (const layer of stepLayers) {
+                // check if model is already in modelList
+                let layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.toString()});
+
+
+                if (layerModels.length === 0) {
+                    const foundLayer = layerList.find(l => l.id === layer.toString());
+
+                    foundLayer.isVisibleInTree = true;
+                    Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
+                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
                 }
-                // else if (!isStepLayer && layer.attributes.isVisibleInMap) {
-                else if (!isStepLayer) {
-                    this.disableLayer(layer);
+
+                for (const layerModel of layerModels) {
+                    this.enableLayer(layerModel);
                 }
             }
 
@@ -441,6 +446,7 @@ export default {
             :current-chapter="currentChapter"
             :current-step="currentStep"
             :loaded-content="loadedContent"
+            :is-preview="isPreview"
             v-on="$listeners"
         />
 

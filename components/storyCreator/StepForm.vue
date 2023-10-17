@@ -1,28 +1,32 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {
+    mdiBackspaceOutline,
+    mdiCancel,
+    mdiCheck,
+    mdiPinOutline,
+    mdiTrashCanOutline
+} from "@mdi/js";
+import uuid from "uuid";
 import {VueEditor} from "vue2-editor";
+import {mapActions, mapGetters, mapMutations} from "vuex";
+import actions from "../../store/actionsDataNarrator";
 import * as constants from "../../store/constantsDataNarrator";
+import getters from "../../store/gettersDataNarrator";
+import mutations from "../../store/mutationsDataNarrator";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
 import getFileExtension from "../../utils/getFileExtension";
 import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
-import actions from "../../store/actionsDataNarrator";
-import getters from "../../store/gettersDataNarrator";
-import mutations from "../../store/mutationsDataNarrator";
-import uuid from "uuid";
-import {
-    mdiCancel,
-    mdiTrashCanOutline,
-    mdiCheck,
-    mdiPinOutline,
-    mdiBackspaceOutline
-} from "@mdi/js";
+
+import LayerSelector from "./LayerSelector.vue";
 
 
 export default {
     name: "StepForm",
 
     components: {
-        VueEditor
+        VueEditor,
+        LayerSelector
+        // LayerSelectorOld
     },
 
     props: {
@@ -133,26 +137,13 @@ export default {
 
         /**
          * The layer options
-         * @returns {Object[]} layers including id and name
+         * @returns {Object[]} layers to select
          */
         layerOptions () {
 
-            // const lL = rawLayerList.getLayerList();
-
-            // lL.forEach(layer => {
-            //     // add layer to
-            //     if (layer.typ === "WMS") {
-            //         // console.log(layer, layer.typ);
-            //         // Radio.trigger("Parser", "addLayer", layer)
-            //     }
-            // })
-
             const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"});
 
-            return layerList.map(layer => ({
-                value: layer.id,
-                text: layer.name
-            }));
+            return layerList.map(layer => layer);
         },
 
         /**
@@ -189,28 +180,53 @@ export default {
          */
         "step.layers" (newSelectedLayerIds) {
             const selectedLayerIds = newSelectedLayerIds.map(Number),
-                layerList = Radio.request(
-                    "ModelList",
-                    "getModelsByAttributes",
-                    {isVisibleInTree: true}
-                );
+                layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
+                selectedItems = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true});
 
-            for (const layer of layerList) {
-                if (
-                    selectedLayerIds.includes(Number(layer.attributes.id)) &&
-                    !layer.attributes.isVisibleInMap
-                ) {
-                    layer.setIsVisibleInMap(true);
-                    layer.set("isSelected", true);
+            for (const selectedItem of selectedItems) {
+                selectedItem.setIsVisibleInMap(false);
+                selectedItem.set("isSelected", false);
+            }
+
+
+            for (const layer of selectedLayerIds) {
+                // check if model is already in modelList
+                let layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.toString()});
+
+
+                // console.log(layerModel, layerList);
+
+                if (layerModels.length === 0) {
+                    // filter layer object in layerList to add to ModelList
+                    const foundLayer = layerList.find(l => l.id === layer.toString());
+
+                    foundLayer.isVisibleInTree = true;
+                    Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
+                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
                 }
-                else if (
-                    !selectedLayerIds.includes(Number(layer.attributes.id)) &&
-                    layer.attributes.isVisibleInMap
-                ) {
-                    layer.setIsVisibleInMap(false);
-                    layer.set("isSelected", false);
+
+                for (const layerModel of layerModels) {
+                    layerModel.setIsVisibleInMap(true);
+                    layerModel.set("isSelected", true);
                 }
             }
+
+            // for (const layer of layerList) {
+            //     if (
+            //         selectedLayerIds.includes(Number(layer.attributes.id)) &&
+            //         !layer.attributes.isVisibleInMap
+            //     ) {
+            //         layer.setIsVisibleInMap(true);
+            //         layer.set("isSelected", true);
+            //     }
+            //     else if (
+            //         !selectedLayerIds.includes(Number(layer.attributes.id)) &&
+            //         layer.attributes.isVisibleInMap
+            //     ) {
+            //         layer.setIsVisibleInMap(false);
+            //         layer.set("isSelected", false);
+            //     }
+            // }
 
             this.is3DLayerActive = Radio.request(
                 "ModelList",
@@ -921,7 +937,7 @@ export default {
                     {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
                 </label>
 
-                <v-select
+                <!-- <v-select
                     id="step-layer"
                     v-model="step.layers"
                     :items="layerOptions"
@@ -929,6 +945,16 @@ export default {
                     dense
                     solo
                     hide-details
+                /> -->
+                <!-- <LayerSelectorOld
+                    id="step-layer"
+                    :items="layerOptions"
+                    :selected.sync="step.layers"
+                /> -->
+                <LayerSelector
+                    id="step-layer"
+                    :items="layerOptions"
+                    :selected.sync="step.layers"
                 />
             </div>
 
@@ -996,7 +1022,6 @@ export default {
                                     >
                                         <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
                                     </v-btn>
-
                                 </span>
                             </template>
                             <span>
@@ -1036,9 +1061,9 @@ export default {
                                         :disabled="!isValid"
                                         @click="onSubmit"
                                     >
+
                                         <v-icon size="24px">{{ icons.mdiCheck }}</v-icon>
                                     </v-btn>
-
                                 </span>
                             </template>
                             <span>
