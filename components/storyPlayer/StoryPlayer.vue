@@ -57,6 +57,7 @@ export default {
          * @returns {number} current step index
          */
         currentStep () {
+            console.log(this.currentStory.steps[0].layers);
             return this.$store.state.Tools.DataNarrator.autoplay && this.steps.length > 0
                 ? this.steps[this.currentStepIndex]
                 : this.currentStory.steps[this.currentStepIndex];
@@ -136,14 +137,18 @@ export default {
         });
 
         for (const layer of layerList) {
-            const isStepLayer = (
-                (this.currentStep && this.currentStep.layers) ||
-                []
-            ).includes(Number(layer.attributes.id));
-
-            if (isStepLayer && layer.attributes.isVisibleInMap) {
+            if (this.currentStep.layers.includes(layer.attributes.id)) {
                 this.disableLayer(layer);
             }
+            // const isStepLayer = (
+            //     (this.currentStep && this.currentStep.layers) ||
+            //     []
+            // ).includes(Number(layer.attributes.id));
+
+            // if (isStepLayer && layer.attributes.isVisibleInMap) {
+            //     this.disableLayer(layer);
+            // }
+            // this.disableLayer(layer);
         }
         Radio.trigger("Menu", "rerender");
 
@@ -422,6 +427,14 @@ export default {
 
                 // Activate all tools of the current step
                 interactionAddons.forEach(this.activateTool);
+            }
+        },
+
+        clearAllLayers () {
+            const layerList = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true});
+
+            for (const layer of layerList) {
+                this.disableLayer(layer);
             }
         }
     }

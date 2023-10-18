@@ -1,6 +1,6 @@
 import storyCreatorActions from "./actions/storyCreatorActions";
-import stateDataNarrator from "./stateDataNarrator";
 import * as constants from "./constantsDataNarrator";
+import stateDataNarrator from "./stateDataNarrator";
 
 import axios from "axios";
 
@@ -18,8 +18,8 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
             // Reset store data
             commit("setHtmlContentsImages", initialState.htmlContentsImages);
             commit("setInitialWidth", initialState.initialWidth);
-            commit("setCurrentStory", null);
-            commit("setCurrentStoryId", null);
+            // commit("setCurrentStory", null);
+            // commit("setCurrentStoryId", null);
         },
 
         /**
@@ -31,8 +31,8 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
         resetCreatorContent ({commit}) {
             commit("setHtmlContentsImages", initialState.htmlContentsImages);
             commit("setInitialWidth", initialState.initialWidth);
-            commit("setCurrentStory", null);
-            commit("setCurrentStoryId", null);
+            // commit("setCurrentStory", null);
+            // commit("setCurrentStoryId", null);
             commit("setMode", constants.storyTellingModes.DASHBOARD);
         },
 
