@@ -200,9 +200,13 @@ export default {
                     // filter layer object in layerList to add to ModelList
                     const foundLayer = layerList.find(l => l.id === layer.toString());
 
-                    foundLayer.isVisibleInTree = true;
-                    Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
+                    if (foundLayer) {
+                        foundLayer.isVisibleInTree = true;
+                        Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
+                        layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
+                    }
+
+
                 }
 
                 for (const layerModel of layerModels) {
