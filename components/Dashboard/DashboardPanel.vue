@@ -36,7 +36,8 @@ export default {
         return {
             storyList: {},
             importForm: false,
-            storyListMode: "all"
+            storyListMode: "all",
+            masonry: null
         };
     },
     computed: {
@@ -65,13 +66,12 @@ export default {
             heading = toolWindow.getElementsByClassName("title")[0];
 
         heading.innerHTML = this.$t("additional:modules.tools.dataNarrator.dashboardView.title");
-        new Masonry("#tool-storyTellingTool-modeSelection",
+        this.masonry = new Masonry("#tool-storyTellingTool-modeSelection",
             {
-                itemSelector: ".v-card",
-                columnWidth: ".v-card",
+                itemSelector: ".grid-item",
+                columnWidth: ".grid-item",
                 percentPosition: true
             });
-
     },
     methods: {
         /**
@@ -87,6 +87,7 @@ export default {
                 .then((response) => {
                     this.storyListMode = newMode;
                     this.storyList = response.data;
+                    this.masonry.layout();
                 });
         },
 
@@ -176,19 +177,25 @@ export default {
                 <ImportStory @closeImportForm="closeImportForm" />
             </v-col>
         </v-row>
-        <v-row
-            v-if="!importForm"
-            id="tool-storyTellingTool-modeSelection"
-        >
-            <StoryCard
-                v-for="(story) in storyList"
-                :key="story._id + story.updatedAt"
-                :story="story"
-                :is-admin="isAdmin"
-                :uid="uid"
-                @refreshStoryList="refreshStoryList"
-                v-on="$listeners"
-            />
+        <v-row>
+            <div
+                v-if="!importForm"
+                class="container-fluid"
+            >
+                <v-row
+                    id="tool-storyTellingTool-modeSelection"
+                >
+                    <StoryCard
+                        v-for="(story) in storyList"
+                        :key="story._id + story.updatedAt"
+                        :story="story"
+                        :is-admin="isAdmin"
+                        :uid="uid"
+                        @refreshStoryList="refreshStoryList"
+                        v-on="$listeners"
+                    />
+                </v-row>
+            </div>
         </v-row>
     </div>
 </template>

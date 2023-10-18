@@ -47,92 +47,85 @@ export default {
 </script>
 
 <template>
-    <v-card
-        elevation="2"
-    >
-        <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
-            <div>
-                <v-card-title>
-                    <FeaturedButton
-                        :story-id="story._id"
-                        :is-featured="story.featured"
-                        :is-admin="isAdmin"
+    <v-col class="grid-item col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        <v-card
+            elevation="2"
+            density="compact"
+            class="grid-item-content"
+        >
+            <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
+                <div>
+                    <v-card-title>
+                        <FeaturedButton
+                            :story-id="story._id"
+                            :is-featured="story.featured"
+                            :is-admin="isAdmin"
+                        />
+                        <span class="text-h6 font-weight-light">{{ story.title }}</span>
+                    </v-card-title>
+                    <v-card-subtitle>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.label.author")
+                        }}: &nbsp; {{ story.author }}
+                    </v-card-subtitle>
+                </div>
+                <v-avatar
+                    v-if="story.titleImage"
+                    class="ma-3"
+                    size="125"
+                    rounded="3"
+                >
+                    <v-img
+                        :src="story.titleImage"
+                        :alt="story.title"
                     />
-                    <span class="text-h6 font-weight-light">{{ story.title }}</span>
-                </v-card-title>
-                <v-card-subtitle>
-                    {{
-                        $t("additional:modules.tools.dataNarrator.label.author")
-                    }}: &nbsp; {{ story.author }}
-                </v-card-subtitle>
+                </v-avatar>
             </div>
-            <v-avatar
-                v-if="story.titleImage"
-                class="ma-3"
-                size="125"
-                rounded="3"
-            >
-                <v-img
-                    :src="story.titleImage"
-                    :alt="story.title"
+
+            <v-card-text>
+                {{ story.description }}
+            </v-card-text>
+
+
+            <v-card-actions>
+                <PlayButton :story-id="story._id" />
+                <ShareButton
+                    :story-id="story._id"
+                    v-on="$listeners"
                 />
-            </v-avatar>
-        </div>
 
-        <v-card-text>
-            {{ story.description }}
-        </v-card-text>
+                <v-spacer />
 
+                <ShareSettingsButton
+                    v-if="editable()"
+                    :story="story"
+                    @toggle:shared-settings="shareSettings = !shareSettings"
+                />
+                <EditButton
+                    v-if="editable()"
+                    :story-id="story._id"
+                />
+                <DeleteButton
+                    v-if="editable()"
+                    :story-id="story._id"
+                    v-on="$listeners"
+                />
+            </v-card-actions>
 
-        <v-card-actions>
-            <PlayButton :story-id="story._id" />
-            <ShareButton
-                :story-id="story._id"
-                v-on="$listeners"
-            />
-
-            <v-spacer />
-
-            <ShareSettingsButton
-                v-if="editable()"
+            <ShareSettingsForm
+                v-if="shareSettings"
                 :story="story"
-                @toggle:shared-settings="shareSettings = !shareSettings"
-            />
-            <EditButton
-                v-if="editable()"
-                :story-id="story._id"
-            />
-            <DeleteButton
-                v-if="editable()"
-                :story-id="story._id"
+                @close:shared-settings="shareSettings = false"
                 v-on="$listeners"
             />
-        </v-card-actions>
-
-        <ShareSettingsForm
-            v-if="shareSettings"
-            :story="story"
-            @close:shared-settings="shareSettings = false"
-            v-on="$listeners"
-        />
-    </v-card>
+        </v-card>
+    </v-col>
 </template>
 
 <style lang="scss" scoped>
     .v-card {
-        width: 100%;
         margin-left: 5px;
         margin-right: 5px;
         margin-bottom: 10px;
-
-        @media (min-width: 768px) {
-            width: calc(50% - 10px);
-        }
-        @media (min-width: 992px) {
-            width: calc(33% - 10px);
-        }
-        @media (min-width: 1264px) {
-            width: calc(25% - 10px);
-        }
     }
 </style>
