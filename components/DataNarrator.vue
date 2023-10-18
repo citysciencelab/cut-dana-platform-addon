@@ -65,7 +65,7 @@ export default {
                 }
                 const toolWindow = document.getElementsByClassName(toolWindowClass)[0],
                     toolWidth = mode === constants.storyTellingModes.DASHBOARD ?
-                        window.innerWidth - 40 : 400;
+                        window.innerWidth - 40 : this.initialWidth;
 
                 toolWindow.style.setProperty("--initialToolWidth", `${toolWidth}px`, "important");
             }
