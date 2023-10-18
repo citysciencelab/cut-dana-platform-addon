@@ -1,6 +1,11 @@
 <script>
+import {klona} from "klona";
+import draggable from "vuedraggable";
 export default {
     name: "LayerSelector",
+    components: {
+        Draggable: draggable
+    },
     props: {
         items: {
             type: Array,
@@ -13,7 +18,7 @@ export default {
     },
     data () {
         return {
-
+            selectedChips: this.selected
         };
     },
     computed: {
@@ -77,13 +82,13 @@ export default {
              */
             function getNestedValue (obj, key) {
                 const keys = key.split(".");
-                let newObj = obj;
+                let newObj = klona(obj);
 
                 for (let i = 0; i < keys.length; i++) {
-                    if (obj === null || typeof obj !== "object") {
+                    if (newObj === null || typeof newObj !== "object") {
                         return undefined;
                     }
-                    newObj = obj[keys[i]];
+                    newObj = newObj[keys[i]];
                 }
                 return newObj;
             }
@@ -104,6 +109,8 @@ export default {
 
                 // Extract the category from the datasets array
                 createCategory(newCats, categories);
+
+                console.log(categories, categoryString, getNestedValue(categories, categoryString));
 
 
                 getNestedValue(categories, categoryString).children[`~~~~~~~~~${item.id.toString()}`] = {
@@ -169,6 +176,9 @@ export default {
             const selectedItems = selectedIds.map(id => id.toString());
 
             this.$emit("update:selected", selectedItems);
+        },
+        getChipOrder () {
+            console.log("Ordered Chips: ", this.chips);
         }
     }
 };
@@ -176,6 +186,25 @@ export default {
 
 <template>
     <div id="LayerSelector">
+        <v-container>
+            <Draggable
+                v-model="selectedChips"
+                :list="selected"
+            >
+                <v-chip-group multiple>
+                    <v-chip
+                        v-for="(layer, index) in selectedChips"
+                        :key="index"
+                    >
+                        {{ layer }}
+                    </v-chip>
+                </v-chip-group>
+            </Draggable>
+
+            <v-btn @click="getChipOrder">
+                Get Chip Order
+            </v-btn>
+        </v-container>
         <v-treeview
             :items="transformedItems"
             item-key="id"
