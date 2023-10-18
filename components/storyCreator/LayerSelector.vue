@@ -1,11 +1,8 @@
 <script>
-import {klona} from "klona";
-import draggable from "vuedraggable";
+// import draggable from "vuedraggable";
 export default {
     name: "LayerSelector",
-    components: {
-        Draggable: draggable
-    },
+
     props: {
         items: {
             type: Array,
@@ -18,7 +15,7 @@ export default {
     },
     data () {
         return {
-            selectedChips: this.selected
+            // selectedChips: this.selected
         };
     },
     computed: {
@@ -82,7 +79,7 @@ export default {
              */
             function getNestedValue (obj, key) {
                 const keys = key.split(".");
-                let newObj = klona(obj);
+                let newObj = obj;
 
                 for (let i = 0; i < keys.length; i++) {
                     if (newObj === null || typeof newObj !== "object") {
@@ -109,8 +106,6 @@ export default {
 
                 // Extract the category from the datasets array
                 createCategory(newCats, categories);
-
-                console.log(categories, categoryString, getNestedValue(categories, categoryString));
 
 
                 getNestedValue(categories, categoryString).children[`~~~~~~~~~${item.id.toString()}`] = {
@@ -186,7 +181,7 @@ export default {
 
 <template>
     <div id="LayerSelector">
-        <v-container>
+        <!-- <v-container>
             <Draggable
                 v-model="selectedChips"
                 :list="selected"
@@ -204,7 +199,7 @@ export default {
             <v-btn @click="getChipOrder">
                 Get Chip Order
             </v-btn>
-        </v-container>
+        </v-container> -->
         <v-treeview
             :items="transformedItems"
             item-key="id"
