@@ -57,17 +57,8 @@ export default {
             immediate: true
         },
         "mode": {
-            handler (mode) {
-                let toolWindowClass = "tool-window-vue";
-
-                if (this.uiStyle === "TABLE") {
-                    toolWindowClass = "table-tool-win-all-vue";
-                }
-                const toolWindow = document.getElementsByClassName(toolWindowClass)[0],
-                    toolWidth = mode === constants.storyTellingModes.DASHBOARD ?
-                        window.innerWidth - 40 : this.initialWidth;
-
-                toolWindow.style.setProperty("--initialToolWidth", `${toolWidth}px`, "important");
+            handler () {
+                this.resizeHandler();
             }
         }
     },
@@ -76,10 +67,12 @@ export default {
         EventEmitter.$on("resetStory", () => {
             this.reset();
         });
+        window.addEventListener("resize", this.resizeHandler);
     },
     beforeDestroy () {
         // removes event listener
         EventEmitter.$off("resetStory", this.reset());
+        window.removeEventListener("resize", this.resizeHandler);
     },
     /**
      * Put initialize here if mounting occurs after config parsing
@@ -117,6 +110,19 @@ export default {
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+
+        resizeHandler () {
+            let toolWindowClass = "tool-window-vue";
+
+            if (this.uiStyle === "TABLE") {
+                toolWindowClass = "table-tool-win-all-vue";
+            }
+            const toolWindow = document.getElementsByClassName(toolWindowClass)[0],
+                toolWidth = this.mode === constants.storyTellingModes.DASHBOARD ?
+                    window.innerWidth - 40 : this.initialWidth;
+
+            toolWindow.style.setProperty("--initialToolWidth", `${toolWidth}px`, "important");
+        },
 
         /**
          * Active tool workaround
