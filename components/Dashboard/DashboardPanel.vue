@@ -7,7 +7,7 @@ import getters from "../../store/gettersDataNarrator";
 import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
 import LoginButton from "./Tools/LoginButton.vue";
 import CreateStoryButton from "./Tools/CreateStoryButton.vue";
-import StoryAltCard from "./Stories/StoryAltCard.vue";
+import StoryCard from "./Stories/StoryCard.vue";
 import ListButton from "./Tools/ListButton.vue";
 // import ImportStory from "./storyCreator/ImportStory.vue";
 
@@ -17,7 +17,7 @@ export default {
         LanguageSwitchButton,
         LoginButton,
         CreateStoryButton,
-        StoryAltCard,
+        StoryCard,
         ListButton
         // ImportStory
     },
@@ -181,7 +181,7 @@ export default {
                     class="py-2"
                     elevation="2"
                 >
-                    <StoryAltCard
+                    <StoryCard
                         :story="story"
                         :is-admin="isAdmin"
                         :uid="uid"

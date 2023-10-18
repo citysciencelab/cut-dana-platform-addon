@@ -1,9 +1,12 @@
 <script>
-import PlayButton from "./PlayButton.vue";
-import ShareButton from "./ShareButton.vue";
-import EditButton from "./EditButton.vue";
-import DeleteButton from "./DeleteButton.vue";
-import FeaturedButton from "./FeaturedButton.vue";
+import PlayButton from "./StoryActionButtons/PlayButton.vue";
+import ShareButton from "./StoryActionButtons/ShareButton.vue";
+import EditButton from "./StoryActionButtons/EditButton.vue";
+import DeleteButton from "./StoryActionButtons/DeleteButton.vue";
+import FeaturedButton from "./StoryActionButtons/FeaturedButton.vue";
+import ShareSettingsButton from "./StoryActionButtons/ShareSettingsButton.vue";
+
+import ShareSettingsForm from "./ShareSettingsForm.vue";
 
 export default {
     name: "StoryCard",
@@ -12,7 +15,9 @@ export default {
         ShareButton,
         EditButton,
         DeleteButton,
-        FeaturedButton
+        FeaturedButton,
+        ShareSettingsButton,
+        ShareSettingsForm
     },
     props: {
         story: {
@@ -28,6 +33,11 @@ export default {
             default: false
         }
     },
+    data () {
+        return {
+            shareSettings: false
+        };
+    },
     methods: {
         editable () {
             return this.isAdmin || this.story.owner === this.uid;
@@ -40,65 +50,68 @@ export default {
     <v-card>
         <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
             <div>
-                <div class="row">
-                    <v-col
-                        v-if="story.titleImage"
-                        cols="6"
-                    >
-                        <v-img
-                            :src="story.titleImage"
-                            :alt="story.title"
-                            max-width="200"
-                            max-height="200"
-                        />
-                    </v-col>
-                    <v-col :cols="story.titleImage ? 6 : 12">
-                        <v-card-title
-                            class="text-h5"
-                        >
-                            {{ story.title }}
-                        </v-card-title>
-
-                        <v-card-subtitle>
-                            {{
-                                $t("additional:modules.tools.dataNarrator.label.author")
-                            }}: &nbsp; {{ story.author }}
-                        </v-card-subtitle>
-                    </v-col>
-
-                    <div class="row">
-                        <v-col
-                            cols="12"
-                        >
-                            <v-card-text>
-                                {{ story.description }}
-                            </v-card-text>
-                        </v-col>
-                    </div>
-
-                    <v-card-actions>
-                        <PlayButton :story-id="story._id" />
-                        <FeaturedButton
-                            :story-id="story._id"
-                            :is-featured="story.featured"
-                            :is-admin="isAdmin"
-                        />
-                        <ShareButton
-                            :story-id="story._id"
-                            v-on="$listeners"
-                        />
-                        <EditButton
-                            v-if="editable()"
-                            :story-id="story._id"
-                        />
-                        <DeleteButton
-                            v-if="editable()"
-                            :story-id="story._id"
-                            v-on="$listeners"
-                        />
-                    </v-card-actions>
-                </div>
+                <v-card-title>
+                    <FeaturedButton
+                        :story-id="story._id"
+                        :is-featured="story.featured"
+                        :is-admin="isAdmin"
+                    />
+                    <span class="text-h6 font-weight-light">{{ story.title }}</span>
+                </v-card-title>
+                <v-card-subtitle>
+                    {{
+                        $t("additional:modules.tools.dataNarrator.label.author")
+                    }}: &nbsp; {{ story.author }}
+                </v-card-subtitle>
             </div>
+            <v-avatar
+                v-if="story.titleImage"
+                class="ma-3"
+                size="125"
+                rounded="3"
+            >
+                <v-img
+                    :src="story.titleImage"
+                    :alt="story.title"
+                />
+            </v-avatar>
         </div>
+
+        <v-card-text>
+            {{ story.description }}
+        </v-card-text>
+
+
+        <v-card-actions>
+            <PlayButton :story-id="story._id" />
+            <ShareButton
+                :story-id="story._id"
+                v-on="$listeners"
+            />
+
+            <v-spacer />
+
+            <ShareSettingsButton
+                v-if="editable()"
+                :story="story"
+                @toggle:shared-settings="shareSettings = !shareSettings"
+            />
+            <EditButton
+                v-if="editable()"
+                :story-id="story._id"
+            />
+            <DeleteButton
+                v-if="editable()"
+                :story-id="story._id"
+                v-on="$listeners"
+            />
+        </v-card-actions>
+
+        <ShareSettingsForm
+            v-if="shareSettings"
+            :story="story"
+            @close:shared-settings="shareSettings = false"
+            v-on="$listeners"
+        />
     </v-card>
 </template>
