@@ -1,6 +1,7 @@
 <script>
 import axios from "axios";
 import {mapGetters} from "vuex";
+import Masonry from "masonry-layout";
 
 import getters from "../../store/gettersDataNarrator";
 
@@ -64,7 +65,13 @@ export default {
             heading = toolWindow.getElementsByClassName("title")[0];
 
         heading.innerHTML = this.$t("additional:modules.tools.dataNarrator.dashboardView.title");
-        toolWindow.style.setProperty("--initialToolWidth;", "900px", "important");
+        new Masonry("#tool-storyTellingTool-modeSelection",
+            {
+                itemSelector: ".v-card",
+                columnWidth: ".v-card",
+                percentPosition: true
+            });
+
     },
     methods: {
         /**
@@ -169,32 +176,27 @@ export default {
                 <ImportStory @closeImportForm="closeImportForm" />
             </v-col>
         </v-row>
-        <v-row v-if="!importForm">
-            <v-item-group
-                id="tool-storyTellingTool-modeSelection"
-            >
-                <v-col
-                    v-for="(story, i) in storyList"
-                    :key="story._id + story.updatedAt"
-                    :cols="12"
-                    :class="i !== storyList.length - 1 ? '' : ''"
-                    class="py-2"
-                    elevation="2"
-                >
-                    <StoryCard
-                        :story="story"
-                        :is-admin="isAdmin"
-                        :uid="uid"
-                        @refreshStoryList="refreshStoryList"
-                        v-on="$listeners"
-                    />
-                </v-col>
-            </v-item-group>
+        <v-row
+            v-if="!importForm"
+            id="tool-storyTellingTool-modeSelection"
+        >
+            <StoryCard
+                v-for="(story) in storyList"
+                :key="story._id + story.updatedAt"
+                :story="story"
+                :is-admin="isAdmin"
+                :uid="uid"
+                @refreshStoryList="refreshStoryList"
+                v-on="$listeners"
+            />
         </v-row>
     </div>
 </template>
 
 <style lang="scss" scoped>
+#tool-storyTellingTool-modeSelection {
+    height: 100% !important;
+}
 #title-row {
     padding-bottom: 10px;
 

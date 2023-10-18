@@ -55,6 +55,20 @@ export default {
                 }
             },
             immediate: true
+        },
+        "mode": {
+            handler (mode) {
+                let toolWindowClass = "tool-window-vue";
+
+                if (this.uiStyle === "TABLE") {
+                    toolWindowClass = "table-tool-win-all-vue";
+                }
+                const toolWindow = document.getElementsByClassName(toolWindowClass)[0],
+                    toolWidth = mode === constants.storyTellingModes.DASHBOARD ?
+                        window.innerWidth - 40 : 400;
+
+                toolWindow.style.setProperty("--initialToolWidth", `${toolWidth}px`, "important");
+            }
         }
     },
     created () {

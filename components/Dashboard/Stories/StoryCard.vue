@@ -47,7 +47,9 @@ export default {
 </script>
 
 <template>
-    <v-card>
+    <v-card
+        elevation="2"
+    >
         <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
             <div>
                 <v-card-title>
@@ -115,3 +117,22 @@ export default {
         />
     </v-card>
 </template>
+
+<style lang="scss" scoped>
+    .v-card {
+        width: 100%;
+        margin-left: 5px;
+        margin-right: 5px;
+        margin-bottom: 10px;
+
+        @media (min-width: 768px) {
+            width: calc(50% - 10px);
+        }
+        @media (min-width: 992px) {
+            width: calc(33% - 10px);
+        }
+        @media (min-width: 1264px) {
+            width: calc(25% - 10px);
+        }
+    }
+</style>
