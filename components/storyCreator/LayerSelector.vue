@@ -15,7 +15,7 @@ export default {
     },
     data () {
         return {
-            // selectedChips: this.selected
+
         };
     },
     computed: {
@@ -24,9 +24,6 @@ export default {
         transformedItems () {
             let id = 0;
             const categories = {};
-
-            // console.log(this.items);
-
 
             /**
              * Create a new category
@@ -162,18 +159,26 @@ export default {
 
 
             return Object.values(objectToValues(categories));
+        },
+
+        selectedLayers () {
+            return this.items.filter(item => this.selected.includes(item.id.toString()));
         }
     },
 
     methods: {
         updateSelectedItems (selectedIds) {
             // Filter the original items based on the selected IDs
+            console.log(selectedIds);
             const selectedItems = selectedIds.map(id => id.toString());
 
             this.$emit("update:selected", selectedItems);
         },
-        getChipOrder () {
-            console.log("Ordered Chips: ", this.chips);
+        removeSelected (id) {
+            console.log(id, this.selected);
+            const tmpSelected = this.selected.filter(item => item !== id);
+
+            this.$emit("update:selected", tmpSelected);
         }
     }
 };
@@ -181,25 +186,28 @@ export default {
 
 <template>
     <div id="LayerSelector">
-        <!-- <v-container>
-            <Draggable
-                v-model="selectedChips"
-                :list="selected"
+        <v-container class="py-0">
+            <v-row
+                align="center"
+                justify="start"
             >
-                <v-chip-group multiple>
+                <v-col
+                    v-for="(selection, i) in selectedLayers"
+                    :key="i"
+                    class="shrink"
+                >
                     <v-chip
-                        v-for="(layer, index) in selectedChips"
-                        :key="index"
+                        close
+                        @click:close="removeSelected(selection.id)"
                     >
-                        {{ layer }}
+                        <v-icon
+                            left
+                        />
+                        {{ selection.name }}
                     </v-chip>
-                </v-chip-group>
-            </Draggable>
-
-            <v-btn @click="getChipOrder">
-                Get Chip Order
-            </v-btn>
-        </v-container> -->
+                </v-col>
+            </v-row>
+        </v-container>
         <v-treeview
             :items="transformedItems"
             item-key="id"
@@ -207,6 +215,8 @@ export default {
             item-children="children"
             selection-type="leaf"
             :disable-per-node="true"
+            :active="selected"
+            :value="selected"
             open-on-click
             search
             selectable
