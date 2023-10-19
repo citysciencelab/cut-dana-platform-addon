@@ -192,15 +192,8 @@ export default {
                     layers.push(layerModel);
                 }
             }
-            let sorted = sortBy(layers, (model) => model.get("selectionIDX"), this);
 
-            sorted = [...sorted].reverse();
-
-            return sorted;
-        },
-
-        newSelected () {
-            return this.selected;
+            return sortBy(layers, (model) => model.get("selectionIDX"), this).reverse();
         }
     },
 
@@ -221,17 +214,34 @@ export default {
                 index = this.selectedLayers.findIndex(item => item.id === layer.id),
                 newSelection = [...this.selected];
 
+            let newIndex;
+
+            // targetModel = Radio.request("ModelList", "getModelByAttributes", {id: this.selectedLayers[newIndex].id});
+
+
+            // console.log(layerModel, targetModel, this.selectedLayers[newIndex]);
+
 
             if (direction && index > 0) {
                 // Move layer up
                 [newSelection[index - 1], newSelection[index]] = [newSelection[index], newSelection[index - 1]];
-                layerModel.setSelectionIDX(10000);
+                newIndex = index - 1;
             }
             else if (!direction && index < newSelection.length - 1) {
                 // Move layer down
                 [newSelection[index + 1], newSelection[index]] = [newSelection[index], newSelection[index + 1]];
-                layerModel.moveDown(0);
+                newIndex = index + 1;
             }
+            if (newIndex !== undefined) {
+                // you may swap the indeces here
+                const targetModel = Radio.request("ModelList", "getModelByAttributes", {id: this.selectedLayers[newIndex].id});
+
+                layerModel.setSelectionIDX(targetModel.get("selectionIDX"));
+                targetModel.setSelectionIDX(layerModel.get("selectionIDX"));
+                Radio.trigger("ModelList", "updateSelection");
+            }
+            // targetModel.setSelectionIDX(layerModel.get("selectionIDX"));
+            // layerModel.setSelectionIDX(targetModel.get("selectionIDX"));
 
 
             this.$emit("update:propModel", newSelection);
@@ -246,7 +256,7 @@ export default {
             dense
         >
             <v-list-item
-                v-for="(item, i) in selectedLayers"
+                v-for="(item) in selectedLayers"
                 :key="item.id"
             >
                 <v-list-item-content>
@@ -260,7 +270,7 @@ export default {
                         {{ icons.close }}
                     </v-icon>
                 </v-list-item-action>
-                <v-list-item-action>
+                <!-- <v-list-item-action>
                     <v-icon
                         color="grey lighten-1"
                         @click="moveLayer(item, true)"
@@ -273,30 +283,37 @@ export default {
                     >
                         {{ icons.chevronDown }}
                     </v-icon>
-                </v-list-item-action>
+                </v-list-item-action> -->
             </v-list-item>
         </v-list>
-
-        <v-treeview
-            v-model="propModel"
-            :items="transformedItems"
-            item-key="id"
-            item-text="name"
-            item-children="children"
-            selection-type="leaf"
-            :disable-per-node="true"
-            open-on-click
-            search
-            selectable
-            @input="updateSelectedItems"
-        />
+        <v-container fluid>
+            <v-row class="custom-row">
+                <v-col>
+                    <v-treeview
+                        v-model="propModel"
+                        :items="transformedItems"
+                        item-key="id"
+                        item-text="name"
+                        item-children="children"
+                        selection-type="leaf"
+                        :disable-per-node="true"
+                        open-on-click
+                        search
+                        selectable
+                        @input="updateSelectedItems"
+                    />
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>
 
-<!-- <style lang="scss" scoped>
+<style lang="scss" scoped>
 
-#LayerSelector {
-
+.custom-row  {
+    padding: 0;
+    max-height: 300px;
+    overflow-y: scroll;
 }
 
-</style> -->
+</style>
