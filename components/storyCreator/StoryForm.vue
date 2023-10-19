@@ -377,7 +377,8 @@ export default {
             <v-footer
                 v-if="notSaving"
                 class="tool-dataNarrator-creator-actions white"
-                :padless="true"
+                elevation="1"
+                rounded
             >
                 <v-card
                     v-if="notSaving && !isMobile"
