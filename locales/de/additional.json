@@ -37,7 +37,6 @@
           "autoPLay": "Autoplay",
           "on": "an",
           "off": "aus",
-          "importStory": "Story importieren",
           "private": "Privat",
           "sharedWith": "Geben Sie eine neue E-Mail ein und drücken Sie die Eingabetaste",
           "sharedWithPlaceholder": "E-Mail hinzufügen",
@@ -62,7 +61,6 @@
           "storyCreated": "Story erfolgreich erstellt.",
           "storyDeleted": " Story gelöscht.",
           "storyShared": "Die Story-URL wurde in den Puffer kopiert.",
-          "storyImported": "Die Story wurde erfolgreich importiert.",
           "loggedOut": "Sie wurden abgemeldet"
         },
         "warning": {
@@ -71,8 +69,7 @@
           "sendNoSteps": "Story abschicken ist erst möglich sobald mindestens ein Schritt zur Story hinzugefügt wurde.",
           "sendNoHTML": "Das Absenden eines Unterkapitels ist erst möglich sobald Inhalt hinzugefügt wurde.",
           "storyNotSaved": "Ihre Story konnte nicht gespeichert werden.",
-          "noIntervalOnScrolly": "Scrollbare Stories können kein Autoplay Intervall haben.",
-          "storyNotImported": "Die Story konnte nicht importiert werden."
+          "noIntervalOnScrolly": "Scrollbare Stories können kein Autoplay Intervall haben."
         },
         "error": {
           "chapterNumberAlreadyExists": "Ein Kapitel mit dieser Nummer existiert bereits. Bitte wählen Sie eine andere Nummer.",
@@ -107,7 +104,6 @@
           "submitAddStep": "Schritt zur Story hinzufügen",
           "submitEditStep": "Schritt speichern",
           "previewStory": "Vorschau",
-          "downloadStory": "Story herunterladen",
           "uploadStory": "Story abschicken",
           "share": "Story teilen",
           "shareSettings": "Einstellungen",

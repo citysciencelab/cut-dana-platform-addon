@@ -10,7 +10,6 @@ import LoginButton from "./Tools/LoginButton.vue";
 import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import StoryCard from "./Stories/StoryCard.vue";
 import ListButton from "./Tools/ListButton.vue";
-// import ImportStory from "./storyCreator/ImportStory.vue";
 
 export default {
     name: "DashboardPanel",
@@ -20,7 +19,6 @@ export default {
         CreateStoryButton,
         StoryCard,
         ListButton
-        // ImportStory
     },
     props: {
         uid: {
@@ -35,7 +33,6 @@ export default {
     data () {
         return {
             storyList: {},
-            importForm: false,
             storyListMode: "all",
             masonry: null
         };
@@ -99,10 +96,6 @@ export default {
                 return anonymousModes;
             }
             return loggedInModes;
-        },
-
-        closeImportForm () {
-            this.importForm = false;
         }
     }
 };
@@ -133,24 +126,6 @@ export default {
             >
                 <CreateStoryButton />
 
-                <!-- <v-tooltip left>
-                    <template #activator="{ on }">
-                        <v-icon
-                            id="import-button"
-                            class="mr-1"
-                            @click="importForm = true"
-                            v-on="on"
-                        >
-                            exit_to_app
-                        </v-icon>
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.label.importStory")
-                        }}
-                    </span>
-                </v-tooltip> -->
-
                 <v-tooltip left>
                     <template #activator="{ on }">
                         <v-icon
@@ -172,19 +147,10 @@ export default {
                 <LoginButton />
             </v-col>
         </v-row>
-        <v-row v-if="importForm">
-            <v-col cols="12">
-                <ImportStory @closeImportForm="closeImportForm" />
-            </v-col>
-        </v-row>
+
         <v-row>
-            <div
-                v-if="!importForm"
-                class="container-fluid"
-            >
-                <v-row
-                    id="tool-storyTellingTool-modeSelection"
-                >
+            <div class="container-fluid">
+                <v-row id="tool-storyTellingTool-modeSelection">
                     <StoryCard
                         v-for="(story) in storyList"
                         :key="story._id + story.updatedAt"

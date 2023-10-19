@@ -12,13 +12,9 @@ import {getStepReference} from "../../utils/getReference";
 import ShareSettings from "./inputs/ShareSettings.vue";
 
 import {
-    mdiBackspaceOutline,
     mdiCancel,
     mdiCheck,
-    mdiDownload,
-    mdiEyeOutline,
-    mdiPinOutline,
-    mdiTrashCanOutline
+    mdiEyeOutline
 } from "@mdi/js";
 
 export default {
@@ -36,11 +32,7 @@ export default {
             notSaving: true,
             icons: {
                 mdiCancel,
-                mdiTrashCanOutline,
                 mdiCheck,
-                mdiPinOutline,
-                mdiBackspaceOutline,
-                mdiDownload,
                 mdiEyeOutline
             }
         };
@@ -134,7 +126,7 @@ export default {
 
         <form
             id="story-form"
-            @submit.prevent="downloadStoryFiles"
+            @submit.prevent="saveStoryToBackend"
         >
             <div class="form-group">
                 <label
@@ -430,37 +422,6 @@ export default {
                             <span>
                                 {{
                                     $t("additional:modules.tools.dataNarrator.button.previewStory")
-                                }}
-                            </span>
-                        </v-tooltip>
-                        <v-tooltip
-                            top
-                        >
-                            <template #activator="{ on }">
-                                <span
-                                    id="download-button"
-                                    class="mr-1"
-                                    v-on="on"
-                                >
-                                    <v-btn
-                                        class=""
-                                        icon
-                                        :disabled="!currentStory.steps || !currentStory.steps.length"
-                                        @click="downloadStoryFiles"
-                                    >
-
-                                        <v-icon
-                                            size="24px"
-                                        >{{ icons.mdiDownload }}</v-icon>
-
-                                    </v-btn>
-
-
-                                </span>
-                            </template>
-                            <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.button.downloadStory")
                                 }}
                             </span>
                         </v-tooltip>
