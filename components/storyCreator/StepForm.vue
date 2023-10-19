@@ -978,8 +978,9 @@ export default {
             </div>
 
             <v-footer
-                class="tool-dataNarrator-creator-actions"
-                :padless="true"
+                class="tool-dataNarrator-creator-actions white"
+                elevation="1"
+                rounded
             >
                 <v-card
                     flat
@@ -1056,13 +1057,13 @@ export default {
                         </v-tooltip>
                     </v-card-text>
                 </v-card>
+                <v-alert
+                    v-show="!isValid"
+                    type="info"
+                >
+                    {{ $t("additional:modules.tools.dataNarrator.warning.sendNoHTML") }}
+                </v-alert>
             </v-footer>
-            <v-alert
-                v-show="!isValid"
-                type="info"
-            >
-                {{ $t("additional:modules.tools.dataNarrator.warning.sendNoHTML") }}
-            </v-alert>
         </form>
     </div>
 </template>
@@ -1075,6 +1076,12 @@ export default {
 }
 #tool-dataNarrator-creator-stepForm {
     max-width: 460px;
+    position: relatieve;
+
+    .tool-dataNarrator-creator-actions {
+        position: sticky;
+        bottom:0;
+    }
 
     &::v-deep {
         .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
