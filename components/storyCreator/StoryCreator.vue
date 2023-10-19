@@ -1,12 +1,12 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import StoryForm from "./StoryForm.vue";
-import StepForm from "./StepForm.vue";
-import StoryPlayer from "../storyPlayer/StoryPlayer.vue";
-import * as constants from "../../store/constantsDataNarrator";
 import actions from "../../store/actionsDataNarrator";
+import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
+import StoryPlayer from "../storyPlayer/StoryPlayer.vue";
+import StepForm from "./StepForm.vue";
+import StoryForm from "./StoryForm.vue";
 
 export default {
     name: "StoryCreator",
@@ -47,6 +47,8 @@ export default {
             this.stepToEdit = null;
             this.view = this.constants.storyCreationViews.STORY_CREATION;
         }
+
+
     }
 };
 </script>

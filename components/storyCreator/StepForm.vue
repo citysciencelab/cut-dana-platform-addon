@@ -933,34 +933,10 @@ export default {
                 </p>
             </div>
 
-            <div class="form-group">
-                <label
-                    class="form-label"
-                    for="step-layer"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
-                </label>
-
-                <!-- <v-select
-                    id="step-layer"
-                    v-model="step.layers"
-                    :items="layerOptions"
-                    multiple
-                    dense
-                    solo
-                    hide-details
-                /> -->
-                <!-- <LayerSelectorOld
-                    id="step-layer"
-                    :items="layerOptions"
-                    :selected.sync="step.layers"
-                /> -->
-                <LayerSelector
-                    id="step-layer"
-                    :items="layerOptions"
-                    :selected.sync="step.layers"
-                />
-            </div>
+            <LayerSelector
+                :items="layerOptions"
+                :selected.sync="step.layers"
+            />
 
             <div class="form-group">
                 <label
@@ -1002,8 +978,9 @@ export default {
             </div>
 
             <v-footer
-                class="tool-dataNarrator-creator-actions"
-                :padless="true"
+                class="tool-dataNarrator-creator-actions white"
+                elevation="1"
+                rounded
             >
                 <v-card
                     flat
@@ -1080,13 +1057,13 @@ export default {
                         </v-tooltip>
                     </v-card-text>
                 </v-card>
+                <v-alert
+                    v-show="!isValid"
+                    type="info"
+                >
+                    {{ $t("additional:modules.tools.dataNarrator.warning.sendNoHTML") }}
+                </v-alert>
             </v-footer>
-            <v-alert
-                v-show="!isValid"
-                type="info"
-            >
-                {{ $t("additional:modules.tools.dataNarrator.warning.sendNoHTML") }}
-            </v-alert>
         </form>
     </div>
 </template>
@@ -1099,6 +1076,12 @@ export default {
 }
 #tool-dataNarrator-creator-stepForm {
     max-width: 460px;
+    position: relatieve;
+
+    .tool-dataNarrator-creator-actions {
+        position: sticky;
+        bottom:0;
+    }
 
     &::v-deep {
         .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)

@@ -1,9 +1,6 @@
-import JSZip from "jszip";
-import FileSaver from "file-saver";
 import axios from "axios";
 import uuid from "uuid";
 
-import {getHTMLContentReference} from "../../utils/getReference.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 import dataURLtoFile from "../../utils/dataURLtoFile.js";
 
@@ -122,87 +119,6 @@ function adjustStepNumbers ({state, commit}, {associatedChapter, stepNumber}) {
     });
 
     commit("setCurrentStory", {...state.currentStory, steps: newSteps});
-}
-
-/**
- * Collects all files needed for the created story and downloads them as zip
- *
- * @param {Object} context actions context object.
- * @returns {void}
- */
-function downloadStoryFiles ({state}) {
-    const zip = new JSZip(),
-        // Compatability with old stories
-        storyConf = {...state.currentStory},
-        htmlContents = state.currentStory.steps.reduce(function (result, step) {
-            const reference = getHTMLContentReference(step.associatedChapter, step.stepNumber);
-
-            result[reference] = step.html;
-            return result;
-        }, {});
-
-
-    // Add all HTML files used in the story to the story folder
-    if (Object.keys(htmlContents).length > 0) {
-        const htmlFolder = "story";
-
-
-        // Create a folder for the html files
-        zip.folder(htmlFolder);
-        storyConf.htmlFolder = htmlFolder;
-
-        for (const [stepReference, htmlContent] of Object.entries(htmlContents)) {
-            const images = state.htmlContentsImages[stepReference] || [],
-                imageFolder = `${htmlFolder}/images`,
-                [htmlAssociatedChapter, htmlStepNumber] = stepReference
-                    .split(".")
-                    .map(Number),
-                htmlFilePath = `${htmlFolder}/${stepReference}.html`;
-            let html = htmlContent;
-
-            // Create a folder for the image files
-            if (images.length) {
-                zip.folder(imageFolder);
-            }
-
-            // Add image files
-            for (const [imageIndex, image] of images.entries()) {
-                const imageNumber = imageIndex + 1,
-                    imageFilePath = `${htmlFolder}/images/${stepReference}_${imageNumber}.${image.fileExtension}`;
-
-                zip.file(
-                    imageFilePath,
-                    image.dataUrl.replace(/data:.+?base64,/, ""),
-                    {base64: true}
-                );
-
-                // Replace the image src in the HTML with a relative path to the image
-                html = html.replace(image.dataUrl, imageFilePath);
-            }
-
-            // Update HTML file name in the storyConf
-            storyConf.steps = storyConf.steps.map(step => {
-                if (
-                    step.associatedChapter !== htmlAssociatedChapter ||
-                    step.stepNumber !== htmlStepNumber
-                ) {
-                    return step;
-                }
-
-                return {step, htmlFile: htmlFilePath};
-            });
-
-            // Add HTML file
-            zip.file(htmlFilePath, html);
-        }
-    }
-
-    // Add the story.json file with the configuration for the story
-    zip.file("story.json", JSON.stringify(storyConf));
-
-    zip.generateAsync({type: "blob"}).then(content => {
-        FileSaver.saveAs(content, "story.zip");
-    });
 }
 
 /**
@@ -345,6 +261,5 @@ export default {
     saveStoryStep,
     deleteStoryStep,
     adjustStepNumbers,
-    downloadStoryFiles,
     uploadStoryFiles
 };

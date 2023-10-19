@@ -13,11 +13,7 @@ import ShareSettings from "./inputs/ShareSettings.vue";
 
 import {
     mdiCancel,
-    mdiTrashCanOutline,
     mdiCheck,
-    mdiPinOutline,
-    mdiBackspaceOutline,
-    mdiDownload,
     mdiEyeOutline
 } from "@mdi/js";
 
@@ -36,17 +32,18 @@ export default {
             notSaving: true,
             icons: {
                 mdiCancel,
-                mdiTrashCanOutline,
                 mdiCheck,
-                mdiPinOutline,
-                mdiBackspaceOutline,
-                mdiDownload,
                 mdiEyeOutline
             }
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        isMobile () {
+            const ism = Radio.request("Util", "isViewMobile");
+
+            return ism;
+        }
     },
     mounted () {
         if (Object.hasOwn(this.currentStory, "titleImage") && this.currentStory.titleImage !== "") {
@@ -127,7 +124,10 @@ export default {
             {{ $t("additional:modules.tools.dataNarrator.createStory") }}
         </h4>
 
-        <form @submit.prevent="downloadStoryFiles">
+        <form
+            id="story-form"
+            @submit.prevent="saveStoryToBackend"
+        >
             <div class="form-group">
                 <label
                     for="title"
@@ -368,11 +368,12 @@ export default {
 
             <v-footer
                 v-if="notSaving"
-                class="tool-dataNarrator-creator-actions"
-                :padless="true"
+                class="tool-dataNarrator-creator-actions white"
+                elevation="1"
+                rounded
             >
                 <v-card
-                    v-if="notSaving"
+                    v-if="notSaving && !isMobile"
                     flat
                     tile
                     width="100%"
@@ -415,6 +416,7 @@ export default {
                                     >
                                         <v-icon size="24px">{{ icons.mdiEyeOutline }}</v-icon>
                                     </v-btn>
+
                                 </span>
                             </template>
                             <span>
@@ -423,29 +425,7 @@ export default {
                                 }}
                             </span>
                         </v-tooltip>
-                        <v-tooltip top>
-                            <template #activator="{ on }">
-                                <span
-                                    id="download-button"
-                                    class="mr-1"
-                                    v-on="on"
-                                >
-                                    <v-btn
-                                        class=""
-                                        icon
-                                        :disabled="!currentStory.steps || !currentStory.steps.length"
-                                        @click="downloadStoryFiles"
-                                    >
-                                        <v-icon size="24px">{{ icons.mdiDownload }}</v-icon>
-                                    </v-btn>
-                                </span>
-                            </template>
-                            <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.button.downloadStory")
-                                }}
-                            </span>
-                        </v-tooltip>
+
 
                         <v-tooltip top>
                             <template #activator="{ on }">
@@ -464,6 +444,7 @@ export default {
                                         <v-icon size="24px">{{ icons.mdiCheck }}</v-icon>
                                     </v-btn>
 
+
                                 </span>
                             </template>
                             <span>
@@ -475,9 +456,91 @@ export default {
                     </v-card-text>
                 </v-card>
 
+                <v-container
+                    v-else-if="notSaving && isMobile"
+                    fluid
+                    class="white"
+                >
+                    <v-row class="mb-2">
+                        <v-btn
+                            class=""
+                            small
+                            color="red"
+                            @click="$emit('reset-tool')"
+                        >
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.cancel")
+                                }}
+                            </span>
+                        </v-btn>
+                    </v-row>
+                    <v-row class="mb-2">
+                        <v-btn
+                            class=""
+                            small
+                            :disabled="!currentStory.steps || !currentStory.steps.length"
+                            color="blue"
+                            @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
+                        >
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.previewStory")
+                                }}
+                            </span>
+                        </v-btn>
+                    </v-row>
+                    <!-- <v-row class="mb-2">
+                        <v-btn
+                            class=""
+                            small
+                            :disabled="!currentStory.steps || !currentStory.steps.length"
+                            color="blue"
+                            @click="downloadStoryFiles"
+                        >
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.downloadStory")
+                                }}
+                            </span>
+                        </v-btn>
+                    </v-row> -->
+                    <v-row class="mb-2">
+                        <v-btn
+                            class=""
+                            small
+                            :disabled="!currentStory.steps || !currentStory.steps.length"
+                            color="blue"
+                            @click="downloadStoryFiles"
+                        >
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.downloadStory")
+                                }}
+                            </span>
+                        </v-btn>
+                    </v-row>
+                    <v-row>
+                        <v-btn
+                            class=""
+                            small
+                            :disabled="!currentStory.steps || !currentStory.steps.length"
+                            color="green"
+                            @click="saveStoryToBackend"
+                        >
+                            <span>
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.button.uploadStory")
+                                }}
+                            </span>
+                        </v-btn>
+                    </v-row>
+                </v-container>
+
                 <v-alert
                     v-show="!currentStory.steps || !currentStory.steps.length"
                     type="info"
+                    class="white"
                 >
                     {{
                         $t("additional:modules.tools.dataNarrator.warning.sendNoSteps")
@@ -491,6 +554,7 @@ export default {
 <style lang="scss">
 #tool-dataNarrator-creator-storyForm {
     max-width: 460px;
+    position: relative;
 
     label.required:after { content: '*';color:red; }
 
@@ -501,6 +565,7 @@ export default {
     }
 
     .tool-dataNarrator-creator-actions {
+        position: sticky;
         margin-top: 20px;
     }
 

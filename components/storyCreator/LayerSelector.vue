@@ -1,5 +1,7 @@
 <script>
 // import draggable from "vuedraggable";
+import {mdiChevronDown, mdiChevronUp, mdiClose} from "@mdi/js";
+import sortBy from "../../../../../src/utils/sortBy";
 export default {
     name: "LayerSelector",
 
@@ -15,10 +17,23 @@ export default {
     },
     data () {
         return {
-
+            icons: {
+                chevronUp: mdiChevronUp,
+                chevronDown: mdiChevronDown,
+                close: mdiClose
+            }
         };
     },
     computed: {
+
+        propModel: {
+            get () {
+                return this.selected;
+            },
+            set (value) {
+                this.$emit("update:selected", value);
+            }
+        },
         // console.log all the props
         // ...mapGetters("Tools/DataNarrator", Object.keys(getters))
         transformedItems () {
@@ -105,8 +120,8 @@ export default {
                 createCategory(newCats, categories);
 
 
-                getNestedValue(categories, categoryString).children[`~~~~~~~~~${item.id.toString()}`] = {
-                    id: parseInt(item.id, 10),
+                getNestedValue(categories, categoryString).children[`~~~~~~~~~${item.id}`] = {
+                    id: item.id,
                     name: !multipleItems ? item.datasets[0].md_name : item.name,
                     children: []
                 };
@@ -162,23 +177,74 @@ export default {
         },
 
         selectedLayers () {
-            return this.items.filter(item => this.selected.includes(item.id.toString()));
+            const layers = [];
+
+            for (const layer of this.selected) {
+                let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer});
+
+                const exists = this.items.filter(item => item.id === layerModel.id).length > 0;
+
+                if (exists) {
+                    if (!layerModel) {
+                        Radio.trigger("ModelList", "addModelsByAttributes", layer);
+                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer});
+                    }
+                    layers.push(layerModel);
+                }
+            }
+
+            return sortBy(layers, (model) => model.get("selectionIDX"), this).reverse();
         }
     },
 
     methods: {
         updateSelectedItems (selectedIds) {
             // Filter the original items based on the selected IDs
-            console.log(selectedIds);
             const selectedItems = selectedIds.map(id => id.toString());
 
             this.$emit("update:selected", selectedItems);
         },
         removeSelected (id) {
-            console.log(id, this.selected);
             const tmpSelected = this.selected.filter(item => item !== id);
 
             this.$emit("update:selected", tmpSelected);
+        },
+        moveLayer (layer, direction) {
+            const layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id}),
+                index = this.selectedLayers.findIndex(item => item.id === layer.id),
+                newSelection = [...this.selected];
+
+            let newIndex;
+
+            // targetModel = Radio.request("ModelList", "getModelByAttributes", {id: this.selectedLayers[newIndex].id});
+
+
+            // console.log(layerModel, targetModel, this.selectedLayers[newIndex]);
+
+
+            if (direction && index > 0) {
+                // Move layer up
+                [newSelection[index - 1], newSelection[index]] = [newSelection[index], newSelection[index - 1]];
+                newIndex = index - 1;
+            }
+            else if (!direction && index < newSelection.length - 1) {
+                // Move layer down
+                [newSelection[index + 1], newSelection[index]] = [newSelection[index], newSelection[index + 1]];
+                newIndex = index + 1;
+            }
+            if (newIndex !== undefined) {
+                // you may swap the indeces here
+                const targetModel = Radio.request("ModelList", "getModelByAttributes", {id: this.selectedLayers[newIndex].id});
+
+                layerModel.setSelectionIDX(targetModel.get("selectionIDX"));
+                targetModel.setSelectionIDX(layerModel.get("selectionIDX"));
+                Radio.trigger("ModelList", "updateSelection");
+            }
+            // targetModel.setSelectionIDX(layerModel.get("selectionIDX"));
+            // layerModel.setSelectionIDX(targetModel.get("selectionIDX"));
+
+
+            this.$emit("update:propModel", newSelection);
         }
     }
 };
@@ -186,49 +252,88 @@ export default {
 
 <template>
     <div id="LayerSelector">
-        <v-container class="py-0">
-            <v-row
-                align="center"
-                justify="start"
+        <div class="form-group">
+            <label
+                class="form-label"
+                for="step-layer"
             >
-                <v-col
-                    v-for="(selection, i) in selectedLayers"
-                    :key="i"
-                    class="shrink"
+                {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
+            </label>
+            <v-list
+                id="step-layer"
+                dense
+            >
+                <v-list-item
+                    v-for="(item) in selectedLayers"
+                    :key="item.id"
                 >
-                    <v-chip
-                        close
-                        @click:close="removeSelected(selection.id)"
-                    >
+                    <v-list-item-content>
+                        <v-list-item-title>{{ item.attributes.name }}</v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-action>
                         <v-icon
-                            left
+                            color="grey lighten-1"
+                            @click="removeSelected(item.id)"
+                        >
+                            {{ icons.close }}
+                        </v-icon>
+                    </v-list-item-action>
+                <!-- <v-list-item-action>
+                    <v-icon
+                        color="grey lighten-1"
+                        @click="moveLayer(item, true)"
+                    >
+                        {{ icons.chevronUp }}
+                    </v-icon>
+                    <v-icon
+                        color="grey lighten-1"
+                        @click="moveLayer(item, false)"
+                    >
+                        {{ icons.chevronDown }}
+                    </v-icon>
+                </v-list-item-action> -->
+                </v-list-item>
+            </v-list>
+        </div>
+        <div class="form-group">
+            <label
+                class="form-label"
+                for="available-layers"
+            >
+                {{ $t( "additional:modules.tools.dataNarrator.label.availableLayers" ) }}
+            </label>
+            <v-container
+                id="available-layers"
+                fluid
+            >
+                <v-row class="custom-row">
+                    <v-col>
+                        <v-treeview
+                            v-model="propModel"
+                            :items="transformedItems"
+                            item-key="id"
+                            item-text="name"
+                            item-children="children"
+                            selection-type="leaf"
+                            :disable-per-node="true"
+                            open-on-click
+                            search
+                            selectable
+                            @input="updateSelectedItems"
                         />
-                        {{ selection.name }}
-                    </v-chip>
-                </v-col>
-            </v-row>
-        </v-container>
-        <v-treeview
-            :items="transformedItems"
-            item-key="id"
-            item-text="name"
-            item-children="children"
-            selection-type="leaf"
-            :disable-per-node="true"
-            :active="selected"
-            :value="selected"
-            open-on-click
-            search
-            selectable
-            @input="updateSelectedItems"
-        />
+                    </v-col>
+                </v-row>
+            </v-container>
+        </div>
     </div>
 </template>
 
-<!-- <style lang="scss" scoped>
+<style lang="scss" scoped>
 
-#LayerSelector {
-
+.custom-row  {
+    padding: 0;
+    max-height: 300px;
+    overflow-y: scroll;
 }
 
-</style> -->
+</style>
