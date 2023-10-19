@@ -50,8 +50,6 @@ export default {
     <v-col class="grid-item col-xs-12 col-sm-6 col-md-4 col-lg-3">
         <v-card
             elevation="2"
-            density="compact"
-            class="grid-item-content"
         >
             <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
                 <div>
@@ -127,5 +125,9 @@ export default {
         margin-left: 5px;
         margin-right: 5px;
         margin-bottom: 10px;
+        width: auto;
     }
+    // .grid-item {
+    //     margin-bottom: 20px;
+    // }
 </style>

@@ -66,11 +66,15 @@ export default {
             heading = toolWindow.getElementsByClassName("title")[0];
 
         heading.innerHTML = this.$t("additional:modules.tools.dataNarrator.dashboardView.title");
-        this.masonry = new Masonry("#tool-storyTellingTool-modeSelection",
+
+    },
+    updated () {
+        new Masonry("#tool-storyTellingTool-modeSelection",
             {
                 itemSelector: ".grid-item",
                 columnWidth: ".grid-item",
                 percentPosition: true
+                // gutter: ""
             });
     },
     methods: {
@@ -87,7 +91,7 @@ export default {
                 .then((response) => {
                     this.storyListMode = newMode;
                     this.storyList = response.data;
-                    this.masonry.layout();
+                    // this.masonry.layout();
                 });
         },
 
@@ -201,9 +205,9 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-#tool-storyTellingTool-modeSelection {
-    height: 100% !important;
-}
+// #tool-storyTellingTool-modeSelection {
+//     height: 100% !important;
+// }
 #title-row {
     padding-bottom: 10px;
 
