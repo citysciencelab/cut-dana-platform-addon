@@ -268,7 +268,7 @@ export default {
                     :key="item.id"
                 >
                     <v-list-item-content>
-                        <v-list-item-title v-text="item.attributes.name" />
+                        <v-list-item-title>{{ item.attributes.name }}</v-list-item-title>
                     </v-list-item-content>
                     <v-list-item-action>
                         <v-icon
