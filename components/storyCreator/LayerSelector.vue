@@ -1,6 +1,7 @@
 <script>
 // import draggable from "vuedraggable";
 import {mdiChevronDown, mdiChevronUp, mdiClose} from "@mdi/js";
+import sortBy from "../../../../../src/utils/sortBy";
 export default {
     name: "LayerSelector",
 
@@ -176,8 +177,26 @@ export default {
         },
 
         selectedLayers () {
-            console.log("selectedLayers");
-            return this.items.filter(item => this.selected.includes(item.id.toString()));
+            const layers = [];
+
+            for (const layer of this.selected) {
+                let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer});
+
+                const exists = this.items.filter(item => item.id === layerModel.id).length > 0;
+
+                if (exists) {
+                    if (!layerModel) {
+                        Radio.trigger("ModelList", "addModelsByAttributes", layer);
+                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer});
+                    }
+                    layers.push(layerModel);
+                }
+            }
+            let sorted = sortBy(layers, (model) => model.get("selectionIDX"), this);
+
+            sorted = [...sorted].reverse();
+
+            return sorted;
         },
 
         newSelected () {
@@ -198,21 +217,24 @@ export default {
             this.$emit("update:selected", tmpSelected);
         },
         moveLayer (layer, direction) {
-            const index = this.selectedLayers.findIndex(item => item.id === layer.id);
+            const layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id}),
+                index = this.selectedLayers.findIndex(item => item.id === layer.id),
+                newSelection = [...this.selected];
 
 
             if (direction && index > 0) {
                 // Move layer up
-                [this.selected[index - 1], this.selected[index]] = [this.selected[index], this.selected[index - 1]];
+                [newSelection[index - 1], newSelection[index]] = [newSelection[index], newSelection[index - 1]];
+                layerModel.setSelectionIDX(10000);
             }
-            else if (!direction && index < this.selected.length - 1) {
+            else if (!direction && index < newSelection.length - 1) {
                 // Move layer down
-                [this.selected[index + 1], this.selected[index]] = [this.selected[index], this.selected[index + 1]];
+                [newSelection[index + 1], newSelection[index]] = [newSelection[index], newSelection[index + 1]];
+                layerModel.moveDown(0);
             }
 
-            console.log(this.selected);
 
-            this.$emit("update:selected", this.selected);
+            this.$emit("update:propModel", newSelection);
         }
     }
 };
@@ -220,44 +242,15 @@ export default {
 
 <template>
     <div id="LayerSelector">
-        <!-- <v-list>
-            <draggable
-                v-model="selectedLayers"
-                :options="options"
-            >
-                <template
-                    v-for="(l, i) in selectedLayers"
-                >
-                    <v-list-item-group
-                        :key="l.id"
-                        avatar
-                    >
-                        <v-list-item-content>
-                            <v-list-tile-title v-html="l.name" />
-                        </v-list-item-content>
-
-                        <v-list-item-action>
-                            <v-btn
-                                icon
-                                @click="remove(i)"
-                            >
-                                <v-icon>close</v-icon>
-                            </v-btn>
-                        </v-list-item-action>
-                    </v-list-item-group>
-                </template>
-            </draggable>
-        </v-list> -->
-
         <v-list
             dense
         >
             <v-list-item
                 v-for="(item, i) in selectedLayers"
-                :key="i"
+                :key="item.id"
             >
                 <v-list-item-content>
-                    <v-list-item-title v-text="item.name" />
+                    <v-list-item-title v-text="item.attributes.name" />
                 </v-list-item-content>
                 <v-list-item-action>
                     <v-icon
