@@ -934,34 +934,10 @@ export default {
                 </p>
             </div>
 
-            <div class="form-group">
-                <label
-                    class="form-label"
-                    for="step-layer"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
-                </label>
-
-                <!-- <v-select
-                    id="step-layer"
-                    v-model="step.layers"
-                    :items="layerOptions"
-                    multiple
-                    dense
-                    solo
-                    hide-details
-                /> -->
-                <!-- <LayerSelectorOld
-                    id="step-layer"
-                    :items="layerOptions"
-                    :selected.sync="step.layers"
-                /> -->
-                <LayerSelector
-                    id="step-layer"
-                    :items="layerOptions"
-                    :selected.sync="step.layers"
-                />
-            </div>
+            <LayerSelector
+                :items="layerOptions"
+                :selected.sync="step.layers"
+            />
 
             <div class="form-group">
                 <label

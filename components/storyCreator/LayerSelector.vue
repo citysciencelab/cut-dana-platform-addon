@@ -252,24 +252,32 @@ export default {
 
 <template>
     <div id="LayerSelector">
-        <v-list
-            dense
-        >
-            <v-list-item
-                v-for="(item) in selectedLayers"
-                :key="item.id"
+        <div class="form-group">
+            <label
+                class="form-label"
+                for="step-layer"
             >
-                <v-list-item-content>
-                    <v-list-item-title v-text="item.attributes.name" />
-                </v-list-item-content>
-                <v-list-item-action>
-                    <v-icon
-                        color="grey lighten-1"
-                        @click="removeSelected(item.id)"
-                    >
-                        {{ icons.close }}
-                    </v-icon>
-                </v-list-item-action>
+                {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
+            </label>
+            <v-list
+                id="step-layer"
+                dense
+            >
+                <v-list-item
+                    v-for="(item) in selectedLayers"
+                    :key="item.id"
+                >
+                    <v-list-item-content>
+                        <v-list-item-title v-text="item.attributes.name" />
+                    </v-list-item-content>
+                    <v-list-item-action>
+                        <v-icon
+                            color="grey lighten-1"
+                            @click="removeSelected(item.id)"
+                        >
+                            {{ icons.close }}
+                        </v-icon>
+                    </v-list-item-action>
                 <!-- <v-list-item-action>
                     <v-icon
                         color="grey lighten-1"
@@ -284,27 +292,39 @@ export default {
                         {{ icons.chevronDown }}
                     </v-icon>
                 </v-list-item-action> -->
-            </v-list-item>
-        </v-list>
-        <v-container fluid>
-            <v-row class="custom-row">
-                <v-col>
-                    <v-treeview
-                        v-model="propModel"
-                        :items="transformedItems"
-                        item-key="id"
-                        item-text="name"
-                        item-children="children"
-                        selection-type="leaf"
-                        :disable-per-node="true"
-                        open-on-click
-                        search
-                        selectable
-                        @input="updateSelectedItems"
-                    />
-                </v-col>
-            </v-row>
-        </v-container>
+                </v-list-item>
+            </v-list>
+        </div>
+        <div class="form-group">
+            <label
+                class="form-label"
+                for="available-layers"
+            >
+                {{ $t( "additional:modules.tools.dataNarrator.label.availableLayers" ) }}
+            </label>
+            <v-container
+                id="available-layers"
+                fluid
+            >
+                <v-row class="custom-row">
+                    <v-col>
+                        <v-treeview
+                            v-model="propModel"
+                            :items="transformedItems"
+                            item-key="id"
+                            item-text="name"
+                            item-children="children"
+                            selection-type="leaf"
+                            :disable-per-node="true"
+                            open-on-click
+                            search
+                            selectable
+                            @input="updateSelectedItems"
+                        />
+                    </v-col>
+                </v-row>
+            </v-container>
+        </div>
     </div>
 </template>
 

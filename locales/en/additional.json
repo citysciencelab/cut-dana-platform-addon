@@ -28,6 +28,7 @@
           "centerCoordinate": "Position of the Map",
           "zoomLevel": "Zoom Level of the Map",
           "layers": "Layers",
+          "availableLayers": "Available Layers",
           "interactionAddons": "AddOns",
           "is3D": "Show map in 3D",
           "centerCoordinate3D": "Position/Angle of the 3D map",
