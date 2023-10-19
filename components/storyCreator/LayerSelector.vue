@@ -1,5 +1,6 @@
 <script>
 // import draggable from "vuedraggable";
+import {mdiChevronDown, mdiChevronUp, mdiClose} from "@mdi/js";
 export default {
     name: "LayerSelector",
 
@@ -15,10 +16,23 @@ export default {
     },
     data () {
         return {
-
+            icons: {
+                chevronUp: mdiChevronUp,
+                chevronDown: mdiChevronDown,
+                close: mdiClose
+            }
         };
     },
     computed: {
+
+        propModel: {
+            get () {
+                return this.selected;
+            },
+            set (value) {
+                this.$emit("update:selected", value);
+            }
+        },
         // console.log all the props
         // ...mapGetters("Tools/DataNarrator", Object.keys(getters))
         transformedItems () {
@@ -105,8 +119,8 @@ export default {
                 createCategory(newCats, categories);
 
 
-                getNestedValue(categories, categoryString).children[`~~~~~~~~~${item.id.toString()}`] = {
-                    id: parseInt(item.id, 10),
+                getNestedValue(categories, categoryString).children[`~~~~~~~~~${item.id}`] = {
+                    id: item.id,
                     name: !multipleItems ? item.datasets[0].md_name : item.name,
                     children: []
                 };
@@ -162,23 +176,43 @@ export default {
         },
 
         selectedLayers () {
+            console.log("selectedLayers");
             return this.items.filter(item => this.selected.includes(item.id.toString()));
+        },
+
+        newSelected () {
+            return this.selected;
         }
     },
 
     methods: {
         updateSelectedItems (selectedIds) {
             // Filter the original items based on the selected IDs
-            console.log(selectedIds);
             const selectedItems = selectedIds.map(id => id.toString());
 
             this.$emit("update:selected", selectedItems);
         },
         removeSelected (id) {
-            console.log(id, this.selected);
             const tmpSelected = this.selected.filter(item => item !== id);
 
             this.$emit("update:selected", tmpSelected);
+        },
+        moveLayer (layer, direction) {
+            const index = this.selectedLayers.findIndex(item => item.id === layer.id);
+
+
+            if (direction && index > 0) {
+                // Move layer up
+                [this.selected[index - 1], this.selected[index]] = [this.selected[index], this.selected[index - 1]];
+            }
+            else if (!direction && index < this.selected.length - 1) {
+                // Move layer down
+                [this.selected[index + 1], this.selected[index]] = [this.selected[index], this.selected[index + 1]];
+            }
+
+            console.log(this.selected);
+
+            this.$emit("update:selected", this.selected);
         }
     }
 };
@@ -186,37 +220,78 @@ export default {
 
 <template>
     <div id="LayerSelector">
-        <v-container class="py-0">
-            <v-row
-                align="center"
-                justify="start"
+        <!-- <v-list>
+            <draggable
+                v-model="selectedLayers"
+                :options="options"
             >
-                <v-col
-                    v-for="(selection, i) in selectedLayers"
-                    :key="i"
-                    class="shrink"
+                <template
+                    v-for="(l, i) in selectedLayers"
                 >
-                    <v-chip
-                        close
-                        @click:close="removeSelected(selection.id)"
+                    <v-list-item-group
+                        :key="l.id"
+                        avatar
                     >
-                        <v-icon
-                            left
-                        />
-                        {{ selection.name }}
-                    </v-chip>
-                </v-col>
-            </v-row>
-        </v-container>
+                        <v-list-item-content>
+                            <v-list-tile-title v-html="l.name" />
+                        </v-list-item-content>
+
+                        <v-list-item-action>
+                            <v-btn
+                                icon
+                                @click="remove(i)"
+                            >
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+                    </v-list-item-group>
+                </template>
+            </draggable>
+        </v-list> -->
+
+        <v-list
+            dense
+        >
+            <v-list-item
+                v-for="(item, i) in selectedLayers"
+                :key="i"
+            >
+                <v-list-item-content>
+                    <v-list-item-title v-text="item.name" />
+                </v-list-item-content>
+                <v-list-item-action>
+                    <v-icon
+                        color="grey lighten-1"
+                        @click="removeSelected(item.id)"
+                    >
+                        {{ icons.close }}
+                    </v-icon>
+                </v-list-item-action>
+                <v-list-item-action>
+                    <v-icon
+                        color="grey lighten-1"
+                        @click="moveLayer(item, true)"
+                    >
+                        {{ icons.chevronUp }}
+                    </v-icon>
+                    <v-icon
+                        color="grey lighten-1"
+                        @click="moveLayer(item, false)"
+                    >
+                        {{ icons.chevronDown }}
+                    </v-icon>
+                </v-list-item-action>
+            </v-list-item>
+        </v-list>
+
         <v-treeview
+            v-model="propModel"
             :items="transformedItems"
             item-key="id"
             item-text="name"
             item-children="children"
             selection-type="leaf"
             :disable-per-node="true"
-            :active="selected"
-            :value="selected"
             open-on-click
             search
             selectable
