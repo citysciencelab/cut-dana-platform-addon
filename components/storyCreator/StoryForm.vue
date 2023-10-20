@@ -505,21 +505,6 @@ export default {
                             </span>
                         </v-btn>
                     </v-row> -->
-                    <v-row class="mb-2">
-                        <v-btn
-                            class=""
-                            small
-                            :disabled="!currentStory.steps || !currentStory.steps.length"
-                            color="blue"
-                            @click="downloadStoryFiles"
-                        >
-                            <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.button.downloadStory")
-                                }}
-                            </span>
-                        </v-btn>
-                    </v-row>
                     <v-row>
                         <v-btn
                             class=""
