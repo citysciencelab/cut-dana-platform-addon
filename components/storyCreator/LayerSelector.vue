@@ -244,10 +244,9 @@ export default {
                 targetModel.set("isSelected", true);
             }
 
-            const layerList = sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this).map(item => item.id);
 
             // Update the selection
-            this.$emit("update:selected", layerList);
+            this.$emit("update:selected", sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this).map(item => item.id));
         }
     }
 };
