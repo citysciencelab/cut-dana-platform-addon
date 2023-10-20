@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 import * as constants from "../../store/constantsDataNarrator";
 
@@ -8,13 +8,13 @@ import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 
 import errorHandling from "../../utils/errorHandling";
-import {getStepReference} from "../../utils/getReference";
+import { getStepReference } from "../../utils/getReference";
 import ShareSettings from "./inputs/ShareSettings.vue";
 
 import {
-    mdiCancel,
-    mdiCheck,
-    mdiEyeOutline
+mdiCancel,
+mdiCheck,
+mdiEyeOutline
 } from "@mdi/js";
 
 export default {

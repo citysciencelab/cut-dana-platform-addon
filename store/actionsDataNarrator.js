@@ -22,6 +22,33 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
             // commit("setCurrentStoryId", null);
         },
 
+
+        /**
+         * Sets the current story.
+         * @param {Object} context actions context object.
+         * @returns {void}
+         */
+        disableStoryLayers ({state, commit}) {
+
+            // Hides all story layers
+            const layerList = Radio.request("ModelList", "getModelsByAttributes", {
+                isVisibleInTree: true, isSelected: true
+            });
+
+            for (const step of state.currentStory.steps) {
+                for (const layer of layerList) {
+                    if (step.layers.includes(layer.attributes.id)) {
+                        layer.setIsVisibleInMap(false);
+                        layer.set("isSelected", false);
+                    }
+                }
+
+            }
+
+            Radio.trigger("Menu", "rerender");
+            commit("setCurrentStory", state.currentStory);
+        },
+
         /**
          * Resets the Story Telling Tool without deleting loaded stories
          *

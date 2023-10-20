@@ -5,16 +5,16 @@ import ToolTemplate from "../../../../src/modules/tools/ToolTemplate.vue";
 // login module
 import OIDC from "../../../../src/modules/tools/login/utils/utilsOIDC";
 
-import * as constants from "../store/constantsDataNarrator";
 import actions from "../store/actionsDataNarrator";
+import * as constants from "../store/constantsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 
+import {EventEmitter} from "../utils/EventEmitter";
+import DashboardPanel from "./Dashboard/DashboardPanel.vue";
+import SnackBar from "./SnackBar.vue";
 import StoryCreator from "./storyCreator/StoryCreator.vue";
 import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
-import SnackBar from "./SnackBar.vue";
-import DashboardPanel from "./Dashboard/DashboardPanel.vue";
-import {EventEmitter} from "../utils/EventEmitter";
 
 export default {
     name: "DataNarrator",
@@ -221,6 +221,7 @@ export default {
              * @returns {void}
              */
             const resetDataNarrator = () => {
+                this.disableStoryLayers();
                 this.resetCreatorContent();
                 EventEmitter.$emit("resetPlayer");
             };
