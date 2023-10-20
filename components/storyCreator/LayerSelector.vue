@@ -29,10 +29,18 @@ export default {
 
         propModel: {
             get () {
-                return this.selected;
+                return this.selected.map(item => item.id);
             },
             set (value) {
-                this.$emit("update:selected", value);
+                const
+                // Filter the original items based on the selected IDs
+                    selectedItems = value.map(layer => Radio.request("Parser", "getItemByAttributes", {id: layer}));
+
+                this.$emit("update:selected", selectedItems.map((layer, index) => ({
+                    id: layer.id,
+                    transparency: 20,
+                    selectionIDX: index + 10
+                })));
             }
         },
         // console.log all the props
@@ -181,17 +189,18 @@ export default {
             const layers = [];
 
             for (const layer of this.selected) {
-                let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer});
+                let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
 
-                const exists = this.items.filter(item => item.id === layerModel.id).length > 0 && layerModel;
+                const exists = this.items.filter(item => item.id === layer.id).length > 0 && layerModel;
 
                 if (exists) {
                     if (!layerModel) {
                         Radio.trigger("ModelList", "addModelsByAttributes", layer);
-                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer});
+                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
                     }
                     layers.push(layerModel);
                 }
+
             }
 
             return sortBy(layers, (model) => model.get("selectionIDX"), this).reverse();
@@ -200,13 +209,19 @@ export default {
 
     methods: {
         updateSelectedItems (selectedIds) {
-            // Filter the original items based on the selected IDs
-            const selectedItems = selectedIds.map(id => id.toString());
+            const
+                // Filter the original items based on the selected IDs
+                selectedItems = selectedIds.map(layer => Radio.request("Parser", "getItemByAttributes", {id: layer}));
 
-            this.$emit("update:selected", selectedItems);
+
+            this.$emit("update:selected", selectedItems.map((layer, index) => ({
+                id: layer.id,
+                transparency: 20,
+                selectionIDX: index + 10
+            })));
         },
         removeSelected (id) {
-            const tmpSelected = this.selected.filter(item => item !== id);
+            const tmpSelected = this.selected.filter(item => item.id !== id);
 
             this.$emit("update:selected", tmpSelected);
         },
@@ -246,7 +261,11 @@ export default {
 
 
             // Update the selection
-            this.$emit("update:selected", sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this).map(item => item.id));
+            this.$emit("update:selected", sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this).map(item => ({
+                id: item.id,
+                transparency: 0,
+                selectionIDX: item.get("selectionIDX")
+            })));
         }
     }
 };

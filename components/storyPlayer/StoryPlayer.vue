@@ -403,39 +403,35 @@ export default {
 
 
             for (const layer of stepLayers) {
-                let layerModels;
+                let layerModel;
 
                 if (typeof layer === "string") {
 
                     // check if model is already in modelList
-                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer});
+                    layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer});
 
-                    if (layerModels.length === 0) {
+                    if (!layerModel) {
                         const foundLayer = layerList.find(l => l.id === layer);
 
-                        foundLayer.isVisibleInTree = true;
                         Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                        layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
+                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: foundLayer.id});
                     }
                 }
                 else {
-                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.id});
+                    layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
 
-                    if (layerModels.length === 0) {
+                    if (!layerModel) {
                         const foundLayer = layerList.find(l => l.id === layer.id);
 
-                        foundLayer.isVisibleInTree = true;
+                        console.log(foundLayer);
                         foundLayer.selectionIDX = layer.selectionIDX;
                         foundLayer.transparency = layer.transparency;
                         Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                        layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
+                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: foundLayer.id});
                     }
                 }
-
-
-                for (const layerModel of layerModels) {
-                    this.enableLayer(layerModel);
-                }
+                console.log(layerModel);
+                this.enableLayer(layerModel);
             }
 
 

@@ -189,25 +189,38 @@ export default {
             }
 
 
-            for (const layer of selectedLayerIds) {
-                // check if model is already in modelList
-                let layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.toString()});
+            for (const layer of newSelectedLayerIds) {
 
 
-                // console.log(layerModel, layerList);
+                let layerModels;
 
-                if (layerModels.length === 0) {
-                    // filter layer object in layerList to add to ModelList
-                    const foundLayer = layerList.find(l => l.id === layer.toString());
+                if (typeof layer === "string") {
 
-                    if (foundLayer) {
+                    // check if model is already in modelList
+                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer});
+
+                    if (layerModels.length === 0) {
+                        const foundLayer = layerList.find(l => l.id === layer);
+
                         foundLayer.isVisibleInTree = true;
                         Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
                         layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
                     }
-
-
                 }
+                else {
+                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.id});
+
+                    if (layerModels.length === 0) {
+                        const foundLayer = layerList.find(l => l.id === layer.id);
+
+                        foundLayer.isVisibleInTree = true;
+                        foundLayer.selectionIDX = layer.selectionIDX;
+                        foundLayer.transparency = layer.transparency;
+                        Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
+                        layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
+                    }
+                }
+
 
                 for (const layerModel of layerModels) {
                     layerModel.setIsVisibleInMap(true);
