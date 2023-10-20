@@ -66,13 +66,16 @@ export default {
 
     },
     updated () {
-        new Masonry("#tool-storyTellingTool-modeSelection",
-            {
-                itemSelector: ".grid-item",
-                columnWidth: ".grid-item",
-                percentPosition: true
-                // gutter: ""
-            });
+        setTimeout(() => {
+            new Masonry("#tool-storyTellingTool-modeSelection",
+                {
+                    itemSelector: ".grid-item",
+                    columnWidth: ".grid-item",
+                    gutter: 4,
+                    percentPosition: true
+                });
+        }, 50);
+
     },
     methods: {
         /**
@@ -88,7 +91,6 @@ export default {
                 .then((response) => {
                     this.storyListMode = newMode;
                     this.storyList = response.data;
-                    // this.masonry.layout();
                 });
         },
 
@@ -153,8 +155,10 @@ export default {
         </v-row>
 
         <v-row>
-            <div class="container-fluid">
-                <v-row id="tool-storyTellingTool-modeSelection">
+            <v-container fluid>
+                <div
+                    id="tool-storyTellingTool-modeSelection"
+                >
                     <StoryCard
                         v-for="(story) in storyList"
                         :key="story._id + story.updatedAt"
@@ -164,8 +168,8 @@ export default {
                         @refreshStoryList="refreshStoryList"
                         v-on="$listeners"
                     />
-                </v-row>
-            </div>
+                </div>
+            </v-container>
         </v-row>
     </div>
 </template>
@@ -180,5 +184,9 @@ export default {
     #title-element {
         padding-left: calc(var(--bs-gutter-x) * 0.5);
     }
+}
+
+.grit-gutter {
+    width: 4px;
 }
 </style>

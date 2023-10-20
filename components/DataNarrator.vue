@@ -111,6 +111,33 @@ export default {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
 
+        sidePadding (innerWidth) {
+            if (innerWidth > 1400) {
+                return innerWidth * 0.15;
+            }
+            else if (innerWidth > 1200) {
+                return innerWidth * 0.1;
+            }
+            else if (innerWidth > 992) {
+                return innerWidth * 0.05;
+            }
+            return 20;
+        },
+
+        toolWidth (innerWidth) {
+            if (innerWidth > 1400) {
+                return innerWidth * 0.7;
+            }
+            else if (innerWidth > 1200) {
+                return innerWidth * 0.8;
+            }
+            else if (innerWidth > 992) {
+                return innerWidth * 0.9;
+            }
+            // mobile view on 768
+            return innerWidth - 40;
+        },
+
         resizeHandler () {
             let toolWindowClass = "tool-window-vue";
 
@@ -119,9 +146,12 @@ export default {
             }
             const toolWindow = document.getElementsByClassName(toolWindowClass)[0],
                 toolWidth = this.mode === constants.storyTellingModes.DASHBOARD ?
-                    window.innerWidth - 40 : this.initialWidth;
+                    this.toolWidth(window.innerWidth) : this.initialWidth,
+                currentPadding = this.mode === constants.storyTellingModes.DASHBOARD ?
+                    this.sidePadding(window.innerWidth) : 20;
 
             toolWindow.style.setProperty("--initialToolWidth", `${toolWidth}px`, "important");
+            toolWindow.style.setProperty("--currentPadding", `${currentPadding}px`, "important");
         },
 
         /**
@@ -337,6 +367,10 @@ export default {
 
 .table-tools {
     width: 40px !important;
+}
+
+.tool-window-vue {
+    left: var(--currentPadding) !important;
 }
 
 #table-nav-main {
