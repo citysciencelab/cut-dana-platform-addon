@@ -267,11 +267,9 @@ export default {
         },
 
         changeTransparency (layer, value) {
-            console.log("changeTransparency", layer, value);
 
             for (const l of this.selectedLayers) {
                 if (l.id === layer.id) {
-                    console.log("changeTransparency", l, value);
                     l.setTransparency(value);
                     l.setIsVisibleInMap(true);
                 }
@@ -336,19 +334,7 @@ export default {
                             min="0"
                             max="90"
                             @change="changeTransparency(item, $event)"
-                        >
-                            <template #prepend>
-                                <v-icon>
-                                    mdi-minus
-                                </v-icon>
-                            </template>
-
-                            <template #append>
-                                <v-icon>
-                                    mdi-plus
-                                </v-icon>
-                            </template>
-                        </v-slider>
+                        />
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>
