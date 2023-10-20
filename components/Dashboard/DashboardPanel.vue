@@ -1,9 +1,10 @@
 <script>
 import axios from "axios";
-import {mapGetters} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import Masonry from "masonry-layout";
 
 import getters from "../../store/gettersDataNarrator";
+import mutations from "../../store/mutationsDataNarrator";
 
 import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
 import LoginButton from "./Tools/LoginButton.vue";
@@ -78,6 +79,7 @@ export default {
 
     },
     methods: {
+        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         /**
          * Refreshes the list of stories
          * @param {String} mode Story filter
@@ -92,6 +94,14 @@ export default {
                     this.storyListMode = newMode;
                     this.storyList = response.data;
                 });
+        },
+
+        refreshStoryListWithReset (mode = "all") {
+            this.refreshStoryList(mode);
+            if (this.currentStory !== null) {
+                this.setCurrentStory(null);
+                this.$emit("resizeHandler");
+            }
         },
 
         availableStoryListModes () {
@@ -122,7 +132,7 @@ export default {
                     <ListButton
                         :mode="mode"
                         :current-mode="storyListMode"
-                        @refreshStoryList="refreshStoryList"
+                        @refreshStoryList="refreshStoryListWithReset"
                     />
                 </span>
             </v-col>
@@ -156,18 +166,32 @@ export default {
 
         <v-row>
             <v-container fluid>
-                <div
-                    id="tool-storyTellingTool-modeSelection"
-                >
+                <div>
                     <StoryCard
-                        v-for="(story) in storyList"
-                        :key="story._id + story.updatedAt"
-                        :story="story"
+                        v-if="currentStory !== null"
+                        :key="currentStory._id + currentStory.updatedAt"
+                        :story="currentStory"
                         :is-admin="isAdmin"
                         :uid="uid"
+                        :grid="false"
                         @refreshStoryList="refreshStoryList"
                         v-on="$listeners"
                     />
+                    <div
+                        v-else
+                        id="tool-storyTellingTool-modeSelection"
+                    >
+                        <StoryCard
+                            v-for="(story) in storyList"
+                            :key="story._id + story.updatedAt"
+                            :story="story"
+                            :is-admin="isAdmin"
+                            :uid="uid"
+                            :grid="true"
+                            @refreshStoryList="refreshStoryList"
+                            v-on="$listeners"
+                        />
+                    </div>
                 </div>
             </v-container>
         </v-row>
@@ -175,9 +199,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-// #tool-storyTellingTool-modeSelection {
-//     height: 100% !important;
-// }
 #title-row {
     padding-bottom: 10px;
 

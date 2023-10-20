@@ -27,7 +27,7 @@ export default {
                 id="share-button"
                 class="ml-1 mr-1"
                 v-on="on"
-                @click="$emit('share-story', storyId, 0)"
+                @click="$emit('share-story', storyId, 's')"
             >
                 {{ icons.mdiShareAll }}
             </v-icon>

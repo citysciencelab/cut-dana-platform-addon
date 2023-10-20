@@ -12,6 +12,7 @@ import mutations from "../store/mutationsDataNarrator";
 
 import disableStoryLayers from "../utils/disableStoryLayers";
 import {EventEmitter} from "../utils/EventEmitter";
+import resizeTool from "../utils/resizeTool";
 
 import DashboardPanel from "./Dashboard/DashboardPanel.vue";
 import SnackBar from "./SnackBar.vue";
@@ -101,8 +102,13 @@ export default {
 
         if (url.searchParams.get("story") !== null) {
             this.setCurrentStoryId(url.searchParams.get("story"));
-            this.stepIndex = parseInt(url.searchParams.get("step"), 10);
-            this.loadCurrentStory({mode: constants.storyTellingModes.PLAY});
+            if (url.searchParams.get("step") === "s") {
+                this.loadCurrentStory({mode: constants.storyTellingModes.DASHBOARD});
+            }
+            else {
+                this.stepIndex = parseInt(url.searchParams.get("step"), 10);
+                this.loadCurrentStory({mode: constants.storyTellingModes.PLAY});
+            }
         }
         else {
             this.setMode(constants.storyTellingModes.DASHBOARD);
@@ -113,47 +119,10 @@ export default {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
 
-        sidePadding (innerWidth) {
-            if (innerWidth > 1400) {
-                return innerWidth * 0.15;
-            }
-            else if (innerWidth > 1200) {
-                return innerWidth * 0.1;
-            }
-            else if (innerWidth > 992) {
-                return innerWidth * 0.05;
-            }
-            return 20;
-        },
-
-        toolWidth (innerWidth) {
-            if (innerWidth > 1400) {
-                return innerWidth * 0.7;
-            }
-            else if (innerWidth > 1200) {
-                return innerWidth * 0.8;
-            }
-            else if (innerWidth > 992) {
-                return innerWidth * 0.9;
-            }
-            // mobile view on 768
-            return innerWidth - 40;
-        },
-
         resizeHandler () {
-            let toolWindowClass = "tool-window-vue";
+            const doResize = this.mode === constants.storyTellingModes.DASHBOARD && this.currentStory === null;
 
-            if (this.uiStyle === "TABLE") {
-                toolWindowClass = "table-tool-win-all-vue";
-            }
-            const toolWindow = document.getElementsByClassName(toolWindowClass)[0],
-                toolWidth = this.mode === constants.storyTellingModes.DASHBOARD ?
-                    this.toolWidth(window.innerWidth) : this.initialWidth,
-                currentPadding = this.mode === constants.storyTellingModes.DASHBOARD ?
-                    this.sidePadding(window.innerWidth) : 20;
-
-            toolWindow.style.setProperty("--initialToolWidth", `${toolWidth}px`, "important");
-            toolWindow.style.setProperty("--currentPadding", `${currentPadding}px`, "important");
+            resizeTool(doResize, this.uiStyle, this.initialWidth);
         },
 
         /**
@@ -173,7 +142,7 @@ export default {
             }
         },
 
-        confirmOnlyWhenCreatingStory (actionCallback, skipConfirm) {
+        confirmOnlyWhenCreatingStory (actionCallback, skipConfirm = false) {
             if (!skipConfirm && this.isCreatingStory()) {
                 this.confirmDialog("closeStoryCreation", actionCallback);
             }
@@ -279,7 +248,7 @@ export default {
          * @param {integer} stepIndex The index of the selected step
          * @returns {void}
          */
-        shareStory (storyId, stepIndex = 0) {
+        shareStory (storyId, stepIndex = "s") {
             const sharedLink = this.backendConfig.url + "/s/" + storyId + "/" + stepIndex;
 
             navigator.clipboard.writeText(sharedLink);
@@ -310,26 +279,27 @@ export default {
                 id="tool-dataNarrator"
                 :class="mode"
             >
-                <DashboardPanel
-                    v-if="!mode || mode === constants.storyTellingModes.DASHBOARD"
-                    :is-admin="isAdmin"
-                    :uid="uid"
-                    @confirm="confirmDialog"
-                    @share-story="shareStory"
-                    @reset-step-index="stepIndex = 0"
-                />
-
-                <StoryCreator
-                    v-if="mode === constants.storyTellingModes.CREATE"
-                    @confirm="confirmDialog"
-                    @reset-tool="reset"
-                />
-
                 <StoryPlayer
                     v-if="mode === constants.storyTellingModes.PLAY"
                     ref="player"
                     :step-index="stepIndex"
                     @share-story="shareStory"
+                />
+
+                <StoryCreator
+                    v-else-if="mode === constants.storyTellingModes.CREATE"
+                    @confirm="confirmDialog"
+                    @reset-tool="reset"
+                />
+
+                <DashboardPanel
+                    v-else
+                    :is-admin="isAdmin"
+                    :uid="uid"
+                    @confirm="confirmDialog"
+                    @share-story="shareStory"
+                    @reset-step-index="stepIndex = 0"
+                    @resizeHandler="resizeHandler"
                 />
 
                 <SnackBar ref="snackB" />
@@ -374,6 +344,7 @@ export default {
     width: 40px !important;
 }
 
+// Will put dashboard window into the center of the screen
 .tool-window-vue {
     left: var(--currentPadding) !important;
 }

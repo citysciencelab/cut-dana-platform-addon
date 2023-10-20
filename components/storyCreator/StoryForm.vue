@@ -39,7 +39,7 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters(["mobile", "uiStyle"])
+        ...mapGetters(["mobile"])
     },
     mounted () {
         if (Object.hasOwn(this.currentStory, "titleImage") && this.currentStory.titleImage !== "") {

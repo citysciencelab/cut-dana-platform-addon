@@ -31,6 +31,10 @@ export default {
         isAdmin: {
             type: Boolean,
             default: false
+        },
+        grid: {
+            type: Boolean,
+            default: true
         }
     },
     data () {
@@ -49,7 +53,8 @@ export default {
 <template>
     <v-card
         elevation="2"
-        class="mb-2 grid-item"
+        class="mb-2"
+        :class="{'grid-item': grid}"
     >
         <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
             <div>
@@ -121,7 +126,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.v-card {
+.grid-item {
     width: 100%;
 
     flex: 0 0 100%;
