@@ -173,8 +173,8 @@ export default {
             }
         },
 
-        confirmOnlyWhenCreatingStory (actionCallback) {
-            if (this.isCreatingStory()) {
+        confirmOnlyWhenCreatingStory (actionCallback, skipConfirm) {
+            if (!skipConfirm && this.isCreatingStory()) {
                 this.confirmDialog("closeStoryCreation", actionCallback);
             }
             else {
@@ -214,9 +214,10 @@ export default {
 
         /**
          * Resets the tool to its initial state
+         * @param {boolean} skipConfirm true if the user shouldn't be asked to confirm the reset
          * @returns {void}
          */
-        reset () {
+        reset (skipConfirm = false) {
 
             /**
              * Constant that saves all the actions on confirm
@@ -229,7 +230,7 @@ export default {
                 EventEmitter.$emit("resetPlayer");
             };
 
-            this.confirmOnlyWhenCreatingStory(resetDataNarrator);
+            this.confirmOnlyWhenCreatingStory(resetDataNarrator, skipConfirm);
         },
 
         /**

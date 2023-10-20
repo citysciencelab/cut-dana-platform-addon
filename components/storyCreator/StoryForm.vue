@@ -39,11 +39,7 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        isMobile () {
-            const ism = Radio.request("Util", "isViewMobile");
-
-            return ism;
-        }
+        ...mapGetters(["mobile", "uiStyle"])
     },
     mounted () {
         if (Object.hasOwn(this.currentStory, "titleImage") && this.currentStory.titleImage !== "") {
@@ -87,7 +83,7 @@ export default {
                         "additional:modules.tools.dataNarrator.success.storyCreated"
                     )
                 });
-                this.$emit("reset-tool");
+                this.$emit("reset-tool", true);
             }).catch((error) => {
                 errorHandling(error);
                 this.$root.snackB.show({
@@ -372,7 +368,7 @@ export default {
                 rounded
             >
                 <v-card
-                    v-if="notSaving && !isMobile"
+                    v-if="!mobile"
                     flat
                     tile
                     width="100%"
@@ -456,7 +452,7 @@ export default {
                 </v-card>
 
                 <v-container
-                    v-else-if="notSaving && isMobile"
+                    v-else
                     fluid
                     class="white"
                 >
@@ -489,21 +485,6 @@ export default {
                             </span>
                         </v-btn>
                     </v-row>
-                    <!-- <v-row class="mb-2">
-                        <v-btn
-                            class=""
-                            small
-                            :disabled="!currentStory.steps || !currentStory.steps.length"
-                            color="blue"
-                            @click="downloadStoryFiles"
-                        >
-                            <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.button.downloadStory")
-                                }}
-                            </span>
-                        </v-btn>
-                    </v-row> -->
                     <v-row>
                         <v-btn
                             class=""
