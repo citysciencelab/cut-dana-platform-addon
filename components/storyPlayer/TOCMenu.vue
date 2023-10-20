@@ -1,34 +1,15 @@
 <script>
-import actions from "../../store/actionsDataNarrator";
-import getters from "../../store/gettersDataNarrator";
-import mutations from "../../store/mutationsDataNarrator";
-import {mapActions, mapGetters, mapMutations} from "vuex";
-
 export default {
     name: "TOCMenu",
     props: {
-
         currentStepIndex: {
             type: Number,
             default: 0
         }
     },
-    data () {
-        return {
-
-        };
-    },
-    computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
-    },
-
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-
-        scrollToStep (stepIndex) {
-            document.getElementsByClassName("stepper")[stepIndex].scrollIntoView({block: "center"});
-            this.$parent.$emit("close-toc");
+        backToStep () {
+            this.$emit("setCurrentStepIndex", this.currentStepIndex);
         }
     }
 };
@@ -39,18 +20,17 @@ export default {
         <span
             role="button"
             tabindex="0"
-            @click="scrollToStep(currentStepIndex)"
-            @keydown="scrollToStep(currentStepIndex)"
+            @click="backToStep()"
+            @keydown="backToStep()"
         >
             <v-tooltip left>
                 <template #activator="{ on, attrs }">
                     <v-icon
                         v-bind="attrs"
                         v-on="on"
-                    >close
-                    </v-icon>
+                    >keyboard_backspace</v-icon>
                 </template>
-                <span>close</span>
+                <span>{{ $t("additional:modules.tools.dataNarrator.button.backToStory") }}</span>
             </v-tooltip>
         </span>
     </div>

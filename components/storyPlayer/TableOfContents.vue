@@ -2,7 +2,6 @@
 
 import {mapGetters} from "vuex";
 import getters from "../../store/gettersDataNarrator";
-import TOCMenu from "./TOCMenu.vue";
 
 export default {
     name: "TableOfContents",
@@ -21,12 +20,11 @@ export default {
         ...mapGetters("Tools/StoryTellingTool", Object.keys(getters))
     },
     methods: {
-        scrollToStep(stepIndex) {
-            document.getElementsByClassName("stepper")[stepIndex].scrollIntoView({ block: "center" });
+        scrollToStep (stepIndex) {
+            document.getElementsByClassName("stepper")[stepIndex].scrollIntoView({block: "center"});
             this.$emit("close-toc");
         }
-    },
-    components: { TOCMenu }
+    }
 };
 </script>
 

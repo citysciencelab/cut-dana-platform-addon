@@ -11,16 +11,16 @@ import mutations from "../../store/mutationsDataNarrator";
 import {EventEmitter} from "../../utils/EventEmitter";
 import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 import fetchDataFromUrl from "../../utils/getStoryFromUrl";
-// import TOCMenu from "./TOCMenu.vue";
+import TOCMenu from "./TOCMenu.vue";
 
 export default {
     name: "StoryPlayer",
     components: {
         ClassicPlayer,
         ScrollyTeller,
-        StoryNavigation
+        StoryNavigation,
+        TOCMenu
         // DipasPlayer
-        // TOCMenu
     },
     props: {
         // Whether the story player is in preview mode or not
@@ -40,6 +40,7 @@ export default {
             fetchDataFromUrl,
             getHTMLContentReference,
             currentStepIndex: null,
+            previousStepIndex: null,
             loadedContent: null,
             isHovering: null,
             isChangeFrom3D: false,
@@ -84,11 +85,11 @@ export default {
         }
     },
     watch: {
-        /**
-         * Handles step changes.
-         * @returns {void}
-         */
-        currentStepIndex () {
+        currentStepIndex (newValue, oldValue) {
+            if (newValue !== oldValue) {
+                this.previousStepIndex = oldValue;
+                this.loadStep();
+            }
             this.loadStep();
         },
         /**
@@ -113,8 +114,6 @@ export default {
         if (this.currentStory) {
             this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
             this.currentStepIndex = this.stepIndex;
-
-
         }
         this.activateInterval();
 
@@ -505,7 +504,10 @@ export default {
         v-else
         id="tool-dataNarrator-tableOfContents"
     >
-        <!-- <TOCMenu :current-step-index="currentStepIndex"/> -->
+        <TOCMenu
+            :current-step-index="previousStepIndex"
+            @setCurrentStepIndex="(index) => currentStepIndex = index"
+        />
         <h1>{{ currentStory.title }}</h1>
 
         <h2>

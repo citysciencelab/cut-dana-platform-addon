@@ -108,7 +108,8 @@
           "share": "Share Story",
           "shareSettings": "Share Settings",
           "addSharedWith": "Add",
-          "featured": "Featured"
+          "featured": "Featured",
+          "backToStory": "Back to story"
         },
         "newChapter": "New Chapter"
       }
