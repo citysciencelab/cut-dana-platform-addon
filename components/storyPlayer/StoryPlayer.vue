@@ -403,17 +403,35 @@ export default {
 
 
             for (const layer of stepLayers) {
-                // check if model is already in modelList
-                let layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.toString()});
+                let layerModels;
 
+                if (typeof layer === "string") {
 
-                if (layerModels.length === 0) {
-                    const foundLayer = layerList.find(l => l.id === layer.toString());
+                    // check if model is already in modelList
+                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer});
 
-                    foundLayer.isVisibleInTree = true;
-                    Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
+                    if (layerModels.length === 0) {
+                        const foundLayer = layerList.find(l => l.id === layer);
+
+                        foundLayer.isVisibleInTree = true;
+                        Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
+                        layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
+                    }
                 }
+                else {
+                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.id});
+
+                    if (layerModels.length === 0) {
+                        const foundLayer = layerList.find(l => l.id === layer.id);
+
+                        foundLayer.isVisibleInTree = true;
+                        foundLayer.selectionIDX = layer.selectionIDX;
+                        foundLayer.transparency = layer.transparency;
+                        Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
+                        layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
+                    }
+                }
+
 
                 for (const layerModel of layerModels) {
                     this.enableLayer(layerModel);
