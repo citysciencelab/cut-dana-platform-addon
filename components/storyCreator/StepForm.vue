@@ -179,7 +179,7 @@ export default {
          * @returns {void}
          */
         "step.layers" (newSelectedLayerIds) {
-            const selectedLayerIds = newSelectedLayerIds.map(Number),
+            const
                 layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
                 selectedItems = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true});
 

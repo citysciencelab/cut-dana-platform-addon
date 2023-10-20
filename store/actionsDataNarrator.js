@@ -31,16 +31,34 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
         disableStoryLayers ({state}) {
             // Hides all story layers
             const layerList = Radio.request("ModelList", "getModelsByAttributes", {
-                isVisibleInTree: true, isSelected: true
+                isVisibleInMap: true, isSelected: true
             });
 
             for (const step of state.currentStory.steps) {
-                for (const layer of layerList) {
-                    if (step.layers.includes(layer.attributes.id)) {
-                        layer.setIsVisibleInMap(false);
-                        layer.set("isSelected", false);
+                for (const layer of step.layers) {
+                    if (typeof layer === "string") {
+                        const layerModel = layerList.find(l => l.attributes.id === layer);
+
+                        if (layerModel) {
+                            layerModel.setIsVisibleInMap(false);
+                            layerModel.set("isSelected", false);
+                        }
+                    }
+                    else {
+                        const layerModel = layerList.find(l => l.attributes.id === layer.id);
+
+                        if (layerModel) {
+                            layerModel.setIsVisibleInMap(false);
+                            layerModel.set("isSelected", false);
+                        }
                     }
                 }
+                // for (const layer of layerList) {
+                //     if (step.layers.map(l => l.id).includes(layer.attributes.id)) {
+                //         layer.setIsVisibleInMap(false);
+                //         layer.set("isSelected", false);
+                //     }
+                // }
 
             }
 

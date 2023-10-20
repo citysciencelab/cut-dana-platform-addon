@@ -423,14 +423,12 @@ export default {
                     if (!layerModel) {
                         const foundLayer = layerList.find(l => l.id === layer.id);
 
-                        console.log(foundLayer);
                         foundLayer.selectionIDX = layer.selectionIDX;
                         foundLayer.transparency = layer.transparency;
                         Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
                         layerModel = Radio.request("ModelList", "getModelByAttributes", {id: foundLayer.id});
                     }
                 }
-                console.log(layerModel);
                 this.enableLayer(layerModel);
             }
 
