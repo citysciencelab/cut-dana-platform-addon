@@ -21,7 +21,8 @@ export default {
                 chevronUp: mdiChevronUp,
                 chevronDown: mdiChevronDown,
                 close: mdiClose
-            }
+            },
+            updateList: false
         };
     },
     computed: {
@@ -182,7 +183,7 @@ export default {
             for (const layer of this.selected) {
                 let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer});
 
-                const exists = this.items.filter(item => item.id === layerModel.id).length > 0;
+                const exists = this.items.filter(item => item.id === layerModel.id).length > 0 && layerModel;
 
                 if (exists) {
                     if (!layerModel) {
@@ -210,41 +211,43 @@ export default {
             this.$emit("update:selected", tmpSelected);
         },
         moveLayer (layer, direction) {
-            const layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id}),
-                index = this.selectedLayers.findIndex(item => item.id === layer.id),
-                newSelection = [...this.selected];
-
-            let newIndex;
-
-            // targetModel = Radio.request("ModelList", "getModelByAttributes", {id: this.selectedLayers[newIndex].id});
+            this.updateList = !this.updateList;
 
 
-            // console.log(layerModel, targetModel, this.selectedLayers[newIndex]);
+            // sorted layers base on layer.get("selectionIDX")
+            const sortedLayers = sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this),
+                index = sortedLayers.findIndex(item => item.id === layer.id);
 
 
-            if (direction && index > 0) {
+            if (!direction && index > 0) {
                 // Move layer up
-                [newSelection[index - 1], newSelection[index]] = [newSelection[index], newSelection[index - 1]];
-                newIndex = index - 1;
+                const targetId = index - 1,
+                    targetModel = Radio.request("ModelList", "getModelByAttributes", {id: sortedLayers[targetId].id}),
+
+                    prevLayerSelectionIDX = layer.get("selectionIDX");
+
+                layer.setSelectionIDX(targetModel.get("selectionIDX"));
+                targetModel.setSelectionIDX(prevLayerSelectionIDX);
+                layer.set("isSelected", true);
+                targetModel.set("isSelected", true);
             }
-            else if (!direction && index < newSelection.length - 1) {
+            else if (direction && index < sortedLayers.length - 1) {
                 // Move layer down
-                [newSelection[index + 1], newSelection[index]] = [newSelection[index], newSelection[index + 1]];
-                newIndex = index + 1;
+                const targetId = index + 1,
+                    targetModel = Radio.request("ModelList", "getModelByAttributes", {id: sortedLayers[targetId].id}),
+
+                    prevLayerSelectionIDX = layer.get("selectionIDX");
+
+                layer.setSelectionIDX(targetModel.get("selectionIDX"));
+                targetModel.setSelectionIDX(prevLayerSelectionIDX);
+                layer.set("isSelected", true);
+                targetModel.set("isSelected", true);
             }
-            if (newIndex !== undefined) {
-                // you may swap the indeces here
-                const targetModel = Radio.request("ModelList", "getModelByAttributes", {id: this.selectedLayers[newIndex].id});
 
-                layerModel.setSelectionIDX(targetModel.get("selectionIDX"));
-                targetModel.setSelectionIDX(layerModel.get("selectionIDX"));
-                Radio.trigger("ModelList", "updateSelection");
-            }
-            // targetModel.setSelectionIDX(layerModel.get("selectionIDX"));
-            // layerModel.setSelectionIDX(targetModel.get("selectionIDX"));
+            const layerList = sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this).map(item => item.id);
 
-
-            this.$emit("update:propModel", newSelection);
+            // Update the selection
+            this.$emit("update:selected", layerList);
         }
     }
 };
@@ -261,7 +264,9 @@ export default {
             </label>
             <v-list
                 id="step-layer"
+                :key="updateList"
                 dense
+                nav
             >
                 <v-list-item-group
                     v-for="(item) in selectedLayers"
@@ -281,20 +286,22 @@ export default {
                             </v-icon>
                         </v-list-item-action>
 
-                        <!-- <v-list-item-action>
-                    <v-icon
-                        color="grey lighten-1"
-                        @click="moveLayer(item, true)"
-                    >
-                        {{ icons.chevronUp }}
-                    </v-icon>
-                    <v-icon
-                        color="grey lighten-1"
-                        @click="moveLayer(item, false)"
-                    >
-                        {{ icons.chevronDown }}
-                    </v-icon>
-                </v-list-item-action> -->
+                        <v-list-item-action>
+                            <v-icon
+                                color="grey lighten-1"
+                                small
+                                @click="moveLayer(item, true)"
+                            >
+                                {{ icons.chevronUp }}
+                            </v-icon>
+                            <v-icon
+                                color="grey lighten-1"
+                                small
+                                @click="moveLayer(item, false)"
+                            >
+                                {{ icons.chevronDown }}
+                            </v-icon>
+                        </v-list-item-action>
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
