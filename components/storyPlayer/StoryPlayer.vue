@@ -113,10 +113,11 @@ export default {
         if (this.currentStory) {
             this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
             this.currentStepIndex = this.stepIndex;
+
+
         }
-        if (this.currentStory.storyInterval) {
-            this.activateInterval();
-        }
+        this.activateInterval();
+
     },
     created () {
         EventEmitter.$on("toggleAutoPlay", () => {
@@ -127,6 +128,9 @@ export default {
         });
         EventEmitter.$on("resetPlayer", () => {
             this.resetStoryPlayer();
+        });
+        EventEmitter.$on("disableStoryLayers", () => {
+            this.disableStoryLayers();
         });
     },
     beforeDestroy () {
@@ -151,12 +155,16 @@ export default {
         // }
         // Radio.trigger("Menu", "rerender");
 
-        if (Object.hasOwn(this.currentStory, "displayType") && this.currentStory.displayType.toUpperCase() === "DIPAS") {
-            this.$store.commit(
-                "Tools/DipasStorySelector/setActive",
-                true
-            );
+        if (this.currentStory) {
+            if (Object.hasOwn(this.currentStory, "displayType") && this.currentStory.displayType.toUpperCase() === "DIPAS") {
+                this.$store.commit(
+                    "Tools/DipasStorySelector/setActive",
+                    true
+                );
+            }
         }
+
+
         // removes event listener
         EventEmitter.$off("toggleScrollytelling", this.toggleScrollytelling());
         EventEmitter.$off("toggleAutoPlay", this.toggleInterval());
@@ -304,10 +312,14 @@ export default {
          * @returns  {void}
          */
         activateInterval () {
-            this.interval = setInterval(() => {
-                this.currentStepIndex = this.currentStory.steps.length - 1 === this.currentStepIndex ? 0 : this.currentStepIndex + 1;
-                this.$emit("change", this.currentStepIndex);
-            }, this.currentStory.storyInterval);
+            if (this.currentStory) {
+                if (this.currentStory.storyInterval) {
+                    this.interval = setInterval(() => {
+                        this.currentStepIndex = this.currentStory.steps.length - 1 === this.currentStepIndex ? 0 : this.currentStepIndex + 1;
+                        this.$emit("change", this.currentStepIndex);
+                    }, this.currentStory.storyInterval);
+                }
+            }
         },
 
         /**

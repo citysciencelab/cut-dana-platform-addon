@@ -298,7 +298,14 @@ export default {
         if (this.step.stepNumber === null) {
             this.step.stepNumber = this.allStepNumbers[this.allStepNumbers.length - 1];
         }
+    },
+    beforeDestroy () {
+        for (const layer of this.step.layers) {
+            const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
 
+            model.setIsVisibleInMap(false);
+            model.set("isSelected", false);
+        }
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -394,6 +401,7 @@ export default {
                 });
             }
             this.saveStoryStep({step: this.step, images: this.images});
+
 
             // Trigger submit action to return to story overview
             this.$emit("return");

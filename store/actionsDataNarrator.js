@@ -28,8 +28,7 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
          * @param {Object} context actions context object.
          * @returns {void}
          */
-        disableStoryLayers ({state, commit}) {
-
+        disableStoryLayers ({state}) {
             // Hides all story layers
             const layerList = Radio.request("ModelList", "getModelsByAttributes", {
                 isVisibleInTree: true, isSelected: true
@@ -46,7 +45,6 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
             }
 
             Radio.trigger("Menu", "rerender");
-            commit("setCurrentStory", state.currentStory);
         },
 
         /**
