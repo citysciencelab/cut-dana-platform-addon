@@ -21,8 +21,7 @@ export default {
                 chevronUp: mdiChevronUp,
                 chevronDown: mdiChevronDown,
                 close: mdiClose
-            },
-            updateList: false
+            }
         };
     },
     computed: {
@@ -226,7 +225,6 @@ export default {
             this.$emit("update:selected", tmpSelected);
         },
         moveLayer (layer, direction) {
-            this.updateList = !this.updateList;
 
 
             // sorted layers base on layer.get("selectionIDX")
@@ -266,6 +264,24 @@ export default {
                 transparency: 0,
                 selectionIDX: item.get("selectionIDX")
             })));
+        },
+
+        changeTransparency (layer, value) {
+            console.log("changeTransparency", layer, value);
+
+            for (const l of this.selectedLayers) {
+                if (l.id === layer.id) {
+                    console.log("changeTransparency", l, value);
+                    l.setTransparency(value);
+                    l.setIsVisibleInMap(true);
+                }
+            }
+
+            this.$emit("update:selected", sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this).map(item => ({
+                id: item.id,
+                transparency: item.id === layer.id ? value : item.get("transparency"),
+                selectionIDX: item.get("selectionIDX")
+            })));
         }
     }
 };
@@ -280,49 +296,62 @@ export default {
             >
                 {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
             </label>
-            <v-list
+            <v-expansion-panels
                 id="step-layer"
-                :key="updateList"
                 dense
                 nav
             >
-                <v-list-item-group
+                <v-expansion-panel
                     v-for="(item) in selectedLayers"
                     :key="item.id"
                     color="primary"
                 >
-                    <v-list-item>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ item.attributes.name }}</v-list-item-title>
-                        </v-list-item-content>
-                        <v-list-item-action>
-                            <v-icon
-                                color="grey lighten-1"
-                                @click="removeSelected(item.id)"
-                            >
-                                {{ icons.close }}
-                            </v-icon>
-                        </v-list-item-action>
+                    <v-expansion-panel-header>
+                        <v-list-item-title>{{ item.attributes.name }}</v-list-item-title>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-icon
+                            color="grey lighten-1"
+                            @click="removeSelected(item.id)"
+                        >
+                            {{ icons.close }}
+                        </v-icon>
+                        <v-icon
+                            color="grey lighten-1"
+                            @click="moveLayer(item, true)"
+                        >
+                            {{ icons.chevronUp }}
+                        </v-icon>
+                        <v-icon
+                            color="grey lighten-1"
+                            @click="moveLayer(item, false)"
+                        >
+                            {{ icons.chevronDown }}
+                        </v-icon>
+                        <v-slider
+                            v-model="item.attributes.transparency"
+                            :value="item.attributes.transparency"
+                            track-color="grey"
+                            always-dirty
+                            min="0"
+                            max="90"
+                            @change="changeTransparency(item, $event)"
+                        >
+                            <template #prepend>
+                                <v-icon>
+                                    mdi-minus
+                                </v-icon>
+                            </template>
 
-                        <v-list-item-action>
-                            <v-icon
-                                color="grey lighten-1"
-                                small
-                                @click="moveLayer(item, true)"
-                            >
-                                {{ icons.chevronUp }}
-                            </v-icon>
-                            <v-icon
-                                color="grey lighten-1"
-                                small
-                                @click="moveLayer(item, false)"
-                            >
-                                {{ icons.chevronDown }}
-                            </v-icon>
-                        </v-list-item-action>
-                    </v-list-item>
-                </v-list-item-group>
-            </v-list>
+                            <template #append>
+                                <v-icon>
+                                    mdi-plus
+                                </v-icon>
+                            </template>
+                        </v-slider>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
         </div>
         <div class="form-group">
             <label
