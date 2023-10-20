@@ -10,7 +10,9 @@ import * as constants from "../store/constantsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 
+import disableStoryLayers from "../utils/disableStoryLayers";
 import {EventEmitter} from "../utils/EventEmitter";
+
 import DashboardPanel from "./Dashboard/DashboardPanel.vue";
 import SnackBar from "./SnackBar.vue";
 import StoryCreator from "./storyCreator/StoryCreator.vue";
@@ -221,8 +223,9 @@ export default {
              * @returns {void}
              */
             const resetDataNarrator = () => {
-                this.disableStoryLayers();
-                this.resetCreatorContent();
+                disableStoryLayers(this.currentStory.steps);
+                this.resetModule();
+                this.setMode(constants.storyTellingModes.DASHBOARD);
                 EventEmitter.$emit("resetPlayer");
             };
 

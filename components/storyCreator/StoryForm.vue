@@ -87,7 +87,6 @@ export default {
                         "additional:modules.tools.dataNarrator.success.storyCreated"
                     )
                 });
-                this.setCurrentStory(null);
                 this.$emit("reset-tool");
             }).catch((error) => {
                 errorHandling(error);
