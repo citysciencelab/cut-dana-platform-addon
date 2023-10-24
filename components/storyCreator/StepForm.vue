@@ -9,24 +9,26 @@ import {
 import uuid from "uuid";
 import {VueEditor} from "vue2-editor";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import actions from "../../store/actionsDataNarrator";
+
 import * as constants from "../../store/constantsDataNarrator";
+import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
+
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
 import getFileExtension from "../../utils/getFileExtension";
 import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 
 import LayerSelector from "./LayerSelector.vue";
-
+import BackgroundMap from "./inputs/BackgroundMap.vue";
 
 export default {
     name: "StepForm",
 
     components: {
         VueEditor,
-        LayerSelector
-        // LayerSelectorOld
+        LayerSelector,
+        BackgroundMap
     },
 
     props: {
@@ -43,6 +45,7 @@ export default {
             getFileExtension,
             getStepReference,
             getHTMLContentReference,
+            visibleBackgroundMap: null,
             minStepWidth: 280,
             maxStepWidth: 1000,
             step: this.editedStep && Object.keys(this.editedStep).length > 0
@@ -56,6 +59,7 @@ export default {
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
             is3DLayerActive: false,
             layerTypes3DSpecific: ["Entities3D", "TileSet3D", "Terrain3D"],
+            backgroundMapId: this.editedStep?.backgroundMapId,
             mapMovedPosition: {
                 cameraPosition: [
                     null,
@@ -162,6 +166,10 @@ export default {
                         addon.component.name ||
                         addon.key
                 }));
+        },
+
+        backgroundMaps () {
+            return Radio.request("ModelList", "getModelsByAttributes", {isBaseLayer: true});
         }
     },
     watch: {
@@ -312,6 +320,7 @@ export default {
         if (this.step.stepNumber === null) {
             this.step.stepNumber = this.allStepNumbers[this.allStepNumbers.length - 1];
         }
+        this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
     },
     beforeDestroy () {
         for (const layer of this.step.layers) {
@@ -320,12 +329,29 @@ export default {
             model.setIsVisibleInMap(false);
             model.set("isSelected", false);
         }
+
+        this.switchBackgroundMap(this.visibleBackgroundMap);
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         // These application wide getters and setters can be found in 'src/modules/map/store'
         ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
+
+        switchBackgroundMap (value) {
+            if (value) {
+                this.backgroundMaps.forEach(model => {
+                    if (model.get("id") === value) {
+                        model.setIsVisibleInMap(true);
+                        model.setIsSelected(true);
+                    }
+                    else {
+                        model.setIsVisibleInMap(false);
+                        model.setIsSelected(false);
+                    }
+                });
+            }
+        },
 
         /**
          * Handles step width changes
@@ -490,6 +516,11 @@ export default {
                 && (this.step.navigation3D.cameraPosition[0] !== this.mapMovedPosition.cameraPosition[0]
                     || this.step.navigation3D.cameraPosition[0] !== this.mapMovedPosition.cameraPosition[0]
                     || this.step.navigation3D.cameraPosition[0] !== this.mapMovedPosition.cameraPosition[0]);
+        },
+
+        setBackgroundMap (value) {
+            this.step.backgroundMapId = value;
+            this.backgroundMapId = value;
         }
     }
 };
@@ -573,32 +604,6 @@ export default {
                     solo
                     hide-details
                 />
-
-                <!-- <input
-                    id="step-number"
-                    class="form-control"
-                    type="number"
-                    :value="step.stepNumber"
-                    min="1"
-                    required
-                    @change="onChangeStepNumber"
-                >
-                <p
-                    v-if="
-                        allStepNumbers.includes(step.stepNumber) &&
-                            (!editedStep ||
-                                step.stepNumber !== editedStep.stepNumber)
-                    "
-                    class="text-danger"
-                >
-                    <small>
-                        {{
-                            $t(
-                                "additional:modules.tools.dataNarrator.error.stepNumberAlreadyExists"
-                            )
-                        }}
-                    </small>
-                </p> -->
             </div>
 
             <div class="form-group">
@@ -653,6 +658,12 @@ export default {
                     @change="step.visible = $event.target.checked"
                 >
             </div>
+
+            <BackgroundMap
+                :selected-id="backgroundMapId"
+                :background-maps="backgroundMaps"
+                @update:background-map-id="setBackgroundMap"
+            />
 
             <div
                 v-if="is3DLayerActive"

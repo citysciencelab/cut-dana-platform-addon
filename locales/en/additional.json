@@ -41,7 +41,8 @@
           "sharedWith": "Type a new email and press enter",
           "sharedWithPlaceholder": "Add email",
           "sharedWithDuplicate": "This email is already added",
-          "clickToSwitch": "Click to "
+          "clickToSwitch": "Click to ",
+          "backgroundMap": "Background Map"
         },
         "storyList": {
           "all":  "All Stories",

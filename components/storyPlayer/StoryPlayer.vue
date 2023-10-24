@@ -39,6 +39,7 @@ export default {
             getStepReference,
             fetchDataFromUrl,
             getHTMLContentReference,
+            visibleBackgroundMap: null,
             currentStepIndex: null,
             previousStepIndex: null,
             loadedContent: null,
@@ -82,6 +83,10 @@ export default {
 
         progress () {
             return (this.currentStepIndex + 1) / this.currentStory.steps.length * 100;
+        },
+
+        backgroundMaps () {
+            return Radio.request("ModelList", "getModelsByAttributes", {isBaseLayer: true});
         }
     },
     watch: {
@@ -116,7 +121,7 @@ export default {
             this.currentStepIndex = this.stepIndex;
         }
         this.activateInterval();
-
+        this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
     },
     created () {
         EventEmitter.$on("toggleAutoPlay", () => {
@@ -163,6 +168,8 @@ export default {
             }
         }
 
+        this.switchBackgroundMap(this.visibleBackgroundMap);
+
 
         // removes event listener
         EventEmitter.$off("toggleScrollytelling", this.toggleScrollytelling());
@@ -176,6 +183,23 @@ export default {
         // These application wide getters and setters can be found in 'src/modules/map/store'
         ...mapMutations("Map", ["setCenter", "setLayerVisibility"]),
         ...mapGetters("Map", ["layerList", "visibleLayerList", "map"]),
+
+        switchBackgroundMap (value) {
+            const selectedId = value || this.visibleBackgroundMap;
+
+            if (selectedId) {
+                this.backgroundMaps.forEach(model => {
+                    if (model.get("id") === selectedId) {
+                        model.setIsVisibleInMap(true);
+                        model.setIsSelected(true);
+                    }
+                    else {
+                        model.setIsVisibleInMap(false);
+                        model.setIsSelected(false);
+                    }
+                });
+            }
+        },
 
 
         /**
@@ -431,6 +455,7 @@ export default {
                 this.enableLayer(layerModel);
             }
 
+            this.switchBackgroundMap(this.currentStep.backgroundMapId);
 
             Radio.trigger("Menu", "rerender");
             this.loadedContent = this.currentStep.html;

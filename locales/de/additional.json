@@ -41,7 +41,8 @@
           "sharedWith": "Geben Sie eine neue E-Mail ein und drücken Sie die Eingabetaste",
           "sharedWithPlaceholder": "E-Mail hinzufügen",
           "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt.",
-          "clickToSwitch": "Klicken Sie auf "
+          "clickToSwitch": "Klicken Sie auf ",
+          "backgroundMap": "Hintergrundkarte"
         },
         "storyList": {
           "all":  "Alle Stories",
