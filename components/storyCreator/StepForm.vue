@@ -333,10 +333,20 @@ export default {
          * @returns {void}
          */
         onChangeStepWidth (event) {
-            this.step.stepWidth = Math.max(
-                this.minStepWidth,
-                Math.min(this.maxStepWidth, Number(event.target.value))
-            );
+            console.log(event.files);
+        },
+
+        /**
+         * Handle the cover image change
+         * @param {Event} event - The file input change event
+         * @returns {void}
+         */
+        onCustomDataUpload (event) {
+            const file = event.target.files[0];
+
+            this.$refs.preview_image.src = URL.createObjectURL(file);
+            this.currentStory.titleImage = file;
+            this.hasCover = true;
         },
 
         /**
@@ -959,6 +969,33 @@ export default {
                 :items="layerOptions"
                 :selected.sync="step.layers"
             />
+
+            <div class="form-group">
+                <label
+                    class="form-label"
+                    for="own_dataSource"
+                >
+                    {{
+                        $t(
+                            "additional:modules.tools.dataNarrator.label.cover"
+                        )
+                    }}
+                </label>
+                <v-row>
+                    <v-col>
+                        <input
+                            id="own_dataSource"
+                            ref="own_dataSource_input"
+                            type="file"
+                            name="ownDataSource"
+                            class="form-control"
+                            accept=".kml, .geojson, .json, .gpx"
+                            multiple
+                            @change="onCustomDataUpload"
+                        >
+                    </v-col>
+                </v-row>
+            </div>
 
             <div class="form-group">
                 <label
