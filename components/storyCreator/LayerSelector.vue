@@ -205,8 +205,6 @@ export default {
             for (const layer of this.selected) {
                 let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
 
-                console.log(layerModel);
-
                 const exists = this.items.filter(item => item.id === layer.id).length > 0 && layerModel;
 
                 if (exists) {
