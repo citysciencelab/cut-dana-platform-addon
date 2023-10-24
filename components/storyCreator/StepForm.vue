@@ -76,6 +76,7 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters(["mobile"]),
 
         /**
          * All chapter numbers
@@ -1004,6 +1005,7 @@ export default {
                 rounded
             >
                 <v-card
+                    v-if="!mobile"
                     flat
                     tile
                     width="100%"
@@ -1078,13 +1080,70 @@ export default {
                         </v-tooltip>
                     </v-card-text>
                 </v-card>
-                <v-alert
-                    v-show="!isValid"
-                    type="info"
+                <v-container
+                    v-else
+                    fluid
+                    class="white"
                 >
-                    {{ $t("additional:modules.tools.dataNarrator.warning.sendNoHTML") }}
-                </v-alert>
+                    <v-row
+                        class="mb-2"
+                        no-gutters
+                    >
+                        <v-col>
+                            <v-btn
+                                class=""
+                                small
+                                color="red"
+                                min-width="100%"
+                                @click="$emit('return')"
+                            >
+                                <span>
+                                    {{ $t("additional:modules.tools.dataNarrator.button.cancel") }}
+                                </span>
+                            </v-btn>
+                        </v-col>
+                        <v-col>
+                            <v-btn
+                                class=""
+                                small
+                                color="red"
+                                min-width="100%"
+                                @click="onDeleteStep"
+                            >
+                                <span>{{ $t("additional:modules.tools.dataNarrator.button.deleteStep") }}</span>
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+
+                    <v-row
+                        class="mb-2"
+                        no-gutters
+                    >
+                        <v-btn
+                            class=""
+                            small
+                            color="green"
+                            :disabled="!isValid"
+                            @click="onSubmit"
+                        >
+                            <span>
+                                {{
+                                    $t(editedStep
+                                        ? "additional:modules.tools.dataNarrator.button.submitEditStep"
+                                        : "additional:modules.tools.dataNarrator.button.submitAddStep")
+                                }}
+                            </span>
+                        </v-btn>
+                    </v-row>
+                </v-container>
             </v-footer>
+            <v-alert
+                v-show="!isValid"
+                id="tool-dataNarrator-creator-noHTML"
+                type="info"
+            >
+                {{ $t("additional:modules.tools.dataNarrator.warning.sendNoHTML") }}
+            </v-alert>
         </form>
     </div>
 </template>
@@ -1098,6 +1157,10 @@ export default {
 #tool-dataNarrator-creator-stepForm {
     max-width: 460px;
     position: relatieve;
+
+    #tool-dataNarrator-creator-noHTML {
+        margin-top: 10px;
+    }
 
     .tool-dataNarrator-creator-actions {
         position: sticky;

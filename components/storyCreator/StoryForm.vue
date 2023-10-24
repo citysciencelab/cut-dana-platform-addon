@@ -456,34 +456,41 @@ export default {
                     fluid
                     class="white"
                 >
-                    <v-row class="mb-2">
-                        <v-btn
-                            class=""
-                            small
-                            color="red"
-                            @click="$emit('reset-tool')"
-                        >
-                            <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.button.cancel")
-                                }}
-                            </span>
-                        </v-btn>
-                    </v-row>
-                    <v-row class="mb-2">
-                        <v-btn
-                            class=""
-                            small
-                            :disabled="!currentStory.steps || !currentStory.steps.length"
-                            color="blue"
-                            @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
-                        >
-                            <span>
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.button.previewStory")
-                                }}
-                            </span>
-                        </v-btn>
+                    <v-row
+                        class="mb-2"
+                        no-gutters
+                    >
+                        <v-col>
+                            <v-btn
+                                class=""
+                                small
+                                color="red"
+                                min-width="100%"
+                                @click="$emit('reset-tool')"
+                            >
+                                <span>
+                                    {{
+                                        $t("additional:modules.tools.dataNarrator.button.cancel")
+                                    }}
+                                </span>
+                            </v-btn>
+                        </v-col>
+                        <v-col>
+                            <v-btn
+                                class=""
+                                small
+                                :disabled="!currentStory.steps || !currentStory.steps.length"
+                                color="green"
+                                min-width="100%"
+                                @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
+                            >
+                                <span>
+                                    {{
+                                        $t("additional:modules.tools.dataNarrator.button.previewStory")
+                                    }}
+                                </span>
+                            </v-btn>
+                        </v-col>
                     </v-row>
                     <v-row>
                         <v-btn
@@ -501,17 +508,18 @@ export default {
                         </v-btn>
                     </v-row>
                 </v-container>
-
-                <v-alert
-                    v-show="!currentStory.steps || !currentStory.steps.length"
-                    type="info"
-                    class="white"
-                >
-                    {{
-                        $t("additional:modules.tools.dataNarrator.warning.sendNoSteps")
-                    }}
-                </v-alert>
             </v-footer>
+
+            <v-alert
+                v-show="!currentStory.steps || !currentStory.steps.length"
+                id="tool-dataNarrator-creator-noSteps"
+                type="info"
+                class="white"
+            >
+                {{
+                    $t("additional:modules.tools.dataNarrator.warning.sendNoSteps")
+                }}
+            </v-alert>
         </form>
     </div>
 </template>
@@ -520,6 +528,10 @@ export default {
 #tool-dataNarrator-creator-storyForm {
     max-width: 460px;
     position: relative;
+
+    #tool-dataNarrator-creator-noSteps {
+        margin-top: 10px;
+    }
 
     label.required:after { content: '*';color:red; }
 
