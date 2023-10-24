@@ -66,7 +66,8 @@ export default {
 
                     id++;
                     parentObj[category.camel] = {
-                        id: id,
+                        isCategory: true,
+                        id: id.toString(),
                         name: category.original,
                         disabled: depth === 0,
                         children: {}
@@ -128,8 +129,8 @@ export default {
                 createCategory(newCats, categories);
 
 
-                getNestedValue(categories, categoryString).children[`~~~~~~~~~${item.id}`] = {
-                    id: item.id,
+                getNestedValue(categories, categoryString).children[`${item.id}`] = {
+                    id: item.id.toString(),
                     name: !multipleItems ? item.datasets[0].md_name : item.name,
                     children: []
                 };
@@ -155,9 +156,9 @@ export default {
             });
 
             /**
-             *  Convert the object to an array
+             *  Convert the object to an array and sort by "isCategory" key
              * @param {Object} obj - The object to convert
-             * @returns {Object} - The converted object
+             * @returns {Object} - The converted and sorted object
              */
             function objectToValues (obj) {
                 if (!obj || typeof obj !== "object") {
@@ -168,18 +169,32 @@ export default {
                     return obj.map(item => objectToValues(item));
                 }
 
-                for (const key in obj) {
+                const sortedObj = {},
+                    keys = Object.keys(obj).sort((a, b) => {
+                        const aIsCategory = obj[a].isCategory ? 1 : 0,
+                            bIsCategory = obj[b].isCategory ? 1 : 0;
+
+                        return bIsCategory - aIsCategory;
+                    });
+
+                for (const key of keys) {
                     if (key === "children") {
-                        obj[key] = Object.values(obj[key]).map(child => objectToValues(child));
+                        sortedObj[key] = Object.values(obj[key])
+                            .map(child => objectToValues(child))
+                            .sort((a, b) => {
+                                const aIsCategory = a.isCategory ? 1 : 0,
+                                    bIsCategory = b.isCategory ? 1 : 0;
+
+                                return bIsCategory - aIsCategory;
+                            });
                     }
                     else {
-                        obj[key] = objectToValues(obj[key]);
+                        sortedObj[key] = objectToValues(obj[key]);
                     }
                 }
 
-                return obj;
+                return sortedObj;
             }
-
 
             return Object.values(objectToValues(categories));
         },
