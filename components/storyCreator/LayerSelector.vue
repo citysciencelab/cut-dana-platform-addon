@@ -67,7 +67,7 @@ export default {
                     id++;
                     parentObj[category.camel] = {
                         isCategory: true,
-                        id: id.toString(),
+                        id: `CUSTOMCATEGORY${id.toString()}`,
                         name: category.original,
                         disabled: depth === 0,
                         children: {}
@@ -204,6 +204,8 @@ export default {
 
             for (const layer of this.selected) {
                 let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
+
+                console.log(layerModel);
 
                 const exists = this.items.filter(item => item.id === layer.id).length > 0 && layerModel;
 
