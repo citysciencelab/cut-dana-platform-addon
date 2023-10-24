@@ -134,25 +134,25 @@ export default {
     },
     beforeDestroy () {
         // // Hides all story layers
-        // const layerList = Radio.request("ModelList", "getModelsByAttributes", {
-        //     isVisibleInTree: true, isSelected: true
-        // });
+        const layerList = Radio.request("ModelList", "getModelsByAttributes", {
+            isVisibleInMap: true, isBaseLayer: false
+        });
 
-        // for (const layer of layerList) {
-        //     if (this.currentStep.layers.includes(layer.attributes.id)) {
-        //         this.disableLayer(layer);
-        //     }
-        //     // const isStepLayer = (
-        //     //     (this.currentStep && this.currentStep.layers) ||
-        //     //     []
-        //     // ).includes(Number(layer.attributes.id));
 
-        //     // if (isStepLayer && layer.attributes.isVisibleInMap) {
-        //     //     this.disableLayer(layer);
-        //     // }
-        //     // this.disableLayer(layer);
-        // }
-        // Radio.trigger("Menu", "rerender");
+        for (const layer of layerList) {
+            if (this.currentStep.layers.includes(layer.attributes.id)) {
+                this.disableLayer(layer);
+            }
+            // const isStepLayer = (
+            //     (this.currentStep && this.currentStep.layers) ||
+            //     []
+            // ).includes(Number(layer.attributes.id));
+
+            // if (isStepLayer && layer.attributes.isVisibleInMap) {
+            //     this.disableLayer(layer);
+            // }
+            // this.disableLayer(layer);
+        }
 
         if (this.currentStory) {
             if (Object.hasOwn(this.currentStory, "displayType") && this.currentStory.displayType.toUpperCase() === "DIPAS") {
@@ -393,11 +393,14 @@ export default {
             }
 
             const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
-                enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true}),
+                enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false}),
                 stepLayers = this.currentStep.layers || [];
+
+            console.log(enabledLayers, stepLayers);
 
             for (const enabledLayer of enabledLayers) {
                 this.disableLayer(enabledLayer);
+                console.log("should disable layer", enabledLayer);
             }
 
 
