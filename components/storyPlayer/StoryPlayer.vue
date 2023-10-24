@@ -396,11 +396,8 @@ export default {
                 enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false}),
                 stepLayers = this.currentStep.layers || [];
 
-            console.log(enabledLayers, stepLayers);
-
             for (const enabledLayer of enabledLayers) {
                 this.disableLayer(enabledLayer);
-                console.log("should disable layer", enabledLayer);
             }
 
 

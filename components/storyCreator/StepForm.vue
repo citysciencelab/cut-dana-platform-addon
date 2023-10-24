@@ -142,7 +142,7 @@ export default {
          */
         layerOptions () {
 
-            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"});
+            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer", isBaseLayer: false});
 
             return layerList.map(layer => layer);
         },
