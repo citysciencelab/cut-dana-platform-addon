@@ -54,7 +54,7 @@ export default {
     <v-card
         elevation="2"
         class="mb-2"
-        :class="{'grid-item': grid}"
+        :class="{'grid-item': grid, 'topper': shareSettings}"
     >
         <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
             <div>
@@ -104,6 +104,7 @@ export default {
                 v-if="editable()"
                 :story="story"
                 @toggle:shared-settings="shareSettings = !shareSettings"
+                v-on="$listeners"
             />
             <EditButton
                 v-if="editable()"
@@ -126,6 +127,10 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+
+.topper {
+    z-index: 1000;
+}
 .grid-item {
     width: 100%;
 
