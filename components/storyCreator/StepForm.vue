@@ -326,6 +326,12 @@ export default {
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
     },
     beforeDestroy () {
+        for (const importedItem of this.importedFileNames) {
+            const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
+
+            model.setIsVisibleInMap(false);
+            model.set("isSelected", false);
+        }
         for (const layer of this.step.layers) {
             const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
 
@@ -370,7 +376,6 @@ export default {
                         });
 
                     this.importKML({raw: f.target.result, checkSameLayer: checkSameLayer, layerName: layerName, filename: file.name, pointImages: this.pointImages, textColors: this.textColors, textSizes: this.textSizes});
-                    console.log("File added");
                 };
 
                 reader.readAsText(file);
