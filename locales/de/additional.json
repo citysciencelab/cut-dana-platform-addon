@@ -42,7 +42,8 @@
           "sharedWithPlaceholder": "E-Mail hinzufügen",
           "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt.",
           "clickToSwitch": "Klicken Sie auf ",
-          "backgroundMap": "Hintergrundkarte"
+          "backgroundMap": "Hintergrundkarte",
+          "advancedOptions": "Erweiterte Optionen"
         },
         "storyList": {
           "all":  "Alle Stories",

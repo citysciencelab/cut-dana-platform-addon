@@ -221,64 +221,6 @@ export default {
                 </v-row>
             </div>
 
-            <div class="form-group">
-                <label
-                    class="form-label"
-                    for="story-scrolly"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.scrolly"
-                        )
-                    }}
-                </label>
-
-                <input
-                    id="story-scrolly"
-                    class="checkbox"
-                    type="checkbox"
-                    :checked="currentStory?.displayType === 'scrolly'"
-                    @change="changeScrollyMode"
-                >
-            </div>
-
-            <div
-                v-if="currentStory?.displayType !== 'scrolly'"
-                class="form-group"
-            >
-                <label
-                    class="form-label"
-                    for="story-interval"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.interval"
-                        )
-                    }}
-                </label>
-
-                <input
-                    id="story-interval"
-                    class="form-control"
-                    type="number"
-                    :value="getStoryInterval()"
-                    :min="minInterval"
-                    :max="maxInterval"
-                    step="1"
-                    @change="setStoryInterval"
-                >
-                <!--
-                // Unsure if the combination of both (scroll and interval) is a necessity
-                <v-alert
-                    v-show="storyConf.displayType === 'scrolly' && storyConf.storyInterval > 0"
-                    type="info"
-                >
-                    {{
-                        $t("additional:modules.tools.dataNarrator.warning.noIntervalOnScrolly")
-                    }}
-                </v-alert>
-                -->
-            </div>
 
             <ShareSettings
                 :private-story="currentStory.private"
@@ -360,6 +302,75 @@ export default {
                 rounded
                 color="lime"
             />
+
+            <v-expansion-panels id="advanced-options">
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.label.advancedOptions")
+                        }}
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <div class="form-group">
+                            <label
+                                class="form-label"
+                                for="story-scrolly"
+                            >
+                                {{
+                                    $t(
+                                        "additional:modules.tools.dataNarrator.label.scrolly"
+                                    )
+                                }}
+                            </label>
+
+                            <input
+                                id="story-scrolly"
+                                class="checkbox"
+                                type="checkbox"
+                                :checked="currentStory?.displayType === 'scrolly'"
+                                @change="changeScrollyMode"
+                            >
+                        </div>
+                        <div
+                            v-if="currentStory?.displayType !== 'scrolly'"
+                            class="form-group"
+                        >
+                            <label
+                                class="form-label"
+                                for="story-interval"
+                            >
+                                {{
+                                    $t(
+                                        "additional:modules.tools.dataNarrator.label.interval"
+                                    )
+                                }}
+                            </label>
+
+                            <input
+                                id="story-interval"
+                                class="form-control"
+                                type="number"
+                                :value="getStoryInterval()"
+                                :min="minInterval"
+                                :max="maxInterval"
+                                step="1"
+                                @change="setStoryInterval"
+                            >
+                            <!--
+                            // Unsure if the combination of both (scroll and interval) is a necessity
+                            <v-alert
+                                v-show="storyConf.displayType === 'scrolly' && storyConf.storyInterval > 0"
+                                type="info"
+                            >
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.warning.noIntervalOnScrolly")
+                                }}
+                            </v-alert>
+                            -->
+                        </div>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
 
             <v-footer
                 v-if="notSaving"
@@ -450,6 +461,7 @@ export default {
                         </v-tooltip>
                     </v-card-text>
                 </v-card>
+
 
                 <v-container
                     v-else

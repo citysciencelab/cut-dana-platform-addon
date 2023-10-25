@@ -973,7 +973,11 @@ export default {
 
             <v-expansion-panels id="advanced-options">
                 <v-expansion-panel>
-                    <v-expansion-panel-header>Advanced options</v-expansion-panel-header>
+                    <v-expansion-panel-header>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.label.advancedOptions")
+                        }}
+                    </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <div class="form-group">
                             <label

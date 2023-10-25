@@ -42,7 +42,8 @@
           "sharedWithPlaceholder": "Add email",
           "sharedWithDuplicate": "This email is already added",
           "clickToSwitch": "Click to ",
-          "backgroundMap": "Background Map"
+          "backgroundMap": "Background Map",
+          "advancedOptions": "Advanced options"
         },
         "storyList": {
           "all":  "All Stories",
