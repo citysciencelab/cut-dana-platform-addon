@@ -34,8 +34,7 @@ export default {
     data () {
         return {
             storyList: {},
-            storyListMode: "all",
-            masonry: null
+            storyListMode: "all"
         };
     },
     computed: {

@@ -46,11 +46,9 @@ export default {
             v-if="privateStory"
             class="form-group"
         >
-            <label for="sharedWith">{{
-                $t(
-                    "additional:modules.tools.dataNarrator.label.sharedWith"
-                )
-            }}</label>
+            <label for="sharedWith">
+                {{ $t( "additional:modules.tools.dataNarrator.label.sharedWith" ) }}
+            </label>
             <BFormTags
                 :value="sharedWith"
                 class="form-control"
