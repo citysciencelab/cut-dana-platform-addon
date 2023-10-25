@@ -349,6 +349,10 @@ export default {
     width: 40px !important;
 }
 
+#login-component {
+    left: 50% !important;
+}
+
 // Will put dashboard window into the center of the screen
 .tool-window-vue {
     left: var(--currentPadding) !important;
