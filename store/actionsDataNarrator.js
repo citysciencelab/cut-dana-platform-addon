@@ -34,6 +34,8 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
                 commit("setMode", mode);
             });
         }
+
+
     };
 
 export default actions;

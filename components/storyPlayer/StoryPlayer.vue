@@ -355,10 +355,31 @@ export default {
         },
 
         /**
+         * requests all data sources of the current step using axios
+         * @returns  {Object[]}  Array of data sources
+         */
+        getDataSources () {
+
+            // if (this.currentStep) {
+            //     const dataSourcesIds = this.currentStep.dataSources || [];
+
+            //     for (const dataSourceId of dataSourcesIds) {
+            //         const dataSource = this.$store.state.Tools.DataNarrator.dataSources.find(({id}) => id === dataSourceId);
+
+            //         if (dataSource) {
+            //             dataSources.push(dataSource);
+            //         }
+            //     }
+            // }
+            // return dataSources;
+        },
+
+        /**
          * Sets up the tool window and content for the selected step.
          * @returns {void}
          */
         async loadStep () {
+            console.log("loadStep", this.currentStep);
             if (!this.currentStep) {
                 return;
             }
