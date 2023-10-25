@@ -10,8 +10,8 @@ import uuid from "uuid";
 import {VueEditor} from "vue2-editor";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
-import * as constants from "../../store/constantsDataNarrator";
 import actions from "../../store/actionsDataNarrator";
+import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 
@@ -607,25 +607,6 @@ export default {
                 >
             </div>
 
-            <div class="form-group">
-                <label
-                    class="form-label"
-                    for="step-width"
-                >
-                    {{ $t("additional:modules.tools.dataNarrator.label.stepWidth") }}
-                </label>
-
-                <input
-                    id="step-width"
-                    class="form-control"
-                    type="number"
-                    :value="step.stepWidth"
-                    :min="minStepWidth"
-                    :max="maxStepWidth"
-                    step="10"
-                    @change="onChangeStepWidth"
-                >
-            </div>
 
             <div
                 v-if="is3DLayerActive"
@@ -990,6 +971,51 @@ export default {
                 </div>
             </div>
 
+            <v-expansion-panels id="advanced-options">
+                <v-expansion-panel>
+                    <v-expansion-panel-header>Advanced options</v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <div class="form-group">
+                            <label
+                                class="form-label"
+                                for="step-width"
+                            >
+                                {{ $t("additional:modules.tools.dataNarrator.label.stepWidth") }}
+                            </label>
+
+                            <input
+                                id="step-width"
+                                class="form-control"
+                                type="number"
+                                :value="step.stepWidth"
+                                :min="minStepWidth"
+                                :max="maxStepWidth"
+                                step="10"
+                                @change="onChangeStepWidth"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label
+                                class="form-label"
+                                for="step-addons"
+                            >
+                                {{ $t( "additional:modules.tools.dataNarrator.label.interactionAddons" ) }}
+                            </label>
+                            <v-select
+                                id="step-addons"
+                                v-model="step.interactionAddons"
+                                :items="addonOptions"
+                                multiple
+                                dense
+                                solo
+                                hide-details
+                            />
+                        </div>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+
+
             <v-footer
                 class="tool-dataNarrator-creator-actions white"
                 elevation="1"
@@ -1151,6 +1177,10 @@ export default {
 
     #tool-dataNarrator-creator-noHTML {
         margin-top: 10px;
+    }
+
+    #advanced-options {
+        margin-bottom: 10px;
     }
 
     .tool-dataNarrator-creator-actions {

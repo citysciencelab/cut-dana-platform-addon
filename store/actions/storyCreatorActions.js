@@ -1,8 +1,8 @@
 import axios from "axios";
 import uuid from "uuid";
 
-import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 import dataURLtoFile from "../../utils/dataURLtoFile.js";
+import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 
 
 /**
@@ -32,7 +32,11 @@ function addStoryChapter ({state, commit}, chapter) {
  * @param {Object} parameters.previousStepReference the reference to the step in state (if already exists)
  * @returns {void}
  */
-function saveStoryStep ({state, commit}, {step, images}) {
+function saveStoryStep ({state, commit}, {step, images, datasources}) {
+    // add datasources to step
+    if (datasources) {
+        step.datasources = datasources;
+    }
     // remove old step if it exists
     let steps = state.currentStory.steps.filter(({_id}) => _id !== step._id);
 
@@ -144,6 +148,30 @@ function postStoryImage (pathPrefix, image) {
 }
 
 /**
+ * Uploads a datasource to the backend
+ * @param {String} pathPrefix the url of the backend and story
+ * @param {Object} fileData object with file data
+ * @returns {Promise} returns a promise that resolves when the image is uploaded
+ */
+function postStepDatasource (pathPrefix, fileData) {
+    const query_url = `${pathPrefix}`,
+        // generate file from base64 string
+        // put file into form data
+        fData = new FormData(),
+
+        config = {
+            headers: {"Content-Type": "multipart/form-data"}
+        };
+
+    fData.append("Datasource", fileData, fileData.name);
+
+
+    // return promise
+    return axios.post(query_url, fData, config);
+}
+
+
+/**
  * Prepare html and images inside for upload
  * @param {Object} story the story
  * @param {Array} images Array of images
@@ -197,7 +225,21 @@ function uploadStoryFiles ({state}) {
     const backendUrl = state.backendConfig.url,
         requestConf = {url: backendUrl + "/stories"},
 
-        [story, imageArray, htmlArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages);
+        [story, imageArray, htmlArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages),
+        datasources = [],
+        newStoryObj = {};
+
+    Object.assign(newStoryObj, story);
+
+    console.log(story, newStoryObj);
+
+
+    for (const step in story.steps) {
+        Array.from(story.steps[step].datasources).forEach(datasource => {
+            datasources.push(datasource);
+        });
+        story.steps[step].datasources = undefined;
+    }
 
     // If it's string, than it was uploaded previously and we have to keep it
     // otherwise, new titleImage should be uploaded
@@ -205,9 +247,10 @@ function uploadStoryFiles ({state}) {
         delete story.titleImage;
     }
 
-    requestConf.data = story;
+    requestConf.data = {...story};
     let storyId = state.currentStoryId,
-        imagePathPrefix = `${backendUrl}/images/`;
+        imagePathPrefix = `${backendUrl}/images/`,
+        datasourcePathPrefix = `${backendUrl}/datasources/`;
 
     if (storyId) {
         requestConf.url += "/" + storyId;
@@ -243,6 +286,18 @@ function uploadStoryFiles ({state}) {
             });
         }
         return Promise.all(imageUploads);
+    }).then(() => {
+        // upload and replace datasources in story step
+        let datasourceUploads = [];
+
+        console.log(newStoryObj);
+
+        datasourceUploads = datasources.map((datasource) => {
+            return postStepDatasource(datasourcePathPrefix + storyId + "/" + new Date().valueOf() + "_" + uuid.v4(), datasource);
+        });
+
+        console.log(datasourceUploads);
+
     }).then(() => {
         // Upload html parts
         const pathPrefix = `${backendUrl}/stories/${storyId}/`,
