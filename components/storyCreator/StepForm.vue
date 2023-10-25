@@ -57,6 +57,7 @@ export default {
                 },
             newChapterTitle: "",
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
+
             is3DLayerActive: false,
             layerTypes3DSpecific: ["Entities3D", "TileSet3D", "Terrain3D"],
             backgroundMapId: this.editedStep?.backgroundMapId,
@@ -338,28 +339,16 @@ export default {
         // These application wide getters and setters can be found in 'src/modules/map/store'
         ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
 
-        switchBackgroundMap (value) {
-            if (value) {
-                this.backgroundMaps.forEach(model => {
-                    if (model.get("id") === value) {
-                        model.setIsVisibleInMap(true);
-                        model.setIsSelected(true);
-                    }
-                    else {
-                        model.setIsVisibleInMap(false);
-                        model.setIsSelected(false);
-                    }
-                });
-            }
-        },
-
         /**
          * Handles step width changes
          * @param {Event} event event fired by changing the input for stepWidth
          * @returns {void}
          */
         onChangeStepWidth (event) {
-            console.log(event.files);
+            this.step.stepWidth = Math.max(
+                this.minStepWidth,
+                Math.min(this.maxStepWidth, Number(event.target.value))
+            );
         },
 
         /**
@@ -368,11 +357,7 @@ export default {
          * @returns {void}
          */
         onCustomDataUpload (event) {
-            const file = event.target.files[0];
-
-            this.$refs.preview_image.src = URL.createObjectURL(file);
-            this.currentStory.titleImage = file;
-            this.hasCover = true;
+            this.datasources = event.target.files;
         },
 
         /**
@@ -450,7 +435,7 @@ export default {
                     chapterTitle: this.newChapterTitle
                 });
             }
-            this.saveStoryStep({step: this.step, images: this.images});
+            this.saveStoryStep({step: this.step, images: this.images, datasources: this.datasources});
 
 
             // Trigger submit action to return to story overview
@@ -641,29 +626,6 @@ export default {
                     @change="onChangeStepWidth"
                 >
             </div>
-
-            <div class="form-group">
-                <label
-                    class="form-label"
-                    for="step-visible"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.visible" ) }}
-                </label>
-
-                <input
-                    id="step-visible"
-                    class="checkbox"
-                    type="checkbox"
-                    :checked="step.visible"
-                    @change="step.visible = $event.target.checked"
-                >
-            </div>
-
-            <BackgroundMap
-                :selected-id="backgroundMapId"
-                :background-maps="backgroundMaps"
-                @update:background-map-id="setBackgroundMap"
-            />
 
             <div
                 v-if="is3DLayerActive"
@@ -1006,25 +968,6 @@ export default {
                         >
                     </v-col>
                 </v-row>
-            </div>
-
-            <div class="form-group">
-                <label
-                    class="form-label"
-                    for="step-addons"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.interactionAddons" ) }}
-                </label>
-
-                <v-select
-                    id="step-addons"
-                    v-model="step.interactionAddons"
-                    :items="addonOptions"
-                    multiple
-                    dense
-                    solo
-                    hide-details
-                />
             </div>
 
             <div class="form-group">
