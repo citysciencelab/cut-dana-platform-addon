@@ -1,7 +1,5 @@
 
-const tableClass = "table-tool-win-all-vue",
-    defaultClass = "tool-window-vue",
-    defaultTemplatePadding = 20;
+const defaultTemplatePadding = 20;
 
 /**
  * Calculates the padding for the tool window
@@ -44,14 +42,12 @@ function toolWidth (innerWidth) {
  * Resizes window for dashboard and return back to the original size
  *
  * @param {Boolean} doResize true if we want to resize the window
- * @param {String} uiStyle the style of the ui (from the config)
  * @param {Number} initialWidth initial width of the window (from the config)
  * @returns {void}
  */
-export default function resizeTool (doResize, uiStyle, initialWidth) {
+export default function resizeTool (doResize, initialWidth) {
 
-    const toolWindowClass = uiStyle === "TABLE" ? tableClass : defaultClass,
-        toolWindow = document.getElementsByClassName(toolWindowClass)[0],
+    const toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0],
 
         width = doResize ? toolWidth(window.innerWidth) : initialWidth,
         padding = doResize ? sidePadding(window.innerWidth) : defaultTemplatePadding;

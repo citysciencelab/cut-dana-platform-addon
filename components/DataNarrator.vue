@@ -63,6 +63,15 @@ export default {
             handler () {
                 this.resizeHandler();
             }
+        },
+        "active": {
+            handler (active) {
+                if (active) {
+                    setTimeout(() => {
+                        this.resizeHandler();
+                    }, 50);
+                }
+            }
         }
     },
     created () {
@@ -122,7 +131,7 @@ export default {
         resizeHandler () {
             const doResize = this.mode === constants.storyTellingModes.DASHBOARD && this.currentStory === null;
 
-            resizeTool(doResize, this.uiStyle, this.initialWidth);
+            resizeTool(doResize, this.initialWidth);
         },
 
         /**
