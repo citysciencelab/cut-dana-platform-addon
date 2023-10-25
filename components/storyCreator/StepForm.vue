@@ -8,12 +8,12 @@ import {
 } from "@mdi/js";
 import uuid from "uuid";
 import {VueEditor} from "vue2-editor";
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
+import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImportAddon";
 import actions from "../../store/actionsDataNarrator";
 import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
-import mutations from "../../store/mutationsDataNarrator";
 
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
 import getFileExtension from "../../utils/getFileExtension";
@@ -81,6 +81,7 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Tools/FileImportAddon", Object.keys(fileImportGetters)),
         ...mapGetters(["mobile"]),
 
         /**
@@ -313,6 +314,7 @@ export default {
         }
     },
     mounted () {
+        console.log(this);
         if (this.step.associatedChapter === null) {
             const diff = this.chapterOptions.length > 1 ? 2 : 1;
 
@@ -334,8 +336,11 @@ export default {
         this.switchBackgroundMap(this.visibleBackgroundMap);
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapActions("Tools/FileImportAddon", [
+            "importKML",
+            "setSelectedFiletype"
+        ]),
         // These application wide getters and setters can be found in 'src/modules/map/store'
         ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
 
@@ -352,6 +357,24 @@ export default {
                     }
                 });
             }
+        },
+
+        addFile (files) {
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = f => {
+                    const layerName = this.getLayerName(file.name),
+                        checkSameLayer = this.importedFileNames.filter(importedFileName => {
+                            return this.getLayerName(file.name) === this.getLayerName(importedFileName);
+                        });
+
+                    this.importKML({raw: f.target.result, checkSameLayer: checkSameLayer, layerName: layerName, filename: file.name, pointImages: this.pointImages, textColors: this.textColors, textSizes: this.textSizes});
+                    console.log("File added");
+                };
+
+                reader.readAsText(file);
+            });
         },
 
         /**
@@ -373,6 +396,9 @@ export default {
          */
         onCustomDataUpload (event) {
             this.datasources = event.target.files;
+            if (this.datasources !== undefined) {
+                this.addFile(this.datasources);
+            }
         },
 
         /**
@@ -521,6 +547,14 @@ export default {
         setBackgroundMap (value) {
             this.step.backgroundMapId = value;
             this.backgroundMapId = value;
+        },
+        /**
+         * Getting the layer name from the file name without the postfix as file format
+         * @param {String} fileName name of the file
+         * @returns {String} Returns the layer name
+         */
+        getLayerName (fileName) {
+            return fileName.substr(0, fileName.lastIndexOf("."));
         }
     }
 };
