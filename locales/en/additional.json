@@ -101,7 +101,7 @@
         "button": {
           "cancel": "Cancel",
           "addStep": "Add Step",
-          "deleteStep": "Step",
+          "deleteStep": "Delete",
           "submitAddStep": "Add Step to Story",
           "submitEditStep": "Save",
           "previewStory": "Preview",
