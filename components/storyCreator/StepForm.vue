@@ -339,6 +339,21 @@ export default {
         // These application wide getters and setters can be found in 'src/modules/map/store'
         ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
 
+        switchBackgroundMap (value) {
+            if (value) {
+                this.backgroundMaps.forEach(model => {
+                    if (model.get("id") === value) {
+                        model.setIsVisibleInMap(true);
+                        model.setIsSelected(true);
+                    }
+                    else {
+                        model.setIsVisibleInMap(false);
+                        model.setIsSelected(false);
+                    }
+                });
+            }
+        },
+
         /**
          * Handles step width changes
          * @param {Event} event event fired by changing the input for stepWidth
