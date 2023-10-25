@@ -607,6 +607,12 @@ export default {
                 >
             </div>
 
+            <BackgroundMap
+                :selected-id="backgroundMapId"
+                :background-maps="backgroundMaps"
+                @update:background-map-id="setBackgroundMap"
+            />
+
 
             <div
                 v-if="is3DLayerActive"
