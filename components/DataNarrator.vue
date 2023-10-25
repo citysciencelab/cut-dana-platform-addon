@@ -140,6 +140,7 @@ export default {
          */
         activateTool () {
             this.setActive(true);
+
             // Workround to trigger tool visibility. The above code "this.setActive(true);" is not triggering the ToolTemplate.vue watcher for active which would trigger the code below
 
             if (this.uiStyle === "TABLE") {
@@ -190,25 +191,20 @@ export default {
             );
         },
 
+        resetDataNarrator () {
+            disableStoryLayers(this.currentStory.steps);
+            this.resetModule();
+            this.setMode(constants.storyTellingModes.DASHBOARD);
+            EventEmitter.$emit("resetPlayer");
+        },
+
         /**
          * Resets the tool to its initial state
          * @param {boolean} skipConfirm true if the user shouldn't be asked to confirm the reset
          * @returns {void}
          */
         reset (skipConfirm = false) {
-
-            /**
-             * Constant that saves all the actions on confirm
-             * @returns {void}
-             */
-            const resetDataNarrator = () => {
-                disableStoryLayers(this.currentStory.steps);
-                this.resetModule();
-                this.setMode(constants.storyTellingModes.DASHBOARD);
-                EventEmitter.$emit("resetPlayer");
-            };
-
-            this.confirmOnlyWhenCreatingStory(resetDataNarrator, skipConfirm);
+            this.confirmOnlyWhenCreatingStory(this.resetDataNarrator, skipConfirm);
         },
 
         /**
@@ -223,7 +219,7 @@ export default {
              */
             const closeDataNarrator = () => {
                 this.setActive(false);
-                this.resetModule();
+                this.resetDataNarrator();
 
                 const model = Radio.request(
                     "ModelList",
