@@ -1,10 +1,10 @@
 <script>
+import {mdiChevronLeft, mdiChevronRight} from "@mdi/js";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import {getStepReference} from "../../utils/getReference";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
-import {mdiChevronLeft, mdiChevronRight} from "@mdi/js";
+import {getStepReference} from "../../utils/getReference";
 
 export default {
     name: "StoryNavigation",
@@ -26,6 +26,10 @@ export default {
         // All steps of the current story
         steps: {
             type: Array,
+            default: null
+        },
+        progress: {
+            type: Number,
             default: null
         }
     },
@@ -140,7 +144,7 @@ export default {
             </v-btn>
             <!-- show the current step index from the current chapter -->
             <div class="d-flex justify-content-center align-items-center">
-                {{ currentChapterStepIndex + 1 }} / {{ currentChapterStepCount }}
+                {{ currentStepIndex + 1 }} / {{ steps.length }}
             </div>
             <v-btn
                 class="story-navigation-button"

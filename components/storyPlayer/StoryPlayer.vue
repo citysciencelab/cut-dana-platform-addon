@@ -515,6 +515,7 @@ export default {
             v-model="currentStepIndex"
             :current-chapter="currentStep.associatedChapter"
             :steps="currentStory.steps"
+            :progress="progress"
         />
 
         <!-- <DipasPlayer
