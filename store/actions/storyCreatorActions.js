@@ -1,7 +1,6 @@
 import axios from "axios";
 import uuid from "uuid";
 
-import _ from "lodash";
 import dataURLtoFile from "../../utils/dataURLtoFile.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 
@@ -227,12 +226,7 @@ function uploadStoryFiles ({state}) {
         requestConf = {url: backendUrl + "/stories"},
         datasourcePathPrefix = `${backendUrl}/datasources/`,
         [story, imageArray, htmlArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages),
-        datasources = [],
-        newStoryObj = _.cloneDeep(story),
-
-        newTestStory = _.cloneDeep(story);
-
-    console.log(newStoryObj);
+        datasources = [];
 
 
     for (const step in story.steps) {
@@ -254,32 +248,8 @@ function uploadStoryFiles ({state}) {
             };
         });
 
-        console.log(story.steps[step].datasources);
-
-        // story.steps[step].datasources.forEach((datasource, index) => {
-
-        //     const extension = datasource.name.split("."),
-
-        //         datasourceObj = {
-        //             name: datasource.name,
-        //             hash: new Date().valueOf() + "_" + uuid.v4() + "." + extension[extension.length - 1],
-        //             stepNumber: story.steps[step].stepNumber,
-        //             datasource: datasource
-        //         };
-
-        //     datasources.push(datasourceObj);
-        //     console.log(index);
-        //     story.steps[step].datasources[index] = {
-        //         name: datasourceObj.name,
-        //         key: datasourceObj.hash
-        //     };
-        //     console.log(story.steps[step].datasources[index]);
-        // });
-
-        // story.steps[step].datasources = undefined;
     }
 
-    console.log(story);
 
     // If it's string, than it was uploaded previously and we have to keep it
     // otherwise, new titleImage should be uploaded
