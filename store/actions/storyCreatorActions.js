@@ -1,6 +1,7 @@
 import axios from "axios";
 import uuid from "uuid";
 
+import _ from "lodash";
 import dataURLtoFile from "../../utils/dataURLtoFile.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 
@@ -163,7 +164,7 @@ function postStepDatasource (pathPrefix, fileData) {
             headers: {"Content-Type": "multipart/form-data"}
         };
 
-    fData.append("Datasource", fileData, fileData.name);
+    fData.append("datasource", fileData, fileData.name);
 
 
     // return promise
@@ -224,22 +225,61 @@ function uploadStoryFiles ({state}) {
 
     const backendUrl = state.backendConfig.url,
         requestConf = {url: backendUrl + "/stories"},
-
+        datasourcePathPrefix = `${backendUrl}/datasources/`,
         [story, imageArray, htmlArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages),
         datasources = [],
-        newStoryObj = {};
+        newStoryObj = _.cloneDeep(story),
 
-    Object.assign(newStoryObj, story);
+        newTestStory = _.cloneDeep(story);
 
-    console.log(story, newStoryObj);
+    console.log(newStoryObj);
 
 
     for (const step in story.steps) {
-        Array.from(story.steps[step].datasources).forEach(datasource => {
-            datasources.push(datasource);
+        // story.steps[step].datasources = undefined;
+        story.steps[step].datasources = Array.from(story.steps[step].datasources).map(datasource => {
+            const extension = datasource.name.split("."),
+
+                datasourceObj = {
+                    name: datasource.name,
+                    hash: new Date().valueOf() + "_" + uuid.v4() + "." + extension[extension.length - 1],
+                    stepNumber: story.steps[step].stepNumber,
+                    datasource: datasource
+                };
+
+            datasources.push(datasourceObj);
+            return {
+                name: datasourceObj.name,
+                key: datasourceObj.hash
+            };
         });
-        story.steps[step].datasources = undefined;
+
+        console.log(story.steps[step].datasources);
+
+        // story.steps[step].datasources.forEach((datasource, index) => {
+
+        //     const extension = datasource.name.split("."),
+
+        //         datasourceObj = {
+        //             name: datasource.name,
+        //             hash: new Date().valueOf() + "_" + uuid.v4() + "." + extension[extension.length - 1],
+        //             stepNumber: story.steps[step].stepNumber,
+        //             datasource: datasource
+        //         };
+
+        //     datasources.push(datasourceObj);
+        //     console.log(index);
+        //     story.steps[step].datasources[index] = {
+        //         name: datasourceObj.name,
+        //         key: datasourceObj.hash
+        //     };
+        //     console.log(story.steps[step].datasources[index]);
+        // });
+
+        // story.steps[step].datasources = undefined;
     }
+
+    console.log(story);
 
     // If it's string, than it was uploaded previously and we have to keep it
     // otherwise, new titleImage should be uploaded
@@ -247,10 +287,9 @@ function uploadStoryFiles ({state}) {
         delete story.titleImage;
     }
 
-    requestConf.data = {...story};
+    requestConf.data = story;
     let storyId = state.currentStoryId,
-        imagePathPrefix = `${backendUrl}/images/`,
-        datasourcePathPrefix = `${backendUrl}/datasources/`;
+        imagePathPrefix = `${backendUrl}/images/`;
 
     if (storyId) {
         requestConf.url += "/" + storyId;
@@ -288,15 +327,10 @@ function uploadStoryFiles ({state}) {
         return Promise.all(imageUploads);
     }).then(() => {
         // upload and replace datasources in story step
-        let datasourceUploads = [];
 
-        console.log(newStoryObj);
-
-        datasourceUploads = datasources.map((datasource) => {
-            return postStepDatasource(datasourcePathPrefix + storyId + "/" + new Date().valueOf() + "_" + uuid.v4(), datasource);
+        datasources.map((datasource) => {
+            return postStepDatasource(datasourcePathPrefix + storyId + "/" + datasource.hash, datasource.datasource);
         });
-
-        console.log(datasourceUploads);
 
     }).then(() => {
         // Upload html parts
