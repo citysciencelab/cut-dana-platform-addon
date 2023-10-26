@@ -19,6 +19,8 @@ import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
 import getFileExtension from "../../utils/getFileExtension";
 import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 
+import axios from "axios";
+import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 import LayerSelector from "./LayerSelector.vue";
 import BackgroundMap from "./inputs/BackgroundMap.vue";
 
@@ -124,9 +126,6 @@ export default {
             return Array.from({length: steps.length + 1}, (v, i) => i + 1);
         },
 
-        datasources () {
-            return [];
-        },
 
         /**
          * The chapter options
@@ -329,6 +328,7 @@ export default {
             this.step.stepNumber = this.allStepNumbers[this.allStepNumbers.length - 1];
         }
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
+        this.existingDatasources();
     },
     beforeDestroy () {
         for (const importedItem of this.importedFileNames) {
@@ -367,6 +367,29 @@ export default {
                         model.setIsSelected(false);
                     }
                 });
+            }
+        },
+
+        existingDatasources () {
+            for (const dataSource of this.rawDatasources) {
+                // const response = this.ownDataSources(dataSource.key);
+                if (this.importedFileNames.includes(dataSource.name)) {
+                    const model = Radio.request("ModelList", "getModelByAttributes", {name: dataSource.name.split(".")[0]});
+
+                    this.enableLayer(model);
+                }
+                else {
+                    axios.get(this.backendConfig.url + "/datasources/" + this.currentStoryId + "/" + dataSource.key, {
+                        responseType: "blob"
+                    }).then((r) => {
+                        const file = new File([r.data], dataSource.name, {
+                            type: getMimeTypeFromExtension(dataSource.name.split(".").pop())
+                        });
+
+                        this.addFile([file]);
+                        this.datasources = [file];
+                    });
+                }
             }
         },
 
@@ -411,7 +434,7 @@ export default {
             }
         },
 
-        onWmsLayersAdd (event) {
+        onWmsLayersAdd () {
             Radio.trigger("Parser", "addWMSRemotely", document.querySelector("#own_wmsLayers").value);
             this.wmsLayers.push(document.querySelector("#own_wmsLayers").value);
         },
