@@ -32,10 +32,14 @@ function addStoryChapter ({state, commit}, chapter) {
  * @param {Object} parameters.previousStepReference the reference to the step in state (if already exists)
  * @returns {void}
  */
-function saveStoryStep ({state, commit}, {step, images, datasources}) {
+function saveStoryStep ({state, commit}, {step, images, datasources, wmsLayers}) {
     // add datasources to step
     if (datasources) {
         step.datasources = datasources;
+    }
+
+    if (wmsLayers) {
+        step.wmsLayers = wmsLayers;
     }
     // remove old step if it exists
     let steps = state.currentStory.steps.filter(({_id}) => _id !== step._id);

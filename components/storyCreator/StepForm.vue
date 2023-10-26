@@ -76,7 +76,9 @@ export default {
                 mdiCheck,
                 mdiPinOutline,
                 mdiBackspaceOutline
-            }
+            },
+            rawDatasources: this.editedStep?.datasources || [],
+            wmsLayers: this.editedStep?.wmsLayers || []
         };
     },
     computed: {
@@ -120,6 +122,10 @@ export default {
                 ({associatedChapter}) => associatedChapter === this.step.associatedChapter
             );
             return Array.from({length: steps.length + 1}, (v, i) => i + 1);
+        },
+
+        datasources () {
+            return [];
         },
 
         /**
@@ -405,6 +411,10 @@ export default {
             }
         },
 
+        onWmsLayersAdd (event) {
+            this.wmsLayers.push(document.querySelector("#own_wmsLayers").value);
+        },
+
         /**
          * Handles adding an image to the HTML content images
          * @param {File} imageFile the image file to add
@@ -480,7 +490,7 @@ export default {
                     chapterTitle: this.newChapterTitle
                 });
             }
-            this.saveStoryStep({step: this.step, images: this.images, datasources: this.datasources});
+            this.saveStoryStep({step: this.step, images: this.images, datasources: this.datasources, wmsLayers: this.wmsLayers});
 
 
             // Trigger submit action to return to story overview
@@ -1012,6 +1022,55 @@ export default {
 
             <div class="form-group">
                 <label
+                    class="form-label"
+                    for="own_wmsLayers"
+                >
+                    {{
+                        $t(
+                            "additional:modules.tools.dataNarrator.label.ownWmsLayers"
+                        )
+                    }}
+                </label>
+                <v-expansion-panels>
+                    <v-expansion-panel
+                        v-for="(item,i) in wmsLayers"
+                        :key="i"
+                    >
+                        <v-expansion-panel-header>
+                            {{ item }}
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            Hey
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+
+                <v-row>
+                    <v-col>
+                        <input
+                            id="own_wmsLayers"
+                            ref="own_wmsLayer_input"
+                            type="text"
+                            name="ownWmsLayers"
+                            class="form-control"
+                        >
+                    </v-col>
+                    <v-btn
+                        elevation="2"
+                        @click="onWmsLayersAdd"
+                    >
+                        {{
+                            $t(
+                                "additional:modules.tools.dataNarrator.label.ownWmsLayers"
+                            )
+                        }}
+                    </v-btn>
+                </v-row>
+            </div>
+
+
+            <div class="form-group">
+                <label
                     class="form-label required"
                     for="step-vue-editor"
                 >
@@ -1217,6 +1276,7 @@ export default {
                     </v-row>
                 </v-container>
             </v-footer>
+
             <v-alert
                 v-show="!isValid"
                 id="tool-dataNarrator-creator-noHTML"
