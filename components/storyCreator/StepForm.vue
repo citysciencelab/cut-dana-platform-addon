@@ -327,7 +327,20 @@ export default {
         if (this.step.stepNumber === null) {
             this.step.stepNumber = this.allStepNumbers[this.allStepNumbers.length - 1];
         }
+        for (const importedItem of this.importedFileNames) {
+            const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
+
+            model.setIsVisibleInMap(false);
+            model.set("isSelected", false);
+        }
+        for (const layer of this.step.layers) {
+            const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
+
+            model.setIsVisibleInMap(false);
+            model.set("isSelected", false);
+        }
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
+
         this.existingDatasources();
     },
     beforeDestroy () {

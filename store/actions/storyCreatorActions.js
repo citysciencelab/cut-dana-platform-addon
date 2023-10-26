@@ -235,22 +235,24 @@ function uploadStoryFiles ({state}) {
 
     for (const step in story.steps) {
         // story.steps[step].datasources = undefined;
-        story.steps[step].datasources = Array.from(story.steps[step].datasources).map(datasource => {
-            const extension = datasource.name.split("."),
+        if (story.steps[step].datasources) {
+            story.steps[step].datasources = Array.from(story.steps[step].datasources).map(datasource => {
+                const extension = datasource.name.split("."),
 
-                datasourceObj = {
-                    name: datasource.name,
-                    hash: new Date().valueOf() + "_" + uuid.v4() + "." + extension[extension.length - 1],
-                    stepNumber: story.steps[step].stepNumber,
-                    datasource: datasource
+                    datasourceObj = {
+                        name: datasource.name,
+                        hash: new Date().valueOf() + "_" + uuid.v4() + "." + extension[extension.length - 1],
+                        stepNumber: story.steps[step].stepNumber,
+                        datasource: datasource
+                    };
+
+                datasources.push(datasourceObj);
+                return {
+                    name: datasourceObj.name,
+                    key: datasourceObj.hash
                 };
-
-            datasources.push(datasourceObj);
-            return {
-                name: datasourceObj.name,
-                key: datasourceObj.hash
-            };
-        });
+            });
+        }
 
     }
 
