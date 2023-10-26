@@ -166,27 +166,6 @@ export default {
             <div class="form-group">
                 <label
                     class="form-label"
-                    for="author"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.author"
-                        )
-                    }}
-                </label>
-
-                <input
-                    id="author"
-                    v-model="currentStory.author"
-                    class="form-control"
-                    type="text"
-                    disabled
-                >
-            </div>
-
-            <div class="form-group">
-                <label
-                    class="form-label"
                     for="cover"
                 >
                     {{
