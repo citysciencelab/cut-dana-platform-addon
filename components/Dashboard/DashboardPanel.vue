@@ -1,16 +1,16 @@
 <script>
 import axios from "axios";
-import {mapGetters, mapMutations} from "vuex";
 import Masonry from "masonry-layout";
+import {mapGetters, mapMutations} from "vuex";
 
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 
-import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
-import LoginButton from "./Tools/LoginButton.vue";
-import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import StoryCard from "./Stories/StoryCard.vue";
+import CreateStoryButton from "./Tools/CreateStoryButton.vue";
+import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
 import ListButton from "./Tools/ListButton.vue";
+import LoginButton from "./Tools/LoginButton.vue";
 
 export default {
     name: "DashboardPanel",
@@ -180,16 +180,35 @@ export default {
                         v-else
                         id="tool-storyTellingTool-modeSelection"
                     >
-                        <StoryCard
-                            v-for="(story) in storyList"
-                            :key="story._id + story.updatedAt"
-                            :story="story"
-                            :is-admin="isAdmin"
-                            :uid="uid"
-                            :grid="true"
-                            @refreshStoryList="refreshStoryList"
-                            v-on="$listeners"
-                        />
+                        <template
+                            v-if="storyList.length > 0"
+                        >
+                            <StoryCard
+                                v-for="(story) in storyList"
+                                :key="story._id + story.updatedAt"
+                                :story="story"
+                                :is-admin="isAdmin"
+                                :uid="uid"
+                                :grid="true"
+                                @refreshStoryList="refreshStoryList"
+                                v-on="$listeners"
+                            />
+                        </template>
+                        <template
+                            v-else
+                        >
+                            <v-skeleton-loader
+                                v-for="n in 10"
+                                :key="n"
+                                type="card"
+                                :loading="true"
+                                :transition="false"
+                                :width="300"
+                                :height="300"
+                                class="mb-2"
+                            />
+                            >
+                        </template>
                     </div>
                 </div>
             </v-container>
