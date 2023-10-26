@@ -52,18 +52,29 @@ export default {
             class="form-label"
             for="background-map"
         >
-            {{ $t("additional:modules.tools.dataNarrator.label.backgroundMap") }}
+            {{ $t( "additional:modules.tools.dataNarrator.label.backgroundMap" ) }}
         </label>
-        <v-select
+        <v-container
             id="background-map"
-            :value="selectedId"
-            :items="backgroundMapsOptions"
-            item-text="name"
-            item-value="id"
-            dense
-            solo
-            hide-details
-            @change="onChange"
-        />
+            fluid
+        >
+            <v-row class="custom-row">
+                <v-col>
+                    <v-treeview
+                        v-model="propModel"
+                        :items="backgroundMapsOptions"
+                        item-key="id"
+                        item-text="name"
+                        item-children="children"
+                        selection-type="leaf"
+                        :disable-per-node="true"
+                        open-on-click
+                        search
+                        selectable
+                        @change="onChange"
+                    />
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>
