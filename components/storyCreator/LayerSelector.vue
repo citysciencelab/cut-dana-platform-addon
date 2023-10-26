@@ -398,4 +398,8 @@ export default {
 .custom-treeview::v-deep .v-icon--disabled {
     display: none !important;
 }
+
+.custom-treeview::v-deep .v-treeview-node--disabled .v-treeview-node__label {
+    color: rgba(0,0,0,.87) !important;
+}
 </style>
