@@ -412,6 +412,7 @@ export default {
         },
 
         onWmsLayersAdd (event) {
+            Radio.trigger("Parser", "addWMSRemotely", document.querySelector("#own_wmsLayers").value);
             this.wmsLayers.push(document.querySelector("#own_wmsLayers").value);
         },
 
@@ -1020,7 +1021,7 @@ export default {
                 </v-row>
             </div>
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label
                     class="form-label"
                     for="own_wmsLayers"
@@ -1066,7 +1067,7 @@ export default {
                         }}
                     </v-btn>
                 </v-row>
-            </div>
+            </div> -->
 
 
             <div class="form-group">
