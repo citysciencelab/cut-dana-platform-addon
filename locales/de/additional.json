@@ -44,7 +44,8 @@
           "clickToSwitch": "Klicken Sie auf ",
           "backgroundMap": "Hintergrundkarte",
           "advancedOptions": "Erweiterte Optionen",
-          "ownDatasource": "Eigene Datenquelle"
+          "ownDatasource": "Eigene Datenquelle",
+          "ownWmsLayers": "Eigene WMS Layer"
         },
         "storyList": {
           "all":  "Alle Stories",
