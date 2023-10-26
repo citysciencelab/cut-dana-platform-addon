@@ -43,7 +43,8 @@
           "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt.",
           "clickToSwitch": "Klicken Sie auf ",
           "backgroundMap": "Hintergrundkarte",
-          "advancedOptions": "Erweiterte Optionen"
+          "advancedOptions": "Erweiterte Optionen",
+          "ownDatasource": "Eigene Datenquelle"
         },
         "storyList": {
           "all":  "Alle Stories",

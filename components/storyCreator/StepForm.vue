@@ -394,7 +394,7 @@ export default {
         },
 
         /**
-         * Handle the cover image change
+         * Handle the custom data upload
          * @param {Event} event - The file input change event
          * @returns {void}
          */
@@ -990,7 +990,7 @@ export default {
                 >
                     {{
                         $t(
-                            "additional:modules.tools.dataNarrator.label.cover"
+                            "additional:modules.tools.dataNarrator.label.ownDatasource"
                         )
                     }}
                 </label>

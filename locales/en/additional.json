@@ -43,7 +43,8 @@
           "sharedWithDuplicate": "This email is already added",
           "clickToSwitch": "Click to ",
           "backgroundMap": "Background Map",
-          "advancedOptions": "Advanced options"
+          "advancedOptions": "Advanced options",
+          "ownDatasource": "Own Datasource"
         },
         "storyList": {
           "all":  "All Stories",
