@@ -1,9 +1,9 @@
 <script>
-import {EventEmitter} from "../../utils/EventEmitter";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {EventEmitter} from "../../utils/EventEmitter";
 
 export default {
     name: "StoryMenu",

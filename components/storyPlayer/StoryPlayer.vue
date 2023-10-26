@@ -4,11 +4,14 @@ import ClassicPlayer from "./ClassicPlayer.vue";
 import ScrollyTeller from "./ScrollyTeller.vue";
 import StoryNavigation from "./StoryNavigation.vue";
 // import DipasPlayer from "./DipasPlayer.vue";
+import axios from "axios";
 import store from "../../../../../src/app-store";
+import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImportAddon";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {EventEmitter} from "../../utils/EventEmitter";
+import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 import fetchDataFromUrl from "../../utils/getStoryFromUrl";
 import TOCMenu from "./TOCMenu.vue";
@@ -53,6 +56,7 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Tools/FileImportAddon", Object.keys(fileImportGetters)),
 
         /**
          * The current selected step of the story.
@@ -170,7 +174,6 @@ export default {
 
         this.switchBackgroundMap(this.visibleBackgroundMap);
 
-
         // removes event listener
         EventEmitter.$off("toggleScrollytelling", this.toggleScrollytelling());
         EventEmitter.$off("toggleAutoPlay", this.toggleInterval());
@@ -183,6 +186,10 @@ export default {
         // These application wide getters and setters can be found in 'src/modules/map/store'
         ...mapMutations("Map", ["setCenter", "setLayerVisibility"]),
         ...mapGetters("Map", ["layerList", "visibleLayerList", "map"]),
+        ...mapActions("Tools/FileImportAddon", [
+            "importKML",
+            "setSelectedFiletype"
+        ]),
 
         switchBackgroundMap (value) {
             const selectedId = value || this.visibleBackgroundMap;
@@ -199,6 +206,31 @@ export default {
                     }
                 });
             }
+        },
+
+        addFile (files) {
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = f => {
+                    const layerName = this.getLayerName(file.name),
+                        checkSameLayer = this.importedFileNames.filter(importedFileName => {
+                            return this.getLayerName(file.name) === this.getLayerName(importedFileName);
+                        });
+
+                    this.importKML({raw: f.target.result, checkSameLayer: checkSameLayer, layerName: layerName, filename: file.name, pointImages: this.pointImages, textColors: this.textColors, textSizes: this.textSizes});
+                };
+
+                reader.readAsText(file);
+            });
+        },
+        /**
+         * Getting the layer name from the file name without the postfix as file format
+         * @param {String} fileName name of the file
+         * @returns {String} Returns the layer name
+         */
+        getLayerName (fileName) {
+            return fileName.substr(0, fileName.lastIndexOf("."));
         },
 
 
@@ -226,6 +258,7 @@ export default {
          * @returns {void}
          */
         resetStoryPlayer () {
+            this.disableOwnDatasource();
             this.loadedContent = null;
             this.currentStepIndex = 0;
         },
@@ -356,22 +389,46 @@ export default {
 
         /**
          * requests all data sources of the current step using axios
-         * @returns  {Object[]}  Array of data sources
+         * @returns  {void}  Array of data sources
          */
         getDataSources () {
 
-            // if (this.currentStep) {
-            //     const dataSourcesIds = this.currentStep.dataSources || [];
 
-            //     for (const dataSourceId of dataSourcesIds) {
-            //         const dataSource = this.$store.state.Tools.DataNarrator.dataSources.find(({id}) => id === dataSourceId);
+            if (this.currentStep) {
+                const dataSources = this.currentStep.datasources || [];
 
-            //         if (dataSource) {
-            //             dataSources.push(dataSource);
-            //         }
-            //     }
-            // }
-            // return dataSources;
+                for (const dataSource of dataSources) {
+                    // const response = this.ownDataSources(dataSource.key);
+                    if (this.importedFileNames.includes(dataSource.name)) {
+                        const model = Radio.request("ModelList", "getModelByAttributes", {name: dataSource.name.split(".")[0]});
+
+                        this.enableLayer(model);
+                    }
+                    else {
+                        axios.get(this.backendConfig.url + "/datasources/" + this.currentStoryId + "/" + dataSource.key, {
+                            responseType: "blob"
+                        }).then((r) => {
+                            const file = new File([r.data], dataSource.name, {
+                                type: getMimeTypeFromExtension(dataSource.name.split(".").pop())
+                            });
+
+                            this.addFile([file]);
+                        });
+                    }
+
+
+                }
+
+            }
+        },
+
+        disableOwnDatasource () {
+            for (const importedItem of this.importedFileNames) {
+                const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
+
+                this.disableLayer(model);
+            }
+
         },
 
         /**
@@ -379,7 +436,8 @@ export default {
          * @returns {void}
          */
         async loadStep () {
-            console.log("loadStep", this.currentStep);
+            this.disableOwnDatasource();
+
             if (!this.currentStep) {
                 return;
             }
@@ -476,7 +534,10 @@ export default {
                 this.enableLayer(layerModel);
             }
 
+
             this.switchBackgroundMap(this.currentStep.backgroundMapId);
+
+            this.getDataSources();
 
             Radio.trigger("Menu", "rerender");
             this.loadedContent = this.currentStep.html;
@@ -504,6 +565,8 @@ export default {
             for (const layer of layerList) {
                 this.disableLayer(layer);
             }
+
+            this.disableOwnDatasource();
         }
     }
 };

@@ -9,9 +9,9 @@ const getters = {
          * @param {Object} context actions context object.
          * @returns {void}
          */
-    ownDatasources ({state, commit}, {hash}) {
+    ownDatasources ({state}, {hash}) {
         return axios.get(state.backendConfig.url + "/datasources/" + state.currentStoryId + "/" + hash).then((response) => {
-            commit("setOwnDatasources", response.data);
+            return response.data;
         });
     }
 };
