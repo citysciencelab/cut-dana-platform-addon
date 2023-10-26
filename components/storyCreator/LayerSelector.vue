@@ -369,9 +369,9 @@ export default {
                     <v-col>
                         <v-treeview
                             v-model="propModel"
+                            class="custom-treeview"
                             :items="transformedItems"
                             item-key="id"
-                            item-text="name"
                             item-children="children"
                             selection-type="leaf"
                             :disable-per-node="true"
@@ -395,4 +395,7 @@ export default {
     overflow-y: scroll;
 }
 
+.custom-treeview::v-deep .v-icon--disabled {
+    display: none !important;
+}
 </style>

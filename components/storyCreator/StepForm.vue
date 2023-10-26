@@ -660,12 +660,6 @@ export default {
                 >
             </div>
 
-            <BackgroundMap
-                :selected-id="backgroundMapId"
-                :background-maps="backgroundMaps"
-                @update:background-map-id="setBackgroundMap"
-            />
-
 
             <div
                 v-if="is3DLayerActive"
@@ -977,6 +971,12 @@ export default {
                     </small>
                 </p>
             </div>
+
+            <BackgroundMap
+                :selected-id="backgroundMapId"
+                :background-maps="backgroundMaps"
+                @update:background-map-id="setBackgroundMap"
+            />
 
             <LayerSelector
                 :items="layerOptions"
