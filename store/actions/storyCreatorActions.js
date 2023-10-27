@@ -237,6 +237,9 @@ function uploadStoryFiles ({state}) {
         // story.steps[step].datasources = undefined;
         if (story.steps[step].datasources) {
             story.steps[step].datasources = Array.from(story.steps[step].datasources).map(datasource => {
+                if (datasource.key) {
+                    return datasource;
+                }
                 const extension = datasource.name.split("."),
 
                     datasourceObj = {

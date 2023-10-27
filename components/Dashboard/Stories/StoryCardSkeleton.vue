@@ -26,7 +26,7 @@ export default {
 <template>
     <v-skeleton-loader
         elevation="1"
-        :class="{'grid-item': grid, 'topper': shareSettings, 'mb-2': true}"
+        :class="{'grid-item': grid, 'mb-2': true}"
         type="card-avatar, actions"
     />
 </template>

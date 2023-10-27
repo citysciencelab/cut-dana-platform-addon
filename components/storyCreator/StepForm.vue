@@ -80,6 +80,7 @@ export default {
                 mdiBackspaceOutline
             },
             rawDatasources: this.editedStep?.datasources || [],
+            datasources: [],
             wmsLayers: this.editedStep?.wmsLayers || []
         };
     },
@@ -400,7 +401,7 @@ export default {
                         });
 
                         this.addFile([file]);
-                        this.datasources = [file];
+                        // this.datasources.push(file);
                     });
                 }
             }
@@ -527,6 +528,7 @@ export default {
                     chapterTitle: this.newChapterTitle
                 });
             }
+            this.datasources = Array.from(this.datasources).push(...this.rawDatasources);
             this.saveStoryStep({step: this.step, images: this.images, datasources: this.datasources, wmsLayers: this.wmsLayers});
 
 
@@ -606,6 +608,16 @@ export default {
          */
         getLayerName (fileName) {
             return fileName.substr(0, fileName.lastIndexOf("."));
+        },
+
+        /**
+         * Removes the layer from the list of layers
+         * @param {Object} model the layer model
+         * @returns {void}
+         */
+        removeDatasource () {
+            this.rawDatasources = this.rawDatasources.filter(datasource => datasource.key !== this.selectedDatasource.key);
+            this.selectedDatasource = null;
         }
     }
 };
@@ -1055,6 +1067,38 @@ export default {
                         >
                     </v-col>
                 </v-row>
+            </div>
+
+            <div class="form-group">
+                <label
+                    class="form-label"
+                    for="step-layer"
+                >
+                    {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
+                </label>
+                <v-expansion-panels
+                    id="step-layer"
+                    dense
+                    nav
+                >
+                    <v-expansion-panel
+                        v-for="(item) in rawDatasources"
+                        :key="item.key"
+                        color="primary"
+                    >
+                        <v-expansion-panel-header>
+                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-icon
+                                color="grey lighten-1"
+                                @click="removeDatasource(item.key)"
+                            >
+                                {{ icons.close }}
+                            </v-icon>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </div>
 
             <!-- <div class="form-group">
