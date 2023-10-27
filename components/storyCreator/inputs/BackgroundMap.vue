@@ -61,7 +61,6 @@ export default {
             <v-row class="custom-row">
                 <v-col>
                     <v-treeview
-                        v-model="propModel"
                         :items="backgroundMapsOptions"
                         item-key="id"
                         item-text="name"
