@@ -7,6 +7,7 @@ import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 
 import StoryCard from "./Stories/StoryCard.vue";
+import StoryCardSkeleton from "./Stories/StoryCardSkeleton.vue";
 import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
 import ListButton from "./Tools/ListButton.vue";
@@ -19,6 +20,7 @@ export default {
         LoginButton,
         CreateStoryButton,
         StoryCard,
+        StoryCardSkeleton,
         ListButton
     },
     props: {
@@ -197,17 +199,15 @@ export default {
                         <template
                             v-else
                         >
-                            <v-skeleton-loader
+                            <StoryCardSkeleton
                                 v-for="n in 10"
                                 :key="n"
-                                type="card"
-                                :loading="true"
-                                :transition="false"
-                                :width="300"
-                                :height="300"
-                                class="mb-2"
+                                :is-admin="isAdmin"
+                                :uid="uid"
+                                :grid="true"
+                                @refreshStoryList="refreshStoryList"
+                                v-on="$listeners"
                             />
-                            >
                         </template>
                     </div>
                 </div>
