@@ -528,8 +528,15 @@ export default {
                     chapterTitle: this.newChapterTitle
                 });
             }
-            this.datasources = Array.from(this.datasources).push(...this.rawDatasources);
-            this.saveStoryStep({step: this.step, images: this.images, datasources: this.datasources, wmsLayers: this.wmsLayers});
+            const newDatasources = Array.from(this.datasources);
+
+            for (const raw of this.rawDatasources) {
+                newDatasources.push(raw);
+            }
+            console.log(Array.from(this.datasources), this.rawDatasources, ...this.rawDatasources);
+            // this.datasources = Array.from(this.datasources).push(...this.rawDatasources);
+            // console.log(this.datasources);
+            this.saveStoryStep({step: this.step, images: this.images, datasources: newDatasources, wmsLayers: this.wmsLayers});
 
 
             // Trigger submit action to return to story overview
