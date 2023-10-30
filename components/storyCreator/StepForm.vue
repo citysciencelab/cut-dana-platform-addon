@@ -1341,6 +1341,7 @@ export default {
 
     .expansion-panels {
         z-index: 1;
+        margin-bottom: 10px;
     }
 
     .tool-dataNarrator-creator-actions {

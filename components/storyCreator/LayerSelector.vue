@@ -306,7 +306,7 @@ export default {
         <div class="form-group">
             <label
                 class="form-label"
-                for="step-layer"
+                for="available-layers"
             >
                 {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
             </label>
@@ -354,14 +354,6 @@ export default {
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>
-        </div>
-        <div class="form-group">
-            <label
-                class="form-label"
-                for="available-layers"
-            >
-                {{ $t( "additional:modules.tools.dataNarrator.label.availableLayers" ) }}
-            </label>
             <v-container
                 id="available-layers"
                 fluid
