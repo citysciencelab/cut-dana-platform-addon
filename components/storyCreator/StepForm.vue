@@ -1059,8 +1059,10 @@ export default {
                 </label>
                 <v-expansion-panels
                     id="step-layer"
+                    class="expansion-panels"
                     dense
                     nav
+                    elevation="1"
                 >
                     <v-expansion-panel
                         v-for="(item) in rawDatasources"
@@ -1116,7 +1118,11 @@ export default {
                 </div>
             </div>
 
-            <v-expansion-panels id="advanced-options">
+            <v-expansion-panels
+                id="advanced-options"
+                class="expansion-panels"
+                elevation="1"
+            >
                 <v-expansion-panel>
                     <v-expansion-panel-header>
                         {{
@@ -1167,7 +1173,7 @@ export default {
 
             <v-footer
                 class="tool-dataNarrator-creator-actions white"
-                elevation="1"
+                elevation="2"
                 rounded
             >
                 <v-card
@@ -1333,7 +1339,12 @@ export default {
         margin-bottom: 10px;
     }
 
+    .expansion-panels {
+        z-index: 1;
+    }
+
     .tool-dataNarrator-creator-actions {
+        z-index:2;
         position: sticky;
         bottom:0;
     }
