@@ -612,12 +612,11 @@ export default {
 
         /**
          * Removes the layer from the list of layers
-         * @param {Object} model the layer model
+         * @param {Object} model The model of the layer to remove
          * @returns {void}
          */
-        removeDatasource () {
-            this.rawDatasources = this.rawDatasources.filter(datasource => datasource.key !== this.selectedDatasource.key);
-            this.selectedDatasource = null;
+        removeDatasource (model) {
+            this.rawDatasources = this.rawDatasources.filter(datasource => datasource.key !== model.key);
         }
     }
 };
@@ -1053,29 +1052,6 @@ export default {
                         )
                     }}
                 </label>
-                <v-row>
-                    <v-col>
-                        <input
-                            id="own_dataSource"
-                            ref="own_dataSource_input"
-                            type="file"
-                            name="ownDataSource"
-                            class="form-control"
-                            accept=".kml, .geojson, .json, .gpx"
-                            multiple
-                            @change="onCustomDataUpload"
-                        >
-                    </v-col>
-                </v-row>
-            </div>
-
-            <div class="form-group">
-                <label
-                    class="form-label"
-                    for="step-layer"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
-                </label>
                 <v-expansion-panels
                     id="step-layer"
                     dense
@@ -1092,14 +1068,29 @@ export default {
                         <v-expansion-panel-content>
                             <v-icon
                                 color="grey lighten-1"
-                                @click="removeDatasource(item.key)"
+                                @click="removeDatasource(item)"
                             >
                                 {{ icons.close }}
                             </v-icon>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
+                <v-row>
+                    <v-col>
+                        <input
+                            id="own_dataSource"
+                            ref="own_dataSource_input"
+                            type="file"
+                            name="ownDataSource"
+                            class="form-control"
+                            accept=".kml, .geojson, .json, .gpx"
+                            multiple
+                            @change="onCustomDataUpload"
+                        >
+                    </v-col>
+                </v-row>
             </div>
+
 
             <!-- <div class="form-group">
                 <label
