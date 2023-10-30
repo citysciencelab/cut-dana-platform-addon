@@ -68,7 +68,6 @@ function saveStoryStep ({state, commit}, {step, images, datasources, wmsLayers})
     );
 
     newImages[step._id] = images;
-    console.log(steps);
 
     commit("setCurrentStory", {...state.currentStory, steps: steps});
     commit("setHtmlContentsImages", newImages);
@@ -238,7 +237,6 @@ function uploadStoryFiles ({state}) {
         // story.steps[step].datasources = undefined;
         if (story.steps[step].datasources) {
             story.steps[step].datasources = Array.from(story.steps[step].datasources).map(datasource => {
-                console.log(datasource);
                 if (datasource.key) {
                     return datasource;
                 }
@@ -260,8 +258,6 @@ function uploadStoryFiles ({state}) {
         }
 
     }
-
-    console.log("story", story);
 
 
     // If it's string, than it was uploaded previously and we have to keep it

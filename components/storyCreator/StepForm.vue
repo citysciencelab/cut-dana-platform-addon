@@ -533,12 +533,8 @@ export default {
             for (const raw of this.rawDatasources) {
                 newDatasources.push(raw);
             }
-            console.log(Array.from(this.datasources), this.rawDatasources, ...this.rawDatasources);
-            // this.datasources = Array.from(this.datasources).push(...this.rawDatasources);
-            // console.log(this.datasources);
+
             this.saveStoryStep({step: this.step, images: this.images, datasources: newDatasources, wmsLayers: this.wmsLayers});
-
-
             // Trigger submit action to return to story overview
             this.$emit("return");
         },
@@ -1097,56 +1093,6 @@ export default {
                     </v-col>
                 </v-row>
             </div>
-
-
-            <!-- <div class="form-group">
-                <label
-                    class="form-label"
-                    for="own_wmsLayers"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.ownWmsLayers"
-                        )
-                    }}
-                </label>
-                <v-expansion-panels>
-                    <v-expansion-panel
-                        v-for="(item,i) in wmsLayers"
-                        :key="i"
-                    >
-                        <v-expansion-panel-header>
-                            {{ item }}
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            Hey
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
-
-                <v-row>
-                    <v-col>
-                        <input
-                            id="own_wmsLayers"
-                            ref="own_wmsLayer_input"
-                            type="text"
-                            name="ownWmsLayers"
-                            class="form-control"
-                        >
-                    </v-col>
-                    <v-btn
-                        elevation="2"
-                        @click="onWmsLayersAdd"
-                    >
-                        {{
-                            $t(
-                                "additional:modules.tools.dataNarrator.label.ownWmsLayers"
-                            )
-                        }}
-                    </v-btn>
-                </v-row>
-            </div> -->
-
 
             <div class="form-group">
                 <label
