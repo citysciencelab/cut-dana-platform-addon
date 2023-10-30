@@ -1,7 +1,7 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
-import scrollama from "scrollama";
 import "intersection-observer";
+import scrollama from "scrollama";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
@@ -41,6 +41,7 @@ export default {
         this.steps = this.currentStory.steps;
     },
     beforeDestroy () {
+        this.currentIndex = null;
         this.toolWindow.style.removeProperty("background-color");
         this.toolWindow.style.removeProperty("boxShadow");
         this.toolWindow.style.removeProperty("height");
@@ -99,7 +100,7 @@ export default {
                 this.$emit("change", response.index);
             })
             .onStepExit(() => {
-                this.currentIndex = null;
+                // this.currentIndex = null;
             });
 
         document.getElementsByClassName("stepper")[0].scrollIntoView({block: "center"});
