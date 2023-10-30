@@ -3,6 +3,7 @@ import {
     mdiBackspaceOutline,
     mdiCancel,
     mdiCheck,
+    mdiClose,
     mdiPinOutline,
     mdiTrashCanOutline
 } from "@mdi/js";
@@ -77,7 +78,8 @@ export default {
                 mdiTrashCanOutline,
                 mdiCheck,
                 mdiPinOutline,
-                mdiBackspaceOutline
+                mdiBackspaceOutline,
+                mdiClose
             },
             rawDatasources: this.editedStep?.datasources || [],
             datasources: [],
@@ -1073,7 +1075,7 @@ export default {
                                 color="grey lighten-1"
                                 @click="removeDatasource(item)"
                             >
-                                {{ icons.close }}
+                                {{ icons.mdiClose }}
                             </v-icon>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
