@@ -70,7 +70,6 @@ function saveStoryStep ({state, commit}, {step, images, datasources, wmsLayers})
 
     newImages[step._id] = images;
 
-    console.log(step, steps);
     commit("setCurrentStory", {...state.currentStory, steps: steps});
     commit("setHtmlContentsImages", newImages);
 }
@@ -216,7 +215,6 @@ function prepareHtml (story, images) {
         delete step._id;
         return step;
     });
-    console.log(story, imageArray, htmlArray);
     return [story, imageArray, htmlArray];
 }
 
@@ -233,9 +231,6 @@ function uploadStoryFiles ({state}) {
         datasourcePathPrefix = `${backendUrl}/datasources/`,
         [story, imageArray, htmlArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages),
         datasources = [];
-
-
-    console.log(story, imageArray, htmlArray);
 
 
     for (const step in story.steps) {
@@ -320,7 +315,6 @@ function uploadStoryFiles ({state}) {
         // Upload html parts
         const pathPrefix = `${backendUrl}/stories/${storyId}/`,
             htmlUploads = htmlArray.map((element) => {
-                console.log(element);
                 const query_url = `${pathPrefix}${element.associatedChapter}/${element.stepNumber}/html`;
 
                 return axios.patch(query_url, {html: element.html});
