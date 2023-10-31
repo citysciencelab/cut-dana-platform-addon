@@ -322,6 +322,7 @@ export default {
         }
     },
     mounted () {
+        console.log(this.step);
         if (this.step.associatedChapter === null) {
             const diff = this.chapterOptions.length > 1 ? 2 : 1;
 

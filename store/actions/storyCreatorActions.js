@@ -33,6 +33,7 @@ function addStoryChapter ({state, commit}, chapter) {
  * @returns {void}
  */
 function saveStoryStep ({state, commit}, {step, images, datasources, wmsLayers}) {
+
     // add datasources to step
     if (datasources) {
         step.datasources = datasources;
@@ -225,6 +226,7 @@ function prepareHtml (story, images) {
  * @returns {Promise} returns a promise that resolves when all files are uploaded
  */
 function uploadStoryFiles ({state}) {
+    console.log("uploadStoryFiles", state.currentStory);
 
     const backendUrl = state.backendConfig.url,
         requestConf = {url: backendUrl + "/stories"},
