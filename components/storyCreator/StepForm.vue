@@ -324,6 +324,7 @@ export default {
         }
     },
     mounted () {
+        this.$store.commit("Tools/Draw/setActive", true);
         if (this.step.associatedChapter === null) {
             const diff = this.chapterOptions.length > 1 ? 2 : 1;
 
