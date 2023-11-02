@@ -363,6 +363,7 @@ export default {
             model.set("isSelected", false);
         }
 
+        this.$store.commit("Tools/Draw/setActive", false);
         this.switchBackgroundMap(this.visibleBackgroundMap);
     },
     methods: {
