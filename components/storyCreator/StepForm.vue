@@ -179,7 +179,9 @@ export default {
         },
 
         backgroundMaps () {
-            return Radio.request("ModelList", "getModelsByAttributes", {isBaseLayer: true});
+            const bgMaps = Radio.request("ModelList", "getModelsByAttributes", {type: "layer"});
+
+            return bgMaps;
         }
     },
     watch: {
@@ -200,7 +202,7 @@ export default {
         "step.layers" (newSelectedLayerIds) {
             const
                 layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
-                selectedItems = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true});
+                selectedItems = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true, backgroundMap: false});
 
             for (const selectedItem of selectedItems) {
                 selectedItem.setIsVisibleInMap(false);
@@ -375,11 +377,9 @@ export default {
             if (value) {
                 this.backgroundMaps.forEach(model => {
                     if (model.get("id") === value) {
-                        model.setIsVisibleInMap(true);
                         model.setIsSelected(true);
                     }
                     else {
-                        model.setIsVisibleInMap(false);
                         model.setIsSelected(false);
                     }
                 });

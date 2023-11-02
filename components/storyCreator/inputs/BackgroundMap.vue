@@ -8,7 +8,7 @@ export default {
         },
         backgroundMaps: {
             type: Array,
-            default: () => Radio.request("ModelList", "getModelsByAttributes", {isBaseLayer: true})
+            default: () => Radio.request("ModelList", "getModelsByAttributes", {backgroundMap: true})
         }
     },
     data () {
@@ -18,6 +18,9 @@ export default {
     },
     mounted () {
         this.backgroundMapsOptions = this.backgroundMaps.map(model => {
+
+            // console.log(modelObj, model);
+
             return {
                 id: model.get("id"),
                 name: model.get("name")
