@@ -179,9 +179,20 @@ export default {
         },
 
         backgroundMaps () {
-            const bgMaps = Radio.request("ModelList", "getModelsByAttributes", {type: "layer"});
+            const bgMaps = Radio.request("Parser", "getItemsByAttributes", {backgroundMap: true}),
+                newBgMaps = [];
 
-            return bgMaps;
+            for (const bgMap of bgMaps) {
+                let foundBgMap = Radio.request("ModelList", "getModelByAttributes", {id: bgMap.id});
+
+                if (!foundBgMap) {
+                    Radio.trigger("ModelList", "addModelsByAttributes", bgMap);
+                    foundBgMap = Radio.request("ModelList", "getModelByAttributes", {id: bgMap.id});
+                }
+                newBgMaps.push(foundBgMap);
+            }
+
+            return newBgMaps;
         }
     },
     watch: {
@@ -376,12 +387,15 @@ export default {
         ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
 
         switchBackgroundMap (value) {
+            console.log(value);
             if (value) {
                 this.backgroundMaps.forEach(model => {
                     if (model.get("id") === value) {
+                        model.setIsVisibleInMap(true);
                         model.setIsSelected(true);
                     }
                     else {
+                        model.setIsVisibleInMap(false);
                         model.setIsSelected(false);
                     }
                 });
@@ -607,6 +621,7 @@ export default {
         setBackgroundMap (value) {
             this.step.backgroundMapId = value;
             this.backgroundMapId = value;
+            this.switchBackgroundMap(value);
         },
         /**
          * Getting the layer name from the file name without the postfix as file format

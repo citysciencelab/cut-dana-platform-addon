@@ -27,22 +27,21 @@ export default {
             };
         });
     },
-    updated () {
-        if (this.selectedId) {
-            this.backgroundMaps.forEach(model => {
-                if (model.get("id") === this.selectedId) {
-                    model.setIsVisibleInMap(true);
-                    model.setIsSelected(true);
-                }
-                else {
-                    model.setIsVisibleInMap(false);
-                    model.setIsSelected(false);
-                }
-            });
-        }
-    },
     methods: {
         onChange (value) {
+            console.log(value);
+            if (this.selectedId) {
+                this.backgroundMaps.forEach(model => {
+                    if (model.get("id") === this.selectedId) {
+                        model.setIsVisibleInMap(true);
+                        model.setIsSelected(true);
+                    }
+                    else {
+                        model.setIsVisibleInMap(false);
+                        model.setIsSelected(false);
+                    }
+                });
+            }
             this.$emit("update:background-map-id", value);
         }
     }
