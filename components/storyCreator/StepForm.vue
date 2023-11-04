@@ -387,7 +387,6 @@ export default {
         ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
 
         switchBackgroundMap (value) {
-            console.log(value);
             if (value) {
                 this.backgroundMaps.forEach(model => {
                     if (model.get("id") === value) {

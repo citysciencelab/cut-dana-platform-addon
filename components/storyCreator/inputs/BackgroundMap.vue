@@ -13,7 +13,8 @@ export default {
     },
     data () {
         return {
-            backgroundMapsOptions: []
+            backgroundMapsOptions: [],
+            selected: this.selectedId
         };
     },
     mounted () {
@@ -29,10 +30,9 @@ export default {
     },
     methods: {
         onChange (value) {
-            console.log(value);
-            if (this.selectedId) {
+            if (this.selected) {
                 this.backgroundMaps.forEach(model => {
-                    if (model.get("id") === this.selectedId) {
+                    if (model.get("id") === this.selected) {
                         model.setIsVisibleInMap(true);
                         model.setIsSelected(true);
                     }
@@ -60,22 +60,17 @@ export default {
             id="background-map"
             fluid
         >
-            <v-row class="custom-row">
-                <v-col>
-                    <v-treeview
-                        :items="backgroundMapsOptions"
-                        item-key="id"
-                        item-text="name"
-                        item-children="children"
-                        selection-type="leaf"
-                        :disable-per-node="true"
-                        open-on-click
-                        search
-                        selectable
-                        @change="onChange"
-                    />
-                </v-col>
-            </v-row>
+            <v-radio-group
+                v-model="selected"
+                @change="onChange"
+            >
+                <v-radio
+                    v-for="item in backgroundMapsOptions"
+                    :key="item.id"
+                    :label="`Radio ${item.name}`"
+                    :value="item.id"
+                />
+            </v-radio-group>
         </v-container>
     </div>
 </template>
