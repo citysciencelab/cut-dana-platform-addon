@@ -1,9 +1,8 @@
 import axios from "axios";
-import uuid from "uuid";
+import * as uuid from "uuid";
 
 import dataURLtoFile from "../../utils/dataURLtoFile.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
-
 
 /**
  * Adds a chapter to the story
@@ -139,7 +138,7 @@ function adjustStepNumbers ({state, commit}, {associatedChapter, stepNumber}) {
 function postStoryImage (pathPrefix, image) {
     const query_url = `${pathPrefix}${image.associatedChapter}/${image.stepNumber}/${image.imageId}`,
         // generate file from base64 string
-        file = dataURLtoFile(image.dataUrl),
+        file = dataURLtoFile(image.dataUrl, image.imageId),
         // put file into form data
         data = new FormData(),
         config = {
@@ -268,18 +267,16 @@ function uploadStoryFiles ({state}) {
 
     requestConf.data = story;
     let storyId = state.currentStoryId,
-        imagePathPrefix = `${backendUrl}/images/`;
+        imagePathPrefix = `${backendUrl}/images/`,
+        axiosMethod = axios.post;
 
     if (storyId) {
         requestConf.url += "/" + storyId;
-        requestConf.method = "patch";
-    }
-    else {
-        requestConf.method = "post";
+        axiosMethod = axios.patch;
     }
 
     // Add story and get current storyID back from server
-    return axios(requestConf).then((response) => {
+    return axiosMethod(requestConf).then((response) => {
         // Save entire story
         storyId ||= response.data.storyId;
         imagePathPrefix += storyId + "/";
@@ -329,5 +326,9 @@ export default {
     saveStoryStep,
     deleteStoryStep,
     adjustStepNumbers,
-    uploadStoryFiles
+    uploadStoryFiles,
+    prepareHtml,
+    getDataUrlFromFile,
+    postStoryImage,
+    postStepDatasource
 };

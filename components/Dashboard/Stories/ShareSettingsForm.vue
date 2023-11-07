@@ -35,14 +35,13 @@ export default {
         saveStorySettings () {
             const requestConf = {
                 url: this.backendConfig.url + "/stories/" + this.story._id + "/privacy",
-                method: "patch",
                 data: {
                     private: this.storySettings.private,
                     sharedWith: this.storySettings.sharedWith
                 }
             };
 
-            axios(requestConf).then(() => {
+            axios.patch(requestConf).then(() => {
                 this.$root.snackB.show({
                     message: this.$t("common:general.success")
                 });

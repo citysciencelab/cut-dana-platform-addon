@@ -17,8 +17,8 @@ const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
             // Reset store data
             commit("setHtmlContentsImages", initialState.htmlContentsImages);
             commit("setInitialWidth", initialState.initialWidth);
-            commit("setCurrentStory", null);
-            commit("setCurrentStoryId", null);
+            commit("setCurrentStory", initialState.currentStory);
+            commit("setCurrentStoryId", initialState.currentStoryId);
         },
 
 

@@ -56,20 +56,16 @@ export default {
         this.$emit("reset-step-index");
 
         // We need to alter the tool window corresponding to the uiStyle
-        let toolWindowClass = "tool-window-vue";
+        const toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0],
+            heading = toolWindow?.getElementsByClassName("title")[0];
 
-        if (this.uiStyle === "TABLE") {
-            toolWindowClass = "table-tool-win-all-vue";
+        if (heading) {
+            heading.innerHTML = this.$t("additional:modules.tools.dataNarrator.dashboardView.title");
         }
-        const toolWindow = document.getElementsByClassName(toolWindowClass)[0],
-            heading = toolWindow.getElementsByClassName("title")[0];
-
-        heading.innerHTML = this.$t("additional:modules.tools.dataNarrator.dashboardView.title");
-
     },
     updated () {
         setTimeout(() => {
-            new Masonry("#tool-storyTellingTool-modeSelection",
+            new Masonry("#tool-dataNarrator-modeSelection",
                 {
                     itemSelector: ".grid-item",
                     columnWidth: ".grid-item",
@@ -180,7 +176,7 @@ export default {
                     />
                     <div
                         v-else
-                        id="tool-storyTellingTool-modeSelection"
+                        id="tool-dataNarrator-modeSelection"
                     >
                         <template
                             v-if="storyList.length > 0"

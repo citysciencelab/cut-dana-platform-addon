@@ -44,7 +44,6 @@ export default {
     data () {
         return {
             constants,
-            getDataUrlFromFile,
             getFileExtension,
             getStepReference,
             getHTMLContentReference,

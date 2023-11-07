@@ -1,12 +1,9 @@
 import {expect} from "chai";
 import getters from "../../../store/gettersDataNarrator";
 import stateDataNarrator from "../../../store/stateDataNarrator";
-import {emptyStoryConf} from "../../../store/constantsDataNarrator";
 
 const {
     id,
-    storyConf,
-    htmlContents,
     htmlContentsImages,
     active,
     name,
@@ -22,16 +19,6 @@ const {
 describe("addons/DataNarrator/store/gettersDataNarrator", function () {
     it("returns the id from state", function () {
         expect(id(stateDataNarrator)).to.equals("dataNarrator");
-    });
-    it("returns the storyConf from state", function () {
-        expect(JSON.stringify(storyConf(stateDataNarrator))).to.equals(
-            JSON.stringify(emptyStoryConf)
-        );
-    });
-    it("returns the htmlContents from state", function () {
-        expect(JSON.stringify(htmlContents(stateDataNarrator))).to.equals(
-            JSON.stringify({})
-        );
     });
     it("returns the htmlContentsImages from state", function () {
         expect(

@@ -7,7 +7,8 @@
 export default function dataURLtoFile (dataurl, filename) {
     const arr = dataurl.split(","),
         mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]);
+        bstr = atob(arr[1]),
+        extension = mime.split("/")[1];
     let n = bstr.length;
 
     /* eslint-disable one-var */
@@ -19,5 +20,5 @@ export default function dataURLtoFile (dataurl, filename) {
         u8arr[n - 1] = bstr.charCodeAt(n - 1);
         n -= 1; // to make eslint happy
     }
-    return new File([u8arr], filename, {type: mime});
+    return new File([u8arr], `${filename}.${extension}`, {type: mime});
 }

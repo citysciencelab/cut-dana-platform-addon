@@ -52,6 +52,6 @@ export default function resizeTool (doResize, initialWidth) {
         width = doResize ? toolWidth(window.innerWidth) : initialWidth,
         padding = doResize ? sidePadding(window.innerWidth) : defaultTemplatePadding;
 
-    toolWindow.style.setProperty("--initialToolWidth", `${width}px`, "important");
-    toolWindow.style.setProperty("--currentPadding", `${padding}px`, "important");
+    toolWindow?.style?.setProperty("--initialToolWidth", `${width}px`, "important");
+    toolWindow?.style?.setProperty("--currentPadding", `${padding}px`, "important");
 }

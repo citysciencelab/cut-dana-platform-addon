@@ -5,8 +5,8 @@ import ToolTemplate from "../../../../src/modules/tools/ToolTemplate.vue";
 // login module
 import OIDC from "../../../../src/modules/tools/login/utils/utilsOIDC";
 
-import actions from "../store/actionsDataNarrator";
 import * as constants from "../store/constantsDataNarrator";
+import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 
