@@ -5,17 +5,14 @@ import sinon from "sinon";
 import CreateStoryButton from "../../../../../components/Dashboard/Tools/CreateStoryButton.vue";
 import {emptyStory, storyTellingModes} from "../../../../../store/constantsDataNarrator";
 
-import {localVue, testStore} from "../../../vue_helpers";
+import {wrapperOptions, testStore} from "../../../vue_helpers";
 
 describe("CreateStoryButton.vue", () => {
     it("should create a new story when clicked", async () => {
         testStore.commit("Tools/Login/setScreenName", "John Doe");
 
         /* eslint-disable-next-line one-var */
-        const wrapper = shallowMount(CreateStoryButton, {
-                localVue,
-                store: testStore
-            }),
+        const wrapper = shallowMount(CreateStoryButton, wrapperOptions),
 
             setCurrentStory = sinon.stub(wrapper.vm, "setCurrentStory"),
             setCurrentStoryId = sinon.stub(wrapper.vm, "setCurrentStoryId"),

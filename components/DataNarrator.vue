@@ -192,7 +192,9 @@ export default {
         },
 
         resetDataNarrator () {
-            disableStoryLayers(this.currentStory.steps);
+            if (this.currentStory) {
+                disableStoryLayers(this.currentStory.steps);
+            }
             this.resetModule();
             this.setMode(constants.storyTellingModes.DASHBOARD);
             EventEmitter.$emit("resetPlayer");

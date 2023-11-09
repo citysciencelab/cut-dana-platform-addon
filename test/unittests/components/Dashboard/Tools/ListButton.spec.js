@@ -8,12 +8,12 @@ import {
 } from "@mdi/js";
 
 import ListButton from "../../../../../components/Dashboard/Tools/ListButton.vue";
-import {localVue, testStore} from "../../../vue_helpers";
+import {wrapperOptions} from "../../../vue_helpers";
 
 describe("ListButton.vue", () => {
     it("renders the correct icon for mode 'my'", () => {
         const wrapper = shallowMount(ListButton, {
-            localVue,
+            ...wrapperOptions,
             propsData: {
                 mode: "my",
                 currentMode: null
@@ -25,7 +25,7 @@ describe("ListButton.vue", () => {
 
     it("renders the correct icon for mode 'featured'", () => {
         const wrapper = shallowMount(ListButton, {
-            localVue,
+            ...wrapperOptions,
             propsData: {
                 mode: "featured",
                 currentMode: null
@@ -37,7 +37,7 @@ describe("ListButton.vue", () => {
 
     it("renders the correct icon for mode 'popular'", () => {
         const wrapper = shallowMount(ListButton, {
-            localVue,
+            ...wrapperOptions,
             propsData: {
                 mode: "popular",
                 currentMode: null
@@ -49,7 +49,7 @@ describe("ListButton.vue", () => {
 
     it("renders the correct icon for default mode", () => {
         const wrapper = shallowMount(ListButton, {
-            localVue,
+            ...wrapperOptions,
             propsData: {
                 mode: null,
                 currentMode: null
@@ -61,8 +61,7 @@ describe("ListButton.vue", () => {
 
     it("sets the color to 'info' when currentMode matches mode", () => {
         const wrapper = mount(ListButton, {
-            localVue,
-            store: testStore,
+            ...wrapperOptions,
             stubs: {
                 "VIcon": true
             },
@@ -77,8 +76,7 @@ describe("ListButton.vue", () => {
 
     it("does not set the color to 'info' when currentMode does not match mode", () => {
         const wrapper = mount(ListButton, {
-            localVue,
-            store: testStore,
+            ...wrapperOptions,
             stubs: {
                 "VIcon": true
             },

@@ -392,8 +392,6 @@ export default {
          * @returns  {void}  Array of data sources
          */
         getDataSources () {
-
-
             if (this.currentStep) {
                 const dataSources = this.currentStep.datasources || [];
 

@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import Vuetify from "vuetify";
 import DataNarrator from "../../store/DataNarrator";
 import Login from "../../../../../src/modules/tools/login/store/indexLogin";
+import Draw from "../../../../../src/modules/tools/draw/store/indexDraw";
 import {config, createLocalVue} from "@vue/test-utils";
 
 Vue.use(Vuetify);
@@ -20,7 +21,8 @@ export const testStore = new Vuex.Store({
             namespaced: true,
             modules: {
                 DataNarrator,
-                Login
+                Login,
+                Draw
             }
         }
     },
@@ -44,5 +46,12 @@ export const testStore = new Vuex.Store({
         }
     }
 });
+
+// eslint-disable-next-line one-var
+export const wrapperOptions = {
+    localVue,
+    store: testStore,
+    vuetify: new Vuetify()
+};
 
 testStore.commit("Tools/DataNarrator/setActive", true);

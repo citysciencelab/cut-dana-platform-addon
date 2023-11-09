@@ -4,43 +4,33 @@ import {expect} from "chai";
 import DataNarrator from "../../../components/DataNarrator.vue";
 import {storyTellingModes} from "../../../store/constantsDataNarrator";
 
-
-import {localVue, testStore} from "../vue_helpers";
+import {wrapperOptions, testStore} from "../vue_helpers";
 
 describe("addons/DatNarrator/components/DataNarrator.vue", () => {
     global.Config = {};
-    let store;
+    let wrapper;
 
-    beforeEach(() => {
-        store = testStore;
-        store.commit("Tools/DataNarrator/setActive", true);
+    beforeEach(async () => {
+        testStore.commit("Tools/DataNarrator/setActive", true);
+        wrapper = await shallowMount(DataNarrator, wrapperOptions);
+    });
+
+    afterEach(async () => {
+        await wrapper.destroy();
     });
 
     it("renders the DataNarrator tool", () => {
-        const wrapper = shallowMount(DataNarrator, {
-            store,
-            localVue
-        });
-
         expect(wrapper.find("#tool-dataNarrator").exists()).to.be.true;
     });
 
-    it("do not render the DataNarrator tool if not active", () => {
-        store.commit("Tools/DataNarrator/setActive", false);
-        const wrapper = shallowMount(DataNarrator, {
-            store,
-            localVue
-        });
+    it("do not render the DataNarrator tool if not active", async () => {
+        await testStore.commit("Tools/DataNarrator/setActive", false);
 
         expect(wrapper.find("#tool-dataNarrator").exists()).to.be.false;
     });
 
     it("renders the UI of the story creator when selected", async () => {
-        store.commit("Tools/DataNarrator/setMode", storyTellingModes.CREATE);
-        const wrapper = shallowMount(DataNarrator, {
-            store,
-            localVue
-        });
+        await testStore.commit("Tools/DataNarrator/setMode", storyTellingModes.CREATE);
 
         expect(wrapper.find("#tool-dataNarrator").exists()).to.be.true;
         expect(wrapper.find("dashboardpanel-stub").exists()).to.be.false;
@@ -49,11 +39,7 @@ describe("addons/DatNarrator/components/DataNarrator.vue", () => {
     });
 
     it("renders the UI of the story player when selected", async () => {
-        store.commit("Tools/DataNarrator/setMode", storyTellingModes.PLAY);
-        const wrapper = shallowMount(DataNarrator, {
-            store,
-            localVue
-        });
+        await testStore.commit("Tools/DataNarrator/setMode", storyTellingModes.PLAY);
 
         expect(wrapper.find("#tool-dataNarrator").exists()).to.be.true;
         expect(wrapper.find("dashboardpanel-stub").exists()).to.be.false;
@@ -61,12 +47,7 @@ describe("addons/DatNarrator/components/DataNarrator.vue", () => {
         expect(wrapper.find("storyplayer-stub").exists()).to.be.true;
     });
 
-    it("renders the UI of the dashboard when no mode is selected", async () => {
-        const wrapper = shallowMount(DataNarrator, {
-            store,
-            localVue
-        });
-
+    it("renders the UI of the dashboard when no mode is selected", () => {
         expect(wrapper.find("#tool-dataNarrator").exists()).to.be.true;
         expect(wrapper.find("dashboardpanel-stub").exists()).to.be.true;
         expect(wrapper.find("storycreator-stub").exists()).to.be.false;

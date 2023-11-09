@@ -7,7 +7,7 @@ import {
     mdiPinOutline,
     mdiTrashCanOutline
 } from "@mdi/js";
-import uuid from "uuid";
+import * as uuid from "uuid";
 import {VueEditor} from "vue2-editor";
 import {mapActions, mapGetters} from "vuex";
 
@@ -38,7 +38,10 @@ export default {
         // The initial values for a step to edit
         editedStep: {
             type: Object,
-            default: null
+            default: () => ({
+                ...constants.emptyStep,
+                _id: uuid.v4()
+            })
         }
     },
     data () {
@@ -50,13 +53,7 @@ export default {
             visibleBackgroundMap: null,
             minStepWidth: 280,
             maxStepWidth: 1000,
-            step: this.editedStep && Object.keys(this.editedStep).length > 0
-                ? this.editedStep
-                : {
-                    ...constants.emptyStep,
-                    _id: uuid.v4(),
-                    stepWidth: this.$store.state.Tools.DataNarrator.initialWidth
-                },
+            step: this.editedStep,
             newChapterTitle: "",
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
 
@@ -342,6 +339,9 @@ export default {
         }
         if (this.step.stepNumber === null) {
             this.step.stepNumber = this.allStepNumbers[this.allStepNumbers.length - 1];
+        }
+        if (this.step.stepWidth === null) {
+            this.step.stepWidth = this.$store.state.Tools.DataNarrator.initialWidth;
         }
         for (const importedItem of this.importedFileNames) {
             const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});

@@ -67,6 +67,7 @@ export default {
             v-if="mode && currentStory.storyInterval"
         >
             <span
+                id="auto-play-button"
                 role="button"
                 tabindex="0"
                 @click="toggleAutoPlay"
@@ -94,6 +95,7 @@ export default {
             </span>
         </span>
         <span
+            id="share-button"
             role="button"
             tabindex="0"
             @click="$emit('share-story', currentStoryId, currentStepIndex)"
@@ -111,6 +113,7 @@ export default {
         </span>
         <span
             v-if="!isPreview"
+            id="reset-button"
             role="button"
             tabindex="0"
             @click="reset"

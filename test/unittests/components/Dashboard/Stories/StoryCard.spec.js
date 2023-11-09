@@ -2,14 +2,14 @@ import {expect} from "chai";
 import {shallowMount} from "@vue/test-utils";
 
 import StoryCard from "../../../../../components/Dashboard/Stories/StoryCard.vue";
-import {localVue} from "../../../vue_helpers";
+import {wrapperOptions} from "../../../vue_helpers";
 
 describe("StoryCard.vue", () => {
     let wrapper;
 
     beforeEach(() => {
         wrapper = shallowMount(StoryCard, {
-            localVue,
+            ...wrapperOptions,
             propsData: {
                 story: {
                     _id: "123",
@@ -24,6 +24,10 @@ describe("StoryCard.vue", () => {
                 grid: true
             }
         });
+    });
+
+    afterEach(() => {
+        wrapper.destroy();
     });
 
     it("renders the correct title", () => {

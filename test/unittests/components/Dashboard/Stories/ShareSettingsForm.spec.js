@@ -4,15 +4,14 @@ import axios from "axios";
 import sinon from "sinon";
 
 import ShareSettingsForm from "../../../../../components/Dashboard/Stories/ShareSettingsForm.vue";
-import {localVue, testStore} from "../../../vue_helpers";
+import {wrapperOptions} from "../../../vue_helpers";
 
 describe("ShareSettingsForm", () => {
     let wrapper;
 
     beforeEach(() => {
         wrapper = mount(ShareSettingsForm, {
-            localVue,
-            store: testStore,
+            ...wrapperOptions,
             stubs: {
                 "VIcon": true,
                 "ShareSettings": true
@@ -29,6 +28,10 @@ describe("ShareSettingsForm", () => {
                 }
             }
         });
+    });
+
+    afterEach(() => {
+        wrapper.destroy();
     });
 
     it("renders the form", () => {

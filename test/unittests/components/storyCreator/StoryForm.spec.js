@@ -1,13 +1,10 @@
 import {expect} from "chai";
 import {shallowMount} from "@vue/test-utils";
-import Vuetify from "vuetify";
-
-const vuetify = new Vuetify();
 
 import StoryForm from "../../../../components/storyCreator/StoryForm.vue";
 import {emptyStory} from "../../../../store/constantsDataNarrator";
 
-import {localVue, testStore} from "../../vue_helpers";
+import {wrapperOptions, testStore} from "../../vue_helpers";
 
 describe("StoryForm", () => {
     let wrapper;
@@ -15,14 +12,12 @@ describe("StoryForm", () => {
     beforeEach(() => {
         testStore.commit("Tools/DataNarrator/setCurrentStory", emptyStory);
         wrapper = shallowMount(StoryForm, {
-            localVue,
-            store: testStore,
+            ...wrapperOptions,
             computed: {
                 mobile () {
                     return false;
                 }
-            },
-            vuetify
+            }
         });
     });
 
