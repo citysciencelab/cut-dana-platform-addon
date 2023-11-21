@@ -33,8 +33,11 @@ export default {
             if (this.selected) {
                 this.backgroundMaps.forEach(model => {
                     if (model.get("id") === this.selected) {
-                        model.setIsVisibleInMap(true);
-                        model.setIsSelected(true);
+
+                        if (!model.get("isVisibleInMap") && !model.get("isSelected")) {
+                            model.setIsVisibleInMap(true);
+                            model.setIsSelected(true);
+                        }
                     }
                     else {
                         model.setIsVisibleInMap(false);
@@ -65,9 +68,9 @@ export default {
                 @change="onChange"
             >
                 <v-radio
-                    v-for="item in backgroundMapsOptions"
-                    :key="item.id"
-                    :label="`Radio ${item.name}`"
+                    v-for="(item, index) in backgroundMapsOptions"
+                    :key="index"
+                    :label="`${item.name}`"
                     :value="item.id"
                 />
             </v-radio-group>

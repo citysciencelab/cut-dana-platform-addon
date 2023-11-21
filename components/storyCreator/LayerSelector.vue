@@ -110,7 +110,7 @@ export default {
                 }
                 return newObj;
             }
-            console.log(this.items);
+            // console.log(this.items);
 
             this.items.forEach((item) => {
 
