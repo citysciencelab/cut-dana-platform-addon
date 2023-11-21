@@ -644,12 +644,13 @@ export default {
 
         /**
          * Importing the external wms layers
+         * @param {String} layerUrl The layer url to import
          * @fires Core.ModelList#RadioTriggerModelListRenderTree
          * @fires Core.ConfigLoader#RadioTriggerParserAddFolder
          * @returns {void}
          */
-        importLayers: function () {
-            const url = this.$el.querySelector("#wmsUrl").value.trim();
+        importLayers: function (layerUrl) {
+            const url = layerUrl;
 
             this.invalidUrl = false;
             if (url === "") {
