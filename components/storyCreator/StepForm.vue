@@ -25,6 +25,8 @@ import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 import LayerSelector from "./LayerSelector.vue";
 import BackgroundMap from "./inputs/BackgroundMap.vue";
 
+import {WMSCapabilities} from "ol/format.js";
+
 export default {
     name: "StepForm",
 
@@ -637,6 +639,82 @@ export default {
          */
         removeDatasource (model) {
             this.rawDatasources = this.rawDatasources.filter(datasource => datasource.key !== model.key);
+        },
+
+
+        /**
+         * Importing the external wms layers
+         * @fires Core.ModelList#RadioTriggerModelListRenderTree
+         * @fires Core.ConfigLoader#RadioTriggerParserAddFolder
+         * @returns {void}
+         */
+        importLayers: function () {
+            const url = this.$el.querySelector("#wmsUrl").value.trim();
+
+            this.invalidUrl = false;
+            if (url === "") {
+                this.invalidUrl = true;
+                return;
+            }
+            else if (url.includes("http:")) {
+                // this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.errorHttpsMessage"));
+                return;
+            }
+            // LoaderOverlay.show();
+            axios({
+                timeout: 4000,
+                url: url + "?request=GetCapabilities&service=WMS"
+            })
+                .then(response => response.data)
+                .then((data) => {
+                    // LoaderOverlay.hide();
+                    try {
+                        const parser = new WMSCapabilities(),
+                            uniqId = this.getAddWmsUniqueId(),
+                            capability = parser.read(data),
+                            version = capability?.version,
+                            checkVersion = this.isVersionEnabled(version),
+                            currentExtent = Radio.request("Parser", "getPortalConfig")?.mapView?.extent;
+
+                        let checkExtent = this.getIfInExtent(capability, currentExtent),
+                            finalCapability = capability;
+
+                        if (!checkVersion) {
+                            const reversedData = this.getReversedData(data);
+
+                            finalCapability = parser.read(reversedData);
+                            checkExtent = this.getIfInExtent(finalCapability, currentExtent);
+                        }
+
+                        if (!checkExtent) {
+                            // this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.ifInExtent"));
+                            return;
+                        }
+
+                        this.version = version;
+                        this.wmsUrl = url;
+
+                        if (Radio.request("Parser", "getItemByAttributes", {id: "ExternalLayer"}) === undefined) {
+                            Radio.trigger("Parser", "addFolder", "Externe Fachdaten", "ExternalLayer", "tree", 0);
+                            Radio.trigger("ModelList", "renderTree");
+                            $("#Overlayer").parent().after($("#ExternalLayer").parent());
+                        }
+                        Radio.trigger("Parser", "addFolder", finalCapability.Service.Title, uniqId, "ExternalLayer", 0);
+                        finalCapability.Capability.Layer.Layer.forEach(layer => {
+                            this.parseLayer(layer, uniqId, 1);
+                        });
+                        Radio.trigger("ModelList", "closeAllExpandedFolder");
+
+                        // this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.completeMessage"));
+
+                    }
+                    catch (e) {
+                        this.displayErrorMessage();
+                    }
+                }, () => {
+                    // LoaderOverlay.hide();
+                    this.displayErrorMessage();
+                });
         }
     }
 };
