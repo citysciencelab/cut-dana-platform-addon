@@ -71,23 +71,21 @@ describe("addons/dataNarrator/store/actions/storyCreatorActions.js", () => {
             await actions.uploadStoryFiles({state});
 
             expect(axiosPostStub.callCount).to.equal(4); // 1 for story, 3 for images
-            expect(axiosPostStub.getCall(0).args[0]).to.eql({
-                url: "http://localhost:3000/stories",
-                data: {
-                    title: "Test Story",
-                    steps: [
-                        {
-                            associatedChapter: 1,
-                            stepNumber: 1,
-                            title: "Step 1"
-                        },
-                        {
-                            associatedChapter: 1,
-                            stepNumber: 2,
-                            title: "Step 2"
-                        }
-                    ]
-                }
+            expect(axiosPostStub.getCall(0).args[0]).to.eql("http://localhost:3000/stories");
+            expect(axiosPostStub.getCall(0).args[1]).to.eql({
+                title: "Test Story",
+                steps: [
+                    {
+                        associatedChapter: 1,
+                        stepNumber: 1,
+                        title: "Step 1"
+                    },
+                    {
+                        associatedChapter: 1,
+                        stepNumber: 2,
+                        title: "Step 2"
+                    }
+                ]
             });
 
             expect(axiosPatchStub.callCount).to.equal(2); // 2 for steps html
@@ -111,23 +109,21 @@ describe("addons/dataNarrator/store/actions/storyCreatorActions.js", () => {
             expect(axiosPostStub.callCount).to.equal(3); // 3 for images
 
             expect(axiosPatchStub.callCount).to.equal(3); // 1 for story, 2 for steps html
-            expect(axiosPatchStub.getCall(0).args[0]).to.eql({
-                url: "http://localhost:3000/stories/5678",
-                data: {
-                    title: "Test Story",
-                    steps: [
-                        {
-                            associatedChapter: 1,
-                            stepNumber: 1,
-                            title: "Step 1"
-                        },
-                        {
-                            associatedChapter: 1,
-                            stepNumber: 2,
-                            title: "Step 2"
-                        }
-                    ]
-                }
+            expect(axiosPatchStub.getCall(0).args[0]).to.eql("http://localhost:3000/stories/5678");
+            expect(axiosPatchStub.getCall(0).args[1]).to.eql({
+                title: "Test Story",
+                steps: [
+                    {
+                        associatedChapter: 1,
+                        stepNumber: 1,
+                        title: "Step 1"
+                    },
+                    {
+                        associatedChapter: 1,
+                        stepNumber: 2,
+                        title: "Step 2"
+                    }
+                ]
             });
 
             expect(axiosPatchStub.getCall(1).args[0]).to.eql("http://localhost:3000/stories/5678/1/1/html");

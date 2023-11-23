@@ -344,8 +344,8 @@ export default {
 </style>
 
 <style lang="scss">
-@import "../scss/fixes.scss";
-@import "../scss/csl.scss";
+@import "../assets/scss/fixes.scss";
+@import "../assets/scss/csl.scss";
 
 .table-tools {
     width: 40px !important;
