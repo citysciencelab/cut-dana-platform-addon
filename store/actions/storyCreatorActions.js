@@ -226,12 +226,9 @@ function prepareHtml (story, images) {
  */
 function uploadStoryFiles ({state}) {
     const backendUrl = state.backendConfig.url,
-        requestConf = {url: backendUrl + "/stories"},
         datasourcePathPrefix = `${backendUrl}/datasources/`,
         [story, imageArray, htmlArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages),
         datasources = [];
-
-    console.log(backendUrl, datasourcePathPrefix);
 
     for (const step in story.steps) {
         // story.steps[step].datasources = undefined;
@@ -266,18 +263,18 @@ function uploadStoryFiles ({state}) {
         delete story.titleImage;
     }
 
-    requestConf.data = story;
     let storyId = state.currentStoryId,
+        requestUrl = `${backendUrl}/stories`,
         imagePathPrefix = `${backendUrl}/images/`,
         axiosMethod = axios.post;
 
     if (storyId) {
-        requestConf.url += "/" + storyId;
+        requestUrl += "/" + storyId;
         axiosMethod = axios.patch;
     }
 
     // Add story and get current storyID back from server
-    return axiosMethod(requestConf).then((response) => {
+    return axiosMethod(requestUrl, story).then((response) => {
         // Save entire story
         storyId ||= response.data.storyId;
         imagePathPrefix += storyId + "/";
