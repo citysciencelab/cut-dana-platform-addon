@@ -231,6 +231,7 @@ function uploadStoryFiles ({state}) {
         [story, imageArray, htmlArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages),
         datasources = [];
 
+    console.log(backendUrl, datasourcePathPrefix);
 
     for (const step in story.steps) {
         // story.steps[step].datasources = undefined;

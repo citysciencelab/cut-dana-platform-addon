@@ -335,6 +335,9 @@ export default {
         }
     },
     mounted () {
+        if (!this.step.layers) {
+            this.step.layers = [];
+        }
         this.$store.commit("Tools/Draw/setActive", true);
         if (this.step.associatedChapter === null) {
             const diff = this.chapterOptions.length > 1 ? 2 : 1;
@@ -368,14 +371,18 @@ export default {
         for (const importedItem of this.importedFileNames) {
             const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
 
-            model.setIsVisibleInMap(false);
-            model.set("isSelected", false);
+            if (model) {
+                model.setIsVisibleInMap(false);
+                model.set("isSelected", false);
+            }
         }
         for (const layer of this.step.layers) {
             const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
 
-            model.setIsVisibleInMap(false);
-            model.set("isSelected", false);
+            if (model) {
+                model.setIsVisibleInMap(false);
+                model.set("isSelected", false);
+            }
         }
 
         this.$store.commit("Tools/Draw/setActive", false);
@@ -1345,7 +1352,7 @@ export default {
             <div class="form-group">
                 <label
                     class="form-label"
-                    for="own_dataSource"
+                    for="own_wmsLayers"
                 >
                     {{
                         $t(
