@@ -36,7 +36,8 @@ export default {
     data () {
         return {
             storyList: {},
-            storyListMode: "all"
+            storyListMode: "all",
+            masonry: null
         };
     },
     computed: {
@@ -65,18 +66,26 @@ export default {
     },
     updated () {
         setTimeout(() => {
-            new Masonry("#tool-dataNarrator-modeSelection",
+            this.masonry = new Masonry("#tool-dataNarrator-modeSelection",
                 {
                     itemSelector: ".grid-item",
                     columnWidth: ".grid-item",
                     gutter: 4,
                     percentPosition: true
                 });
-        }, 50);
-
+        }, 100);
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
+
+        /**
+         * Refresh masonry layout after image is loaded
+         * @returns {void}
+         */
+        imageLoaded () {
+            this.masonry?.layout();
+        },
+
         /**
          * Refreshes the list of stories
          * @param {String} mode Story filter
@@ -189,6 +198,7 @@ export default {
                                 :uid="uid"
                                 :grid="true"
                                 @refreshStoryList="refreshStoryList"
+                                @imageLoaded="imageLoaded"
                                 v-on="$listeners"
                             />
                         </template>

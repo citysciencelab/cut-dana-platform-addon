@@ -5,11 +5,12 @@ import EditButton from "./StoryActionButtons/EditButton.vue";
 import DeleteButton from "./StoryActionButtons/DeleteButton.vue";
 import FeaturedButton from "./StoryActionButtons/FeaturedButton.vue";
 import ShareSettingsButton from "./StoryActionButtons/ShareSettingsButton.vue";
-
 import ShareSettingsForm from "./ShareSettingsForm.vue";
 
+import {mdiAccountOutline} from "@mdi/js";
+
 export default {
-    name: "StoryCard",
+    name: "StoryCard2",
     components: {
         PlayButton,
         ShareButton,
@@ -39,12 +40,18 @@ export default {
     },
     data () {
         return {
-            shareSettings: false
+            shareSettings: false,
+            icons: {
+                mdiAccountOutline
+            }
         };
     },
     methods: {
         editable () {
             return this.isAdmin || this.story.owner === this.uid;
+        },
+        reloadMasonry () {
+            this.$emit("imageLoaded");
         }
     }
 };
@@ -52,70 +59,76 @@ export default {
 
 <template>
     <v-card
-        elevation="2"
         class="mb-2"
+        flat
         :class="{'grid-item': grid, 'topper': shareSettings}"
     >
-        <div class="d-flex flex-no-wrap justify-space-between overflow-hidden">
-            <div>
-                <v-card-title>
-                    <FeaturedButton
-                        :story-id="story._id"
-                        :is-featured="story.featured"
-                        :is-admin="isAdmin"
-                    />
-                    <span class="text-h6 font-weight-light">{{ story.title }}</span>
+        <v-img
+            v-if="story.titleImage"
+            :src="story.titleImage"
+            :alt="story.title"
+            eager
+            height="95px"
+            @load="reloadMasonry"
+        />
+
+        <v-row class="card-header">
+            <v-col cols="11">
+                <v-card-title class="card-title">
+                    {{ story.title }}
                 </v-card-title>
-                <v-card-subtitle>
-                    {{
-                        $t("additional:modules.tools.dataNarrator.label.author")
-                    }}: &nbsp; {{ story.author }}
+                <v-card-subtitle class="card-subtitle">
+                    <v-icon small>
+                        {{ icons.mdiAccountOutline }}
+                    </v-icon>
+                    {{ story.author }}
                 </v-card-subtitle>
-            </div>
+            </v-col>
 
-            <v-avatar
-                v-if="story.titleImage"
-                class="ma-3"
-                size="125"
-                rounded="3"
-            >
-                <v-img
-                    :src="story.titleImage"
-                    :alt="story.title"
+            <v-col cols="1">
+                <FeaturedButton
+                    :story-id="story._id"
+                    :is-featured="story.featured"
+                    :is-admin="isAdmin"
                 />
-            </v-avatar>
-        </div>
+                <ShareButton
+                    :story-id="story._id"
+                    v-on="$listeners"
+                />
+            </v-col>
+        </v-row>
 
-        <v-card-text>
+        <v-card-text class="card-text">
             {{ story.description }}
         </v-card-text>
 
-
-        <v-card-actions>
-            <PlayButton :story-id="story._id" />
-            <ShareButton
-                :story-id="story._id"
-                v-on="$listeners"
-            />
-
-            <v-spacer />
-
-            <ShareSettingsButton
-                v-if="editable()"
-                :story="story"
-                @toggle:shared-settings="shareSettings = !shareSettings"
-                v-on="$listeners"
-            />
-            <EditButton
-                v-if="editable()"
-                :story-id="story._id"
-            />
-            <DeleteButton
-                v-if="editable()"
-                :story-id="story._id"
-                v-on="$listeners"
-            />
+        <v-card-actions class="card-actions">
+            <v-row>
+                <v-col>
+                    <EditButton
+                        v-if="editable()"
+                        :story-id="story._id"
+                    />
+                    <DeleteButton
+                        v-if="editable()"
+                        :story-id="story._id"
+                        v-on="$listeners"
+                    />
+                    <ShareSettingsButton
+                        v-if="editable()"
+                        :story="story"
+                        @toggle:shared-settings="shareSettings = !shareSettings"
+                        v-on="$listeners"
+                    />
+                </v-col>
+                <v-col>
+                    <PlayButton
+                        :story-id="story._id"
+                    />
+                </v-col>
+            </v-row>
         </v-card-actions>
+
 
         <ShareSettingsForm
             v-if="shareSettings"
@@ -137,6 +150,9 @@ export default {
     flex: 0 0 100%;
     max-width: 100%;
 
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.40);
+
 
     @media (min-width: 768px){
         flex: 0 0 calc(50% - 4px);
@@ -153,5 +169,25 @@ export default {
         max-width: calc(25% - 4px);
     }
 
+}
+
+.card-header {
+    padding: 10px 12px 0 12px;
+
+    .card-title {
+        padding: 0;
+    }
+
+    .card-subtitle {
+        padding: 12px 0 0 0;
+    }
+}
+
+.card-text {
+    padding: 0 12px;
+}
+
+.card-actions {
+    padding: 8px 12px 8px 12px;
 }
 </style>
