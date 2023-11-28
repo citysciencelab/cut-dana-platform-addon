@@ -61,7 +61,6 @@ export default {
         <template #activator="{ on }">
             <v-icon
                 id="featured-button"
-                class="mr-1"
                 :color="featured ? 'warning' : ''"
                 v-on="on"
                 @click="makeItFeatured()"

@@ -25,7 +25,6 @@ export default {
         <template #activator="{ on }">
             <v-icon
                 id="share-button"
-                class="ml-1 mr-1"
                 :color="story.private ? 'red' : 'green'"
                 v-on="on"
                 @click="$emit('toggle:shared-settings')"

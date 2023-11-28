@@ -1,5 +1,5 @@
 <script>
-import {mdiShareAll} from "@mdi/js";
+import {mdiLink} from "@mdi/js";
 
 export default {
     name: "ShareButton",
@@ -12,7 +12,7 @@ export default {
     data () {
         return {
             icons: {
-                mdiShareAll
+                mdiLink
             }
         };
     }
@@ -25,11 +25,10 @@ export default {
         <template #activator="{ on }">
             <v-icon
                 id="share-button"
-                class="ml-1 mr-1"
                 v-on="on"
                 @click="$emit('share-story', storyId, 's')"
             >
-                {{ icons.mdiShareAll }}
+                {{ icons.mdiLink }}
             </v-icon>
         </template>
         <span>

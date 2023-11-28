@@ -41,7 +41,6 @@ export default {
         <template #activator="{ on }">
             <v-icon
                 id="edit-button"
-                class="ml-1 mr-1"
                 v-on="on"
                 @click="edit()"
             >
