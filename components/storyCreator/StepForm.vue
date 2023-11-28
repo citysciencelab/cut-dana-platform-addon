@@ -522,21 +522,42 @@ export default {
 
                     let models = [];
 
-                    console.log(parsedModel);
-
                     Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
-                    models = Radio.request("ModelList", "getItemsByAttributes", {id: parsedModel.id});
-
-                    console.log(models);
+                    models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
 
                     return models;
+                }),
+                allCapabilitiesModels = allCapabilities.map(capability => {
+                    console.log(capability);
+                    return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
                 });
 
-            console.log(layerModels);
-            // if (layerModel) {
-            //     layerModel.setIsVisibleInMap(true);
-            //     layerModel.set("isSelected", true);
-            // }
+            // customLayers = Radio.request("Parser", "getItemsByAttributes", {parentId: "ExternalLayer"}),
+            // // externalLayers = customLayers.forEach(model => {
+            // //     console.log(model);
+            // //     return
+            // // }),
+
+
+            // allExternalLayers = customLayers.forEach(model => {
+            //     const parsedFolderModel = Radio.request("Parser", "getItemsByAttributes", {parentId: model.get("id")})[0],
+            //         parsedLayerModels = Radio.request("ModelList", "getModelsByAttributes", {parentId: parsedFolderModel.get("id")});
+
+            //     return parsedLayerModels;
+            // }),
+            // externalLayerModels = allExternalLayers.flat();
+
+            allCapabilitiesModels.forEach(model => {
+                if (model) {
+                    model.setIsVisibleInMap(selectedCapabilities.includes(model.get("id")));
+                    model.set("isSelected", selectedCapabilities.includes(model.get("id")));
+                }
+            });
+
+            layerModels.forEach(model => {
+                model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
+                model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
+            });
 
             if (layer) {
                 layer.selectedLayers = selectedCapabilities;
@@ -1506,7 +1527,7 @@ export default {
                                 item-key="Name"
                                 item-text="Title"
 
-                                @input="updateSelectedCapabilities($event, item.url)"
+                                @input="updateSelectedCapabilities($event, item.url, item.selectedLayers)"
                             />
                             <!-- <WmsCapabilitiesSelector
                                 :items="capabilityOptions(item.url)"
