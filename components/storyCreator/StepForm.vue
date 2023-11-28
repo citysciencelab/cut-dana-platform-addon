@@ -369,6 +369,11 @@ export default {
 
         this.existingDatasources();
 
+        this.step.wmsLayers.forEach(layer => {
+            this.importWMSLayers(layer.url, layer.selectedLayers);
+
+            this.updateSelectedCapabilities(layer.selectedLayers, layer.url, this.allWmsLayers);
+        });
     },
     beforeDestroy () {
         for (const importedItem of this.importedFileNames) {
@@ -528,29 +533,14 @@ export default {
                     return models;
                 }),
                 allCapabilitiesModels = allCapabilities.map(capability => {
-                    console.log(capability);
                     return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
                 });
 
-            // customLayers = Radio.request("Parser", "getItemsByAttributes", {parentId: "ExternalLayer"}),
-            // // externalLayers = customLayers.forEach(model => {
-            // //     console.log(model);
-            // //     return
-            // // }),
-
-
-            // allExternalLayers = customLayers.forEach(model => {
-            //     const parsedFolderModel = Radio.request("Parser", "getItemsByAttributes", {parentId: model.get("id")})[0],
-            //         parsedLayerModels = Radio.request("ModelList", "getModelsByAttributes", {parentId: parsedFolderModel.get("id")});
-
-            //     return parsedLayerModels;
-            // }),
-            // externalLayerModels = allExternalLayers.flat();
 
             allCapabilitiesModels.forEach(model => {
-                if (model) {
-                    model.setIsVisibleInMap(selectedCapabilities.includes(model.get("id")));
-                    model.set("isSelected", selectedCapabilities.includes(model.get("id")));
+                if (model && selectedCapabilities.includes(model.get("layers"))) {
+                    model.setIsVisibleInMap(false);
+                    model.set("isSelected", false);
                 }
             });
 
@@ -630,12 +620,12 @@ export default {
 
         /**
          * Handles removing a WMS layer from the step
-         * @param {String} layerUrl The URL to remove
+         * @param {Object} layer The URL to remove
          * @returns {void}
          */
-        onWmsLayerRemove (layerUrl) {
-            this.wmsLayers = this.wmsLayers.filter(layer => layer.url !== layerUrl);
-            this.allWmsLayers = this.allWmsLayers.filter(layer => layer.url !== layerUrl);
+        onWmsLayerRemove (layer) {
+            this.wmsLayers = this.wmsLayers.filter(l => l.url !== layer.url);
+            this.allWmsLayers = this.allWmsLayers.filter(l => l.url !== layer.url);
         },
 
         /**
@@ -940,7 +930,6 @@ export default {
                     legendURL: object?.Style?.[0].LegendURL?.[0].OnlineResource?.toString(),
                     datasets
                 });
-                console.log(parentId);
             }
         },
 
