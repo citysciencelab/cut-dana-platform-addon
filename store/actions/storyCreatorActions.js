@@ -366,8 +366,6 @@ function importWMSLayers ({state}, layerUrl, capabilities) {
                 let checkExtent = getIfInExtent({}, capability, currentExtent),
                     finalCapability = capability;
 
-                console.log(checkVersion, checkExtent);
-
                 if (!checkVersion) {
                     const reversedData = getReversedData({}, data);
 
@@ -598,6 +596,25 @@ function capabilityOptions ({state}, layerUrl) {
 
 }
 
+/**
+ *
+ * @param {String} layerUrl the wms url
+ * @returns {Promise} return nothing
+ */
+async function hideWmsLayer (layerUrl) {
+    const capabilites = await capabilityOptions({}, layerUrl),
+        allCapabilitiesModels = capabilites.map(capability => {
+            return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+        });
+
+    allCapabilitiesModels.forEach(model => {
+        if (model) {
+            model.setIsVisibleInMap(false);
+            model.set("isSelected", false);
+        }
+    });
+}
+
 export default {
     addStoryChapter,
     saveStoryStep,
@@ -616,5 +633,6 @@ export default {
     getReversedData,
     getIfInExtent,
     capabilityOptions,
-    generateUUID
+    generateUUID,
+    hideWmsLayer
 };

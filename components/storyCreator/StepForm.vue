@@ -511,8 +511,6 @@ export default {
                 }
             });
 
-            console.table(layerModels);
-
             layerModels.forEach(model => {
                 model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
                 model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
