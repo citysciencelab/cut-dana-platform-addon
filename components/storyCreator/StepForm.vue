@@ -25,6 +25,10 @@ import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 import LayerSelector from "./LayerSelector.vue";
 import BackgroundMap from "./inputs/BackgroundMap.vue";
 
+import crs from "@masterportal/masterportalapi/src/crs";
+import {intersects} from "ol/extent";
+import {WMSCapabilities} from "ol/format.js";
+
 export default {
     name: "StepForm",
 
@@ -79,7 +83,8 @@ export default {
             },
             rawDatasources: this.editedStep?.datasources || [],
             datasources: [],
-            wmsLayers: this.editedStep?.wmsLayers || []
+            wmsLayers: this.editedStep?.wmsLayers || [],
+            allWmsLayers: this.editedStep?.wmsLayers || []
         };
     },
     computed: {
@@ -173,6 +178,7 @@ export default {
                         addon.key
                 }));
         },
+
 
         backgroundMaps () {
             const bgMaps = Radio.request("Parser", "getItemsByAttributes", {backgroundMap: true}),
@@ -331,6 +337,9 @@ export default {
         }
     },
     mounted () {
+        if (!this.step.layers) {
+            this.step.layers = [];
+        }
         this.$store.commit("Tools/Draw/setActive", true);
         if (this.step.associatedChapter === null) {
             const diff = this.chapterOptions.length > 1 ? 2 : 1;
@@ -355,22 +364,33 @@ export default {
             model.setIsVisibleInMap(false);
             model.set("isSelected", false);
         }
+
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
 
         this.existingDatasources();
+
+        this.step.wmsLayers.forEach(layer => {
+            this.importWMSLayers(layer.url, layer.selectedLayers);
+
+            this.updateSelectedCapabilities(layer.selectedLayers, layer.url, this.allWmsLayers);
+        });
     },
     beforeDestroy () {
         for (const importedItem of this.importedFileNames) {
             const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
 
-            model.setIsVisibleInMap(false);
-            model.set("isSelected", false);
+            if (model) {
+                model.setIsVisibleInMap(false);
+                model.set("isSelected", false);
+            }
         }
         for (const layer of this.step.layers) {
             const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
 
-            model.setIsVisibleInMap(false);
-            model.set("isSelected", false);
+            if (model) {
+                model.setIsVisibleInMap(false);
+                model.set("isSelected", false);
+            }
         }
 
         this.$store.commit("Tools/Draw/setActive", false);
@@ -389,8 +409,11 @@ export default {
             if (value) {
                 this.backgroundMaps.forEach(model => {
                     if (model.get("id") === value) {
-                        model.setIsVisibleInMap(true);
-                        model.setIsSelected(true);
+
+                        if (!model.get("isVisibleInMap") && !model.get("isSelected")) {
+                            model.setIsVisibleInMap(true);
+                            model.setIsSelected(true);
+                        }
                     }
                     else {
                         model.setIsVisibleInMap(false);
@@ -398,6 +421,38 @@ export default {
                     }
                 });
             }
+        },
+
+        /**
+         * The capabilites of the WMS layers
+         * @param {String} layerUrl the url of the layer
+         * @returns {Promise<Object[]>} available background maps to select
+         */
+        async capabilityOptions (layerUrl) {
+
+            const r = await axios({
+                timeout: 4000,
+                url: layerUrl + "?request=GetCapabilities&service=WMS"
+            })
+                .then(response => response.data)
+                .then((data) => {
+                    // LoaderOverlay.hide();
+                    try {
+                        const parser = new WMSCapabilities(),
+                            capability = parser.read(data);
+
+
+                        return capability.Capability.Layer.Layer;
+                    }
+                    catch (e) {
+                        // this.displayErrorMessage();
+                        console.error(e);
+                    }
+                    return [];
+                });
+
+            return r;
+
         },
 
         existingDatasources () {
@@ -464,9 +519,113 @@ export default {
             }
         },
 
-        onWmsLayersAdd () {
-            Radio.trigger("Parser", "addWMSRemotely", document.querySelector("#own_wmsLayers").value);
-            this.wmsLayers.push(document.querySelector("#own_wmsLayers").value);
+        updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
+
+            const layer = this.wmsLayers.find(url => url.url === layerUrl),
+                layerModels = selectedCapabilities.map(capability => {
+                    const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
+
+                    let models = [];
+
+                    Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
+                    models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
+
+                    return models;
+                }),
+                allCapabilitiesModels = allCapabilities.map(capability => {
+                    return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+                });
+
+
+            allCapabilitiesModels.forEach(model => {
+                if (model && selectedCapabilities.includes(model.get("layers"))) {
+                    model.setIsVisibleInMap(false);
+                    model.set("isSelected", false);
+                }
+            });
+
+            layerModels.forEach(model => {
+                model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
+                model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
+            });
+
+            if (layer) {
+                layer.selectedLayers = selectedCapabilities;
+            }
+        },
+
+        async onWmsLayersAdd () {
+            // Radio.trigger("Parser", "addWMSRemotely", document.querySelector("#own_wmsLayers").value);
+            const url = document.querySelector("#own_wmsLayers").value,
+                capabilites = await this.capabilityOptions(url),
+                exists = this.wmsLayers.filter(layer => layer.url === url).length > 0;
+
+            if (!exists) {
+
+                this.wmsLayers.push({
+                    url: url,
+                    selectedLayers: []
+                });
+
+                this.allWmsLayers.push({
+                    url: url,
+                    selectedLayers: capabilites
+                });
+
+                this.importWMSLayers(url, capabilites);
+            }
+
+
+        },
+
+
+        /**
+         * Handles adding a capability to the WMS layers
+         * @param {String} layerUrl the url where the layer should be
+         * @param {String} capability the capability to add
+         * @returns {void}
+         */
+        onWmsCapabilitiesUpdate (layerUrl, capability) {
+            const layer = this.wmsLayers.find(url => url.url === layerUrl),
+                allLayer = this.allWmsLayers.find(url => url.url === layerUrl);
+
+            if (layer) {
+                layer.selectedLayers.push(capability.Name);
+            }
+
+            if (allLayer) {
+                allLayer.selectedLayers.push(capability);
+            }
+        },
+
+        /**
+         * Handles removing a capability from the WMS layers
+         * @param {String} layerUrl the url where the layer should be
+         * @param {String} capability the capability to remove
+         * @returns {void}
+         */
+        onWmsCapabilitiesRemove (layerUrl, capability) {
+            const layer = this.wmsLayers.find(url => url.url === layerUrl),
+                allLayer = this.allWmsLayers.find(url => url.url === layerUrl);
+
+            if (layer) {
+                layer.selectedLayers = layer.selectedLayers.filter(cap => cap !== capability);
+            }
+
+            if (allLayer) {
+                allLayer.selectedLayers = allLayer.selectedLayers.filter(cap => cap !== capability);
+            }
+        },
+
+
+        /**
+         * Handles removing a WMS layer from the step
+         * @param {Object} layer The URL to remove
+         * @returns {void}
+         */
+        onWmsLayerRemove (layer) {
+            this.wmsLayers = this.wmsLayers.filter(l => l.url !== layer.url);
+            this.allWmsLayers = this.allWmsLayers.filter(l => l.url !== layer.url);
         },
 
         /**
@@ -637,6 +796,217 @@ export default {
          */
         removeDatasource (model) {
             this.rawDatasources = this.rawDatasources.filter(datasource => datasource.key !== model.key);
+        },
+
+        /**
+         * Getter for addWMS UniqueId.
+         * Counts the uniqueId 1 up.
+         * @returns {String} uniqueId - The unique id for addWMS.
+         */
+        getAddWmsUniqueId: function () {
+            const uniqueId = this.uniqueId ? this.uniqueId : 0;
+
+            this.uniqueId = uniqueId + 1;
+            return "external_" + uniqueId;
+        },
+
+        /**
+         * Getter if the version is enabled and above 1.3.0
+         * @param {String} version the version of current external wms layer
+         * @returns {Boolean} true or false
+         */
+        isVersionEnabled: function (version) {
+            if (typeof version !== "string") {
+                return false;
+            }
+
+            const parsedVersion = version.split(".");
+
+            if (parseInt(parsedVersion[0], 10) < 1) {
+                return false;
+            }
+            else if (parsedVersion.length >= 2 && parseInt(parsedVersion[0], 10) === 1 && parseInt(parsedVersion[1], 10) < 3) {
+                return false;
+            }
+
+            return true;
+        },
+
+        /**
+         * Getter for reversed data of old wms version
+         * @param {Object} data the response of the imported wms layer
+         * @returns {xml} reversedData - The reversed data of the response of the imported wms layer
+         */
+        getReversedData: function (data) {
+            let reversedData = new XMLSerializer().serializeToString(data);
+
+            reversedData = reversedData.replace(/<SRS>/g, "<CRS>").replace(/<\/SRS>/g, "</CRS>").replace(/SRS=/g, "CRS=");
+            reversedData = new DOMParser().parseFromString(reversedData, "text/xml");
+
+            return reversedData;
+        },
+
+        /**
+         * Getter if the imported wms layer in the extent of current map
+         * @param {Object} capability the response of the imported wms layer in parsed format
+         * @param {Number[]} currentExtent the extent of current map view
+         * @returns {Boolean} true or false
+         */
+        getIfInExtent: function (capability, currentExtent) {
+            const layer = capability?.Capability?.Layer?.BoundingBox?.filter(bbox => {
+                return bbox?.crs && bbox?.crs.includes("EPSG") && crs.getProjection(bbox?.crs) !== undefined && Array.isArray(bbox?.extent) && bbox?.extent.length === 4;
+            });
+            let layerExtent;
+
+            // If there is no extent defined or the extent is not right defined, it will import the external wms layer(s).
+            if (!Array.isArray(currentExtent) || currentExtent.length !== 4) {
+                return true;
+            }
+
+            if (Array.isArray(layer) && layer.length) {
+                let firstLayerExtent = [],
+                    secondLayerExtent = [];
+
+                layer.forEach(singleLayer => {
+                    if (singleLayer.crs === this.projection.getCode()) {
+                        firstLayerExtent = [singleLayer.extent[0], singleLayer.extent[1]];
+                        secondLayerExtent = [singleLayer.extent[2], singleLayer.extent[3]];
+                    }
+                });
+
+                if (!firstLayerExtent.length && !secondLayerExtent.length) {
+                    firstLayerExtent = crs.transform(layer[0].crs, this.projection.getCode(), [layer[0].extent[0], layer[0].extent[1]]);
+                    secondLayerExtent = crs.transform(layer[0].crs, this.projection.getCode(), [layer[0].extent[2], layer[0].extent[3]]);
+                }
+
+                layerExtent = [firstLayerExtent[0], firstLayerExtent[1], secondLayerExtent[0], secondLayerExtent[1]];
+
+                return intersects(currentExtent, layerExtent);
+            }
+
+            return true;
+        },
+
+        /** Getter for parsed title without space and slash
+         * It will be used as id later in template
+         * @param {String} title - the title of current layer
+         * @returns {String} parsedTitle - The parsed title
+         */
+        getParsedTitle: function (title) {
+            return String(title).replace(/\s+/g, "-").replace(/\//g, "-");
+        },
+
+        /**
+         * Appending folders and layers to the menu based on the given layer object
+         * @info recursive function
+         * @param {Object} object the ol layer to hang into the menu as new folder or new layer
+         * @param {String} parentId the id of the parent object in the menu
+         * @param {Number} level the depth of the recursion
+         * @param {String[]} capabilities The capabilities of the layer
+         * @fires Core.ConfigLoader#RadioTriggerParserAddFolder
+         * @fires Core.ConfigLoader#RadioTriggerParserAddLayer
+         * @return {void}
+         */
+        parseLayer: function (object, parentId, level, capabilities) {
+            if (Object.prototype.hasOwnProperty.call(object, "Layer")) {
+                object.Layer.forEach(layer => {
+                    this.parseLayer(layer, this.getParsedTitle(object.Title), level + 1, capabilities);
+                });
+                Radio.trigger("Parser", "addFolder", object.Title, this.getParsedTitle(object.Title), parentId, level, false, false, object.invertLayerOrder);
+            }
+            else {
+                const datasets = [];
+
+                if (object?.MetadataURL?.[0].OnlineResource) {
+                    datasets.push({
+                        customMetadata: true,
+                        csw_url: object.MetadataURL[0].OnlineResource,
+                        attributes: {}
+                    });
+                }
+                Radio.trigger("Parser", "addLayer", object.Title, this.getParsedTitle(object.Title), parentId, level, object.Name, this.wmsUrl, this.version, {
+                    maxScale: object?.MaxScaleDenominator?.toString(),
+                    minScale: object?.MinScaleDenominator?.toString(),
+                    legendURL: object?.Style?.[0].LegendURL?.[0].OnlineResource?.toString(),
+                    datasets
+                });
+            }
+        },
+
+        /**
+         * Importing the external wms layers
+         * @param {String} layerUrl The layer url to import
+         * @param {String[]} capabilities The capabilities of the layer
+         * @fires Core.ModelList#RadioTriggerModelListRenderTree
+         * @fires Core.ConfigLoader#RadioTriggerParserAddFolder
+         * @returns {void}
+         */
+        importWMSLayers: function (layerUrl, capabilities) {
+            const url = layerUrl;
+
+            this.invalidUrl = false;
+            if (url === "") {
+                this.invalidUrl = true;
+                return;
+            }
+            else if (url.includes("http:")) {
+                this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.errorHttpsMessage"));
+                return;
+            }
+            // LoaderOverlay.show();
+            axios({
+                url: url + "?request=GetCapabilities&service=WMS"
+            })
+                .then(response => response.data)
+                .then((data) => {
+                    // LoaderOverlay.hide();
+                    try {
+                        const parser = new WMSCapabilities(),
+                            uniqId = this.getAddWmsUniqueId(),
+                            capability = parser.read(data),
+                            version = capability?.version,
+                            checkVersion = this.isVersionEnabled(version),
+                            currentExtent = Radio.request("Parser", "getPortalConfig")?.mapView?.extent;
+
+                        let checkExtent = this.getIfInExtent(capability, currentExtent),
+                            finalCapability = capability;
+
+                        if (!checkVersion) {
+                            const reversedData = this.getReversedData(data);
+
+                            finalCapability = parser.read(reversedData);
+                            checkExtent = this.getIfInExtent(finalCapability, currentExtent);
+                        }
+
+                        if (!checkExtent) {
+                            // this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.ifInExtent"));
+                            return;
+                        }
+
+                        this.version = version;
+                        this.wmsUrl = url;
+
+                        if (Radio.request("Parser", "getItemByAttributes", {id: "ExternalLayer"}) === undefined) {
+                            Radio.trigger("Parser", "addFolder", "Externe Fachdaten", "ExternalLayer", "tree", 0);
+                            Radio.trigger("ModelList", "renderTree");
+                            $("#Overlayer").parent().after($("#ExternalLayer").parent());
+                        }
+                        Radio.trigger("Parser", "addFolder", finalCapability.Service.Title, uniqId, "ExternalLayer", 0);
+                        finalCapability.Capability.Layer.Layer.forEach(layer => {
+                            this.parseLayer(layer, uniqId, 1, capabilities);
+                        });
+                        Radio.trigger("ModelList", "closeAllExpandedFolder");
+
+                        // this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.completeMessage"));
+
+                    }
+                    catch (e) {
+                        // this.displayErrorMessage();
+                    }
+                }, () => {
+                    // LoaderOverlay.hide();
+                    // this.displayErrorMessage();
+                });
         }
     }
 };
@@ -1108,6 +1478,68 @@ export default {
                             accept=".kml, .geojson, .json, .gpx"
                             multiple
                             @change="onCustomDataUpload"
+                        >
+                    </v-col>
+                </v-row>
+            </div>
+
+            <div class="form-group">
+                <label
+                    class="form-label"
+                    for="own_wmsLayers"
+                >
+                    {{
+                        $t(
+                            "additional:modules.tools.dataNarrator.label.ownWmsLayers"
+                        )
+                    }}
+                </label>
+                <v-expansion-panels
+                    id="step-layer"
+                    class="expansion-panels"
+                    dense
+                    nav
+                    elevation="1"
+                >
+                    <v-expansion-panel
+                        v-for="(item, index) in allWmsLayers"
+                        :key="index"
+                        color="primary"
+                    >
+                        <v-expansion-panel-header>
+                            <v-list-item-title>{{ item.url }}</v-list-item-title>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-treeview
+                                selectable
+                                :items="item.selectedLayers"
+                                item-key="Name"
+                                item-text="Title"
+
+                                @input="updateSelectedCapabilities($event, item.url, item.selectedLayers)"
+                            />
+                            <!-- <WmsCapabilitiesSelector
+                                :items="capabilityOptions(item.url)"
+                                :selected.sync="item.selectedLayers"
+                            /> -->
+                            <v-icon
+                                color="grey lighten-1"
+                                @click="onWmsLayerRemove(item)"
+                            >
+                                {{ icons.mdiClose }}
+                            </v-icon>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+                <v-row>
+                    <v-col>
+                        <input
+                            id="own_wmsLayers"
+                            ref="own_wmsLayers_input"
+                            type="text"
+                            name="ownWms"
+                            class="form-control"
+                            @change="onWmsLayersAdd"
                         >
                     </v-col>
                 </v-row>
