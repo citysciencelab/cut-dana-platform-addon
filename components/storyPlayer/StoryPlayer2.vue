@@ -92,7 +92,7 @@ export default {
         currentStepIndex (newValue, oldValue) {
             if (newValue !== oldValue) {
                 this.previousStepIndex = oldValue;
-                // hide all layers of previous step
+                this.loadStep();
             }
             this.loadStep();
         },
@@ -141,7 +141,6 @@ export default {
         const layerList = Radio.request("ModelList", "getModelsByAttributes", {
             isVisibleInMap: true, isBaseLayer: false
         });
-
 
         for (const layer of layerList) {
             if (this.currentStep.layers.includes(layer.attributes.id)) {

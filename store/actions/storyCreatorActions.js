@@ -607,6 +607,8 @@ async function hideWmsLayer (layerUrl) {
             return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
         });
 
+    console.log(allCapabilitiesModels);
+
     allCapabilitiesModels.forEach(model => {
         if (model) {
             model.setIsVisibleInMap(false);

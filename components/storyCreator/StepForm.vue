@@ -393,6 +393,10 @@ export default {
             }
         }
 
+        for (const layer of this.wmsLayers) {
+            this.hideWmsLayer(layer.url);
+        }
+
         this.$store.commit("Tools/Draw/setActive", false);
         this.switchBackgroundMap(this.visibleBackgroundMap);
     },
