@@ -369,11 +369,14 @@ export default {
 
         this.existingDatasources();
 
-        this.step.wmsLayers.forEach(layer => {
-            this.importWMSLayers(layer.url, layer.selectedLayers);
+        if (this.step.wmsLayers) {
+            this.step.wmsLayers.forEach(layer => {
+                this.importWMSLayers(layer.url, layer.selectedLayers);
 
-            this.updateSelectedCapabilities(layer.selectedLayers, layer.url, this.allWmsLayers);
-        });
+                this.updateSelectedCapabilities(layer.selectedLayers, layer.url, this.allWmsLayers);
+            });
+        }
+
     },
     beforeDestroy () {
         for (const importedItem of this.importedFileNames) {
@@ -536,9 +539,8 @@ export default {
                     return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
                 });
 
-
             allCapabilitiesModels.forEach(model => {
-                if (model && selectedCapabilities.includes(model.get("layers"))) {
+                if (model) {
                     model.setIsVisibleInMap(false);
                     model.set("isSelected", false);
                 }
