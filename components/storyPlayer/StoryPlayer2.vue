@@ -11,17 +11,17 @@ import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {EventEmitter} from "../../utils/EventEmitter";
 import {getMimeTypeFromExtension} from "../../utils/fileDataType";
-import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 import fetchDataFromUrl from "../../utils/getStoryFromUrl";
-import TOCMenu from "./TOCMenu.vue";
+// import TOCMenu from "./TOCMenu.vue";
+import TableOfContents from "./TableOfContents.vue";
 
 export default {
-    name: "StoryPlayer",
+    name: "StoryPlayer2",
     components: {
         ClassicPlayer,
         ScrollyTeller,
         StoryNavigation,
-        TOCMenu
+        TableOfContents
     },
     props: {
         // Whether the story player is in preview mode or not
@@ -37,14 +37,11 @@ export default {
     },
     data () {
         return {
-            getStepReference,
             fetchDataFromUrl,
-            getHTMLContentReference,
             visibleBackgroundMap: null,
             currentStepIndex: null,
             previousStepIndex: null,
             loadedContent: null,
-            isHovering: null,
             isChangeFrom3D: false,
             showMode: "",
             steps: [],
@@ -150,15 +147,6 @@ export default {
             if (this.currentStep.layers.includes(layer.attributes.id)) {
                 this.disableLayer(layer);
             }
-            // const isStepLayer = (
-            //     (this.currentStep && this.currentStep.layers) ||
-            //     []
-            // ).includes(Number(layer.attributes.id));
-
-            // if (isStepLayer && layer.attributes.isVisibleInMap) {
-            //     this.disableLayer(layer);
-            // }
-            // this.disableLayer(layer);
         }
 
         if (this.currentStory) {
@@ -178,7 +166,6 @@ export default {
         EventEmitter.$off("resetPlayer", this.resetStoryPlayer());
     },
     methods: {
-        ...mapActions("Tools", ["setToolActive"]),
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         // These application wide getters and setters can be found in 'src/modules/map/store'
@@ -314,39 +301,6 @@ export default {
             this.showMode = this.showMode === "classic" ? "scrolly" : "classic";
         },
 
-        /**
-         * Set the step index on click of a chapter
-         * @param {Object} chapter the current chapter object of the iteration
-         * @returns  {void}
-         */
-        onClickChapter (chapter) {
-            this.currentStepIndex = this.currentStory.steps.findIndex(
-                (step) => step.associatedChapter === chapter.chapterNumber
-            );
-        },
-
-        /**
-         * Set the step index on click of a step
-         * @param {Object} step the current step object of the iteration
-         * @returns  {void}
-         */
-        onClickStep (step) {
-            this.currentStepIndex = this.currentStory.steps.findIndex(
-                ({_id}) => _id === step._id
-            );
-        },
-
-        /**
-         * Set the hover flag via stepreference
-         * @param {Object} step the current step object of the iteration
-         * @returns  {void}
-         */
-        onHoverStep (step) {
-            this.isHovering = getStepReference(
-                step.associatedChapter,
-                step.stepNumber
-            );
-        },
 
         /**
          * Toggles the interval
@@ -599,81 +553,11 @@ export default {
         />
     </div>
 
-    <div
+    <TableOfContents
         v-else
-        id="tool-dataNarrator-tableOfContents"
-    >
-        <TOCMenu
-            :current-step-index="previousStepIndex"
-            @setCurrentStepIndex="(index) => currentStepIndex = index"
-        />
-        <h1>{{ currentStory.title }}</h1>
-
-        <h2>
-            {{
-                $t("additional:modules.tools.dataNarrator.tableOfContents")
-            }}
-        </h2>
-
-        <ol class="tableOfContents">
-            <li
-                v-for="chapter in currentStory.chapters"
-                :key="'chapter_'+chapter.chapterNumber"
-            >
-                <span
-                    :class="{
-                        'primary--text': isHovering === chapter.chapterNumber
-                    }"
-                    role="button"
-                    tabindex="0"
-                    @mouseover="isHovering = chapter.chapterNumber"
-                    @focus="isHovering = chapter.chapterNumber"
-                    @mouseout="isHovering = null"
-                    @blur="isHovering = null"
-                    @click="onClickChapter(chapter)"
-                    @keydown="onClickChapter(chapter)"
-                >
-                    {{ chapter.chapterNumber }}
-                    {{ chapter.chapterTitle }}
-                </span>
-                <ol>
-                    <li
-                        v-for="(step) in currentStory.steps.filter(
-                            ({associatedChapter}) =>
-                                associatedChapter === chapter.chapterNumber
-                        )"
-                        :key="'step_'+chapter.chapterNumber + '.' + step.stepNumber"
-                        role="button"
-                        tabindex="0"
-                        :class="{
-                            'primary--text':
-                                isHovering ===
-                                getStepReference(
-                                    step.associatedChapter,
-                                    step.stepNumber
-                                )
-                        }"
-                        @mouseover.stop="onHoverStep(step)"
-                        @focus="onHoverStep(step)"
-                        @mouseout.stop="isHovering = null"
-                        @blur="isHovering = null"
-                        @click.stop="onClickStep(step)"
-                        @keydown="onClickStep(step)"
-                    >
-                        <span>
-                            {{
-                                getStepReference(
-                                    step.associatedChapter,
-                                    step.stepNumber
-                                )
-                            }}
-                            {{ step.title }}
-                        </span>
-                    </li>
-                </ol>
-            </li>
-        </ol>
-    </div>
+        :previous-step-index="previousStepIndex"
+        @setCurrentStepIndex="(index) => currentStepIndex = index"
+    />
 </template>
 
 <style lang="scss" scoped>

@@ -44,7 +44,7 @@ export default {
          * @returns {void}
          */
         returnToStoryForm () {
-            this.stepToEdit = null;
+            this.stepToEdit = {};
             this.view = this.constants.storyCreationViews.STORY_CREATION;
         }
 

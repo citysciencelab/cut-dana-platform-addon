@@ -17,7 +17,7 @@ import resizeTool from "../utils/resizeTool";
 import DashboardPanel from "./Dashboard/DashboardPanel.vue";
 import SnackBar from "./SnackBar.vue";
 import StoryCreator from "./storyCreator/StoryCreator.vue";
-import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
+import StoryPlayer from "./storyPlayer/StoryPlayer2.vue";
 
 export default {
     name: "DataNarrator",

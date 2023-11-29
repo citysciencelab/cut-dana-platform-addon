@@ -47,6 +47,12 @@ const storyTellingModes = {
             pitch: null
         }
     },
+    stepPalette = [
+        {main: "#413FAB", secondary: "#A3C4FF"},
+        {main: "#893D05", secondary: "#FEE397"},
+        {main: "#236051", secondary: "#72CD86"},
+        {main: "#584560", secondary: "#C2A7CD"}
+    ],
     htmlEditorToolbar = [
         [{header: [false, 1, 2, 3, 4, 5, 6]}],
         ["bold", "italic", "underline", "strike"],
@@ -70,5 +76,6 @@ export {
     emptyStory,
     htmlEditorToolbar,
     dataNarratorRoles,
-    emptyStep
+    emptyStep,
+    stepPalette
 };
