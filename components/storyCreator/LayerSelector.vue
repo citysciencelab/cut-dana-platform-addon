@@ -112,19 +112,23 @@ export default {
             }
             // console.log(this.items);
 
-            this.items.forEach((item) => {
+            this.items.filter(i => i.datasets?.length > 0).forEach((item) => {
 
-                // console.log(item.datasets[0].kategorie_opendata, item);
 
                 // let category;
-                const multipleItems = this.items.filter(i => i.datasets[0].md_name === item.datasets[0].md_name).length > 1,
-                    cats = multipleItems ? [item.datasets[0].kategorie_opendata[0], item.datasets[0].md_name] : [item.datasets[0].kategorie_opendata[0]],
-
+                const multipleItems = this.items.filter(
+                        i => i.datasets?.length > 0 && i.datasets[0].md_name === item.datasets[0].md_name
+                    ).length > 1,
+                    cats = multipleItems ?
+                        [item.datasets[0].kategorie_opendata[0], item.datasets[0].md_name] :
+                        [item.datasets[0].kategorie_opendata[0]],
                     newCats = cats.map(cat => ({
                         original: cat,
                         camel: camelize(cat)
                     })),
-                    categoryString = cats.map((cat, index) => `${index !== 0 ? "children." : ""}${camelize(cat)}`).join(".");
+                    categoryString = cats.map(
+                        (cat, index) => `${index !== 0 ? "children." : ""}${camelize(cat)}`
+                    ).join(".");
 
                 // Extract the category from the datasets array
                 createCategory(newCats, categories);

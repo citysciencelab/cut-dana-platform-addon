@@ -10,7 +10,7 @@ import ShareSettingsForm from "./ShareSettingsForm.vue";
 import {mdiAccountOutline} from "@mdi/js";
 
 export default {
-    name: "StoryCard2",
+    name: "StoryCard",
     components: {
         PlayButton,
         ShareButton,

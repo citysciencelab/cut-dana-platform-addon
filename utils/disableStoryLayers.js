@@ -10,6 +10,9 @@ export default function disableStoryLayers (steps) {
     });
 
     for (const step of steps) {
+        if (step.layers === undefined) {
+            continue;
+        }
         for (const layer of step.layers) {
             if (typeof layer === "string") {
                 const layerModel = layerList.find(l => l.attributes.id === layer);
