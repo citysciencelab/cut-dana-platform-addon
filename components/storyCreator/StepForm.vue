@@ -1,15 +1,15 @@
 <script>
 import {
-mdiBackspaceOutline,
-mdiCancel,
-mdiCheck,
-mdiClose,
-mdiPinOutline,
-mdiTrashCanOutline
+    mdiBackspaceOutline,
+    mdiCancel,
+    mdiCheck,
+    mdiClose,
+    mdiPinOutline,
+    mdiTrashCanOutline
 } from "@mdi/js";
 import * as uuid from "uuid";
-import { VueEditor } from "vue2-editor";
-import { mapActions, mapGetters } from "vuex";
+import {VueEditor} from "vue2-editor";
+import {mapActions, mapGetters} from "vuex";
 
 import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImportAddon";
 import actions from "../../store/actionsDataNarrator";
@@ -18,10 +18,11 @@ import getters from "../../store/gettersDataNarrator";
 
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
 import getFileExtension from "../../utils/getFileExtension";
-import { getHTMLContentReference, getStepReference } from "../../utils/getReference";
+import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 
 import axios from "axios";
-import { getMimeTypeFromExtension } from "../../utils/fileDataType";
+import modelerGetters from "../../../../../src/modules/tools/modeler3D/store/gettersModeler3D";
+import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 import LayerSelector from "./LayerSelector.vue";
 import BackgroundMap from "./inputs/BackgroundMap.vue";
 
@@ -87,6 +88,7 @@ export default {
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
         ...mapGetters("Tools/FileImportAddon", Object.keys(fileImportGetters)),
+        ...mapGetters("Tools/Modeler3D", Object.keys(modelerGetters)),
         ...mapGetters(["mobile"]),
 
         /**
@@ -334,6 +336,7 @@ export default {
         }
     },
     mounted () {
+
         if (!this.step.layers) {
             this.step.layers = [];
         }
@@ -767,6 +770,19 @@ export default {
          */
         removeDatasource (model) {
             this.rawDatasources = this.rawDatasources.filter(datasource => datasource.key !== model.key);
+        },
+
+        open3D () {
+
+            this.$emit(
+                "openView",
+                constants.storyCreationViews.THREE_D
+            );
+            // this.$store.commit("Tools/3DMap/setActive", true);
+        },
+
+        importFromModeler () {
+            console.log(this.drawnModels, this.importedModels);
         }
 
 
@@ -1305,6 +1321,15 @@ export default {
                         >
                     </v-col>
                 </v-row>
+            </div>
+
+            <div class="form-group">
+                <v-btn
+                    color="primary"
+                    @click="open3D"
+                >
+                    Test
+                </v-btn>
             </div>
 
             <div class="form-group">

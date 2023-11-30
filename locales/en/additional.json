@@ -9,6 +9,7 @@
         "tableOfContents": "Table of Contents",
         "createStory": "Create Story",
         "createStoryStep": "Create Story Step",
+        "3dForm": "3D Form",
         "label": {
           "storyName": "Name of the Story",
           "storyDescription": "Description",
@@ -48,7 +49,7 @@
           "ownWmsLayers": "Own WMS Layers"
         },
         "storyList": {
-          "all":  "All Stories",
+          "all": "All Stories",
           "my": "My Stories",
           "featured": "Featured",
           "popular": "Popular"

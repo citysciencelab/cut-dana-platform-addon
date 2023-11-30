@@ -9,6 +9,7 @@
         "tableOfContents": "Inhaltsverzeichnis",
         "createStory": "Story erstellen",
         "createStoryStep": "Storyschritt erstellen",
+        "3dForm": "3D Ansicht",
         "label": {
           "storyName": "Storyname",
           "storyDescription": "Beschreibung",
@@ -48,7 +49,7 @@
           "ownWmsLayers": "Eigene WMS Layer"
         },
         "storyList": {
-          "all":  "Alle Stories",
+          "all": "Alle Stories",
           "my": "Meine Stories",
           "featured": "Vorgestellt",
           "popular": "Beliebt"

@@ -5,6 +5,7 @@ import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import StoryPlayer from "../storyPlayer/StoryPlayer.vue";
+import FileForm from "./FileForm.vue";
 import StepForm from "./StepForm.vue";
 import StoryForm from "./StoryForm.vue";
 
@@ -13,12 +14,13 @@ export default {
     components: {
         StoryForm,
         StepForm,
-        StoryPlayer
+        StoryPlayer,
+        FileForm
     },
     data () {
         return {
             constants,
-            view: constants.storyCreationViews.STORY_CREATION,
+            view: constants.storyCreationViews.THREE_D,
             stepToEdit: {}
         };
     },
@@ -46,6 +48,14 @@ export default {
         returnToStoryForm () {
             this.stepToEdit = {};
             this.view = this.constants.storyCreationViews.STORY_CREATION;
+        },
+
+        /**
+         * Opens the 3d file form
+         * @returns {void}
+         */
+        onEdit3D () {
+            this.view = this.constants.storyCreationViews.THREE_D;
         }
 
 
@@ -65,6 +75,7 @@ export default {
         <StepForm
             v-if="view === constants.storyCreationViews.STEP_CREATION"
             :edited-step="stepToEdit"
+            @openView="newView => (view = newView)"
             @return="returnToStoryForm"
             v-on="$listeners"
         />
@@ -88,6 +99,14 @@ export default {
 
             <StoryPlayer is-preview />
         </div>
+
+        <FileForm
+            v-if="view === constants.storyCreationViews.THREE_D"
+            @openView="newView => (view = newView)"
+            @edit3D="onEdit3D"
+            @return="returnToStoryForm"
+            v-on="$listeners"
+        />
     </div>
 </template>
 

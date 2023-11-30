@@ -16,7 +16,8 @@ const storyTellingModes = {
     storyCreationViews = {
         STORY_CREATION: "story",
         STEP_CREATION: "step",
-        PREVIEW: "preview"
+        PREVIEW: "preview",
+        THREE_D: "3d"
     },
     emptyStory = {
         storyInterval: 0,
@@ -70,12 +71,8 @@ const storyTellingModes = {
     ];
 
 export {
-    storyTellingModes,
-    storyTellingModeIcons,
-    storyCreationViews,
-    emptyStory,
-    htmlEditorToolbar,
     dataNarratorRoles,
-    emptyStep,
-    stepPalette
+    emptyStep, emptyStory,
+    htmlEditorToolbar, stepPalette, storyCreationViews, storyTellingModeIcons, storyTellingModes
 };
+
