@@ -3,7 +3,6 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
-import {EventEmitter} from "../../utils/EventEmitter";
 
 export default {
     name: "StoryMenu",
@@ -37,15 +36,15 @@ export default {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         reset () {
-            EventEmitter.$emit("resetStory");
+            this.$emit("resetStory");
         },
         toggleAutoPlay () {
             this.isAutoPlay = !this.isAutoPlay;
-            EventEmitter.$emit("toggleAutoPlay");
+            this.$emit("toggleAutoPlay");
         },
         toggleScrollytelling () {
             this.isScrollytelling = !this.isScrollytelling;
-            EventEmitter.$emit("toggleScrollytelling");
+            this.$emit("toggleScrollytelling");
         }
     }
 };

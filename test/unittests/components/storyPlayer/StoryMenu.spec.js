@@ -4,7 +4,6 @@ import sinon from "sinon";
 
 import StoryMenu from "../../../../components/storyPlayer/StoryMenu.vue";
 import {emptyStory} from "../../../../store/constantsDataNarrator";
-import {EventEmitter} from "../../../../utils/EventEmitter";
 
 import {wrapperOptions, testStore} from "../../vue_helpers";
 
@@ -12,7 +11,6 @@ describe("StoryMenu", () => {
     let wrapper, resetMethod;
 
     beforeEach(() => {
-        resetMethod = sinon.stub(EventEmitter, "$emit");
         wrapper = mount(StoryMenu, wrapperOptions);
         testStore.commit("Tools/DataNarrator/setMode", "classic");
         testStore.commit("Tools/DataNarrator/setCurrentStoryId", 13);

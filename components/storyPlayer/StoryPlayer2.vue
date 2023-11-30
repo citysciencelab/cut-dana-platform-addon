@@ -9,7 +9,6 @@ import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImpo
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
-import {EventEmitter} from "../../utils/EventEmitter";
 import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 import fetchDataFromUrl from "../../utils/getStoryFromUrl";
 // import TOCMenu from "./TOCMenu.vue";
@@ -122,20 +121,7 @@ export default {
         this.activateInterval();
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
     },
-    created () {
-        EventEmitter.$on("toggleAutoPlay", () => {
-            this.toggleInterval();
-        });
-        EventEmitter.$on("toggleScrollytelling", () => {
-            this.toggleScrollytelling();
-        });
-        EventEmitter.$on("resetPlayer", () => {
-            this.resetStoryPlayer();
-        });
-        EventEmitter.$on("disableStoryLayers", () => {
-            this.disableStoryLayers();
-        });
-    },
+
     beforeDestroy () {
         // // Hides all story layers
         const layerList = Radio.request("ModelList", "getModelsByAttributes", {
@@ -159,11 +145,6 @@ export default {
         }
 
         this.switchBackgroundMap(this.visibleBackgroundMap);
-
-        // removes event listener
-        EventEmitter.$off("toggleScrollytelling", this.toggleScrollytelling());
-        EventEmitter.$off("toggleAutoPlay", this.toggleInterval());
-        EventEmitter.$off("resetPlayer", this.resetStoryPlayer());
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -306,7 +287,7 @@ export default {
          * Toggles the interval
          * @returns  {void}
          */
-        toggleInterval () {
+        toggleAutoPlay () {
             if (this.interval) {
                 this.deactivateInterval();
             }
@@ -531,6 +512,8 @@ export default {
         <ScrollyTeller
             v-if="showMode === 'scrolly'"
             :current-step-index="currentStepIndex"
+            @toggleScrollytelling="toggleScrollytelling"
+            @toggleAutoPlay="toggleAutoPlay"
             v-on="$listeners"
         />
 
@@ -541,6 +524,8 @@ export default {
             :current-step="currentStep"
             :loaded-content="loadedContent"
             :is-preview="isPreview"
+            @toggleScrollytelling="toggleScrollytelling"
+            @toggleAutoPlay="toggleAutoPlay"
             v-on="$listeners"
         />
 
