@@ -1,9 +1,6 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
-import ClassicPlayer from "./ClassicPlayer.vue";
-import ScrollyTeller from "./ScrollyTeller.vue";
-import StoryNavigation from "./StoryNavigation.vue";
 import axios from "axios";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import store from "../../../../../src/app-store";
 import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImportAddon";
 import actions from "../../store/actionsDataNarrator";
@@ -11,6 +8,9 @@ import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 import fetchDataFromUrl from "../../utils/getStoryFromUrl";
+import ClassicPlayer from "./ClassicPlayer.vue";
+import ScrollyTeller from "./ScrollyTeller.vue";
+import StoryNavigation from "./StoryNavigation.vue";
 // import TOCMenu from "./TOCMenu.vue";
 import TableOfContents from "./TableOfContents.vue";
 
@@ -128,7 +128,6 @@ export default {
             isVisibleInMap: true, isBaseLayer: false
         });
 
-
         for (const layer of layerList) {
             if (this.currentStep.layers.includes(layer.attributes.id)) {
                 this.disableLayer(layer);
@@ -145,6 +144,12 @@ export default {
         }
 
         this.switchBackgroundMap(this.visibleBackgroundMap);
+
+        if (this.currentStep.wmsLayers) {
+            this.currentStep.wmsLayers.forEach(async layer => {
+                this.hideWmslayer(layer.url);
+            });
+        }
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -171,6 +176,40 @@ export default {
                         model.setIsSelected(false);
                     }
                 });
+            }
+        },
+
+        updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
+
+            const layer = this.currentStep.wmsLayers.find(url => url.url === layerUrl),
+                layerModels = selectedCapabilities.map(capability => {
+                    const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
+
+                    let models = [];
+
+                    Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
+                    models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
+
+                    return models;
+                }),
+                allCapabilitiesModels = allCapabilities.map(capability => {
+                    return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+                });
+
+            allCapabilitiesModels.forEach(model => {
+                if (model) {
+                    model.setIsVisibleInMap(false);
+                    model.set("isSelected", false);
+                }
+            });
+
+            layerModels.forEach(model => {
+                model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
+                model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
+            });
+
+            if (layer) {
+                layer.selectedLayers = selectedCapabilities;
             }
         },
 
@@ -367,6 +406,8 @@ export default {
          * @returns {void}
          */
         async loadStep () {
+
+
             this.disableOwnDatasource();
 
             if (!this.currentStep) {
@@ -469,6 +510,16 @@ export default {
             this.switchBackgroundMap(this.currentStep.backgroundMapId);
 
             this.getDataSources();
+
+
+            if (this.currentStep.wmsLayers) {
+                this.currentStep.wmsLayers.forEach(async layer => {
+                    this.importWMSLayers(layer.url, layer.selectedLayers);
+                    const allCapabilities = await this.capabilityOptions(layer.url);
+
+                    this.updateSelectedCapabilities(layer.selectedLayers, layer.url, allCapabilities);
+                });
+            }
 
             Radio.trigger("Menu", "rerender");
             this.loadedContent = this.currentStep.html;
