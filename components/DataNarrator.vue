@@ -11,7 +11,6 @@ import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 
 import disableStoryLayers from "../utils/disableStoryLayers";
-import {EventEmitter} from "../utils/EventEmitter";
 import resizeTool from "../utils/resizeTool";
 
 import DashboardPanel from "./Dashboard/DashboardPanel.vue";
@@ -76,14 +75,10 @@ export default {
     },
     created () {
         this.$on("close", this.close);
-        EventEmitter.$on("resetStory", () => {
-            this.reset();
-        });
         window.addEventListener("resize", this.resizeHandler);
     },
     beforeDestroy () {
         // removes event listener
-        EventEmitter.$off("resetStory", this.reset());
         window.removeEventListener("resize", this.resizeHandler);
     },
     /**
@@ -197,7 +192,6 @@ export default {
             }
             this.resetModule();
             this.setMode(constants.storyTellingModes.DASHBOARD);
-            EventEmitter.$emit("resetPlayer");
         },
 
         /**
@@ -291,6 +285,7 @@ export default {
                     ref="player"
                     :step-index="stepIndex"
                     @share-story="shareStory"
+                    @resetStory="reset"
                 />
 
                 <StoryCreator
