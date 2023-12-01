@@ -36,6 +36,7 @@ function addStoryChapter ({state, commit}, chapter) {
  */
 function saveStoryStep ({state, commit}, {step, images, datasources, wmsLayers}) {
 
+
     // add datasources to step
     if (datasources) {
         step.datasources = datasources;
@@ -44,6 +45,8 @@ function saveStoryStep ({state, commit}, {step, images, datasources, wmsLayers})
     if (wmsLayers) {
         step.wmsLayers = wmsLayers;
     }
+
+
     // remove old step if it exists
     let steps = state.currentStory.steps.filter(({_id}) => _id !== step._id);
 
@@ -177,6 +180,27 @@ function postStepDatasource (pathPrefix, fileData) {
     return axios.post(query_url, fData, config);
 }
 
+/**
+ *
+ * @param {string} pathPrefix the url of the backend and story
+ * @param {object} fileData the form data
+ * @returns {Promise} returns a promise that resolves when the threeDFiles are uploaded
+ */
+async function postStepThreeDFiles (pathPrefix, fileData) {
+    const queryUrl = `${pathPrefix}`,
+        // generate file from base64 string
+        // put file into form data
+
+        config = {
+            headers: {"Content-Type": "multipart/form-data"}
+        },
+
+        // return promise
+        response = await axios.post(queryUrl, fileData, config);
+
+    return response;
+}
+
 
 /**
  * Prepare html and images inside for upload
@@ -186,7 +210,8 @@ function postStepDatasource (pathPrefix, fileData) {
  */
 function prepareHtml (story, images) {
     const imageArray = [],
-        htmlArray = [];
+        htmlArray = [],
+        threeDFileArray = [];
 
     story.steps = story.steps.map((step) => {
         let html = step.html;
@@ -213,11 +238,18 @@ function prepareHtml (story, images) {
             stepNumber: step.stepNumber
         });
 
+
+        threeDFileArray.push({
+            threeDFiles: step.threeDFiles,
+            stepNumber: step.stepNumber
+        });
+
         delete step.html;
+        delete step.threeDFiles;
         delete step._id;
         return step;
     });
-    return [story, imageArray, htmlArray];
+    return [story, imageArray, htmlArray, threeDFileArray];
 }
 
 
@@ -230,8 +262,10 @@ function prepareHtml (story, images) {
 function uploadStoryFiles ({state}) {
     const backendUrl = state.backendConfig.url,
         datasourcePathPrefix = `${backendUrl}/datasources/`,
-        [story, imageArray, htmlArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages),
+        threeDFilesPathPrefix = `${backendUrl}/files/`,
+        [story, imageArray, htmlArray, threeDFileArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages),
         datasources = [];
+
 
     for (const step in story.steps) {
         // story.steps[step].datasources = undefined;
@@ -309,13 +343,32 @@ function uploadStoryFiles ({state}) {
             return postStepDatasource(datasourcePathPrefix + storyId + "/" + datasource.hash, datasource.datasource);
         });
 
-    }).then(() => {
+    }).then(async () => {
+        // upload and replace threeDFiles in story step
+        const threeDFileUploads = [];
+
+
+        for (const {stepNumber, threeDFiles} of threeDFileArray) {
+            const url = threeDFilesPathPrefix + storyId + "/" + stepNumber,
+
+                response = await fetch(url, {
+                    method: "POST",
+                    body: threeDFiles
+                });
+
+            threeDFileUploads.push(await response.json());
+        }
+
+
+        return threeDFileUploads;
+
+    }).then((files) => {
         // Upload html parts
         const pathPrefix = `${backendUrl}/stories/${storyId}/`,
             htmlUploads = htmlArray.map((element) => {
                 const query_url = `${pathPrefix}${element.associatedChapter}/${element.stepNumber}/html`;
 
-                return axios.patch(query_url, {html: element.html});
+                return axios.patch(query_url, {html: element.html, threeDFilesUrl: files.folder});
             });
 
         return Promise.all(htmlUploads);

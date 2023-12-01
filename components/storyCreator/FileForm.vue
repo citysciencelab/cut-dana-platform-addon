@@ -32,7 +32,7 @@ export default {
 
     props: {
         // The initial values for a step to edit
-        stepToEdit: {
+        editedStep: {
             type: Object,
             default: () => ({})
         }
@@ -53,77 +53,23 @@ export default {
             },
             tree: [],
             items: [],
-            // items: [
-            //     {
-            //         id: 1,
-            //         name: ".git"
-            //     },
-            //     {
-            //         id: 2,
-            //         name: "node_modules"
-            //     },
-            //     {
-            //         id: 3,
-            //         name: "public",
-            //         children: [
-            //             {
-            //                 id: 4,
-            //                 name: "static",
-            //                 children: [{
-            //                     id: 5,
-            //                     name: "logo.png",
-            //                     file: "png"
-            //                 }]
-            //             },
-            //             {
-            //                 id: 6,
-            //                 name: "favicon.ico",
-            //                 file: "png"
-            //             },
-            //             {
-            //                 id: 7,
-            //                 name: "index.html",
-            //                 file: "html"
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         id: 8,
-            //         name: ".gitignore",
-            //         file: "txt"
-            //     },
-            //     {
-            //         id: 9,
-            //         name: "babel.config.js",
-            //         file: "js"
-            //     },
-            //     {
-            //         id: 10,
-            //         name: "package.json",
-            //         file: "json"
-            //     },
-            //     {
-            //         id: 11,
-            //         name: "README.md",
-            //         file: "md"
-            //     },
-            //     {
-            //         id: 12,
-            //         name: "vue.config.js",
-            //         file: "js"
-            //     },
-            //     {
-            //         id: 13,
-            //         name: "yarn.lock",
-            //         file: "txt"
-            //     }
-            // ],
             icons: {
                 mdiFolder,
                 mdiFolderOpen,
                 mdiPlus,
-                mdiFolderPlus
-            }
+                mdiFolderPlus,
+                mdiFileDocumentOutline
+            },
+            addFolderInputOpen: false,
+            addFolderInputValue: "",
+            targetParentId: "",
+            folderRules: [
+                value => Boolean(value) || "Required.",
+                value => (value && value.length >= 3) || "Min 3 characters"
+            ],
+            ignoreFolderChange: false,
+            forceFolderRerenderKey: 0,
+            step: this.editedStep || {}
         };
     },
     computed: {
@@ -146,11 +92,47 @@ export default {
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
 
         addFolder (parentId = null, asChild = true) {
-            console.log("addFolder", parentId, asChild);
-            this.addItem(parentId, {
-                id: this.randomId(),
-                name: "new folder"
-            }, asChild);
+            this.targetParentId = parentId;
+            this.addFolderInputOpen = true;
+            const addFolderInput = this.$refs.addFolderInput;
+
+            addFolderInput.focus();
+            // console.log("addFolder", parentId, asChild);
+            // this.addItem(parentId, {
+            //     id: this.randomId(),
+            //     name: "new folder"
+            // }, asChild);
+        },
+
+        /**
+         * Save the new folder
+         * @returns {void}
+         */
+        saveNewFolder () {
+            if (this.ignoreFolderChange === false) {
+                this.addItem(this.targetParentId, {
+                    id: this.randomId(),
+                    name: this.addFolderInputValue
+                }, true);
+                this.resetFolderInput();
+
+            }
+        },
+
+        handleFolderInput (value) {
+            this.addFolderInputValue = value;
+        },
+
+        resetFolderInput () {
+            this.ignoreFolderChange = true;
+
+            this.addFolderInputOpen = false;
+            this.addFolderInputValue = "";
+
+            this.forceFolderRerenderKey++;
+            this.$nextTick(() => {
+                this.ignoreFolderChange = false;
+            });
         },
 
         addItem (parentId, newItem, asChild = true) {
@@ -254,11 +236,70 @@ export default {
             });
         },
 
-        handleOpenUpdate (openItems) {
-            console.log("Open items:", openItems);
-        // You can set a breakpoint here for debugging
-        // or perform additional actions as needed
+        handleFileUpload (event, itemId) {
+            const files = event.target.files;
+
+            for (const file of files) {
+                this.addItem(itemId, {
+                    id: this.randomId(),
+                    name: file.name,
+                    file: file.name.split(".").pop(),
+                    obj: file
+                }, true);
+            }
+
+
+            // console.log("handleFileUpload", files);
+        },
+
+        createFormData () {
+            const formData = new FormData();
+
+            /**
+             * Recursive function to process the tree and add files to FormData
+             * @param {Array} node the tree to process
+             * @param {string} path the path of the current node
+             * @returns {void}
+             */
+            function processNode (node, path = "") {
+                if (node.file && node.obj) {
+                    // It's a file, append it to FormData
+                    const fullPath = path;
+
+
+                    formData.append(fullPath, node.obj);
+                }
+                else if (node.children && Array.isArray(node.children)) {
+                    // It's a folder, recurse into its children
+                    node.children.forEach(child => {
+                        processNode(child, path ? `${path}/${node.name}` : node.name);
+                    });
+                }
+            }
+
+            this.items.forEach(node => {
+                processNode(node);
+            });
+
+            for (const [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+
+
+            this.step.threeDFiles = formData;
+
+            this.returnToStepForm();
+
+        },
+
+        /**
+         * Handle return back to the stepForm
+         * @returns {void}
+         */
+        returnToStepForm () {
+            this.$emit("return", this.step);
         }
+
 
     }
 };
@@ -275,6 +316,21 @@ export default {
             }}
         </h4>
         <span class="fileActions">
+            <div
+                :class="['addFolderInput', { 'addFolderInput--open': addFolderInputOpen }]"
+            >
+                <v-text-field
+                    :key="forceFolderRerenderKey"
+                    ref="addFolderInput"
+                    :value="addFolderInputValue"
+                    label="Folder name"
+                    :rules="folderRules"
+                    hide-details="auto"
+                    @change="saveNewFolder"
+                    @input="handleFolderInput"
+                />
+            </div>
+
             <v-btn
                 icon
                 @click="() => addFolder(null, false)"
@@ -286,14 +342,13 @@ export default {
             item-children="children"
             activatable
             open-all
-            @update:open="handleOpenUpdate"
         >
             <template #prepend="{ item, open }">
                 <v-icon v-if="!item.file">
                     {{ open ? icons.mdiFolderOpen : icons.mdiFolder }}
                 </v-icon>
                 <v-icon v-else>
-                    {{ files[item.file] }}
+                    {{ files[item.file] ? files[item.file] : icons.mdiFileDocumentOutline }}
                 </v-icon>
             </template>
 
@@ -310,6 +365,7 @@ export default {
                             type="file"
                             hidden
                             multiple
+                            @change="(event) => handleFileUpload(event, item.id)"
                         >
                     </div>
 
@@ -323,7 +379,7 @@ export default {
                     :hide-input="true"
                     :prepend-icon="null"
                 /> -->
-                    <div>
+                    <div v-if="!item.file">
                         <v-btn
                             icon
                             @click.stop="openFileDialog(item.id)"
@@ -337,9 +393,18 @@ export default {
                             <v-icon>{{ icons.mdiFolderPlus }}</v-icon>
                         </v-btn>
                     </div>
+                    </divv-if="!item.file">
                 </div>
             </template>
         </v-treeview>
+        <span>
+            <v-btn
+                color="primary"
+                @click="() => createFormData()"
+            >
+                save
+            </v-btn>
+        </span>
     </div>
 </template>
 
@@ -361,6 +426,14 @@ export default {
         justify-content: space-between;
         align-items: center;
         width: 100%;
+    }
+
+    .addFolderInput {
+        display: none;
+
+        &--open {
+            display: block;
+        }
     }
 }
 </style>

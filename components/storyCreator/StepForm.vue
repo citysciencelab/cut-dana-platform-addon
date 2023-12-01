@@ -195,6 +195,8 @@ export default {
 
             return newBgMaps;
         }
+
+
     },
     watch: {
         /**
@@ -336,6 +338,8 @@ export default {
         }
     },
     mounted () {
+        console.log(this.step);
+
 
         if (!this.step.layers) {
             this.step.layers = [];
@@ -683,6 +687,8 @@ export default {
                 newDatasources.push(raw);
             }
 
+            console.log(this.step);
+
             this.saveStoryStep({step: this.step, images: this.images, datasources: newDatasources, wmsLayers: this.wmsLayers});
             // Trigger submit action to return to story overview
             this.$emit("return");
@@ -783,6 +789,10 @@ export default {
 
         importFromModeler () {
             console.log(this.drawnModels, this.importedModels);
+        },
+
+        updateThreeDFormData (formdata) {
+            this.threeDUploadFormData = formdata;
         }
 
 

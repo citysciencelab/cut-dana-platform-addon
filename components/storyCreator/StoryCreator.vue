@@ -20,7 +20,7 @@ export default {
     data () {
         return {
             constants,
-            view: constants.storyCreationViews.THREE_D,
+            view: constants.storyCreationViews.STORY_CREATION,
             stepToEdit: {}
         };
     },
@@ -48,6 +48,16 @@ export default {
         returnToStoryForm () {
             this.stepToEdit = {};
             this.view = this.constants.storyCreationViews.STORY_CREATION;
+        },
+
+        /**
+         * Return to the step form
+         * @param {Object} step the step to edit
+         * @returns {void}
+         */
+        returnToStepForm (step) {
+            this.stepToEdit = step;
+            this.view = this.constants.storyCreationViews.STEP_CREATION;
         },
 
         /**
@@ -102,9 +112,10 @@ export default {
 
         <FileForm
             v-if="view === constants.storyCreationViews.THREE_D"
+            :edited-step="stepToEdit"
             @openView="newView => (view = newView)"
             @edit3D="onEdit3D"
-            @return="returnToStoryForm"
+            @return="returnToStepForm"
             v-on="$listeners"
         />
     </div>
