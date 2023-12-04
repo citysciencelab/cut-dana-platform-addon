@@ -1,15 +1,12 @@
 <script>
 import {
-    mdiBackspaceOutline,
-    mdiCancel,
-    mdiCheck,
-    mdiClose,
-    mdiPinOutline,
+    mdiBackspaceOutline, mdiCancel, mdiCheck, mdiClose, mdiPinOutline,
     mdiTrashCanOutline
 } from "@mdi/js";
 import * as uuid from "uuid";
 import {VueEditor} from "vue2-editor";
 import {mapActions, mapGetters} from "vuex";
+
 
 import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImportAddon";
 import actions from "../../store/actionsDataNarrator";
@@ -20,9 +17,11 @@ import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
 import getFileExtension from "../../utils/getFileExtension";
 import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
 
+
 import axios from "axios";
 import modelerGetters from "../../../../../src/modules/tools/modeler3D/store/gettersModeler3D";
 import {getMimeTypeFromExtension} from "../../utils/fileDataType";
+
 import LayerSelector from "./LayerSelector.vue";
 import BackgroundMap from "./inputs/BackgroundMap.vue";
 
@@ -56,7 +55,8 @@ export default {
             minStepWidth: 280,
             maxStepWidth: 1000,
             step: this.editedStep,
-            newChapterTitle: "",
+            newChapterTitle: this.editedStep.chapterTitle || "",
+
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
 
             is3DLayerActive: false,
@@ -263,22 +263,6 @@ export default {
                 }
             }
 
-            // for (const layer of layerList) {
-            //     if (
-            //         selectedLayerIds.includes(Number(layer.attributes.id)) &&
-            //         !layer.attributes.isVisibleInMap
-            //     ) {
-            //         layer.setIsVisibleInMap(true);
-            //         layer.set("isSelected", true);
-            //     }
-            //     else if (
-            //         !selectedLayerIds.includes(Number(layer.attributes.id)) &&
-            //         layer.attributes.isVisibleInMap
-            //     ) {
-            //         layer.setIsVisibleInMap(false);
-            //         layer.set("isSelected", false);
-            //     }
-            // }
 
             this.is3DLayerActive = Radio.request(
                 "ModelList",
@@ -335,12 +319,21 @@ export default {
                     );
                 }
             });
+        },
+        /**
+         * Listens for the change of the new title
+         * @param {string} newTitle the new title the chapter should become
+         * @returns {void}
+         */
+        "newChapterTitle" (newTitle) {
+            this.newChapterTitle = newTitle;
+            this.step.chapterTitle = newTitle;
+
         }
     },
     mounted () {
-        console.log(this.step);
 
-
+        this.importFromModeler();
         if (!this.step.layers) {
             this.step.layers = [];
         }
@@ -687,8 +680,6 @@ export default {
                 newDatasources.push(raw);
             }
 
-            console.log(this.step);
-
             this.saveStoryStep({step: this.step, images: this.images, datasources: newDatasources, wmsLayers: this.wmsLayers});
             // Trigger submit action to return to story overview
             this.$emit("return");
@@ -778,17 +769,22 @@ export default {
             this.rawDatasources = this.rawDatasources.filter(datasource => datasource.key !== model.key);
         },
 
-        open3D () {
+        async open3D () {
 
             this.$emit(
                 "openView",
                 constants.storyCreationViews.THREE_D
             );
+            await this.$store.dispatch("Maps/activateMap3D");
             // this.$store.commit("Tools/3DMap/setActive", true);
         },
 
         importFromModeler () {
-            console.log(this.drawnModels, this.importedModels);
+            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
+                entity = entities.getById(1);
+
+            console.log("test", this.drawnModels, this.importedModels, this.cylinderPosition, this.activeShapePoints);
+            console.log("entities", entities, entity);
         },
 
         updateThreeDFormData (formdata) {
