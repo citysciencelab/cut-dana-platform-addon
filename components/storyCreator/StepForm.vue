@@ -782,9 +782,6 @@ export default {
         importFromModeler () {
             const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
                 entity = entities.getById(1);
-
-            console.log("test", this.drawnModels, this.importedModels, this.cylinderPosition, this.activeShapePoints);
-            console.log("entities", entities, entity);
         },
 
         updateThreeDFormData (formdata) {

@@ -2,8 +2,8 @@ import axios from "axios";
 import * as uuid from "uuid";
 
 import crs from "@masterportal/masterportalapi/src/crs";
-import { intersects } from "ol/extent";
-import { WMSCapabilities } from "ol/format.js";
+import {intersects} from "ol/extent";
+import {WMSCapabilities} from "ol/format.js";
 import dataURLtoFile from "../../utils/dataURLtoFile.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 
