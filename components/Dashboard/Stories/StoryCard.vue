@@ -59,7 +59,7 @@ export default {
 
 <template>
     <v-card
-        class="mb-2"
+        class="mb-5"
         flat
         :class="{'grid-item': grid, 'topper': shareSettings}"
     >
@@ -121,10 +121,8 @@ export default {
                         v-on="$listeners"
                     />
                 </v-col>
-                <v-col>
-                    <PlayButton
-                        :story-id="story._id"
-                    />
+                <v-col class="play-button">
+                    <PlayButton :story-id="story._id" />
                 </v-col>
             </v-row>
         </v-card-actions>
@@ -155,18 +153,18 @@ export default {
 
 
     @media (min-width: 768px){
-        flex: 0 0 calc(50% - 4px);
-        max-width: calc(50% - 4px)
+        flex: 0 0 calc(50% - 20px);
+        max-width: calc(50% - 20px)
     }
 
     @media(min-width: 992px) {
-        flex: 0 0 calc(33.3333333333% - 4px);
-        max-width: calc(33.3333333333% - 4px);
+        flex: 0 0 calc(33.3333333333% - 20px);
+        max-width: calc(33.3333333333% - 20px);
     }
 
     @media(min-width: 1800px) {
-        flex: 0 0 calc(25% - 4px);
-        max-width: calc(25% - 4px);
+        flex: 0 0 calc(25% - 20px);
+        max-width: calc(25% - 20px);
     }
 
 }
@@ -189,5 +187,10 @@ export default {
 
 .card-actions {
     padding: 8px 12px 8px 12px;
+}
+
+.play-button {
+    justify-content: end;
+    display: flex;
 }
 </style>

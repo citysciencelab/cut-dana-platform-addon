@@ -11,12 +11,13 @@ import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 
 import disableStoryLayers from "../utils/disableStoryLayers";
-import resizeTool from "../utils/resizeTool";
+
+import RenderUtilities from "../mixins/RenderUtilities";
 
 import DashboardPanel from "./Dashboard/DashboardPanel.vue";
-import SnackBar from "./SnackBar.vue";
+import SnackBar from "./shared/SnackBar.vue";
 import StoryCreator from "./storyCreator/StoryCreator.vue";
-import StoryPlayer from "./storyPlayer/StoryPlayer2.vue";
+import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
 
 export default {
     name: "DataNarrator",
@@ -27,6 +28,7 @@ export default {
         StoryCreator,
         StoryPlayer
     },
+    mixins: [RenderUtilities],
     data () {
         return {
             constants,
@@ -126,7 +128,8 @@ export default {
         resizeHandler () {
             const doResize = this.mode === constants.storyTellingModes.DASHBOARD && this.currentStory === null;
 
-            resizeTool(doResize, this.initialWidth);
+            // mixin
+            this.resizeTool(doResize, this.initialWidth);
         },
 
         /**
@@ -285,7 +288,7 @@ export default {
                     ref="player"
                     :step-index="stepIndex"
                     @share-story="shareStory"
-                    @resetStory="reset"
+                    @reset="reset"
                 />
 
                 <StoryCreator

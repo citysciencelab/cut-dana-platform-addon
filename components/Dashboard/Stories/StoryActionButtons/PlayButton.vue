@@ -1,6 +1,6 @@
 <script>
 import {mapActions, mapMutations} from "vuex";
-import {mdiYoutube} from "@mdi/js";
+import {mdiPlayOutline} from "@mdi/js";
 
 import * as constants from "../../../../store/constantsDataNarrator";
 import mutations from "../../../../store/mutationsDataNarrator";
@@ -17,7 +17,7 @@ export default {
     data () {
         return {
             icons: {
-                mdiYoutube
+                mdiPlayOutline
             }
         };
     },
@@ -39,13 +39,21 @@ export default {
 <template>
     <v-tooltip top>
         <template #activator="{ on }">
-            <v-icon
-                id="play-button"
-                v-on="on"
+            <v-btn
+                dark
+                rounded
+                x-small
                 @click="playStory()"
             >
-                play_circle
-            </v-icon>
+                <v-icon
+                    id="play-button"
+                    color="white"
+                    small
+                    v-on="on"
+                >
+                    {{ icons.mdiPlayOutline }}
+                </v-icon>
+            </v-btn>
         </template>
         <span>
             {{
