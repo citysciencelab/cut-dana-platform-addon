@@ -69,25 +69,10 @@ export default {
             v-on="$listeners"
         />
 
-        <div
+        <StoryPlayer
             v-if="view === constants.storyCreationViews.PREVIEW"
-            class="tool-dataNarrator-creator-preview"
-        >
-            <div class="tool-dataNarrator-creator-preview-header primary">
-                <v-btn
-                    color="white"
-                    icon
-                    @click="returnToStoryForm"
-                >
-                    <v-icon>arrow_back_ios_new</v-icon>
-                </v-btn>
-                <h4 class="white--text">
-                    Vorschau
-                </h4>
-            </div>
-
-            <StoryPlayer is-preview />
-        </div>
+            @reset="returnToStoryForm"
+        />
     </div>
 </template>
 

@@ -1,34 +1,26 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
-import ClassicPlayer from "./ClassicPlayer.vue";
-import ScrollyTeller from "./ScrollyTeller.vue";
-import StoryNavigation from "./StoryNavigation.vue";
 import axios from "axios";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import store from "../../../../../src/app-store";
 import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImportAddon";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
-
 import {getMimeTypeFromExtension} from "../../utils/fileDataType";
-import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
-import fetchDataFromUrl from "../../utils/getStoryFromUrl";
-import TOCMenu from "./TOCMenu.vue";
+import PlayerContent from "./PlayerContent.vue";
+import PlayerHeader from "./PlayerHeader.vue";
+import PlayerFooter from "./PlayerFooter.vue";
+import TableOfContents from "./TableOfContents.vue";
 
 export default {
     name: "StoryPlayer",
     components: {
-        ClassicPlayer,
-        ScrollyTeller,
-        StoryNavigation,
-        TOCMenu
+        PlayerHeader,
+        PlayerContent,
+        PlayerFooter,
+        TableOfContents
     },
     props: {
-        // Whether the story player is in preview mode or not
-        isPreview: {
-            type: Boolean,
-            default: false
-        },
         // Step to show
         stepIndex: {
             type: Number,
@@ -37,14 +29,10 @@ export default {
     },
     data () {
         return {
-            getStepReference,
-            fetchDataFromUrl,
-            getHTMLContentReference,
             visibleBackgroundMap: null,
-            currentStepIndex: null,
-            previousStepIndex: null,
+            currentStepIndex: 0,
+            previousStepIndex: 0,
             loadedContent: null,
-            isHovering: null,
             isChangeFrom3D: false,
             showMode: "",
             steps: [],
@@ -81,10 +69,6 @@ export default {
 
         stepsCopy () {
             return {...this.currentStory.steps};
-        },
-
-        progress () {
-            return (this.currentStepIndex + 1) / this.currentStory.steps.length * 100;
         },
 
         backgroundMaps () {
@@ -125,26 +109,17 @@ export default {
         this.activateInterval();
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
     },
+
     beforeDestroy () {
         // // Hides all story layers
         const layerList = Radio.request("ModelList", "getModelsByAttributes", {
             isVisibleInMap: true, isBaseLayer: false
         });
 
-
         for (const layer of layerList) {
             if (this.currentStep.layers.includes(layer.attributes.id)) {
                 this.disableLayer(layer);
             }
-            // const isStepLayer = (
-            //     (this.currentStep && this.currentStep.layers) ||
-            //     []
-            // ).includes(Number(layer.attributes.id));
-
-            // if (isStepLayer && layer.attributes.isVisibleInMap) {
-            //     this.disableLayer(layer);
-            // }
-            // this.disableLayer(layer);
         }
 
         if (this.currentStory) {
@@ -157,9 +132,14 @@ export default {
         }
 
         this.switchBackgroundMap(this.visibleBackgroundMap);
+
+        if (this.currentStep.wmsLayers) {
+            this.currentStep.wmsLayers.forEach(async layer => {
+                this.hideWmslayer(layer.url);
+            });
+        }
     },
     methods: {
-        ...mapActions("Tools", ["setToolActive"]),
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         // These application wide getters and setters can be found in 'src/modules/map/store'
@@ -175,15 +155,45 @@ export default {
 
             if (selectedId) {
                 this.backgroundMaps.forEach(model => {
-                    if (model.get("id") === selectedId) {
-                        model.setIsVisibleInMap(true);
-                        model.setIsSelected(true);
-                    }
-                    else {
-                        model.setIsVisibleInMap(false);
-                        model.setIsSelected(false);
-                    }
+                    const selected = model.get("id") === selectedId;
+
+                    model.setIsSelected(selected);
+                    model.setIsVisibleInMap(selected);
                 });
+            }
+        },
+
+        updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
+
+            const layer = this.currentStep.wmsLayers.find(url => url.url === layerUrl),
+                layerModels = selectedCapabilities.map(capability => {
+                    const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
+
+                    let models = [];
+
+                    Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
+                    models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
+
+                    return models;
+                }),
+                allCapabilitiesModels = allCapabilities.map(capability => {
+                    return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+                });
+
+            allCapabilitiesModels.forEach(model => {
+                if (model) {
+                    model.setIsVisibleInMap(false);
+                    model.set("isSelected", false);
+                }
+            });
+
+            layerModels.forEach(model => {
+                model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
+                model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
+            });
+
+            if (layer) {
+                layer.selectedLayers = selectedCapabilities;
             }
         },
 
@@ -238,7 +248,6 @@ export default {
          */
         resetStoryPlayer () {
             this.disableOwnDatasource();
-            this.loadedContent = null;
             this.currentStepIndex = 0;
         },
 
@@ -295,45 +304,12 @@ export default {
             this.showMode = this.showMode === "classic" ? "scrolly" : "classic";
         },
 
-        /**
-         * Set the step index on click of a chapter
-         * @param {Object} chapter the current chapter object of the iteration
-         * @returns  {void}
-         */
-        onClickChapter (chapter) {
-            this.currentStepIndex = this.currentStory.steps.findIndex(
-                (step) => step.associatedChapter === chapter.chapterNumber
-            );
-        },
-
-        /**
-         * Set the step index on click of a step
-         * @param {Object} step the current step object of the iteration
-         * @returns  {void}
-         */
-        onClickStep (step) {
-            this.currentStepIndex = this.currentStory.steps.findIndex(
-                ({_id}) => _id === step._id
-            );
-        },
-
-        /**
-         * Set the hover flag via stepreference
-         * @param {Object} step the current step object of the iteration
-         * @returns  {void}
-         */
-        onHoverStep (step) {
-            this.isHovering = getStepReference(
-                step.associatedChapter,
-                step.stepNumber
-            );
-        },
 
         /**
          * Toggles the interval
          * @returns  {void}
          */
-        toggleInterval () {
+        toggleAutoPlay () {
             if (this.interval) {
                 this.deactivateInterval();
             }
@@ -413,6 +389,8 @@ export default {
          * @returns {void}
          */
         async loadStep () {
+
+
             this.disableOwnDatasource();
 
             if (!this.currentStep) {
@@ -516,8 +494,15 @@ export default {
 
             this.getDataSources();
 
-            Radio.trigger("Menu", "rerender");
-            this.loadedContent = this.currentStep.html;
+
+            if (this.currentStep.wmsLayers) {
+                this.currentStep.wmsLayers.forEach(async layer => {
+                    this.importWMSLayers(layer.url, layer.selectedLayers);
+                    const allCapabilities = await this.capabilityOptions(layer.url);
+
+                    this.updateSelectedCapabilities(layer.selectedLayers, layer.url, allCapabilities);
+                });
+            }
 
             setTimeout(() => {
                 Radio.trigger("Menu", "rerender");
@@ -554,107 +539,20 @@ export default {
         v-if="currentStory !== undefined && currentStory.steps && currentStep"
         id="tool-dataNarrator-player"
     >
-        <v-progress-linear :value="progress" />
-        <ScrollyTeller
-            v-if="showMode === 'scrolly'"
-            :current-step-index="currentStepIndex"
+        <PlayerHeader
+            :chapter="currentChapter"
+            @click="() => currentStepIndex = null"
             v-on="$listeners"
         />
-
-        <ClassicPlayer
-            v-if="showMode === 'classic'"
-            :current-step-index="currentStepIndex"
-            :current-chapter="currentChapter"
-            :current-step="currentStep"
-            :loaded-content="loadedContent"
-            :is-preview="isPreview"
-            v-on="$listeners"
-        />
-
-        <StoryNavigation
-            v-if="showMode === 'classic'"
-            v-model="currentStepIndex"
-            :current-chapter="currentStep.associatedChapter"
-            :steps="currentStory.steps"
-            :progress="progress"
-        />
+        <PlayerContent :step="currentStep" />
+        <PlayerFooter v-model="currentStepIndex" />
     </div>
 
-    <div
+    <TableOfContents
         v-else
-        id="tool-dataNarrator-tableOfContents"
-    >
-        <TOCMenu
-            :current-step-index="previousStepIndex"
-            @setCurrentStepIndex="(index) => currentStepIndex = index"
-        />
-        <h1>{{ currentStory.title }}</h1>
-
-        <h2>
-            {{
-                $t("additional:modules.tools.dataNarrator.tableOfContents")
-            }}
-        </h2>
-
-        <ol class="tableOfContents">
-            <li
-                v-for="chapter in currentStory.chapters"
-                :key="'chapter_'+chapter.chapterNumber"
-            >
-                <span
-                    :class="{
-                        'primary--text': isHovering === chapter.chapterNumber
-                    }"
-                    role="button"
-                    tabindex="0"
-                    @mouseover="isHovering = chapter.chapterNumber"
-                    @focus="isHovering = chapter.chapterNumber"
-                    @mouseout="isHovering = null"
-                    @blur="isHovering = null"
-                    @click="onClickChapter(chapter)"
-                    @keydown="onClickChapter(chapter)"
-                >
-                    {{ chapter.chapterNumber }}
-                    {{ chapter.chapterTitle }}
-                </span>
-                <ol>
-                    <li
-                        v-for="(step) in currentStory.steps.filter(
-                            ({associatedChapter}) =>
-                                associatedChapter === chapter.chapterNumber
-                        )"
-                        :key="'step_'+chapter.chapterNumber + '.' + step.stepNumber"
-                        role="button"
-                        tabindex="0"
-                        :class="{
-                            'primary--text':
-                                isHovering ===
-                                getStepReference(
-                                    step.associatedChapter,
-                                    step.stepNumber
-                                )
-                        }"
-                        @mouseover.stop="onHoverStep(step)"
-                        @focus="onHoverStep(step)"
-                        @mouseout.stop="isHovering = null"
-                        @blur="isHovering = null"
-                        @click.stop="onClickStep(step)"
-                        @keydown="onClickStep(step)"
-                    >
-                        <span>
-                            {{
-                                getStepReference(
-                                    step.associatedChapter,
-                                    step.stepNumber
-                                )
-                            }}
-                            {{ step.title }}
-                        </span>
-                    </li>
-                </ol>
-            </li>
-        </ol>
-    </div>
+        :previous-step-index="previousStepIndex"
+        @setCurrentStepIndex="(index) => currentStepIndex = index"
+    />
 </template>
 
 <style lang="scss" scoped>

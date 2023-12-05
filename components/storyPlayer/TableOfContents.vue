@@ -1,23 +1,23 @@
 <script>
 import {mapGetters, mapMutations} from "vuex";
-import AlphanumericEncoder from "alphanumeric-encoder";
-import {stepPalette} from "../../store/constantsDataNarrator";
+import RenderUtilities from "../../mixins/RenderUtilities";
 import mutations from "../../store/mutationsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
+import ChapterTitle from "../shared/ChapterTitle.vue";
+import BackButton from "../shared/BackButton.vue";
 
 export default {
     name: "TableOfContents",
+    components: {
+        ChapterTitle,
+        BackButton
+    },
+    mixins: [RenderUtilities],
     props: {
         previousStepIndex: {
             type: Number,
             default: null
         }
-    },
-    data () {
-        return {
-            stepPalette,
-            encoder: new AlphanumericEncoder()
-        };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
@@ -44,11 +44,6 @@ export default {
             );
 
             this.toStep(step);
-        },
-        colorFor (chapterNumber) {
-            const index = (chapterNumber - 1) % this.stepPalette.length;
-
-            return this.stepPalette[index];
         }
     }
 };
@@ -60,52 +55,25 @@ export default {
             <v-col
                 cols="12"
             >
-                <span
-                    role="button"
-                    tabindex="0"
-                >
-                    <v-tooltip left>
-                        <template #activator="{ on, attrs }">
-                            <v-icon
-                                v-bind="attrs"
-                                v-on="on"
-                                @click="toStepIndex(previousStepIndex)"
-                                @keydown="toStepIndex(previousStepIndex)"
-                            >keyboard_backspace</v-icon>
-                        </template>
-                        <span>{{ $t("additional:modules.tools.dataNarrator.button.backToStory") }}</span>
-                    </v-tooltip>
-                </span>
-                <span class="story-title">{{ currentStory.title }}</span>
+                <BackButton
+                    tooltip="additional:modules.tools.dataNarrator.button.backToStory"
+                    @click="toStepIndex(previousStepIndex)"
+                />
             </v-col>
         </v-row>
         <v-list-item-group class="chapters-list">
             <template v-for="(chapter) in currentStory.chapters">
-                <v-list-item
+                <ChapterTitle
                     :key="`chapter_${chapter.chapterNumber}`"
-                    class="chapter-item"
+                    :chapter="chapter"
                     @click="toChapter(chapter)"
-                    @keydown="toChapter(chapter)"
-                >
-                    <v-chip
-                        :color="colorFor(chapter.chapterNumber).main"
-                        pill
-                        text-color="white"
-                        class="toc-chips"
-                    >
-                        {{ encoder.encode(chapter.chapterNumber) }}
-                    </v-chip>
-                    <v-list-item-title class="chapter-title">
-                        {{ chapter.chapterTitle }}
-                    </v-list-item-title>
-                </v-list-item>
+                />
                 <v-list-item-group
                     :key="`chapter_steps_${chapter.chapterNumber}`"
                 >
                     <template
                         v-for="(step) in currentStory.steps.filter(
-                            ({associatedChapter}) =>
-                                associatedChapter === chapter.chapterNumber
+                            ({associatedChapter}) => associatedChapter === chapter.chapterNumber
                         )"
                     >
                         <v-list-item
@@ -132,25 +100,6 @@ export default {
 
 .chapters-list {
     padding-bottom: 20px;
-}
-.story-title {
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-left: 10px;
-}
-
-.toc-chips {
-    height: 18px;
-    font-weight: bold;
-    margin-right: 10px;
-}
-.chapter-title {
-    font-weight: bold;
-}
-
-.chapter-item {
-    min-height: 30px;
-    padding: 0;
 }
 
 .step-item {

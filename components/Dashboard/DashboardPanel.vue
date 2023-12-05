@@ -70,7 +70,7 @@ export default {
                 {
                     itemSelector: ".grid-item",
                     columnWidth: ".grid-item",
-                    gutter: 4,
+                    gutter: 20,
                     percentPosition: true
                 });
         }, 100);
@@ -232,6 +232,6 @@ export default {
 }
 
 .grit-gutter {
-    width: 4px;
+    width: 20px;
 }
 </style>

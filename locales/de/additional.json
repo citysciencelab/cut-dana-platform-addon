@@ -113,7 +113,9 @@
           "shareSettings": "Einstellungen",
           "addSharedWith": "Hinzufügen",
           "featured": "Vorgestellt",
-          "backToStory": "Zurück zu Story"
+          "backToStory": "Zurück zu Story",
+          "previous": "Zurück",
+          "next": "Weiter"
         },
         "newChapter": "Neues Kapitel"
       }
