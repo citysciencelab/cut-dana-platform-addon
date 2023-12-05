@@ -82,7 +82,8 @@ export default {
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
         ...mapGetters(["namedProjections"]),
-        ...mapGetters("Tools/Modeler3D", Object.keys(modelerGetters))
+        ...mapGetters("Tools/Modeler3D", Object.keys(modelerGetters)),
+        ...mapGetters("Maps", ["altitude", "longitude", "latitude", "clickCoordinate", "mouseCoordinate"])
 
 
     },
@@ -105,6 +106,7 @@ export default {
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         ...mapActions("Tools/Modeler3D", Object.keys(modelerActions)),
         ...mapMutations("Tools/Modeler3D", Object.keys(modelerMutations)),
+        ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
         /**
          * Initializes the projections to select. If projection EPSG:4326 is available same is added in decimal-degree.
          * @returns {void}
@@ -206,6 +208,86 @@ export default {
         },
 
         /**
+         * Handles the mouse up event and performs actions when the dragging of an object is finished.
+         * @returns {void}
+         */
+        onMouseUp () {
+            if (!this.isDragging) {
+                return;
+            }
+            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities;
+
+            this.removeInputActions();
+            this.setIsDragging(false);
+
+            if (this.cylinderId) {
+                const cylinder = entities.getById(this.cylinderId),
+                    entity = entities.getById(this.currentModelId);
+
+                cylinder.position = entity?.clampToGround ?
+                    adaptCylinderToGround(cylinder, cylinder.position.getValue()) :
+                    adaptCylinderToEntity(entity, cylinder, cylinder.position.getValue());
+                this.setCylinderId(null);
+            }
+            else if (this.wasDrawn) {
+                const cylinders = entities.values.filter(ent => ent.cylinder),
+                    entity = entities.getById(this.currentModelId);
+
+                cylinders.forEach((cyl) => {
+                    cyl.position = entity?.clampToGround ?
+                        adaptCylinderToGround(cyl, cyl.position.getValue()) :
+                        adaptCylinderToEntity(entity, cyl, cyl.position.getValue());
+                });
+            }
+            this.setHideObjects(this.originalHideOption);
+
+            document.body.style.cursor = "auto";
+        },
+
+        /**
+         * Handles the mouse move event and performs actions when dragging a cylinder.
+         * @param {Event} event - The event object containing the position information.
+         * @returns {void}
+         */
+        moveCylinder (event) {
+            if (!this.isDragging || this.isDrawing) {
+                return;
+            }
+
+            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
+                entity = entities.getById(this.currentModelId),
+                cylinder = entities.getById(this.cylinderId);
+
+            if (Cesium.defined(cylinder) && Cesium.defined(entity)) {
+                const scene = mapCollection.getMap("3D").getCesiumScene();
+
+                if (entity.clampToGround) {
+                    const ray = scene.camera.getPickRay(event.endPosition),
+                        position = scene.globe.pick(ray, scene);
+
+                    if (this.currentPosition !== position) {
+                        this.currentPosition = scene.globe.pick(ray, scene);
+                        this.updatePositionUI();
+                    }
+                }
+                else {
+                    const transformedCoordinates = crs.transformFromMapProjection(mapCollection.getMap("3D").getOlMap(), "EPSG:4326", [this.mouseCoordinate[0], this.mouseCoordinate[1]]),
+                        cartographic = Cesium.Cartographic.fromDegrees(transformedCoordinates[0], transformedCoordinates[1]);
+
+                    cartographic.height = scene.sampleHeight(cartographic, [cylinder, entity]);
+
+                    if (this.currentPosition !== Cesium.Cartographic.toCartesian(cartographic)) {
+                        this.currentPosition = Cesium.Cartographic.toCartesian(cartographic);
+                        this.updatePositionUI();
+                    }
+                }
+                if (Cesium.defined(this.currentPosition)) {
+                    this.activeShapePoints.splice(cylinder.positionIndex, 1, this.currentPosition);
+                }
+            }
+        },
+
+        /**
          * Initiates the process of moving an entity.
          * @param {Event} event - The event object containing the position information.
          * @returns {void}
@@ -217,6 +299,7 @@ export default {
             if (this.isDrawing) {
                 return;
             }
+
 
             let entity;
 
@@ -260,6 +343,37 @@ export default {
                 }
                 eventHandler.setInputAction(this.onMouseUp, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
             }
+        },
+        /**
+         * Handles the mouse move event and performs actions when dragging an object.
+         * @param {Event} event - The event object containing the position information.
+         * @returns {void}
+         */
+        onMouseMove (event) {
+            if (!this.isDragging) {
+                return;
+            }
+
+            const scene = mapCollection.getMap("3D").getCesiumScene(),
+                ray = scene.camera.getPickRay(event.endPosition),
+                position = scene.globe.pick(ray, scene),
+                entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
+                entity = entities.getById(this.currentModelId);
+
+            if (!Cesium.defined(position) || !Cesium.defined(entity)) {
+                return;
+            }
+
+            if (entity.polygon) {
+                this.movePolygon({entityId: this.currentModelId, position});
+            }
+            else if (entity.polyline) {
+                this.movePolyline({entityId: this.currentModelId, position});
+            }
+            else {
+                entity.position = position;
+            }
+            this.updatePositionUI();
         },
 
         /**
