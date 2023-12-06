@@ -609,46 +609,7 @@ export default {
             }
         },
 
-        /**
-         * Handles the processing of GLTF content.
-         * @param {Blob} blob - The GLTF content.
-         * @param {String} fileName - The name of the file.
-         * @param {number} fileId - The ID of the selected file.
-         * @returns {void}
-         */
-        handleGltfFile (blob, fileName, fileId) {
-            this.checkMapCollection(fileId);
-            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
-                lastElement = entities.values.slice().pop(),
-                lastId = lastElement?.id,
-                models = this.importedModels,
-                entity = new Cesium.Entity({
-                    id: lastId ? lastId + 1 : 1,
-                    name: fileName,
-                    clampToGround: true,
-                    model: {
-                        uri: URL.createObjectURL(blob)
-                    }
-                });
 
-            this.setCurrentModelId(entity.id);
-            this.moveEntity(undefined, fileId);
-
-
-            this.writeEntityDataToItems(entity, fileId);
-
-            entities.add(entity);
-
-            models.push({
-                id: entity.id,
-                name: fileName,
-                show: true,
-                edit: false,
-                heading: 0
-            });
-            this.setImportedModels(models);
-            this.setIsLoading(false);
-        },
         /**
          * Handles the processing of OBJ content.
          * @param {String} content - The OBJ content.

@@ -384,14 +384,18 @@ export default {
                 model.set("isSelected", false);
             }
         }
-        for (const layer of this.step.layers) {
-            const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
 
-            if (model) {
-                model.setIsVisibleInMap(false);
-                model.set("isSelected", false);
+        if (this.step.layers) {
+            for (const layer of this.step.layers) {
+                const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
+
+                if (model) {
+                    model.setIsVisibleInMap(false);
+                    model.set("isSelected", false);
+                }
             }
         }
+
 
         for (const layer of this.wmsLayers) {
             this.hideWmsLayer(layer.url);

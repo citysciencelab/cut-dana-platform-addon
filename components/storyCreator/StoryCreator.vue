@@ -5,7 +5,7 @@ import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import StoryPlayer from "../storyPlayer/StoryPlayer.vue";
-import FileForm from "./FileForm.vue";
+import FileForm from "./FileForm2.vue";
 import StepForm from "./StepForm.vue";
 import StoryForm from "./StoryForm.vue";
 

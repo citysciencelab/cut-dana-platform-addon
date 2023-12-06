@@ -1,4 +1,4 @@
-import threeDManagerState from "../../threeDManager/store/threeDManagerState";
+import threeDManagerState from "./state/threeDManagerState";
 /**
  * User type definition
  * @typedef {object} DataNarratorState

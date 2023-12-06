@@ -1,3 +1,5 @@
+import * as threeDManagerConstants from "./constants/threeDManagerConstants";
+
 const storyTellingModes = {
         CREATE: "create",
         PLAY: "play",
@@ -71,6 +73,7 @@ const storyTellingModes = {
     ];
 
 export {
+    threeDManagerConstants,
     dataNarratorRoles,
     emptyStep, emptyStory,
     htmlEditorToolbar, stepPalette, storyCreationViews, storyTellingModeIcons, storyTellingModes

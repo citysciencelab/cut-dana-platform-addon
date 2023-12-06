@@ -1,5 +1,6 @@
 import {generateSimpleMutations} from "../../../../src/app-store/utils/generators";
 import stateDataNarrator from "./stateDataNarrator";
+import threeDManagerMutations from "./mutations/threeDManagerMutations";
 
 const mutations = {
     /**
@@ -9,6 +10,8 @@ const mutations = {
      * will be returned.
      */
     ...generateSimpleMutations(stateDataNarrator),
+
+    ...threeDManagerMutations,
 
     /**
      * If name from config.json starts with "translate#", the corrected key is set to name here.
