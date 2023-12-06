@@ -1,4 +1,4 @@
-
+import threeDManagerState from "../../threeDManager/store/threeDManagerState";
 /**
  * User type definition
  * @typedef {object} DataNarratorState
@@ -18,13 +18,15 @@
  * @property {Number} initialWidth Size of the sidebar when opening.
  * @property {Number} initialWidthMobile Mobile size of the sidebar when opening.
  * @property {object} config for story to display.
- */
+*/
 const state = {
     id: "dataNarrator",
     currentStory: null,
     currentStoryId: null,
     htmlContentsImages: {},
     autoplay: false,
+    ...threeDManagerState,
+
     // defaults for config.json parameters
     active: false,
     keepOpen: true,

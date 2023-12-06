@@ -76,7 +76,8 @@ export default {
             ],
             ignoreFolderChange: false,
             forceFolderRerenderKey: 0,
-            step: this.editedStep || {}
+            step: this.editedStep || {},
+            fileObjects: []
         };
     },
     computed: {
@@ -93,7 +94,6 @@ export default {
     },
     mounted () {
         // set map to 3d
-        console.log("mounted", mapCollection.getMap("3D"));
 
         // console.log("mounted");
     },
@@ -194,7 +194,9 @@ export default {
             wgs84ProjDez.getCode = () => "EPSG:4326-DG";
             projections.splice(index + 1, 0, wgs84ProjDez);
         },
-        checkMapCollection () {
+
+
+        checkMapCollection (fileId) {
             if (!eventHandler) {
                 const scene = mapCollection.getMap("3D").getCesiumScene();
 
@@ -202,22 +204,25 @@ export default {
                 eventHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
 
                 eventHandler.setInputAction(this.selectObject, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-                eventHandler.setInputAction(this.moveEntity, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+                eventHandler.setInputAction((event) => {
+                    this.moveEntity(event, fileId);
+                }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
                 eventHandler.setInputAction(this.cursorCheck, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
             }
         },
 
         /**
          * Handles the mouse up event and performs actions when the dragging of an object is finished.
+         * @param {String} fileId - The ID of the selected file.
          * @returns {void}
          */
-        onMouseUp () {
+        onMouseUp (fileId) {
             if (!this.isDragging) {
                 return;
             }
             const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities;
 
-            this.removeInputActions();
+            this.removeInputActions(fileId);
             this.setIsDragging(false);
 
             if (this.cylinderId) {
@@ -240,6 +245,7 @@ export default {
                 });
             }
             this.setHideObjects(this.originalHideOption);
+
 
             document.body.style.cursor = "auto";
         },
@@ -290,11 +296,12 @@ export default {
         /**
          * Initiates the process of moving an entity.
          * @param {Event} event - The event object containing the position information.
+         * @param {String} fileId - The ID of the selected file.
          * @returns {void}
          */
-        moveEntity (event) {
+        moveEntity (event, fileId) {
 
-            this.checkMapCollection();
+            this.checkMapCollection(fileId);
 
             if (this.isDrawing) {
                 return;
@@ -341,7 +348,13 @@ export default {
 
                     eventHandler.setInputAction(this.onMouseMove, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
                 }
-                eventHandler.setInputAction(this.onMouseUp, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+                eventHandler.setInputAction((e) => {
+                    this.onMouseUp(e, fileId);
+                    if (entity) {
+                        this.writeEntityDataToItems(entity, fileId);
+                    }
+                }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
             }
         },
         /**
@@ -445,14 +458,17 @@ export default {
         },
         /**
          * Removes the input actions related to mouse move and left double click events.
+         * @param {String} fileId - The ID of the selected file.
          * @returns {void}
          */
-        removeInputActions () {
+        removeInputActions (fileId) {
             if (eventHandler) {
                 eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
                 eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
                 eventHandler.setInputAction(this.cursorCheck, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                eventHandler.setInputAction(this.moveEntity, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+                eventHandler.setInputAction((event) => {
+                    this.moveEntity(event, fileId);
+                }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
             }
         },
 
@@ -537,13 +553,13 @@ export default {
         /**
          * Adds and processes the selected file.
          * @param {FileList} files - The selected files.
+         * @param {number} fileId - The ID of the selected file.
          * @returns {void}
          */
-        addFile (files) {
-            this.checkMapCollection();
+        addFile (files, fileId) {
+            this.checkMapCollection(fileId);
 
 
-            console.log("addFile", files);
             const reader = new FileReader(),
                 file = files[0],
                 fileName = file.name.split(".")[0],
@@ -556,8 +572,9 @@ export default {
                 return;
             }
 
+
             if (fileExtension === "gltf") {
-                this.handleGltfFile(file, fileName);
+                this.handleGltfFile(file, fileName, fileId);
                 return;
             }
 
@@ -565,13 +582,13 @@ export default {
 
             reader.onload = (event) => {
                 if (fileExtension === "obj") {
-                    this.handleObjFile(event.target.result, fileName);
+                    this.handleObjFile(event.target.result, fileName, fileId);
                 }
                 else if (fileExtension === "dae") {
-                    this.handleDaeFile(event.target.result, fileName);
+                    this.handleDaeFile(event.target.result, fileName, fileId);
                 }
                 else if (fileExtension === "geojson") {
-                    this.handleGeoJsonFile(event.target.result);
+                    this.handleGeoJsonFile(event.target.result, fileId);
                 }
                 else {
                     store.dispatch("Alerting/addSingleAlert", {content: i18next.t("common:modules.tools.modeler3D.import.alertingMessages.missingFormat", {format: fileExtension})}, {root: true});
@@ -596,10 +613,11 @@ export default {
          * Handles the processing of GLTF content.
          * @param {Blob} blob - The GLTF content.
          * @param {String} fileName - The name of the file.
+         * @param {number} fileId - The ID of the selected file.
          * @returns {void}
          */
-        handleGltfFile (blob, fileName) {
-            this.checkMapCollection();
+        handleGltfFile (blob, fileName, fileId) {
+            this.checkMapCollection(fileId);
             const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
                 lastElement = entities.values.slice().pop(),
                 lastId = lastElement?.id,
@@ -613,9 +631,11 @@ export default {
                     }
                 });
 
-
             this.setCurrentModelId(entity.id);
-            this.moveEntity();
+            this.moveEntity(undefined, fileId);
+
+
+            this.writeEntityDataToItems(entity, fileId);
 
             entities.add(entity);
 
@@ -633,9 +653,10 @@ export default {
          * Handles the processing of OBJ content.
          * @param {String} content - The OBJ content.
          * @param {String} fileName - The name of the file.
+         * @param {number} fileId - The ID of the selected file.
          * @returns {void}
          */
-        handleObjFile (content, fileName) {
+        handleObjFile (content, fileName, fileId) {
             const objLoader = new OBJLoader(),
                 objData = objLoader.parse(content),
                 gltfExporter = new GLTFExporter();
@@ -644,16 +665,17 @@ export default {
                 const gltfJson = JSON.stringify(gltfData),
                     blob = new Blob([gltfJson], {type: "model/gltf+json"});
 
-                this.handleGltfFile(blob, fileName);
+                this.handleGltfFile(blob, fileName, fileId);
             });
         },
         /**
          * Handles the processing of a DAE file.
          * @param {String} content - The DAE content.
          * @param {String} fileName - The name of the file.
+         * @param {number} fileId - The ID of the selected file.
          * @returns {void}
          */
-        handleDaeFile (content, fileName) {
+        handleDaeFile (content, fileName, fileId) {
             const colladaLoader = new ColladaLoader();
 
             colladaLoader.load(content, (collada) => {
@@ -666,7 +688,7 @@ export default {
                         const gltfJson = JSON.stringify(gltfData),
                             blob = new Blob([gltfJson], {type: "model/gltf+json"});
 
-                        this.handleGltfFile(blob, fileName);
+                        this.handleGltfFile(blob, fileName, fileId);
                     });
                 });
             });
@@ -675,9 +697,10 @@ export default {
          * Handles the processing of GeoJSON content.
          * @param {String} content - The GeoJSON content.
          * @param {String} fileName - The name of the file.
+         * @param {number} fileId - The ID of the selected file.
          * @returns {void}
          */
-        handleGeoJsonFile (content) {
+        handleGeoJsonFile (content, fileName, fileId) {
             const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
                 geojson = JSON.parse(content);
 
@@ -719,6 +742,8 @@ export default {
                     };
                 }
 
+                this.writeEntityDataToItems(entity, fileId);
+
                 entities.add(entity);
                 this.drawnModels.push({
                     id: entity.id,
@@ -731,6 +756,63 @@ export default {
             this.setCurrentView("draw");
             this.setIsLoading(false);
         },
+
+
+        /**
+         * This recursive function adds the entity data to an item.
+         * @param {*} entity the cesium entity data
+         * @param {*} itemId the id of the item in this.items
+         * @param {*} items the items to search, defaults to this.items
+         * @returns {void}
+         */
+        writeEntityDataToItems (entity, itemId, items = this.items) {
+            console.log("writeEntityDataToItems");
+
+            const newItems = JSON.parse(JSON.stringify(items));
+
+            // Start the recursive update process
+            this.updateItemWithEntity(newItems, entity, itemId);
+
+            this.items = newItems;
+            console.log("doneWriteEntityDataToItems");
+        },
+
+
+        /**
+         * Recursive function to update items with entity data
+         * @param {Array} items the array of items to process
+         * @param {*} entity the cesium entity data to add
+         * @param {*} itemId the id of the item to update
+         * @returns {boolean} true if the entity was added, false otherwise
+         */
+        updateItemWithEntity (items, entity, itemId) {
+
+            for (let i = 0; i < items.length; i++) {
+
+                if (items[i].id === itemId) {
+                    console.log(entity._orientation, entity._position);
+                    items[i] = {
+                        ...items[i],
+                        orientation: entity._orientation ? entity._orientation : undefined,
+                        position: entity._position ? entity._position : undefined
+                    };
+                    return true; // Entity added to the item
+                }
+
+                if (items[i].children && items[i].children.length > 0) {
+                    const found = this.updateItemWithEntity(items[i].children, entity, itemId);
+
+                    if (found) {
+                        return true; // Entity added to a child item
+                    }
+                }
+            }
+
+            // Return false if no matching item found at this level
+            return false;
+        },
+
+
         /**
          * Toggles the visibility of a model entity.
          * @param {object} model - The model object.
@@ -906,59 +988,56 @@ export default {
         },
 
         handleFileUpload (event, itemId) {
-            console.log("handleFileUpload", event.target.files, mapCollection.getMap("3D"));
-            this.addFile(event.target.files);
 
-            const files = event.target.files;
+            for (const file of event.target.files) {
+                const randomItemId = this.randomId();
 
-            for (const file of files) {
                 this.addItem(itemId, {
-                    id: this.randomId(),
+                    id: randomItemId,
                     name: file.name,
                     file: file.name.split(".").pop(),
                     obj: file
                 }, true);
+
+                this.addFile([file], randomItemId);
             }
 
-
-            // console.log("handleFileUpload", files);
         },
 
         createFormData () {
-            const formData = new FormData();
+            // const formData = new FormData();
 
-            /**
-             * Recursive function to process the tree and add files to FormData
-             * @param {Array} node the tree to process
-             * @param {string} path the path of the current node
-             * @returns {void}
-             */
-            function processNode (node, path = "") {
-                if (node.file && node.obj) {
-                    // It's a file, append it to FormData
-                    const fullPath = path;
+            // /**
+            //  * Recursive function to process the tree and add files to FormData
+            //  * @param {Array} node the tree to process
+            //  * @param {string} path the path of the current node
+            //  * @returns {void}
+            //  */
+            // function processNode (node, path = "") {
+            //     if (node.file && node.obj) {
+            //         // It's a file, append it to FormData
+            //         const fullPath = path;
+
+            //         formData.append(fullPath, node.obj);
+            //     }
+            //     else if (node.children && Array.isArray(node.children)) {
+            //         // It's a folder, recurse into its children
+            //         node.children.forEach(child => {
+            //             processNode(child, path ? `${path}/${node.name}` : node.name);
+            //         });
+            //     }
+            // }
+
+            // this.items.forEach(node => {
+            //     processNode(node);
+            // });
+
+            // for (const [key, value] of formData.entries()) {
+            //     console.log(key, value);
+            // }
 
 
-                    formData.append(fullPath, node.obj);
-                }
-                else if (node.children && Array.isArray(node.children)) {
-                    // It's a folder, recurse into its children
-                    node.children.forEach(child => {
-                        processNode(child, path ? `${path}/${node.name}` : node.name);
-                    });
-                }
-            }
-
-            this.items.forEach(node => {
-                processNode(node);
-            });
-
-            for (const [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-
-
-            this.step.threeDFiles = formData;
+            this.step.threeDFiles = this.items;
 
             this.returnToStepForm();
 
