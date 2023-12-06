@@ -39,23 +39,19 @@ export default {
 </script>
 
 <template>
-    <v-tooltip left>
-        <template #activator="{ on }">
-            <v-icon
-                id="login-button"
-                class="mr-1"
-                @click="openLoginWindow()"
-                v-on="on"
-            >
-                {{ loggedIn ? icons.mdiLogout : icons.mdiLogin }}
-            </v-icon>
-        </template>
-        <span>
-            {{
-                loggedIn ?
-                    $t("common:modules.login.logout") :
-                    $t("common:modules.login.login")
-            }}
-        </span>
-    </v-tooltip>
+    <v-btn
+        text
+        rounded
+        small
+        @click="openLoginWindow()"
+    >
+        <v-icon small>
+            {{ loggedIn ? icons.mdiLogout : icons.mdiLogin }}
+        </v-icon>
+        {{
+            loggedIn ?
+                $t("common:modules.login.logout") :
+                $t("common:modules.login.login")
+        }}
+    </v-btn>
 </template>
