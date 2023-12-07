@@ -145,13 +145,13 @@ export default {
 
         addItem (parentId, newItem, asChild = true) {
             // Create a copy of the items
-            const itemsCopy = JSON.parse(JSON.stringify(this.items));
+            const itemsCopy = JSON.parse(JSON.stringify(this.threeDFiles));
 
             if (!parentId) {
                 // If no parent id is provided, add the item to the root
                 itemsCopy.push(newItem);
                 // Update the original items with the modified copy
-                this.items = itemsCopy;
+                this.threeDFiles = itemsCopy;
                 return;
             }
 
@@ -192,7 +192,7 @@ export default {
             addRecursive(itemsCopy, parentId, newItem);
 
             // Update the original items with the modified copy
-            this.items = itemsCopy;
+            this.threeDFiles = itemsCopy;
         },
 
 
@@ -216,7 +216,7 @@ export default {
                 return false;
             }
 
-            renameRecursive(this.items);
+            renameRecursive(this.threeDFiles);
         },
 
         openFileDialog (index) {
@@ -293,15 +293,12 @@ export default {
             // }
 
 
-            this.step.threeDFiles = this.items;
+            this.step.threeDFiles = this.threeDFiles;
 
             this.returnToStepForm();
 
         },
 
-        syncThreeDFiles () {
-            this.step.threeDFiles = this.threeDFiles;
-        },
 
         /**
          * Handle return back to the stepForm

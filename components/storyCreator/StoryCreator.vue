@@ -101,7 +101,6 @@ export default {
         <FileForm
             v-if="view === constants.storyCreationViews.THREE_D"
             :edited-step="stepToEdit"
-            @editStep="(step) => onEditStep(step, false)"
             @openView="newView => (view = newView)"
             @edit3D="onEdit3D"
             @return="returnToStepForm"
