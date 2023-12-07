@@ -1,10 +1,4 @@
 <script>
-import {
-    mdiAccountArrowDown,
-    mdiSortClockAscendingOutline,
-    mdiPlaylistStar,
-    mdiSortDescending
-} from "@mdi/js";
 
 export default {
     name: "ListButton",
@@ -16,30 +10,6 @@ export default {
         active: {
             type: Boolean,
             default: false
-        }
-    },
-    data () {
-        return {
-            icons: {
-                mdiAccountArrowDown,
-                mdiSortClockAscendingOutline,
-                mdiPlaylistStar,
-                mdiSortDescending
-            }
-        };
-    },
-    methods: {
-        icon () {
-            if (this.mode === "my") {
-                return this.icons.mdiAccountArrowDown;
-            }
-            else if (this.mode === "featured") {
-                return this.icons.mdiPlaylistStar;
-            }
-            else if (this.mode === "popular") {
-                return this.icons.mdiSortDescending;
-            }
-            return this.icons.mdiSortClockAscendingOutline;
         }
     }
 };

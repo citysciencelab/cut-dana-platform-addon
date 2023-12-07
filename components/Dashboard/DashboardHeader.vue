@@ -82,7 +82,7 @@ export default {
             </v-col>
         </v-row>
 
-        <v-row>
+        <v-row class="list-buttons">
             <v-col class="d-flex justify-center align-center">
                 <ListButton
                     v-for="mode in availableStoryListModes()"
@@ -104,15 +104,19 @@ export default {
 
 
 .with-fancy-background {
-  background-image: url('../../assets/images/header_small.png');
+    background-image: url(../../assets/images/header_small.png);
     background-position: right top;
     min-height: 220px;
 
     @media (min-width: 768px){
-      background-image: url('../../assets/images/header.png');
+      background-image: url(../../assets/images/header.png);
       background-position: right top;
       min-height: 332px;
     }
+}
+
+.list-buttons {
+    margin-top: 0.5rem !important;
 }
 
 .header-h1 {
