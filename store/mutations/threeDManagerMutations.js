@@ -227,7 +227,6 @@ function handleGltfFile (state, payload) {
     state.loading = false;
 }
 
-
 /**
  * Handles the processing of OBJ content.
  * @param {Object} state - The state of this component.
@@ -250,7 +249,6 @@ function handleObjFile (state, payload) {
         handleGltfFile(state, {file: blob, fileName, fileId});
     });
 }
-
 
 /**
  * Handles the processing of a DAE file.

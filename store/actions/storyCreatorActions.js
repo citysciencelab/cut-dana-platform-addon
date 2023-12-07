@@ -213,6 +213,8 @@ function prepareHtml (story, images) {
         htmlArray = [],
         threeDFileArray = [];
 
+    console.log(story.steps);
+
     story.steps = story.steps.map((step) => {
         let html = step.html;
 
@@ -265,6 +267,8 @@ function prepareHtml (story, images) {
             }
             delete node.id;
         }
+
+        console.log(step);
 
         step.threeDFiles.forEach(node => {
             processNode(node);

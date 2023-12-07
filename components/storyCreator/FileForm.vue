@@ -7,28 +7,15 @@ import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 
-import modelerActions from "../../../../../src/modules/tools/modeler3D/store/actionsModeler3D";
-import modelerGetters from "../../../../../src/modules/tools/modeler3D/store/gettersModeler3D";
-import modelerMutations from "../../../../../src/modules/tools/modeler3D/store/mutationsModeler3D";
-
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
-import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader.js";
-import {ColladaLoader} from "three/examples/jsm/loaders/ColladaLoader.js";
-import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter.js";
-import getGfiFeatures from "../../../../../src/api/gfi/getGfiFeaturesByTileFeature";
-import crs from "@masterportal/masterportalapi/src/crs";
-import {adaptCylinderToGround, adaptCylinderToEntity, adaptCylinderUnclamped} from "../../../../../src/modules/tools/modeler3D/utils/draw";
-
 
 import {
     mdiCodeJson, mdiFileDocumentOutline, mdiFileExcel, mdiFileImage, mdiFilePdf,
     mdiFolder, mdiFolderOpen, mdiFolderPlus, mdiLanguageHtml5, mdiLanguageMarkdown,
     mdiNodejs, mdiPlus
 } from "@mdi/js";
-import store from "../../../../../src/app-store";
 
 
-let eventHandler = null;
+const eventHandler = null;
 
 export default {
     name: "FileForm",
@@ -77,13 +64,13 @@ export default {
             ignoreFolderChange: false,
             forceFolderRerenderKey: 0,
             step: this.editedStep || {},
-            fileObjects: []
+            fileObjects: [],
+            threeDFiles: this.editedStep.threeDFiles || []
         };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
         ...mapGetters(["namedProjections"]),
-        ...mapGetters("Tools/Modeler3D", Object.keys(modelerGetters)),
         ...mapGetters("Maps", ["altitude", "longitude", "latitude", "clickCoordinate", "mouseCoordinate"])
 
 
@@ -94,714 +81,18 @@ export default {
     },
     mounted () {
         // set map to 3d
+        console.log(this.currentStory);
 
         // console.log("mounted");
     },
     beforeDestroy () {
-        eventHandler.destroy();
         // console.log("beforeDestroy");
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-        ...mapActions("Tools/Modeler3D", Object.keys(modelerActions)),
-        ...mapMutations("Tools/Modeler3D", Object.keys(modelerMutations)),
         ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
-        /**
-         * Initializes the projections to select. If projection EPSG:4326 is available same is added in decimal-degree.
-         * @returns {void}
-         */
-        initProjections () {
-            const pr = crs.getProjections(),
-                epsg8395 = [],
-                wgs84Proj = [];
 
-            if (this.projections.length) {
-                return;
-            }
-            // id is set to the name and in case of decimal "-DG" is appended to name later on
-            // for use in select-box
-            pr.forEach(proj => {
-                proj.id = proj.name;
-                if (proj.name === "EPSG:4326" || proj.name === "http://www.opengis.net/gml/srs/epsg.xml#4326") {
-                    wgs84Proj.push(proj);
-                }
-                if (proj.name === "EPSG:8395" || proj.name === "http://www.opengis.net/gml/srs/epsg.xml#8395") {
-                    epsg8395.push(proj);
-                }
-                if (proj.name.indexOf("#") > -1) { // e.g. "http://www.opengis.net/gml/srs/epsg.xml#25832"
-                    const code = proj.name.substring(proj.name.indexOf("#") + 1, proj.name.length);
-
-                    proj.epsg = "EPSG:" + code;
-                }
-                else {
-                    proj.title = proj.name;
-                }
-                if (proj.id === this.currentProjection.id) {
-                    this.setCurrentProjection(proj);
-                }
-            });
-            if (wgs84Proj.length > 0) {
-                this.addWGS84Decimal(pr, wgs84Proj);
-            }
-            this.namedProjections.find((el) => {
-                if (el[1].includes("ETRS89_3GK3") && epsg8395.length > 0) {
-                    this.addETRS893GK3(pr, el, epsg8395);
-                    return true;
-                }
-                return false;
-            });
-            this.setProjections(pr);
-        },
-        /**
-         * Adds EPSG:4326 in decimal-degree to list of projections.
-         * @param {Array} projections list of all available projections
-         * @param {Object} elementETRS89_3GK3 the WGS84 projection contained in list of projections
-         * @param {Object} epsg8395 the WGS84 projection contained in list of projections
-         * @returns {void}
-         */
-        addETRS893GK3 (projections, elementETRS89_3GK3, epsg8395) {
-            const index = projections.findIndex(proj => proj.name === "EPSG:8395"),
-                etrs89_3GK3Proj = {};
-
-            for (const key in epsg8395[0]) {
-                etrs89_3GK3Proj[key] = epsg8395[0][key];
-            }
-            etrs89_3GK3Proj.name = "ETRS893GK3";
-            etrs89_3GK3Proj.epsg = "EPSG:8395";
-            etrs89_3GK3Proj.id = "http://www.opengis.net/gml/srs/epsg.xml#ETRS893GK3";
-            etrs89_3GK3Proj.title = elementETRS89_3GK3[1].substring(elementETRS89_3GK3[1].lastIndexOf("ETRS"), elementETRS89_3GK3[1].indexOf(" +proj="));
-            etrs89_3GK3Proj.getCode = () => "noEPSGCode";
-            projections.splice(index + 1, 0, etrs89_3GK3Proj);
-        },
-        /**
-         * Adds EPSG:4326 in decimal-degree to list of projections.
-         * @param {Array} projections list of all available projections
-         * @param {Object} wgs84Proj the WGS84 projection contained in list of projections
-         * @returns {void}
-         */
-        addWGS84Decimal (projections, wgs84Proj) {
-            const index = projections.findIndex(proj => proj.name === "EPSG:4326"),
-                wgs84ProjDez = {};
-
-            for (const key in wgs84Proj[0]) {
-                wgs84ProjDez[key] = wgs84Proj[0][key];
-            }
-            wgs84ProjDez.name = "EPSG:4326-DG";
-            wgs84ProjDez.epsg = "EPSG:4326";
-            wgs84ProjDez.id = "http://www.opengis.net/gml/srs/epsg.xml#4326-DG";
-            wgs84ProjDez.title = "WGS84_Lat-Lon (Grad, Dezimal), EPSG 4326";
-            wgs84ProjDez.getCode = () => "EPSG:4326-DG";
-            projections.splice(index + 1, 0, wgs84ProjDez);
-        },
-
-
-        checkMapCollection (fileId) {
-            if (!eventHandler) {
-                const scene = mapCollection.getMap("3D").getCesiumScene();
-
-                this.initProjections();
-                eventHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-
-                eventHandler.setInputAction(this.selectObject, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-                eventHandler.setInputAction((event) => {
-                    this.moveEntity(event, fileId);
-                }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-                eventHandler.setInputAction(this.cursorCheck, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-            }
-        },
-
-        /**
-         * Handles the mouse up event and performs actions when the dragging of an object is finished.
-         * @param {String} fileId - The ID of the selected file.
-         * @returns {void}
-         */
-        onMouseUp (fileId) {
-            if (!this.isDragging) {
-                return;
-            }
-            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities;
-
-            this.removeInputActions(fileId);
-            this.setIsDragging(false);
-
-            if (this.cylinderId) {
-                const cylinder = entities.getById(this.cylinderId),
-                    entity = entities.getById(this.currentModelId);
-
-                cylinder.position = entity?.clampToGround ?
-                    adaptCylinderToGround(cylinder, cylinder.position.getValue()) :
-                    adaptCylinderToEntity(entity, cylinder, cylinder.position.getValue());
-                this.setCylinderId(null);
-            }
-            else if (this.wasDrawn) {
-                const cylinders = entities.values.filter(ent => ent.cylinder),
-                    entity = entities.getById(this.currentModelId);
-
-                cylinders.forEach((cyl) => {
-                    cyl.position = entity?.clampToGround ?
-                        adaptCylinderToGround(cyl, cyl.position.getValue()) :
-                        adaptCylinderToEntity(entity, cyl, cyl.position.getValue());
-                });
-            }
-            this.setHideObjects(this.originalHideOption);
-
-
-            document.body.style.cursor = "auto";
-        },
-
-        /**
-         * Handles the mouse move event and performs actions when dragging a cylinder.
-         * @param {Event} event - The event object containing the position information.
-         * @returns {void}
-         */
-        moveCylinder (event) {
-            if (!this.isDragging || this.isDrawing) {
-                return;
-            }
-
-            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
-                entity = entities.getById(this.currentModelId),
-                cylinder = entities.getById(this.cylinderId);
-
-            if (Cesium.defined(cylinder) && Cesium.defined(entity)) {
-                const scene = mapCollection.getMap("3D").getCesiumScene();
-
-                if (entity.clampToGround) {
-                    const ray = scene.camera.getPickRay(event.endPosition),
-                        position = scene.globe.pick(ray, scene);
-
-                    if (this.currentPosition !== position) {
-                        this.currentPosition = scene.globe.pick(ray, scene);
-                        this.updatePositionUI();
-                    }
-                }
-                else {
-                    const transformedCoordinates = crs.transformFromMapProjection(mapCollection.getMap("3D").getOlMap(), "EPSG:4326", [this.mouseCoordinate[0], this.mouseCoordinate[1]]),
-                        cartographic = Cesium.Cartographic.fromDegrees(transformedCoordinates[0], transformedCoordinates[1]);
-
-                    cartographic.height = scene.sampleHeight(cartographic, [cylinder, entity]);
-
-                    if (this.currentPosition !== Cesium.Cartographic.toCartesian(cartographic)) {
-                        this.currentPosition = Cesium.Cartographic.toCartesian(cartographic);
-                        this.updatePositionUI();
-                    }
-                }
-                if (Cesium.defined(this.currentPosition)) {
-                    this.activeShapePoints.splice(cylinder.positionIndex, 1, this.currentPosition);
-                }
-            }
-        },
-
-        /**
-         * Initiates the process of moving an entity.
-         * @param {Event} event - The event object containing the position information.
-         * @param {String} fileId - The ID of the selected file.
-         * @returns {void}
-         */
-        moveEntity (event, fileId) {
-
-            this.checkMapCollection(fileId);
-
-            if (this.isDrawing) {
-                return;
-            }
-
-
-            let entity;
-
-            if (event) {
-                const scene = mapCollection.getMap("3D").getCesiumScene(),
-                    picked = scene.pick(event.position);
-
-                entity = Cesium.defaultValue(picked?.id, picked?.primitive?.id);
-            }
-
-            if (entity instanceof Cesium.Entity || !event) {
-                const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities;
-
-                this.setIsDragging(true);
-                this.originalHideOption = this.hideObjects;
-                this.setHideObjects(false);
-
-                document.body.style.cursor = "grabbing";
-
-                if (entity?.cylinder) {
-                    const geometry = entities.getById(this.currentModelId),
-                        position = geometry.polygon ? geometry.polygon.hierarchy.getValue().positions[entity.positionIndex] : geometry.polyline.positions.getValue()[entity.positionIndex];
-
-                    this.currentPosition = position;
-
-                    entity.position = geometry.clampToGround ?
-                        new Cesium.CallbackProperty(() => adaptCylinderToGround(entity, this.currentPosition), false) :
-                        new Cesium.CallbackProperty(() => adaptCylinderToEntity(geometry, entity, this.currentPosition), false);
-                    eventHandler.setInputAction(this.moveCylinder, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                }
-                else {
-                    entities.values.filter(ent => ent.cylinder).forEach((cyl, index) => {
-                        this.cylinderPosition[index] = cyl.position.getValue();
-
-                        cyl.position = entity.clampToGround ?
-                            new Cesium.CallbackProperty(() => adaptCylinderToGround(cyl, this.cylinderPosition[index]), false) :
-                            new Cesium.CallbackProperty(() => adaptCylinderToEntity(entity, cyl, this.cylinderPosition[index]), false);
-                    });
-
-                    eventHandler.setInputAction(this.onMouseMove, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                }
-                eventHandler.setInputAction((e) => {
-                    this.onMouseUp(e, fileId);
-                    if (entity) {
-                        this.writeEntityDataToItems(entity, fileId);
-                    }
-                }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-
-            }
-        },
-        /**
-         * Handles the mouse move event and performs actions when dragging an object.
-         * @param {Event} event - The event object containing the position information.
-         * @returns {void}
-         */
-        onMouseMove (event) {
-            if (!this.isDragging) {
-                return;
-            }
-
-            const scene = mapCollection.getMap("3D").getCesiumScene(),
-                ray = scene.camera.getPickRay(event.endPosition),
-                position = scene.globe.pick(ray, scene),
-                entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
-                entity = entities.getById(this.currentModelId);
-
-            if (!Cesium.defined(position) || !Cesium.defined(entity)) {
-                return;
-            }
-
-            if (entity.polygon) {
-                this.movePolygon({entityId: this.currentModelId, position});
-            }
-            else if (entity.polyline) {
-                this.movePolyline({entityId: this.currentModelId, position});
-            }
-            else {
-                entity.position = position;
-            }
-            this.updatePositionUI();
-        },
-
-        /**
-         * Checks the map for pickable Cesium objects and changes the cursor on hover.
-         * @param {Event} event - The event object containing the position information.
-         * @returns {void}
-         */
-        cursorCheck (event) {
-            if (this.isDrawing) {
-                return;
-            }
-            const scene = mapCollection.getMap("3D").getCesiumScene(),
-                picked = scene.pick(event.endPosition),
-                entity = Cesium.defaultValue(picked?.id, picked?.primitive?.id);
-
-            if (Cesium.defined(entity) && entity instanceof Cesium.Entity) {
-                if (this.currentModelId && entity.id === this.currentModelId || entity.cylinder) {
-                    document.body.style.cursor = "grab";
-                }
-                else {
-                    document.body.style.cursor = "pointer";
-                }
-            }
-            else if (this.hideObjects && Cesium.defined(picked) && picked instanceof Cesium.Cesium3DTileFeature) {
-                document.body.style.cursor = "pointer";
-            }
-            else {
-                document.body.style.cursor = "auto";
-            }
-        },
-        /**
-         * Selects an object based on the provided event.
-         * @param {Event} event - The event object containing the position information.
-         * @returns {void}
-         */
-        selectObject (event) {
-            if (this.isDrawing) {
-                return;
-            }
-            const scene = mapCollection.getMap("3D").getCesiumScene(),
-                picked = scene.pick(event.position);
-
-            if (Cesium.defined(picked)) {
-                const entity = Cesium.defaultValue(picked?.id, picked?.primitive?.id);
-
-                if (entity instanceof Cesium.Entity) {
-                    if (entity.cylinder) {
-                        this.setCylinderId(entity.id);
-                    }
-                    else {
-                        this.setCurrentModelId(entity.id);
-                        this.setCylinderId(null);
-                    }
-                }
-                else if (this.hideObjects && picked instanceof Cesium.Cesium3DTileFeature) {
-                    const features = getGfiFeatures.getGfiFeaturesByTileFeature(picked),
-                        gmlId = features[0]?.getProperties()[this.gmlIdPath],
-                        tileSetModels = this.updateAllLayers ?
-                            Radio.request("ModelList", "getModelsByAttributes", {typ: "TileSet3D"}) :
-                            Radio.request("ModelList", "getModelsByAttributes", {typ: "TileSet3D", id: picked.tileset.layerReferenceId});
-
-                    tileSetModels.forEach(model => model.hideObjects([gmlId], this.updateAllLayers));
-
-                    this.hiddenObjects.push({
-                        name: gmlId
-                    });
-                }
-            }
-        },
-        /**
-         * Removes the input actions related to mouse move and left double click events.
-         * @param {String} fileId - The ID of the selected file.
-         * @returns {void}
-         */
-        removeInputActions (fileId) {
-            if (eventHandler) {
-                eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-                eventHandler.setInputAction(this.cursorCheck, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                eventHandler.setInputAction((event) => {
-                    this.moveEntity(event, fileId);
-                }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-            }
-        },
-
-        /**
-         * Shows the specified object by making it visible in the scene.
-         * @param {Object} object - The object to show.
-         * @returns {void}
-         */
-        showObject (object) {
-            const objectIndex = this.hiddenObjects.findIndex(x => x.name === object.name),
-                tileSetModels = Radio.request("ModelList", "getModelsByAttributes", {typ: "TileSet3D"});
-
-            tileSetModels[0].showObjects([object.name]);
-            this.hiddenObjects.splice(objectIndex, 1);
-        },
-
-        /**
-         * Handles the Escape key press to reset the camera perspective.
-         * @param {KeyboardEvent} e - The event object for the keyboard event.
-         * @returns {void}
-         */
-        escapeKeyHandler (e) {
-            const scene = mapCollection.getMap("3D").getCesiumScene();
-
-            if (e.code === "Escape") {
-                scene.camera.flyTo({
-                    destination: this.currentCartesian,
-                    complete: () => {
-                        scene.screenSpaceCameraController.enableZoom = true;
-                        scene.screenSpaceCameraController.enableRotate = true;
-
-                        eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                        document.removeEventListener("keydown", this.escapeKeyHandler);
-                        document.body.style.cursor = this.originalCursorStyle;
-                        this.changeCursor();
-                    }
-                });
-            }
-        },
-
-        /**
-         * Highlights the specified entity by applying the configured or default highlight style.
-         * @param {Cesium.Entity} entity - The entity to highlight.
-         * @returns {void}
-         */
-        highlightEntity (entity) {
-            const color = this.highlightStyle.color,
-                alpha = this.highlightStyle.alpha,
-                silhouetteColor = this.highlightStyle.silhouetteColor,
-                silhouetteSize = this.highlightStyle.silhouetteSize;
-
-            if (entity.wasDrawn) {
-                if (entity.polygon) {
-                    entity.originalColor = entity.polygon.material.color;
-                    entity.originalOutlineColor = entity.polygon.outlineColor;
-                    entity.polygon.material.color = Cesium.Color.fromAlpha(
-                        Cesium.Color.fromCssColorString(color),
-                        parseFloat(alpha)
-                    );
-                    entity.polygon.outline = true;
-                    entity.polygon.outlineColor = Cesium.Color.fromCssColorString(silhouetteColor);
-                }
-                else if (entity.polyline) {
-                    entity.originalColor = entity.polyline.material.color;
-                    entity.polyline.material.color = Cesium.Color.fromAlpha(
-                        Cesium.Color.fromCssColorString(color),
-                        parseFloat(alpha)
-                    );
-                }
-            }
-            else {
-                entity.model.color = Cesium.Color.fromAlpha(
-                    Cesium.Color.fromCssColorString(color),
-                    parseFloat(alpha)
-                );
-                entity.model.silhouetteColor = Cesium.Color.fromCssColorString(silhouetteColor);
-                entity.model.silhouetteSize = parseFloat(silhouetteSize);
-                entity.model.colorBlendMode = Cesium.ColorBlendMode.HIGHLIGHT;
-            }
-        },
-
-        /**
-         * Adds and processes the selected file.
-         * @param {FileList} files - The selected files.
-         * @param {number} fileId - The ID of the selected file.
-         * @returns {void}
-         */
-        addFile (files, fileId) {
-            this.checkMapCollection(fileId);
-
-
-            const reader = new FileReader(),
-                file = files[0],
-                fileName = file.name.split(".")[0],
-                fileExtension = file.name.split(".").pop(),
-                fileSizeMB = file.size / (1024 * 1024),
-                maxFileSizeMB = 100;
-
-            if (fileSizeMB > maxFileSizeMB) {
-                store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.modeler3D.import.alertingMessages.fileSizeError"), {root: true});
-                return;
-            }
-
-
-            if (fileExtension === "gltf") {
-                this.handleGltfFile(file, fileName, fileId);
-                return;
-            }
-
-            this.setIsLoading(true);
-
-            reader.onload = (event) => {
-                if (fileExtension === "obj") {
-                    this.handleObjFile(event.target.result, fileName, fileId);
-                }
-                else if (fileExtension === "dae") {
-                    this.handleDaeFile(event.target.result, fileName, fileId);
-                }
-                else if (fileExtension === "geojson") {
-                    this.handleGeoJsonFile(event.target.result, fileId);
-                }
-                else {
-                    store.dispatch("Alerting/addSingleAlert", {content: i18next.t("common:modules.tools.modeler3D.import.alertingMessages.missingFormat", {format: fileExtension})}, {root: true});
-                    this.setIsLoading(false);
-                }
-            };
-
-            reader.onerror = (e) => {
-                console.error("Error reading the file:", e.target.error);
-                this.setIsLoading(false);
-            };
-
-            if (fileExtension === "dae") {
-                reader.readAsDataURL(file);
-            }
-            else {
-                reader.readAsText(file);
-            }
-        },
-
-
-        /**
-         * Handles the processing of OBJ content.
-         * @param {String} content - The OBJ content.
-         * @param {String} fileName - The name of the file.
-         * @param {number} fileId - The ID of the selected file.
-         * @returns {void}
-         */
-        handleObjFile (content, fileName, fileId) {
-            const objLoader = new OBJLoader(),
-                objData = objLoader.parse(content),
-                gltfExporter = new GLTFExporter();
-
-            gltfExporter.parse(objData, (gltfData) => {
-                const gltfJson = JSON.stringify(gltfData),
-                    blob = new Blob([gltfJson], {type: "model/gltf+json"});
-
-                this.handleGltfFile(blob, fileName, fileId);
-            });
-        },
-        /**
-         * Handles the processing of a DAE file.
-         * @param {String} content - The DAE content.
-         * @param {String} fileName - The name of the file.
-         * @param {number} fileId - The ID of the selected file.
-         * @returns {void}
-         */
-        handleDaeFile (content, fileName, fileId) {
-            const colladaLoader = new ColladaLoader();
-
-            colladaLoader.load(content, (collada) => {
-                const exporter = new GLTFExporter();
-
-                exporter.parse(collada.scene, (gltfData) => {
-                    const gltfLoader = new GLTFLoader();
-
-                    gltfLoader.parse(gltfData, "", () => {
-                        const gltfJson = JSON.stringify(gltfData),
-                            blob = new Blob([gltfJson], {type: "model/gltf+json"});
-
-                        this.handleGltfFile(blob, fileName, fileId);
-                    });
-                });
-            });
-        },
-        /**
-         * Handles the processing of GeoJSON content.
-         * @param {String} content - The GeoJSON content.
-         * @param {String} fileName - The name of the file.
-         * @param {number} fileId - The ID of the selected file.
-         * @returns {void}
-         */
-        handleGeoJsonFile (content, fileName, fileId) {
-            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
-                geojson = JSON.parse(content);
-
-            geojson.features.forEach(feature => {
-                const properties = feature.properties,
-                    color = properties.color,
-                    outlineColor = properties.outlineColor,
-                    coordinates = feature.geometry.coordinates[0],
-                    lastElement = entities.values.slice().pop(),
-                    lastId = lastElement?.id,
-                    entity = new Cesium.Entity({
-                        id: lastId ? lastId + 1 : 1,
-                        name: properties.name,
-                        wasDrawn: true,
-                        clampToGround: properties.clampToGround
-                    });
-
-                if (feature.geometry.type === "Polygon") {
-                    entity.polygon = {
-                        material: new Cesium.ColorMaterialProperty(
-                            new Cesium.Color(color.red, color.green, color.blue, color.alpha)
-                        ),
-                        outline: true,
-                        outlineColor: new Cesium.Color(outlineColor.red, outlineColor.green, outlineColor.blue, outlineColor.alpha),
-                        outlineWidth: 1,
-                        height: coordinates[0][2],
-                        extrudedHeight: properties.extrudedHeight,
-                        shadows: Cesium.ShadowMode.ENABLED,
-                        hierarchy: new Cesium.PolygonHierarchy(coordinates.map(point => Cesium.Cartesian3.fromDegrees(point[0], point[1])))
-                    };
-                }
-                else if (feature.geometry.type === "Polyline") {
-                    entity.polyline = {
-                        material: new Cesium.ColorMaterialProperty(
-                            new Cesium.Color(color.red, color.green, color.blue, color.alpha)
-                        ),
-                        width: properties.width,
-                        positions: coordinates.map(point => Cesium.Cartesian3.fromDegrees(point[0], point[1], point[2]))
-                    };
-                }
-
-                this.writeEntityDataToItems(entity, fileId);
-
-                entities.add(entity);
-                this.drawnModels.push({
-                    id: entity.id,
-                    name: entity.name,
-                    show: true,
-                    edit: false
-                });
-            });
-
-            this.setCurrentView("draw");
-            this.setIsLoading(false);
-        },
-
-
-        /**
-         * This recursive function adds the entity data to an item.
-         * @param {*} entity the cesium entity data
-         * @param {*} itemId the id of the item in this.items
-         * @param {*} items the items to search, defaults to this.items
-         * @returns {void}
-         */
-        writeEntityDataToItems (entity, itemId, items = this.items) {
-            console.log("writeEntityDataToItems");
-
-            const newItems = JSON.parse(JSON.stringify(items));
-
-            // Start the recursive update process
-            this.updateItemWithEntity(newItems, entity, itemId);
-
-            this.items = newItems;
-            console.log("doneWriteEntityDataToItems");
-        },
-
-
-        /**
-         * Recursive function to update items with entity data
-         * @param {Array} items the array of items to process
-         * @param {*} entity the cesium entity data to add
-         * @param {*} itemId the id of the item to update
-         * @returns {boolean} true if the entity was added, false otherwise
-         */
-        updateItemWithEntity (items, entity, itemId) {
-
-            for (let i = 0; i < items.length; i++) {
-
-                if (items[i].id === itemId) {
-                    console.log(entity._orientation, entity._position);
-                    items[i] = {
-                        ...items[i],
-                        orientation: entity._orientation ? entity._orientation : undefined,
-                        position: entity._position ? entity._position : undefined
-                    };
-                    return true; // Entity added to the item
-                }
-
-                if (items[i].children && items[i].children.length > 0) {
-                    const found = this.updateItemWithEntity(items[i].children, entity, itemId);
-
-                    if (found) {
-                        return true; // Entity added to a child item
-                    }
-                }
-            }
-
-            // Return false if no matching item found at this level
-            return false;
-        },
-
-
-        /**
-         * Toggles the visibility of a model entity.
-         * @param {object} model - The model object.
-         * @returns {void}
-         */
-        changeVisibility (model) {
-            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
-                entity = entities.getById(model.id);
-
-            entity.show = !model.show;
-            model.show = entity.show;
-        },
-        /**
-         * Zooms the camera to the specified entity.
-         * @param {string} id - The ID of the entity to zoom to.
-         * @returns {void}
-         */
-        zoomTo (id) {
-            const scene = mapCollection.getMap("3D").getCesiumScene(),
-                entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
-                entity = entities.getById(id),
-                entityPosition = entity.position.getValue(),
-                destination = Cesium.Cartographic.fromCartesian(entityPosition);
-
-            scene.camera.flyTo({
-                destination: Cesium.Cartesian3.fromRadians(destination.longitude, destination.latitude, destination.height + 250)
-            });
-        },
 
         addFolder (parentId = null, asChild = true) {
             this.targetParentId = parentId;
@@ -849,13 +140,13 @@ export default {
 
         addItem (parentId, newItem, asChild = true) {
             // Create a copy of the items
-            const itemsCopy = JSON.parse(JSON.stringify(this.items));
+            const itemsCopy = JSON.parse(JSON.stringify(this.threeDFiles));
 
             if (!parentId) {
                 // If no parent id is provided, add the item to the root
                 itemsCopy.push(newItem);
                 // Update the original items with the modified copy
-                this.items = itemsCopy;
+                this.threeDFiles = itemsCopy;
                 return;
             }
 
@@ -896,7 +187,7 @@ export default {
             addRecursive(itemsCopy, parentId, newItem);
 
             // Update the original items with the modified copy
-            this.items = itemsCopy;
+            this.threeDFiles = itemsCopy;
         },
 
 
@@ -920,7 +211,7 @@ export default {
                 return false;
             }
 
-            renameRecursive(this.items);
+            renameRecursive(this.threeDFiles);
         },
 
         openFileDialog (index) {
@@ -959,8 +250,8 @@ export default {
                     file: file.name.split(".").pop(),
                     obj: file
                 }, true);
-
-                this.addFile([file], randomItemId);
+                this.importFile({files: [file], fileId: randomItemId});
+                // this.$emit("openView", constants.storyCreationViews.ENTITY_EDITOR);
             }
 
         },
@@ -997,12 +288,16 @@ export default {
             //     console.log(key, value);
             // }
 
+            console.log(this.threeDFiles);
 
-            this.step.threeDFiles = this.items;
+            this.step.threeDFiles = this.threeDFiles;
+
+            console.log(this.step.threeDFiles);
 
             this.returnToStepForm();
 
         },
+
 
         /**
          * Handle return back to the stepForm
@@ -1050,7 +345,7 @@ export default {
         </span>
         <v-treeview
             v-model="tree"
-            :items="items"
+            :items="threeDFiles"
             item-children="children"
             activatable
             open-all

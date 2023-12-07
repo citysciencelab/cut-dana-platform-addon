@@ -19,7 +19,8 @@ const storyTellingModes = {
         STORY_CREATION: "story",
         STEP_CREATION: "step",
         PREVIEW: "preview",
-        THREE_D: "3d"
+        THREE_D: "3d",
+        ENTITY_EDITOR: "entityEditor"
     },
     emptyStory = {
         storyInterval: 0,

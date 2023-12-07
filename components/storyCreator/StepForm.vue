@@ -332,11 +332,14 @@ export default {
         }
     },
     mounted () {
-        console.log(this.editedStep);
-        this.importFromModeler();
         if (!this.step.layers) {
             this.step.layers = [];
         }
+
+        if (this.step.threeDLayers) {
+            console.log(this.step);
+        }
+
         this.$store.commit("Tools/Draw/setActive", true);
         if (this.step.associatedChapter === null) {
             const diff = this.chapterOptions.length > 1 ? 2 : 1;
@@ -783,10 +786,6 @@ export default {
             // this.$store.commit("Tools/3DMap/setActive", true);
         },
 
-        importFromModeler () {
-            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
-                entity = entities.getById(1);
-        },
 
         updateThreeDFormData (formdata) {
             this.threeDUploadFormData = formdata;

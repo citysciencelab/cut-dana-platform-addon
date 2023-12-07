@@ -5,9 +5,11 @@ import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import StoryPlayer from "../storyPlayer/StoryPlayer.vue";
-import FileForm from "./FileForm2.vue";
+import FileForm from "./FileForm.vue";
 import StepForm from "./StepForm.vue";
 import StoryForm from "./StoryForm.vue";
+import EntityEditor from "./EntityEditor.vue";
+import * as uuid from "uuid";
 
 export default {
     name: "StoryCreator",
@@ -15,13 +17,17 @@ export default {
         StoryForm,
         StepForm,
         StoryPlayer,
-        FileForm
+        FileForm,
+        EntityEditor
     },
     data () {
         return {
             constants,
             view: constants.storyCreationViews.STORY_CREATION,
-            stepToEdit: {}
+            stepToEdit: {
+                ...constants.emptyStep,
+                _id: uuid.v4()
+            }
         };
     },
     computed: {
@@ -61,6 +67,7 @@ export default {
         returnToStepForm (step) {
             this.stepToEdit = step;
             this.view = this.constants.storyCreationViews.STEP_CREATION;
+            console.log("STORY CREATOR: ", this.stepToEdit);
         },
 
         /**
@@ -103,6 +110,14 @@ export default {
             :edited-step="stepToEdit"
             @openView="newView => (view = newView)"
             @edit3D="onEdit3D"
+            @return="returnToStepForm"
+            v-on="$listeners"
+        />
+
+        <EntityEditor
+            v-if="view === constants.storyCreationViews.ENTITY_EDITOR"
+            :edited-step="stepToEdit"
+            @openView="newView => (view = newView)"
             @return="returnToStepForm"
             v-on="$listeners"
         />
