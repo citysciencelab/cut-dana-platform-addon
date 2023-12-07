@@ -13,9 +13,9 @@ export default {
             type: String,
             default: null
         },
-        currentMode: {
-            type: String,
-            default: null
+        active: {
+            type: Boolean,
+            default: false
         }
     },
     data () {
@@ -46,21 +46,13 @@ export default {
 </script>
 
 <template>
-    <v-tooltip left>
-        <template #activator="{ on }">
-            <v-icon
-                size="24px"
-                :color="currentMode === mode ? 'info' : ''"
-                @click="$emit('refreshStoryList', mode)"
-                v-on="on"
-            >
-                {{ icon() }}
-            </v-icon>
-        </template>
-        <span>
-            {{
-                $t(`additional:modules.tools.dataNarrator.storyList.${mode}`)
-            }}
-        </span>
-    </v-tooltip>
+    <v-btn
+        text
+        rounded
+        x-small
+        :color="active ? 'info' : ''"
+        @click="$emit('refreshStoryList', mode)"
+    >
+        {{ $t(`additional:modules.tools.dataNarrator.storyList.${mode}`) }}
+    </v-btn>
 </template>

@@ -42,7 +42,6 @@
           "sharedWith": "Type a new email and press enter",
           "sharedWithPlaceholder": "Add email",
           "sharedWithDuplicate": "This email is already added",
-          "clickToSwitch": "Click to ",
           "backgroundMap": "Background Map",
           "advancedOptions": "Advanced options",
           "ownDatasource": "Own Datasource",

@@ -1,5 +1,6 @@
 <script>
 import {mapActions, mapMutations} from "vuex";
+import {mdiPlus} from "@mdi/js";
 
 import * as constants from "../../../store/constantsDataNarrator";
 import mutations from "../../../store/mutationsDataNarrator";
@@ -7,6 +8,13 @@ import actions from "../../../store/actionsDataNarrator";
 
 export default {
     name: "CreateStoryButton",
+    data () {
+        return {
+            icons: {
+                mdiPlus
+            }
+        };
+    },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
@@ -27,21 +35,17 @@ export default {
 </script>
 
 <template>
-    <v-tooltip left>
-        <template #activator="{ on }">
-            <v-icon
-                id="create-button"
-                class="mr-1"
-                @click="createStory()"
-                v-on="on"
-            >
-                add_circle_outline
-            </v-icon>
-        </template>
-        <span>
-            {{
-                $t("additional:modules.tools.dataNarrator.create")
-            }}
-        </span>
-    </v-tooltip>
+    <v-btn
+        outlined
+        rounded
+        small
+        @click="createStory()"
+    >
+        <v-icon small>
+            {{ icons.mdiPlus }}
+        </v-icon>
+        {{
+            $t("additional:modules.tools.dataNarrator.create")
+        }}
+    </v-btn>
 </template>
