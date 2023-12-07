@@ -6,6 +6,7 @@ import actions from "../../store/actionsDataNarrator";
 import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
+import BackButton from "../shared/BackButton.vue";
 
 
 import {
@@ -21,7 +22,7 @@ export default {
     name: "FileForm",
 
     components: {
-
+        BackButton
     },
 
     props: {
@@ -288,12 +289,8 @@ export default {
             //     console.log(key, value);
             // }
 
-            console.log(this.threeDFiles);
 
             this.step.threeDFiles = this.threeDFiles;
-
-            console.log(this.step.threeDFiles);
-
             this.returnToStepForm();
 
         },
@@ -317,6 +314,17 @@ export default {
         id="tool-dataNarrator-creator-3dForm"
         class="mb-8"
     >
+        <v-row>
+            <v-col
+                cols="12"
+            >
+                <BackButton
+                    tooltip="additional:modules.tools.dataNarrator.button.backToStep"
+                    :text="step.title"
+                    @click="returnToStepForm"
+                />
+            </v-col>
+        </v-row>
         <h4>
             {{
                 $t("additional:modules.tools.dataNarrator.3dForm")

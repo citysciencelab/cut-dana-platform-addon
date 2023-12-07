@@ -57,6 +57,7 @@ export default {
             >
                 <BackButton
                     tooltip="additional:modules.tools.dataNarrator.button.backToStory"
+                    :text="currentStory.title"
                     @click="toStepIndex(previousStepIndex)"
                 />
             </v-col>

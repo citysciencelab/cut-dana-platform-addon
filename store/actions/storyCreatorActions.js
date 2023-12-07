@@ -268,11 +268,12 @@ function prepareHtml (story, images) {
             delete node.id;
         }
 
-        console.log(step);
 
-        step.threeDFiles.forEach(node => {
-            processNode(node);
-        });
+        if (step.threeDFiles) {
+            step.threeDFiles.forEach(node => {
+                processNode(node);
+            });
+        }
 
 
         threeDFileArray.push({
