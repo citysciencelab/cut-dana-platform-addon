@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 
 
 import actions from "../../store/actionsDataNarrator";
@@ -29,24 +29,31 @@ export default {
             // items: this.editedStep?.threeDLayers || {},
 
             step: this.editedStep,
-            threeDFiles: this.editedStep.threeDFiles || []
+            threeDFiles: this.editedStep.threeDFiles || [],
+
+            position: null,
+            orientation: null,
+            scale: 1
         };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
         ...mapGetters(["namedProjections"]),
-        ...mapGetters("Maps", ["altitude", "longitude", "latitude", "clickCoordinate", "mouseCoordinate"])
-
-
+        ...mapGetters("Maps", ["altitude", "longitude", "latitude", "clickCoordinate", "mouseCoordinate"]),
+        selectedEntity () {
+            return mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities.getById(this.selectedEntityId);
+        }
     },
     watch: {
-
 
     },
     mounted () {
         // set map to 3d
-        console.log(this.step);
-
+        if (this.selectedEntity) {
+            this.position = this.selectedEntity.position;
+            this.orientation = this.selectedEntity.orientation;
+            this.scale = parseFloat(this.selectedEntity.model.scale);
+        }
         // console.log("mounted");
     },
     beforeDestroy () {
@@ -55,9 +62,11 @@ export default {
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-        ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"})
+        ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
 
-
+        updateScale () {
+            this.scaleEntity({entityId: this.selectedEntityId, scale: this.scale});
+        }
     }
 };
 </script>
@@ -78,7 +87,18 @@ export default {
             loading...
         </div>
         <div v-else>
-            HELLO
+            <div>
+                <label for="scale-slider">Scale:</label>
+                <input
+                    id="scale-slider"
+                    v-model="scale"
+                    type="range"
+                    min="0.1"
+                    max="10"
+                    step="0.1"
+                    @input="updateScale"
+                >
+            </div>
         </div>
     </div>
 </template>

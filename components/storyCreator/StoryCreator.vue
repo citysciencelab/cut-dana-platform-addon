@@ -24,10 +24,7 @@ export default {
         return {
             constants,
             view: constants.storyCreationViews.STORY_CREATION,
-            stepToEdit: {
-                ...constants.emptyStep,
-                _id: uuid.v4()
-            }
+            stepToEdit: {}
         };
     },
     computed: {

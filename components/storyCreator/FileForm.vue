@@ -54,7 +54,7 @@ export default {
             ignoreFolderChange: false,
             forceFolderRerenderKey: 0,
             step: this.editedStep,
-            threeDFiles: this.editedStep.threeDFiles
+            threeDFiles: this.editedStep.threeDFiles || []
         };
     },
     computed: {
@@ -177,6 +177,7 @@ export default {
 
             // Update the original items with the modified copy
             this.threeDFiles = itemsCopy;
+            this.step.threeDFiles = this.threeDFiles;
         },
 
 
@@ -230,24 +231,24 @@ export default {
 
         handleFileUpload (event, itemId) {
 
-            for (const file of event.target.files) {
-                const randomItemId = this.randomId();
+            const randomItemId = this.randomId(),
+                file = event.target.files[0];
 
-                this.addItem(itemId, {
-                    id: randomItemId,
-                    name: file.name,
-                    file: file.name.split(".").pop(),
-                    obj: file
-                }, true);
-                this.importFile({files: [file], fileId: randomItemId});
-                // also add the files to this.threeDFiles
+            this.addItem(itemId, {
+                id: randomItemId,
+                name: file.name,
+                file: file.name.split(".").pop(),
+                obj: file
+            }, true);
+            this.importFile({files: [file], fileId: randomItemId});
 
-            }
+            this.openEntityEditor(randomItemId);
 
+        },
 
-            this.step.threeDFiles = this.threeDFiles;
+        openEntityEditor (entityId) {
+            this.setSelectedEntityId(entityId);
             this.$emit("openView", constants.storyCreationViews.ENTITY_EDITOR);
-
         },
 
         createFormData () {
@@ -365,19 +366,29 @@ export default {
                     :key="item.id"
                     class="fileLabel"
                 >
-                    <div>
+                    <button
+                        @click="event => {
+                            if (item.file)
+                                openEntityEditor(item.id)
+                        }
+                        "
+                    >
                         <label :for="'fileInput' + item.id">{{ item.name }}</label>
                         <input
                             :id="'fileInput' + item.id"
                             :ref="'fileInput' + item.id"
                             type="file"
                             hidden
-                            multiple
-                            @change="(event) => handleFileUpload(event, item.id)"
+                            @change="(event) => {
+                                if (!item.file) {
+                                    handleFileUpload(event, item.id)
+                                    return;
+                                }
+                            }"
                         >
-                    </div>
+                    </button>
 
-                    <div :v-if="!item.file">
+                    <div v-if="!item.file">
                         <v-btn
                             icon
                             @click.stop="openFileDialog(item.id)"

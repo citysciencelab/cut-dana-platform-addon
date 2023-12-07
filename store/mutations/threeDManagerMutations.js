@@ -179,15 +179,14 @@ function importFile (state, payload) {
 function handleGltfFile (state, payload) {
     // this.checkMapCollection(fileId);
 
-    const {file, fileName} = payload,
+    const {file, fileName, fileId} = payload,
         viewer = mapCollection.getMap("3D"),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
         currentLocation = viewer.camera_.cam_.position,
         lastElement = entities.values.slice().pop(),
-        lastId = lastElement?.id,
         models = state.importedEntities,
         entity = new Cesium.Entity({
-            id: lastId ? lastId + 1 : 1,
+            id: fileId,
             name: fileName,
             clampToGround: true,
             position: currentLocation,
@@ -387,14 +386,15 @@ function toggleEntityVisibility (state, payload) {
  * Changes the location of an entity.
  * @param {Object} state state of the datanarrator module
  * @param {Object} payload payload of the action
- * @param {*} payload.viewer the cesium viewer
  * @param {*} payload.entityId the entity id
  * @param {*} payload.newLocation the new location in the format [longitude, latitude, height]
  * @returns {void}
  */
 function changeEntityLocation (state, payload) {
-    const {viewer, entityId, newLocation} = payload,
-        entity = viewer.entities.getById(entityId);
+    const {entityId, newLocation} = payload,
+        viewer = mapCollection.getMap("3D"),
+        entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
+        entity = entities.getById(entityId);
 
     if (entity && entity.position) {
         entity.position = Cesium.Cartesian3.fromDegrees(newLocation[0], newLocation[1], newLocation[2]);
@@ -405,14 +405,16 @@ function changeEntityLocation (state, payload) {
  * Scales an entity.
  * @param {Object} state state of the datanarrator module
  * @param {Object} payload payload of the action
- * @param {*} payload.viewer the cesium viewer
  * @param {*} payload.entityId the entity id
  * @param {*} payload.scale the new scale factor
  * @returns {void}
  */
 function scaleEntity (state, payload) {
-    const {viewer, entityId, scale} = payload,
-        entity = viewer.entities.getById(entityId);
+
+    const {entityId, scale} = payload,
+        viewer = mapCollection.getMap("3D"),
+        entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
+        entity = entities.getById(entityId);
 
     if (entity && entity.model) {
         entity.model.scale = scale;
@@ -433,9 +435,11 @@ function scaleEntity (state, payload) {
  * @returns {void}
  */
 function createEntity (state, payload) {
-    const {viewer, entityId, scale, orientation, visibility, uri, position} = payload,
+    const {entityId, scale, orientation, visibility, uri, position} = payload,
+        viewer = mapCollection.getMap("3D"),
+        entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
 
-        entity = viewer.entities.add({
+        entity = entities.add({
             id: entityId,
             model: {
                 uri: uri, // replace with your model path
