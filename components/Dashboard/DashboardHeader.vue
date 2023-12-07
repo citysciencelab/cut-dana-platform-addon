@@ -1,4 +1,6 @@
 <script>
+import {mapGetters} from "vuex";
+
 import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
 import ListButton from "./Tools/ListButton.vue";
@@ -22,6 +24,9 @@ export default {
             default: "all"
         }
     },
+    computed: {
+        ...mapGetters(["mobile"])
+    },
     methods: {
         availableStoryListModes () {
             const modes = ["all", "featured", "popular"];
@@ -44,7 +49,10 @@ export default {
             </v-col>
         </v-row>
 
-        <v-row class="with-fancy-background">
+        <v-row
+            class="with-fancy-background"
+            :style="`background-image: url(${require(mobile ? '../../img/header_small.png' : '../../img/header.png')})`"
+        >
 
             <v-col
                 lg="1"
@@ -104,12 +112,10 @@ export default {
 
 
 .with-fancy-background {
-    background-image: url(../../img/header_small.png);
     background-position: right top;
     min-height: 220px;
 
     @media (min-width: 768px){
-      background-image: url(../../img/header.png);
       background-position: right top;
       min-height: 332px;
     }
