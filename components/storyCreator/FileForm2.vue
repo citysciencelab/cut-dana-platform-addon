@@ -29,10 +29,6 @@ export default {
         editedStep: {
             type: Object,
             default: () => ({})
-        },
-        editStep: {
-            type: Function,
-            required: true
         }
     },
     data () {
@@ -69,7 +65,7 @@ export default {
             forceFolderRerenderKey: 0,
             step: this.editedStep || {},
             fileObjects: [],
-            threeDFiles: this.editedStep.threeDFiles
+            threeDFiles: this.editedStep.threeDFiles || []
         };
     },
     computed: {
