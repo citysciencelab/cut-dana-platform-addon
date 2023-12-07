@@ -332,7 +332,7 @@ export default {
         }
     },
     mounted () {
-
+        console.log(this.editedStep);
         this.importFromModeler();
         if (!this.step.layers) {
             this.step.layers = [];

@@ -15,8 +15,8 @@ const state = {
     projections: [],
     namedProjections: [],
 
-    loading: false,
-    
+    loading: false
+
 };
 
 export default state;

@@ -34,11 +34,14 @@ export default {
         /**
          * Handle editing a step
          * @param {Object} step the step to edit
+         * @param {boolean} returnToStepForm whether to return to the step form
          * @returns {void}
          */
-        onEditStep (step) {
+        onEditStep (step, returnToStepForm) {
             this.stepToEdit = step;
-            this.view = this.constants.storyCreationViews.STEP_CREATION;
+            if (returnToStepForm) {
+                this.view = this.constants.storyCreationViews.STEP_CREATION;
+            }
         },
 
         /**
@@ -78,7 +81,7 @@ export default {
         <StoryForm
             v-if="view === constants.storyCreationViews.STORY_CREATION"
             @openView="newView => (view = newView)"
-            @editStep="onEditStep"
+            @editStep="(step) => onEditStep(step, true)"
             v-on="$listeners"
         />
 
@@ -98,6 +101,7 @@ export default {
         <FileForm
             v-if="view === constants.storyCreationViews.THREE_D"
             :edited-step="stepToEdit"
+            @editStep="(step) => onEditStep(step, false)"
             @openView="newView => (view = newView)"
             @edit3D="onEdit3D"
             @return="returnToStepForm"

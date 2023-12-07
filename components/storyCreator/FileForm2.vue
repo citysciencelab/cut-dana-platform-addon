@@ -29,6 +29,10 @@ export default {
         editedStep: {
             type: Object,
             default: () => ({})
+        },
+        editStep: {
+            type: Function,
+            required: true
         }
     },
     data () {
@@ -64,7 +68,8 @@ export default {
             ignoreFolderChange: false,
             forceFolderRerenderKey: 0,
             step: this.editedStep || {},
-            fileObjects: []
+            fileObjects: [],
+            threeDFiles: this.editedStep.threeDFiles
         };
     },
     computed: {
@@ -80,6 +85,7 @@ export default {
     },
     mounted () {
         // set map to 3d
+        console.log(this.currentStory);
 
         // console.log("mounted");
     },
@@ -293,6 +299,10 @@ export default {
 
         },
 
+        syncThreeDFiles () {
+            this.step.threeDFiles = this.threeDFiles;
+        },
+
         /**
          * Handle return back to the stepForm
          * @returns {void}
@@ -339,7 +349,7 @@ export default {
         </span>
         <v-treeview
             v-model="tree"
-            :items="items"
+            :items="threeDFiles"
             item-children="children"
             activatable
             open-all

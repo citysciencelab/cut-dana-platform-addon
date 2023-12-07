@@ -1,9 +1,9 @@
 // all functions that mutate the state
 import store from "../../../../../src/app-store";
-// import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
-// import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader.js";
-// import {ColladaLoader} from "three/examples/jsm/loaders/ColladaLoader.js";
-// import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
+import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader.js";
+import {ColladaLoader} from "three/examples/jsm/loaders/ColladaLoader.js";
+import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter.js";
 import crs from "@masterportal/masterportalapi/src/crs";
 
 
@@ -117,7 +117,7 @@ function importFile (state, payload) {
     // this.checkMapCollection(fileId);
 
     const {files, fileId} = payload,
-        // reader = new FileReader(),
+        reader = new FileReader(),
         file = files[0],
         fileName = file.name.split(".")[0],
         fileExtension = file.name.split(".").pop(),
@@ -132,38 +132,38 @@ function importFile (state, payload) {
 
     if (fileExtension === "gltf") {
         handleGltfFile(state, {file, fileName, fileId});
-
+        return;
     }
 
-    // this.setIsLoading(true);
+    state.loading = true;
 
-    // reader.onload = (event) => {
-    //     if (fileExtension === "obj") {
-    //         this.handleObjFile(event.target.result, fileName, fileId);
-    //     }
-    //     else if (fileExtension === "dae") {
-    //         this.handleDaeFile(event.target.result, fileName, fileId);
-    //     }
-    //     else if (fileExtension === "geojson") {
-    //         this.handleGeoJsonFile(event.target.result, fileId);
-    //     }
-    //     else {
-    //         store.dispatch("Alerting/addSingleAlert", {content: i18next.t("common:modules.tools.modeler3D.import.alertingMessages.missingFormat", {format: fileExtension})}, {root: true});
-    //         this.setIsLoading(false);
-    //     }
-    // };
+    reader.onload = (event) => {
+        if (fileExtension === "obj") {
+            this.handleObjFile(event.target.result, fileName, fileId);
+        }
+        else if (fileExtension === "dae") {
+            this.handleDaeFile(event.target.result, fileName, fileId);
+        }
+        // else if (fileExtension === "geojson") {
+        //     this.handleGeoJsonFile(event.target.result, fileId);
+        // }
+        else {
+            store.dispatch("Alerting/addSingleAlert", {content: i18next.t("common:modules.tools.modeler3D.import.alertingMessages.missingFormat", {format: fileExtension})}, {root: true});
+            this.setIsLoading(false);
+        }
+    };
 
-    // reader.onerror = (e) => {
-    //     console.error("Error reading the file:", e.target.error);
-    //     this.setIsLoading(false);
-    // };
+    reader.onerror = (e) => {
+        console.error("Error reading the file:", e.target.error);
+        state.loading = false;
+    };
 
-    // if (fileExtension === "dae") {
-    //     reader.readAsDataURL(file);
-    // }
-    // else {
-    //     reader.readAsText(file);
-    // }
+    if (fileExtension === "dae") {
+        reader.readAsDataURL(file);
+    }
+    else {
+        reader.readAsText(file);
+    }
 }
 
 /**
@@ -177,7 +177,6 @@ function importFile (state, payload) {
  */
 function handleGltfFile (state, payload) {
     // this.checkMapCollection(fileId);
-    console.log(mapCollection.getMap("3D"));
 
     const {file, fileName} = payload,
         viewer = mapCollection.getMap("3D"),
@@ -195,6 +194,16 @@ function handleGltfFile (state, payload) {
                 uri: URL.createObjectURL(file)
             }
         });
+
+    // createEntity(state, {
+    //     viewer,
+    //     entityId: entity.id,
+    //     scale: 1,
+    //     orientation: undefined,
+    //     visibility: true,
+    //     uri: URL.createObjectURL(file),
+    //     position: currentLocation
+    // });
 
 
     state.selectedEntityId = entity.id;
@@ -219,52 +228,58 @@ function handleGltfFile (state, payload) {
 }
 
 
-// /**
-//  * Handles the processing of OBJ content.
-//  * @param {String} content - The OBJ content.
-//  * @param {String} fileName - The name of the file.
-//  * @param {number} fileId - The ID of the selected file.
-//  * @returns {void}
-//  */
-// function handleObjFile (content, fileName, fileId) {
-//     const objLoader = new OBJLoader(),
-//         objData = objLoader.parse(content),
-//         gltfExporter = new GLTFExporter();
+/**
+ * Handles the processing of OBJ content.
+ * @param {Object} state - The state of this component.
+ * @param {Object} payload - The payload of the action.
+ * @param {String} payload.content - The OBJ content.
+ * @param {String} payload.fileName - The name of the file.
+ * @param {number} payload.fileId - The ID of the selected file.
+ * @returns {void}
+ */
+function handleObjFile (state, payload) {
+    const {content, fileName, fileId} = payload,
+        objLoader = new OBJLoader(),
+        objData = objLoader.parse(content),
+        gltfExporter = new GLTFExporter();
 
-//     gltfExporter.parse(objData, (gltfData) => {
-//         const gltfJson = JSON.stringify(gltfData),
-//             blob = new Blob([gltfJson], {type: "model/gltf+json"});
+    gltfExporter.parse(objData, (gltfData) => {
+        const gltfJson = JSON.stringify(gltfData),
+            blob = new Blob([gltfJson], {type: "model/gltf+json"});
 
-//         handleGltfFile(blob, fileName, fileId);
-//     });
-// }
+        handleGltfFile(state, {file: blob, fileName, fileId});
+    });
+}
 
 
-// /**
-//  * Handles the processing of a DAE file.
-//  * @param {String} content - The DAE content.
-//  * @param {String} fileName - The name of the file.
-//  * @param {number} fileId - The ID of the selected file.
-//  * @returns {void}
-//  */
-// function handleDaeFile (content, fileName, fileId) {
-//     const colladaLoader = new ColladaLoader();
+/**
+ * Handles the processing of a DAE file.
+ * @param {Object} state - The state of this component.
+ * @param {Object} payload - The payload of the action.
+ * @param {String} payload.content - The OBJ content.
+ * @param {String} payload.fileName - The name of the file.
+ * @param {number} payload.fileId - The ID of the selected file.
+ * @returns {void}
+ */
+function handleDaeFile (state, payload) {
+    const {content, fileName, fileId} = payload,
+        colladaLoader = new ColladaLoader();
 
-//     colladaLoader.load(content, (collada) => {
-//         const exporter = new GLTFExporter();
+    colladaLoader.load(content, (collada) => {
+        const exporter = new GLTFExporter();
 
-//         exporter.parse(collada.scene, (gltfData) => {
-//             const gltfLoader = new GLTFLoader();
+        exporter.parse(collada.scene, (gltfData) => {
+            const gltfLoader = new GLTFLoader();
 
-//             gltfLoader.parse(gltfData, "", () => {
-//                 const gltfJson = JSON.stringify(gltfData),
-//                     blob = new Blob([gltfJson], {type: "model/gltf+json"});
+            gltfLoader.parse(gltfData, "", () => {
+                const gltfJson = JSON.stringify(gltfData),
+                    blob = new Blob([gltfJson], {type: "model/gltf+json"});
 
-//                 handleGltfFile(blob, fileName, fileId);
-//             });
-//         });
-//     });
-// }
+                handleGltfFile(state, {file: blob, fileName, fileId});
+            });
+        });
+    });
+}
 
 
 // /**
@@ -276,7 +291,7 @@ function handleGltfFile (state, payload) {
 //  * @param {number} payload.fileId - The ID of the selected file.
 //  * @returns {void}
 //  */
-// function handleGeoJsonFile(state, payload) {
+// function handleGeoJsonFile (state, payload) {
 
 //     const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
 //         {content, fileName, fileId} = payload,
@@ -322,19 +337,125 @@ function handleGltfFile (state, payload) {
 
 
 //         entities.add(entity);
-//         this.drawnModels.push({
-//             id: entity.id,
-//             name: entity.name,
-//             show: true,
-//             edit: false
-//         });
+//         // this.drawnModels.push({
+//         //     id: entity.id,
+//         //     name: entity.name,
+//         //     show: true,
+//         //     edit: false
+//         // });
 //     });
 
-//     this.setCurrentView("draw");
-//     this.setIsLoading(false);
+//     // this.setCurrentView("draw");
+//     // this.setIsLoading(false);
 // }
 
 
+/**
+ * Removes an entity from the viewer.
+ * @param {Object} state state of the datanarrator module
+ * @param {Object} payload payload of the action
+ * @param {*} payload.viewer the cesium viewer
+ * @param {*} payload.entityId the entity id
+ * @returns {void}
+ */
+function removeEntity (state, payload) {
+    const {viewer, entityId} = payload,
+        entity = viewer.entities.getById(entityId);
+
+    if (entity) {
+        viewer.entities.remove(entity);
+    }
+}
+
+/**
+ * Toggles the visibility of an entity.
+ * @param {Object} state state of the datanarrator module
+ * @param {Object} payload payload of the action
+ * @param {*} payload.viewer the cesium viewer
+ * @param {*} payload.entityId the entity id
+ * @returns {void}
+ */
+function toggleEntityVisibility (state, payload) {
+    const {viewer, entityId} = payload,
+        entity = viewer.entities.getById(entityId);
+
+    if (entity) {
+        entity.show = !entity.show;
+    }
+}
+
+/**
+ * Changes the location of an entity.
+ * @param {Object} state state of the datanarrator module
+ * @param {Object} payload payload of the action
+ * @param {*} payload.viewer the cesium viewer
+ * @param {*} payload.entityId the entity id
+ * @param {*} payload.newLocation the new location in the format [longitude, latitude, height]
+ * @returns {void}
+ */
+function changeEntityLocation (state, payload) {
+    const {viewer, entityId, newLocation} = payload,
+        entity = viewer.entities.getById(entityId);
+
+    if (entity && entity.position) {
+        entity.position = Cesium.Cartesian3.fromDegrees(newLocation[0], newLocation[1], newLocation[2]);
+    }
+}
+
+/**
+ * Scales an entity.
+ * @param {Object} state state of the datanarrator module
+ * @param {Object} payload payload of the action
+ * @param {*} payload.viewer the cesium viewer
+ * @param {*} payload.entityId the entity id
+ * @param {*} payload.scale the new scale factor
+ * @returns {void}
+ */
+function scaleEntity (state, payload) {
+    const {viewer, entityId, scale} = payload,
+        entity = viewer.entities.getById(entityId);
+
+    if (entity && entity.model) {
+        entity.model.scale = scale;
+    }
+}
+
+/**
+ * Creates and adds an entity to the viewer and state.
+ * @param {Object} state state of the datanarrator module
+ * @param {Object} payload payload of the action
+ * @param {*} payload.viewer the cesium viewer
+ * @param {*} payload.entityId the entity id
+ * @param {*} payload.scale the scale factor
+ * @param {*} payload.orientation the orientation
+ * @param {*} payload.visibility the visibility
+ * @param {*} payload.uri the uri of the model
+ * @param {*} payload.position the position of the model
+ * @returns {void}
+ */
+function createEntity (state, payload) {
+    const {viewer, entityId, scale, orientation, visibility, uri, position} = payload,
+
+        entity = viewer.entities.add({
+            id: entityId,
+            model: {
+                uri: uri, // replace with your model path
+                scale: scale
+            },
+            orientation: orientation,
+            show: visibility,
+            position: position
+        });
+
+    // Add the entity to the state
+    state.importedEntities.push(entity);
+}
+
 export default {
-    importFile
+    importFile,
+    removeEntity,
+    toggleEntityVisibility,
+    changeEntityLocation,
+    scaleEntity,
+    createEntity
 };
