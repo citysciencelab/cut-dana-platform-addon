@@ -425,7 +425,6 @@ function scaleEntity (state, payload) {
  * Creates and adds an entity to the viewer and state.
  * @param {Object} state state of the datanarrator module
  * @param {Object} payload payload of the action
- * @param {*} payload.viewer the cesium viewer
  * @param {*} payload.entityId the entity id
  * @param {*} payload.scale the scale factor
  * @param {*} payload.orientation the orientation
@@ -445,10 +444,12 @@ function createEntity (state, payload) {
                 uri: uri, // replace with your model path
                 scale: scale
             },
-            orientation: orientation,
+            // orientation: orientation,
             show: visibility,
             position: position
         });
+
+    entities.add(entity);
 
     // Add the entity to the state
     state.importedEntities.push(entity);

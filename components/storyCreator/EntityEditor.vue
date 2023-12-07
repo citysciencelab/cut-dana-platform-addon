@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
 
 import actions from "../../store/actionsDataNarrator";
@@ -7,6 +7,7 @@ import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import BackButton from "../shared/BackButton.vue";
+import {getItemRecursive, replaceFileItem} from "../../utils/threeDFiles";
 
 
 export default {
@@ -54,6 +55,28 @@ export default {
             this.orientation = this.selectedEntity.orientation;
             this.scale = parseFloat(this.selectedEntity.model.scale);
         }
+
+        console.log(this.selectedEntity.position._value, this.selectedEntity.orientation, this.selectedEntity.model.scale);
+
+
+        const currentItem = getItemRecursive(this.threeDFiles, this.selectedEntityId),
+            newItems = replaceFileItem(this.threeDFiles, this.selectedEntityId, {
+                ...currentItem,
+                scale: this.scale,
+                position: {
+                    x: this.position._value.x,
+                    y: this.position._value.y,
+                    z: this.position._value.z
+                }
+                // orientation: {
+                //     heading: simpleOrientationObject.heading,
+                //     pitch: simpleOrientationObject.pitch,
+                //     roll: simpleOrientationObject.roll
+                // }
+            });
+
+        this.threeDFiles = newItems;
+        this.step.threeDFiles = this.threeDFiles;
         // console.log("mounted");
     },
     beforeDestroy () {
@@ -66,6 +89,17 @@ export default {
 
         updateScale () {
             this.scaleEntity({entityId: this.selectedEntityId, scale: this.scale});
+
+            // console.log(this.threeDFiles, this.selectedEntityId);
+
+            const currentItem = getItemRecursive(this.threeDFiles, this.selectedEntityId),
+                newItems = replaceFileItem(this.threeDFiles, this.selectedEntityId, {
+                    ...currentItem,
+                    scale: this.scale
+                });
+
+            this.threeDFiles = newItems;
+            this.step.threeDFiles = this.threeDFiles;
         }
     }
 };
@@ -79,7 +113,7 @@ export default {
         <BackButton
             tooltip="additional:modules.tools.dataNarrator.button.backToStory"
             :text="step.title"
-            @click="$emit('openView', constants.storyCreationViews.THREE_D)"
+            @click="$emit('return', step)"
         />
         <div
             v-if="loading"

@@ -64,7 +64,6 @@ export default {
         returnToStepForm (step) {
             this.stepToEdit = step;
             this.view = this.constants.storyCreationViews.STEP_CREATION;
-            console.log("STORY CREATOR: ", this.stepToEdit);
         },
 
         /**

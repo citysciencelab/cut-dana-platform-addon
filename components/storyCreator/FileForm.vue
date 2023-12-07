@@ -72,6 +72,10 @@ export default {
         // set map to 3d
         console.log(this.currentStory, this.step);
 
+        // load the existing files
+
+        // this.importFile({files: this.step.threeDFiles.map(file => file.obj), fileId: null});
+
         // console.log("mounted");
     },
     beforeDestroy () {

@@ -105,6 +105,7 @@ export default {
         if (this.currentStory) {
             this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
             this.currentStepIndex = this.stepIndex;
+            await this.loadThreeDFiles();
         }
         this.activateInterval();
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
@@ -380,6 +381,56 @@ export default {
                 const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
 
                 this.disableLayer(model);
+            }
+
+        },
+
+
+        async loadThreeDFiles () {
+            // Toggles 3D map mode
+            if (!Radio.request("Map", "isMap3d")) {
+                await store.dispatch("Maps/activateMap3D");
+            }
+            const promises = [];
+
+            this.currentStory.steps.forEach((step) => {
+                if (step.threeDFiles) {
+                    step.threeDFiles.forEach((item) => {
+                        // console.log(this.backendConfig.url);
+                        this.addEntity(item, `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`);
+                    });
+                }
+            });
+
+            console.log(this.importedEntities);
+
+            return Promise.all(promises);
+        },
+
+        addEntity (item, path = "") {
+            // the item is a file and not a folder
+            // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
+            //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
+
+
+            if (item.file) {
+                console.log("ITEM", item);
+                const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z);
+
+                this.createEntity({
+                    entityId: item.id,
+                    file: item.file,
+                    uri: `${path}/${item.name}`,
+                    scale: item.scale,
+                    position: position
+                    // orientation: quaternion
+                });
+                return;
+            }
+            if (item.children && item.children.length > 0) {
+                item.children.forEach((child) => {
+                    this.addEntity(child, `${path}/${item.name}`);
+                });
             }
 
         },
