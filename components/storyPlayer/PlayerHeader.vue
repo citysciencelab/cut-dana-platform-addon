@@ -1,6 +1,8 @@
 <script>
 import BackButton from "../shared/BackButton.vue";
 import TableOfContentsButton from "../shared/TableOfContentsButton.vue";
+import getters from "../../store/gettersDataNarrator";
+import {mapGetters} from "vuex";
 
 export default {
     name: "PlayerHeader",
@@ -13,6 +15,9 @@ export default {
             type: Object,
             default: null
         }
+    },
+    computed: {
+        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
     }
 };
 </script>
@@ -23,6 +28,7 @@ export default {
             <v-col>
                 <BackButton
                     tooltip="additional:modules.tools.dataNarrator.button.cancel"
+                    :text="currentStory.title"
                     @click="$emit('reset')"
                 />
             </v-col>

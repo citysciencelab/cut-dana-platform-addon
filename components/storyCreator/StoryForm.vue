@@ -108,6 +108,45 @@ export default {
             this.currentStory.displayType = event.target.checked ?
                 this.$set(this.currentStory, "displayType", "scrolly") :
                 this.$set(this.currentStory, "displayType", "classic");
+        },
+
+        loadThreeDFiles () {
+            const promises = [];
+
+            this.currentStory.steps.forEach((step) => {
+                if (step.threeDFiles) {
+                    step.threeDFiles.forEach((item) => {
+                        this.addEntity(item, `${this.backendUrl.url}${this.currentStory.threeDFilesId}`);
+                    });
+                }
+            });
+
+            return Promise.all(promises);
+        },
+
+        addEntity (item, path = "") {
+            // the item is a file and not a folder
+            const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
+                quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
+                position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z);
+
+            if (item.file) {
+                this.createEntity({
+                    entityId: item.id,
+                    file: item.file,
+                    uri: `${path}/${item.name}`,
+                    scale: item.scale,
+                    position: position,
+                    orientation: quaternion
+                });
+                return;
+            }
+            if (item.children && item.children.length > 0) {
+                item.children.forEach((child) => {
+                    this.addEntity(child, `${path}/${item.name}`);
+                });
+            }
+
         }
     }
 };

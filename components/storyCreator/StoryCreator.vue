@@ -8,6 +8,8 @@ import StoryPlayer from "../storyPlayer/StoryPlayer.vue";
 import FileForm from "./FileForm.vue";
 import StepForm from "./StepForm.vue";
 import StoryForm from "./StoryForm.vue";
+import EntityEditor from "./EntityEditor.vue";
+import * as uuid from "uuid";
 
 export default {
     name: "StoryCreator",
@@ -15,7 +17,8 @@ export default {
         StoryForm,
         StepForm,
         StoryPlayer,
-        FileForm
+        FileForm,
+        EntityEditor
     },
     data () {
         return {
@@ -34,11 +37,14 @@ export default {
         /**
          * Handle editing a step
          * @param {Object} step the step to edit
+         * @param {boolean} returnToStepForm whether to return to the step form
          * @returns {void}
          */
-        onEditStep (step) {
+        onEditStep (step, returnToStepForm) {
             this.stepToEdit = step;
-            this.view = this.constants.storyCreationViews.STEP_CREATION;
+            if (returnToStepForm) {
+                this.view = this.constants.storyCreationViews.STEP_CREATION;
+            }
         },
 
         /**
@@ -78,7 +84,7 @@ export default {
         <StoryForm
             v-if="view === constants.storyCreationViews.STORY_CREATION"
             @openView="newView => (view = newView)"
-            @editStep="onEditStep"
+            @editStep="(step) => onEditStep(step, true)"
             v-on="$listeners"
         />
 
@@ -100,6 +106,14 @@ export default {
             :edited-step="stepToEdit"
             @openView="newView => (view = newView)"
             @edit3D="onEdit3D"
+            @return="returnToStepForm"
+            v-on="$listeners"
+        />
+
+        <EntityEditor
+            v-if="view === constants.storyCreationViews.ENTITY_EDITOR"
+            :edited-step="stepToEdit"
+            @openView="newView => (view = newView)"
             @return="returnToStepForm"
             v-on="$listeners"
         />

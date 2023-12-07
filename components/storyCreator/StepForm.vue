@@ -332,11 +332,14 @@ export default {
         }
     },
     mounted () {
-
-        this.importFromModeler();
         if (!this.step.layers) {
             this.step.layers = [];
         }
+
+        if (this.step.threeDLayers) {
+            console.log(this.step);
+        }
+
         this.$store.commit("Tools/Draw/setActive", true);
         if (this.step.associatedChapter === null) {
             const diff = this.chapterOptions.length > 1 ? 2 : 1;
@@ -384,14 +387,18 @@ export default {
                 model.set("isSelected", false);
             }
         }
-        for (const layer of this.step.layers) {
-            const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
 
-            if (model) {
-                model.setIsVisibleInMap(false);
-                model.set("isSelected", false);
+        if (this.step.layers) {
+            for (const layer of this.step.layers) {
+                const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
+
+                if (model) {
+                    model.setIsVisibleInMap(false);
+                    model.set("isSelected", false);
+                }
             }
         }
+
 
         for (const layer of this.wmsLayers) {
             this.hideWmsLayer(layer.url);
@@ -779,10 +786,6 @@ export default {
             // this.$store.commit("Tools/3DMap/setActive", true);
         },
 
-        importFromModeler () {
-            const entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
-                entity = entities.getById(1);
-        },
 
         updateThreeDFormData (formdata) {
             this.threeDUploadFormData = formdata;

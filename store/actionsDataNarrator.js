@@ -1,11 +1,13 @@
 import storyCreatorActions from "./actions/storyCreatorActions";
 import stateDataNarrator from "./stateDataNarrator";
+import threeDManagerActions from "./actions/threeDManagerActions";
 
 import axios from "axios";
 
 const initialState = JSON.parse(JSON.stringify(stateDataNarrator)),
     actions = {
         ...storyCreatorActions,
+        ...threeDManagerActions,
 
         /**
          * Resets the Story Telling Tool.

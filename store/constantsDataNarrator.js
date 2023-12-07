@@ -1,3 +1,5 @@
+import * as threeDManagerConstants from "./constants/threeDManagerConstants";
+
 const storyTellingModes = {
         CREATE: "create",
         PLAY: "play",
@@ -17,13 +19,15 @@ const storyTellingModes = {
         STORY_CREATION: "story",
         STEP_CREATION: "step",
         PREVIEW: "preview",
-        THREE_D: "3d"
+        THREE_D: "3d",
+        ENTITY_EDITOR: "entityEditor"
     },
     emptyStory = {
         storyInterval: 0,
         displayType: "classic",
         chapters: [],
-        steps: []
+        steps: [],
+        threeDFilesId: ""
     },
     emptyStep = {
         stepNumber: null,
@@ -46,7 +50,8 @@ const storyTellingModes = {
             ],
             heading: null,
             pitch: null
-        }
+        },
+        threeDFiles: []
     },
     stepPalette = [
         {main: "#413FAB", secondary: "#A3C4FF"},
@@ -71,6 +76,7 @@ const storyTellingModes = {
     ];
 
 export {
+    threeDManagerConstants,
     dataNarratorRoles,
     emptyStep, emptyStory,
     htmlEditorToolbar, stepPalette, storyCreationViews, storyTellingModeIcons, storyTellingModes

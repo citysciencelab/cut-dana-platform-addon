@@ -9,6 +9,10 @@ export default {
         tooltip: {
             type: String,
             default: "additional:modules.tools.dataNarrator.button.backToStory"
+        },
+        text: {
+            type: String,
+            default: "additional:modules.tools.dataNarrator.button.backToStep"
         }
     },
     computed: {
@@ -35,7 +39,7 @@ export default {
                 <span>{{ $t(tooltip) }}</span>
             </v-tooltip>
         </span>
-        <span class="story-title">{{ currentStory.title }}</span>
+        <span class="story-title">{{ $t(text) }}</span>
     </span>
 </template>
 

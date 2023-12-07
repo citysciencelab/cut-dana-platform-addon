@@ -213,6 +213,8 @@ function prepareHtml (story, images) {
         htmlArray = [],
         threeDFileArray = [];
 
+    console.log(story.steps);
+
     story.steps = story.steps.map((step) => {
         let html = step.html;
 
@@ -238,14 +240,48 @@ function prepareHtml (story, images) {
             stepNumber: step.stepNumber
         });
 
+        const formData = new FormData();
+
+        /**
+         * Recursive function to process the tree and add files to FormData
+         * @param {Array} node the tree to process
+         * @param {string} path the path of the current node
+         * @returns {void}
+         */
+        function processNode (node, path = "") {
+            if (node.file && node.obj) {
+                // It's a file, append it to FormData
+                const fullPath = path;
+
+                formData.append(fullPath, node.obj);
+                delete node.obj;
+            }
+            else if (node.children && Array.isArray(node.children) && node.children.length > 0) {
+                // It's a folder, recurse into its children
+                node.children.forEach(child => {
+                    processNode(child, path ? `${path}/${node.name}` : node.name);
+                });
+            }
+            else if (node.children && node.children.length === 0) {
+                delete node.children;
+            }
+            delete node.id;
+        }
+
+
+        if (step.threeDFiles) {
+            step.threeDFiles.forEach(node => {
+                processNode(node);
+            });
+        }
+
 
         threeDFileArray.push({
-            threeDFiles: step.threeDFiles,
+            threeDFiles: formData,
             stepNumber: step.stepNumber
         });
 
         delete step.html;
-        delete step.threeDFiles;
         delete step._id;
         return step;
     });
@@ -348,7 +384,7 @@ function uploadStoryFiles ({state}) {
         const threeDFileUploads = [];
 
 
-        for (const {stepNumber, threeDFiles} of threeDFileArray) {
+        for (const {stepNumber, threeDFiles, files} of threeDFileArray) {
             const url = threeDFilesPathPrefix + storyId + "/" + stepNumber,
 
                 response = await fetch(url, {
@@ -356,19 +392,36 @@ function uploadStoryFiles ({state}) {
                     body: threeDFiles
                 });
 
+            // await fetch(url, {
+            //     method: "PATCH",
+            //     body: files
+            // });
+
             threeDFileUploads.push(await response.json());
+
         }
 
 
         return threeDFileUploads;
 
     }).then((files) => {
+        console.log(files);
+        // Upload html parts
+        const pathPrefix = `${backendUrl}/stories/`,
+            threeDFUploads = threeDFileArray.map((element) => {
+                const query_url = `${pathPrefix}${storyId}/files`;
+
+                return axios.patch(query_url, {threeDFilesUrl: files[0].folder});
+            });
+
+        return Promise.all(threeDFUploads);
+    }).then(() => {
         // Upload html parts
         const pathPrefix = `${backendUrl}/stories/${storyId}/`,
             htmlUploads = htmlArray.map((element) => {
                 const query_url = `${pathPrefix}${element.associatedChapter}/${element.stepNumber}/html`;
 
-                return axios.patch(query_url, {html: element.html, threeDFilesUrl: files.folder});
+                return axios.patch(query_url, {html: element.html});
             });
 
         return Promise.all(htmlUploads);
@@ -660,7 +713,6 @@ async function hideWmsLayer (layerUrl) {
             return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
         });
 
-    console.log(allCapabilitiesModels);
 
     allCapabilitiesModels.forEach(model => {
         if (model) {
