@@ -104,12 +104,12 @@ export default {
 
 
 .with-fancy-background {
-  background-image: url('.addons/dipasAddons/dataNarrator/assets/images/header_small.png');
+  background-image: url('../../assets/images/header_small.png');
     background-position: right top;
     min-height: 220px;
 
     @media (min-width: 768px){
-      background-image: url('.addons/dipasAddons/dataNarrator/assets/images/header.png');
+      background-image: url('../../assets/images/header.png');
       background-position: right top;
       min-height: 332px;
     }
