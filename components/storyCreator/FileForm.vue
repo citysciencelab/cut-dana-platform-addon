@@ -36,18 +36,7 @@ export default {
         return {
             constants,
             // items: this.editedStep?.threeDLayers || {},
-            files: {
-                html: mdiLanguageHtml5,
-                js: mdiNodejs,
-                json: mdiCodeJson,
-                md: mdiLanguageMarkdown,
-                pdf: mdiFilePdf,
-                png: mdiFileImage,
-                txt: mdiFileDocumentOutline,
-                xls: mdiFileExcel
-            },
             tree: [],
-            items: [],
             icons: {
                 mdiFolder,
                 mdiFolderOpen,
@@ -64,9 +53,8 @@ export default {
             ],
             ignoreFolderChange: false,
             forceFolderRerenderKey: 0,
-            step: this.editedStep || {},
-            fileObjects: [],
-            threeDFiles: this.editedStep.threeDFiles || []
+            step: this.editedStep,
+            threeDFiles: this.editedStep.threeDFiles
         };
     },
     computed: {
@@ -82,7 +70,7 @@ export default {
     },
     mounted () {
         // set map to 3d
-        console.log(this.currentStory);
+        console.log(this.currentStory, this.step);
 
         // console.log("mounted");
     },
@@ -252,8 +240,13 @@ export default {
                     obj: file
                 }, true);
                 this.importFile({files: [file], fileId: randomItemId});
-                // this.$emit("openView", constants.storyCreationViews.ENTITY_EDITOR);
+                // also add the files to this.threeDFiles
+
             }
+
+
+            this.step.threeDFiles = this.threeDFiles;
+            this.$emit("openView", constants.storyCreationViews.ENTITY_EDITOR);
 
         },
 
@@ -363,7 +356,7 @@ export default {
                     {{ open ? icons.mdiFolderOpen : icons.mdiFolder }}
                 </v-icon>
                 <v-icon v-else>
-                    {{ files[item.file] ? files[item.file] : icons.mdiFileDocumentOutline }}
+                    {{ constants.threeDManagerConstants.fileTypes[item.file] ? constants.threeDManagerConstants.fileTypes[item.file] : icons.mdiFileDocumentOutline }}
                 </v-icon>
             </template>
 

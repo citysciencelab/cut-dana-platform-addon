@@ -6,13 +6,14 @@ import actions from "../../store/actionsDataNarrator";
 import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
+import BackButton from "../shared/BackButton.vue";
 
 
 export default {
     name: "EntityEditor",
 
     components: {
-
+        BackButton
     },
 
     props: {
@@ -27,7 +28,7 @@ export default {
             constants,
             // items: this.editedStep?.threeDLayers || {},
 
-            step: this.editedStep || {},
+            step: this.editedStep,
             threeDFiles: this.editedStep.threeDFiles || []
         };
     },
@@ -66,7 +67,19 @@ export default {
         id="tool-dataNarrator-creator-entityEditor"
         class="mb-8"
     >
-        HELLO
+        <BackButton
+            tooltip="additional:modules.tools.dataNarrator.button.backToStory"
+            :text="step.title"
+            @click="$emit('openView', constants.storyCreationViews.THREE_D)"
+        />
+        <div
+            v-if="loading"
+        >
+            loading...
+        </div>
+        <div v-else>
+            HELLO
+        </div>
     </div>
 </template>
 

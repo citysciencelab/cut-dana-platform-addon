@@ -149,7 +149,8 @@ function importFile (state, payload) {
         // }
         else {
             store.dispatch("Alerting/addSingleAlert", {content: i18next.t("common:modules.tools.modeler3D.import.alertingMessages.missingFormat", {format: fileExtension})}, {root: true});
-            this.setIsLoading(false);
+            state.loading = false;
+            // this.setIsLoading(false);
         }
     };
 

@@ -5,14 +5,14 @@ import {
 } from "@mdi/js";
 
 const fileTypes = {
-    "html": mdiLanguageHtml5,
-    "js": mdiNodejs,
-    "json": mdiCodeJson,
-    "md": mdiLanguageMarkdown,
-    "pdf": mdiFilePdf,
-    "png": mdiFileImage,
-    "txt": mdiFileDocumentOutline,
-    "xls": mdiFileExcel
+    html: mdiLanguageHtml5,
+    js: mdiNodejs,
+    json: mdiCodeJson,
+    md: mdiLanguageMarkdown,
+    pdf: mdiFilePdf,
+    png: mdiFileImage,
+    txt: mdiFileDocumentOutline,
+    xls: mdiFileExcel
 };
 
 
