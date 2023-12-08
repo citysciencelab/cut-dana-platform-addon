@@ -59,7 +59,8 @@
         },
         "dashboardView": {
           "title": "Story Dashboard",
-          "total": "Die Anzahl der Stories beträgt: "
+          "subtitle": "Ein Tool zum Sichtbarmachen.",
+          "description": "Ein Data Story Tool, das die Geo-Daten von Hamburg integriert. Mithilfe dieser Software können Nutzer geografische Informationen nutzen, um anschauliche und informative Erzählungen über Hamburg zu gestalten, sei es zu Themen wie städtischer Entwicklung, Umwelttrends oder kultureller Vielfalt."
         },
         "success": {
           "storyCreated": "Story erfolgreich erstellt.",

@@ -75,11 +75,8 @@ export default {
                 class="justify-start align-start"
             >
                 <h1 class="header-h1">Data Stories</h1>
-                <h4 class="header-h4">Ein Tool zum Sichtbarmachen.</h4>
-                <p>Ein Data Story Tool, das die Geo-Daten von Hamburg integriert. Mithilfe dieser Software
-                    können Nutzer geografische Informationen nutzen, um anschauliche und informative Erzählungen
-                    über Hamburg zu gestalten, sei es zu Themen wie städtischer Entwicklung, Umwelttrends oder
-                    kultureller Vielfalt.</p>
+                <h4 class="header-h4">{{ $t("additional:modules.tools.dataNarrator.dashboardView.subtitle") }}</h4>
+                <p>{{ $t("additional:modules.tools.dataNarrator.dashboardView.description") }}</p>
             </v-col>
 
             <v-col
