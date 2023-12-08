@@ -55,30 +55,37 @@ export default {
         >
 
             <v-col
-                lg="1"
-                md="1"
-                sm="2"
-                cols="2"
-                class="d-flex align-start justify-center"
+                cols="12"
+                class="d-flex justify-start align-center"
             >
-                <img
-                    src="../../img/logo.png"
-                    alt="logo"
-                    class="header-logo"
-                >
-            </v-col>
-            <v-col
-                lg="4"
-                md="5"
-                sm="9"
-                cols="9"
-                class="justify-start align-start"
-            >
-                <h1 class="header-h1">Data Stories</h1>
-                <h4 class="header-h4">{{ $t("additional:modules.tools.dataNarrator.dashboardView.subtitle") }}</h4>
-                <p>{{ $t("additional:modules.tools.dataNarrator.dashboardView.description") }}</p>
-            </v-col>
+                <v-row>
 
+                    <v-col
+                        lg="1"
+                        md="1"
+                        sm="2"
+                        cols="2"
+                        class="d-flex align-start justify-center"
+                    >
+                        <img
+                            src="../../img/logo.png"
+                            alt="logo"
+                            class="header-logo"
+                        >
+                    </v-col>
+                    <v-col
+                        lg="4"
+                        md="5"
+                        sm="9"
+                        cols="9"
+                        class="justify-start align-start"
+                    >
+                        <h1 class="header-h1">Data Stories</h1>
+                        <h4 class="header-h4">{{ $t("additional:modules.tools.dataNarrator.dashboardView.subtitle") }}</h4>
+                        <p>{{ $t("additional:modules.tools.dataNarrator.dashboardView.description") }}</p>
+                    </v-col>
+                </v-row>
+            </v-col>
             <v-col
                 cols="12"
                 class="d-flex justify-center align-end"
@@ -111,6 +118,7 @@ export default {
 .with-fancy-background {
     background-position: right top;
     min-height: 220px;
+    align-items: end;
 
     @media (min-width: 768px){
       background-position: right top;
