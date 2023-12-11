@@ -156,7 +156,11 @@ export default {
          */
         layerOptions () {
 
-            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer", isBaseLayer: false});
+            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer", isBaseLayer: false}),
+
+                layer3d = Radio.request("ModelList", "getModelByAttributes", {parentId: "3d_daten", isVisibleInMap: true});
+
+            console.log(layer3d);
 
             return layerList.map(layer => layer);
         },
@@ -710,6 +714,7 @@ export default {
         get3DMapCenter () {
             const camera = Radio.request("Map", "getMap3d").getCesiumScene().camera;
 
+
             return {
                 "cameraPosition": this.toDegrees(camera.position),
                 "heading": camera.heading,
@@ -732,6 +737,8 @@ export default {
             else if (!this.step.is3D && Radio.request("Map", "isMap3d")) {
                 await this.$store.dispatch("Maps/deactivateMap3D");
             }
+
+            Radio.trigger("Menu", "rerender");
         },
 
         /**

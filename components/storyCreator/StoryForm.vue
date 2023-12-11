@@ -137,7 +137,8 @@ export default {
                     uri: `${path}/${item.name}`,
                     scale: item.scale,
                     position: position,
-                    orientation: quaternion
+                    orientation: quaternion,
+                    clampToGround: true
                 });
                 return;
             }

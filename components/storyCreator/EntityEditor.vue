@@ -9,6 +9,8 @@ import mutations from "../../store/mutationsDataNarrator";
 import BackButton from "../shared/BackButton.vue";
 import {getItemRecursive, replaceFileItem} from "../../utils/threeDFiles";
 
+import {mdiChevronUp, mdiChevronDown} from "@mdi/js";
+
 
 export default {
     name: "EntityEditor",
@@ -31,10 +33,14 @@ export default {
 
             step: this.editedStep,
             threeDFiles: this.editedStep.threeDFiles || [],
-
+            icons: {
+                mdiChevronDown,
+                mdiChevronUp
+            },
             position: null,
             orientation: null,
-            scale: 1
+            scale: 1,
+            number: 0
         };
     },
     computed: {
@@ -100,6 +106,17 @@ export default {
 
             this.threeDFiles = newItems;
             this.step.threeDFiles = this.threeDFiles;
+        },
+
+        addValue () {
+            this.number += 0.1;
+            // Fix potential floating point precision issue
+            this.number = parseFloat(this.number.toFixed(1));
+        },
+        subtractValue () {
+            this.number -= 0.1;
+            // Fix potential floating point precision issue
+            this.number = parseFloat(this.number.toFixed(1));
         }
     }
 };
@@ -122,16 +139,52 @@ export default {
         </div>
         <div v-else>
             <div>
-                <label for="scale-slider">Scale:</label>
-                <input
-                    id="scale-slider"
-                    v-model="scale"
-                    type="range"
-                    min="0.1"
-                    max="10"
-                    step="0.1"
-                    @input="updateScale"
-                >
+                <v-container fluid>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-slider
+                                v-model="scale"
+                                label="Scale"
+                                :max="2"
+                                :min="0"
+                                step="0.1"
+                                @input="updateScale"
+                            />
+                        </v-col>
+                    </v-row>
+                </v-container>
+                <v-container>
+                    <v-row>
+                        <v-col cols="auto">
+                            <v-text-field
+                                v-model="number"
+                                label="Number"
+                                type="number"
+                                outlined
+                            />
+                        </v-col>
+                        <v-col cols="auto">
+                            <v-row>
+                                <v-btn
+                                    icon
+                                    small
+                                    @click="addValue"
+                                >
+                                    <v-icon>{{ icons.mdiChevronUp }}</v-icon>
+                                </v-btn>
+                            </v-row>
+                            <v-row>
+                                <v-btn
+                                    icon
+                                    small
+                                    @click="subtractValue"
+                                >
+                                    <v-icon>{{ icons.mdiChevronDown }}</v-icon>
+                                </v-btn>
+                            </v-row>
+                        </v-col>
+                    </v-row>
+                </v-container>
             </div>
         </div>
     </div>

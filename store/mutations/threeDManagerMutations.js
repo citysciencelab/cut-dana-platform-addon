@@ -183,33 +183,22 @@ function handleGltfFile (state, payload) {
         viewer = mapCollection.getMap("3D"),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
         currentLocation = viewer.camera_.cam_.position,
-        lastElement = entities.values.slice().pop(),
         models = state.importedEntities,
-        entity = new Cesium.Entity({
-            id: fileId,
-            name: fileName,
-            clampToGround: true,
-            position: currentLocation,
-            model: {
-                uri: URL.createObjectURL(file)
-            }
-        });
 
-    // createEntity(state, {
-    //     viewer,
-    //     entityId: entity.id,
-    //     scale: 1,
-    //     orientation: undefined,
-    //     visibility: true,
-    //     uri: URL.createObjectURL(file),
-    //     position: currentLocation
-    // });
+        entity = createEntity(state, {
+            viewer,
+            entityId: fileId,
+            name: fileName,
+            scale: 1,
+            orientation: undefined,
+            visibility: true,
+            uri: URL.createObjectURL(file),
+            position: currentLocation
+        });
 
 
     state.selectedEntityId = entity.id;
     // this.moveEntity(undefined, fileId);
-
-
     // this.writeEntityDataToItems(entity, fileId);
 
     entities.add(entity);
@@ -425,13 +414,14 @@ function scaleEntity (state, payload) {
  * Creates and adds an entity to the viewer and state.
  * @param {Object} state state of the datanarrator module
  * @param {Object} payload payload of the action
- * @param {*} payload.entityId the entity id
- * @param {*} payload.scale the scale factor
- * @param {*} payload.orientation the orientation
- * @param {*} payload.visibility the visibility
- * @param {*} payload.uri the uri of the model
- * @param {*} payload.position the position of the model
- * @returns {void}
+ * @param {string} payload.entityId the entity id
+ * @param {number} payload.scale the scale factor
+ * @param {object} payload.orientation the orientation
+ * @param {boolean} payload.visibility the visibility
+ * @param {string} payload.uri the uri of the model
+ * @param {object} payload.position the position of the model
+ * @param {boolean} payload.clampToGround if the model should be clamped to the ground
+ * @returns {Object} the created entity
  */
 function createEntity (state, payload) {
     const {entityId, scale, orientation, visibility, uri, position} = payload,
@@ -444,6 +434,7 @@ function createEntity (state, payload) {
                 uri: uri, // replace with your model path
                 scale: scale
             },
+            clampToGround: payload.clampToGround,
             // orientation: orientation,
             show: visibility,
             position: position
@@ -453,6 +444,7 @@ function createEntity (state, payload) {
 
     // Add the entity to the state
     state.importedEntities.push(entity);
+    return entity;
 }
 
 export default {
