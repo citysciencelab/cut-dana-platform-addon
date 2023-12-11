@@ -59,7 +59,8 @@
         },
         "dashboardView": {
           "title": "Story Dashboard",
-          "total": "The total number of stories is: "
+          "subtitle": "Tool for visualization.",
+          "description": "Data story tool that integrates Hamburg's geodata. With the help of this software, users can use geographical information to create vivid and informative narratives about Hamburg, on topics such as urban development, environmental trends or cultural diversity."
         },
         "success": {
           "storyCreated": "Story created.",

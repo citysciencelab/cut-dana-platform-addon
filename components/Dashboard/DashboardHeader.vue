@@ -1,4 +1,6 @@
 <script>
+import {mapGetters} from "vuex";
+
 import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
 import ListButton from "./Tools/ListButton.vue";
@@ -22,6 +24,9 @@ export default {
             default: "all"
         }
     },
+    computed: {
+        ...mapGetters(["mobile"])
+    },
     methods: {
         availableStoryListModes () {
             const modes = ["all", "featured", "popular"];
@@ -44,36 +49,43 @@ export default {
             </v-col>
         </v-row>
 
-        <v-row class="with-fancy-background">
+        <v-row
+            class="with-fancy-background"
+            :style="`background-image: url(${require(mobile ? '../../img/header_small.png' : '../../img/header.png')})`"
+        >
 
             <v-col
-                lg="1"
-                md="1"
-                sm="2"
-                cols="2"
-                class="d-flex align-start justify-center"
+                cols="12"
+                class="d-flex justify-start align-center"
             >
-                <img
-                    src="../../assets/images/logo.png"
-                    alt="logo"
-                    class="header-logo"
-                >
-            </v-col>
-            <v-col
-                lg="4"
-                md="5"
-                sm="9"
-                cols="9"
-                class="justify-start align-start"
-            >
-                <h1 class="header-h1">Data Stories</h1>
-                <h4 class="header-h4">Ein Tool zum Sichtbarmachen.</h4>
-                <p>Ein Data Story Tool, das die Geo-Daten von Hamburg integriert. Mithilfe dieser Software
-                    können Nutzer geografische Informationen nutzen, um anschauliche und informative Erzählungen
-                    über Hamburg zu gestalten, sei es zu Themen wie städtischer Entwicklung, Umwelttrends oder
-                    kultureller Vielfalt.</p>
-            </v-col>
+                <v-row>
 
+                    <v-col
+                        lg="1"
+                        md="1"
+                        sm="2"
+                        cols="2"
+                        class="d-flex align-start justify-center"
+                    >
+                        <img
+                            src="../../img/logo.png"
+                            alt="logo"
+                            class="header-logo"
+                        >
+                    </v-col>
+                    <v-col
+                        lg="4"
+                        md="5"
+                        sm="9"
+                        cols="9"
+                        class="justify-start align-start"
+                    >
+                        <h1 class="header-h1">Data Stories</h1>
+                        <h4 class="header-h4">{{ $t("additional:modules.tools.dataNarrator.dashboardView.subtitle") }}</h4>
+                        <p>{{ $t("additional:modules.tools.dataNarrator.dashboardView.description") }}</p>
+                    </v-col>
+                </v-row>
+            </v-col>
             <v-col
                 cols="12"
                 class="d-flex justify-center align-end"
@@ -82,7 +94,7 @@ export default {
             </v-col>
         </v-row>
 
-        <v-row>
+        <v-row class="list-buttons">
             <v-col class="d-flex justify-center align-center">
                 <ListButton
                     v-for="mode in availableStoryListModes()"
@@ -104,15 +116,18 @@ export default {
 
 
 .with-fancy-background {
-  background-image: url('../../assets/images/header_small.png');
     background-position: right top;
     min-height: 220px;
+    align-items: end;
 
     @media (min-width: 768px){
-      background-image: url('../../assets/images/header.png');
       background-position: right top;
       min-height: 332px;
     }
+}
+
+.list-buttons {
+    margin-top: 0.5rem !important;
 }
 
 .header-h1 {

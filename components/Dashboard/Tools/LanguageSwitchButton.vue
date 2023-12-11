@@ -13,8 +13,10 @@ export default {
     },
     methods: {
         changeToNextLanguage () {
-            i18next.changeLanguage(this.nextLanguage());
-            this.currentLanguage = i18next.language;
+            const nextLanguage = this.nextLanguage();
+
+            this.currentLanguage = nextLanguage;
+            i18next.changeLanguage(nextLanguage);
         },
         nextLanguage () {
             const currentIndex = this.languages.indexOf(i18next.language),
@@ -22,10 +24,6 @@ export default {
 
             return this.languages[nextIndex] || i18next.language;
         }
-        // },
-        // currentLanguage () {
-        //     return i18next.language;
-        // }
     }
 };
 </script>
@@ -44,8 +42,3 @@ export default {
         {{ currentLanguage }}
     </v-btn>
 </template>
-
-
-<style>
-/* Your component's styles go here */
-</style>
