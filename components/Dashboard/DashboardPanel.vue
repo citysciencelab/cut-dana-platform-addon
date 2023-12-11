@@ -1,27 +1,24 @@
 <script>
+
 import axios from "axios";
 import Masonry from "masonry-layout";
 import {mapGetters, mapMutations} from "vuex";
+import InfiniteLoading from "vue-infinite-loading";
 
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 
 import StoryCard from "./Stories/StoryCard.vue";
 import StoryCardSkeleton from "./Stories/StoryCardSkeleton.vue";
-import CreateStoryButton from "./Tools/CreateStoryButton.vue";
-import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
-import ListButton from "./Tools/ListButton.vue";
-import LoginButton from "./Tools/LoginButton.vue";
+import DashboardHeader from "./DashboardHeader.vue";
 
 export default {
     name: "DashboardPanel",
     components: {
-        LanguageSwitchButton,
-        LoginButton,
-        CreateStoryButton,
         StoryCard,
         StoryCardSkeleton,
-        ListButton
+        DashboardHeader,
+        InfiniteLoading
     },
     props: {
         uid: {
@@ -35,8 +32,9 @@ export default {
     },
     data () {
         return {
-            storyList: {},
+            storyList: [],
             storyListMode: "all",
+            storyListPage: 1,
             masonry: null
         };
     },
@@ -89,35 +87,41 @@ export default {
         /**
          * Refreshes the list of stories
          * @param {String} mode Story filter
+         * @param {Number} page Page number
          * @returns {void}
          */
-        refreshStoryList (mode = "all") {
+        refreshStoryList (mode = "all", page = 1) {
             const newMode = mode || this.storyListMode;
 
-            axios
-                .get(this.backendConfig.url + "/stories?mode=" + mode)
+            if (newMode !== this.storyListMode) {
+                this.storyListPage = 1;
+                this.storyList = [];
+                this.$nextTick(() => {
+                    this.$refs.infiniteLoading.$emit("$InfiniteLoading:reset");
+                });
+            }
+
+            return axios
+                .get(this.backendConfig.url + `/stories?mode=${mode}&page=${page}`)
                 .then((response) => {
                     this.storyListMode = newMode;
-                    this.storyList = response.data;
+                    this.storyList.push(...response.data);
+                    return response.data.length;
                 });
         },
 
-        refreshStoryListWithReset (mode = "all") {
-            this.refreshStoryList(mode);
-            if (this.currentStory !== null) {
-                this.setCurrentStory(null);
-                this.$emit("resizeHandler");
-            }
-        },
-
-        availableStoryListModes () {
-            const anonymousModes = ["all", "featured", "popular"],
-                loggedInModes = ["all", "featured", "popular", "my"];
-
-            if (this.isAdmin || !this.uid) {
-                return anonymousModes;
-            }
-            return loggedInModes;
+        infiniteHandler ($state) {
+            setTimeout(() => {
+                this.storyListPage += 1;
+                this.refreshStoryList(this.storyListMode, this.storyListPage).then((length) => {
+                    if (length === 0) {
+                        $state.complete();
+                    }
+                    else {
+                        $state.loaded();
+                    }
+                });
+            }, 1000);
         }
     }
 };
@@ -125,50 +129,11 @@ export default {
 
 <template>
     <div>
-        <v-row id="title-row">
-            <v-col
-                id="title-element"
-                class="d-flex justify-begin align-center"
-                cols="7"
-            >
-                <span
-                    v-for="mode in availableStoryListModes()"
-                    :key="mode"
-                >
-                    <ListButton
-                        :mode="mode"
-                        :current-mode="storyListMode"
-                        @refreshStoryList="refreshStoryListWithReset"
-                    />
-                </span>
-            </v-col>
-            <v-col
-                cols="5"
-                class="d-flex justify-end align-center"
-            >
-                <CreateStoryButton />
-
-                <v-tooltip left>
-                    <template #activator="{ on }">
-                        <v-icon
-                            id="info-button"
-                            class="mr-1"
-                            v-on="on"
-                        >
-                            info
-                        </v-icon>
-                    </template>
-                    <span>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.dashboardView.total") + storyList.length
-                        }}
-                    </span>
-                </v-tooltip>
-
-                <LanguageSwitchButton />
-                <LoginButton />
-            </v-col>
-        </v-row>
+        <DashboardHeader
+            :my-mode="!isAdmin && uid"
+            :story-list-mode="storyListMode"
+            @refreshStoryList="refreshStoryList"
+        />
 
         <v-row>
             <v-container fluid>
@@ -219,19 +184,9 @@ export default {
                 </div>
             </v-container>
         </v-row>
+        <InfiniteLoading
+            ref="infiniteLoading"
+            @infinite="infiniteHandler"
+        />
     </div>
 </template>
-
-<style lang="scss" scoped>
-#title-row {
-    padding-bottom: 10px;
-
-    #title-element {
-        padding-left: calc(var(--bs-gutter-x) * 0.5);
-    }
-}
-
-.grit-gutter {
-    width: 20px;
-}
-</style>

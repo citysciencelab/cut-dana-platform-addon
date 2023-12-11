@@ -1,16 +1,15 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
-import actions from "../../store/actionsDataNarrator";
-import getters from "../../store/gettersDataNarrator";
-import mutations from "../../store/mutationsDataNarrator";
-import StoryMenu from "./StoryMenu.vue";
+import PlayerContent from "./PlayerContent.vue";
+import PlayerHeader from "./PlayerHeader.vue";
+import PlayerFooter from "./PlayerFooter.vue";
 
 export default {
     name: "ClassicPlayer",
     components: {
-        StoryMenu
+        PlayerHeader,
+        PlayerContent,
+        PlayerFooter
     },
-    model: {},
     props: {
         currentStepIndex: {
             type: Number,
@@ -24,21 +23,10 @@ export default {
             type: Object,
             default: null
         },
-        loadedContent: {
+        showMode: {
             type: String,
-            default: null
-        },
-        isPreview: {
-            type: Boolean,
-            default: false
+            default: "classic"
         }
-    },
-    computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
-    },
-    methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions))
     }
 };
 </script>
@@ -47,27 +35,20 @@ export default {
     <div
         id="classic-player"
     >
-        <StoryMenu
-            :initial-auto-play="currentStory.storyInterval !== null"
-            :current-step-index="currentStepIndex"
-            :is-preview="isPreview"
+        <PlayerHeader
+            :chapter="currentChapter"
+            @click="$emit('setCurrentStepIndex', null)"
             v-on="$listeners"
         />
-
-        <h2 v-if="currentChapter">
-            {{ currentChapter.chapterTitle }}
-        </h2>
-        <h1>{{ currentStep.title }}</h1>
-
-        <div
-            v-if="currentStep"
+        <PlayerContent
+            :step="currentStep"
             class="tool-dataNarrator-content"
-        >
-            <div
-                v-if="loadedContent"
-                v-html="loadedContent"
-            />
-        </div>
+        />
+        <PlayerFooter
+            :current-step-index="currentStepIndex"
+            :show-mode="showMode"
+            v-on="$listeners"
+        />
     </div>
 </template>
 

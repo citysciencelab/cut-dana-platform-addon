@@ -1,92 +1,77 @@
 <script>
 import "intersection-observer";
 import scrollama from "scrollama";
-import {mapActions, mapGetters, mapMutations} from "vuex";
-import actions from "../../store/actionsDataNarrator";
-import getters from "../../store/gettersDataNarrator";
-import mutations from "../../store/mutationsDataNarrator";
-import StoryMenu from "./StoryMenu.vue";
 
+import PlayerContent from "./PlayerContent.vue";
+import PlayerHeader from "./PlayerHeader.vue";
+import PlayerFooter from "./PlayerFooter.vue";
 
 export default {
     name: "ScrollyTeller",
     components: {
-        StoryMenu
+        PlayerHeader,
+        PlayerContent,
+        PlayerFooter
     },
-    model: {},
     props: {
         currentStepIndex: {
             type: Number,
             default: 0
+        },
+        showMode: {
+            type: String,
+            default: "scrolly"
+        },
+        chapters: {
+            type: Array,
+            default: () => []
+        },
+        steps: {
+            type: Array,
+            default: () => []
         }
     },
     data () {
         return {
-            currentIndex: 0,
-            // loadedContent: null,
-            steps: null,
-            toolWindow: null
+            toolWindow: null,
+            heading: null,
+            toolBody: null
         };
     },
-    computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters(["uiStyle"])
-    },
-    watch: {
-        currentStepIndex: function (newVal) {
-            document.getElementsByClassName("stepper")[newVal].scrollIntoView({block: "center", behavior: "smooth"});
-        }
-    },
-    created () {
-        this.steps = this.currentStory.steps;
-    },
     beforeDestroy () {
-        this.currentIndex = null;
         this.toolWindow.style.removeProperty("background-color");
         this.toolWindow.style.removeProperty("boxShadow");
         this.toolWindow.style.removeProperty("height");
 
-        const heading = this.toolWindow.getElementsByClassName("win-heading")[0],
-            toolBody = document.getElementById("vue-tool-content-body");
+        this.heading.style.removeProperty("display");
 
-        heading.style.removeProperty("display");
-
-        toolBody.style.removeProperty("height");
-        toolBody.style.removeProperty("background-color");
-        toolBody.style.removeProperty("-ms-overflow-style");
-        toolBody.style.removeProperty("overflow");
-        toolBody.style.removeProperty("max-height");
-        toolBody.style.removeProperty("padding");
+        this.toolBody.style.removeProperty("height");
+        this.toolBody.style.removeProperty("background-color");
+        this.toolBody.style.removeProperty("-ms-overflow-style");
+        this.toolBody.style.removeProperty("overflow");
+        this.toolBody.style.removeProperty("max-height");
+        this.toolBody.style.removeProperty("padding");
     },
     mounted () {
         // We need to alter the tool window corresponding to the uiStyle
-        let toolWindowClass = "tool-window-vue";
+        this.toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0];
+        this.heading = this.toolWindow.getElementsByClassName("win-heading")[0];
+        this.toolBody = document.getElementById("vue-tool-content-body");
 
-        if (this.uiStyle === "TABLE") {
-            toolWindowClass = "table-tool-win-all-vue";
-        }
+        const scroller = scrollama();
 
-        const toolWindow = document.getElementsByClassName(toolWindowClass)[0],
-            heading = toolWindow.getElementsByClassName("win-heading")[0],
-            toolBody = document.getElementById("vue-tool-content-body"),
-            scroller = scrollama();
+        this.toolWindow.style.setProperty("background-color", "transparent", "important");
+        this.toolWindow.style.setProperty("box-shadow", "none", "important");
+        this.toolWindow.style.setProperty("height", "100%");
 
-        this.toolWindow = toolWindow;
+        this.heading.style.setProperty("display", "none");
 
-        toolWindow.style.setProperty("background-color", "transparent", "important");
-        toolWindow.style.setProperty("box-shadow", "none", "important");
-        toolWindow.style.setProperty("height", "100%");
-        // toolWindow.style.boxShadow = "none";
-        // toolWindow.style.height = "100%";
-        // heading.style = "display: none;";
-        heading.style.setProperty("display", "none");
-
-        toolBody.style.setProperty("height", "100%");
-        toolBody.style.setProperty("background-color", "transparent", "important");
-        toolBody.style.setProperty("-ms-overflow-style", "none");
-        toolBody.style.setProperty("overflow", "overlay");
-        toolBody.style.setProperty("max-height", "100%");
-        toolBody.style.setProperty("padding", "0");
+        this.toolBody.style.setProperty("height", "100%");
+        this.toolBody.style.setProperty("background-color", "transparent", "important");
+        this.toolBody.style.setProperty("-ms-overflow-style", "none");
+        this.toolBody.style.setProperty("overflow", "overlay");
+        this.toolBody.style.setProperty("max-height", "100%");
+        this.toolBody.style.setProperty("padding", "0");
 
         // toolBody.style = "height: 100%; background-color: transparent !important; -ms-overflow-style: none; overflow: overlay; max-height: 100%; padding: 0;";
 
@@ -96,18 +81,26 @@ export default {
                 step: ".stepper"
             })
             .onStepEnter((response) => {
-                this.currentIndex = response.index;
-                this.$emit("change", response.index);
-            })
-            .onStepExit(() => {
-                // this.currentIndex = null;
+                this.$emit("setCurrentStepIndex", response.index);
             });
 
-        document.getElementsByClassName("stepper")[0].scrollIntoView({block: "center"});
+
+        document.getElementsByClassName("stepper")[this.currentStepIndex]
+            .scrollIntoView({block: "center", behavior: "smooth"});
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions))
+        /**
+         * The step chapter of the story.
+         * @param {Object} step current step
+         * @returns {Object} current chapter
+         */
+        chapterFor (step) {
+            return (
+                this.chapters.find(
+                    ({chapterNumber}) => step?.associatedChapter === chapterNumber
+                )
+            );
+        }
     }
 };
 </script>
@@ -118,27 +111,24 @@ export default {
     >
         <div
             v-for="(step, index) in steps"
-            :key="step.title"
+            :key="index + step.title"
             class="stepper"
-            :class="{ active: index === currentIndex}"
+            :class="{ active: index === currentStepIndex}"
         >
-            <StoryMenu
-                :initial-auto-play="currentStory.storyInterval !== null"
-                :current-step-index="currentStepIndex"
+            <PlayerHeader
+                :chapter="chapterFor(step)"
+                @click="$emit('setCurrentStepIndex', null)"
                 v-on="$listeners"
             />
-            <h1 v-if="step.title">
-                {{ step.title }}
-            </h1>
-
-            <div
+            <PlayerContent
+                :step="step"
                 class="tool-dataNarrator-content"
-            >
-                <div
-                    v-if="index === currentIndex"
-                    v-html="step.html"
-                />
-            </div>
+            />
+            <PlayerFooter
+                :current-step-index="currentStepIndex"
+                :show-mode="showMode"
+                v-on="$listeners"
+            />
         </div>
     </div>
 </template>
@@ -162,16 +152,20 @@ export default {
     }
 
     .stepper {
-        min-height: 450px;
-        // margin: 400px 0;
+        min-height: 200px;
+        margin: 100px 0;
         background-color: transparent !important;
         padding: 20px;
         border-radius: 12px;
+        visibility: hidden;
+        align-content: space-between;
+        display: grid;
     }
 
     .stepper.active {
         background-color: white !important;
         box-shadow: 0 4px 8px 0 rgb(0 0 0 / 50%);
+        visibility: visible;
     }
 
     #story-menu {

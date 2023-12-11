@@ -7,17 +7,16 @@ import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import {getMimeTypeFromExtension} from "../../utils/fileDataType";
-import PlayerContent from "./PlayerContent.vue";
-import PlayerHeader from "./PlayerHeader.vue";
-import PlayerFooter from "./PlayerFooter.vue";
+
+import ClassicPlayer from "./ClassicPlayer.vue";
+import ScrollyTeller from "./ScrollyTeller.vue";
 import TableOfContents from "./TableOfContents.vue";
 
 export default {
     name: "StoryPlayer",
     components: {
-        PlayerHeader,
-        PlayerContent,
-        PlayerFooter,
+        ClassicPlayer,
+        ScrollyTeller,
         TableOfContents
     },
     props: {
@@ -32,7 +31,6 @@ export default {
             visibleBackgroundMap: null,
             currentStepIndex: 0,
             previousStepIndex: 0,
-            loadedContent: null,
             isChangeFrom3D: false,
             showMode: "",
             steps: [],
@@ -46,12 +44,14 @@ export default {
 
         /**
          * The current selected step of the story.
-         * @returns {number} current step index
+         * @returns {Object} current step
          */
         currentStep () {
-            return this.$store.state.Tools.DataNarrator.autoplay && this.steps.length > 0
-                ? this.steps[this.currentStepIndex]
-                : this.currentStory.steps[this.currentStepIndex];
+            return this.currentStory.steps[this.currentStepIndex];
+        },
+
+        chapters () {
+            return this.currentStory.chapters;
         },
 
         /**
@@ -60,15 +60,10 @@ export default {
          */
         currentChapter () {
             return (
-                this.currentStory?.chapters &&
-                this.currentStory.chapters.find(
+                this.chapters && this.chapters.find(
                     ({chapterNumber}) => this.currentStep?.associatedChapter === chapterNumber
                 )
             );
-        },
-
-        stepsCopy () {
-            return {...this.currentStory.steps};
         },
 
         backgroundMaps () {
@@ -327,8 +322,9 @@ export default {
             if (this.currentStory) {
                 if (this.currentStory.storyInterval) {
                     this.interval = setInterval(() => {
-                        this.currentStepIndex = this.currentStory.steps.length - 1 === this.currentStepIndex ? 0 : this.currentStepIndex + 1;
-                        this.$emit("change", this.currentStepIndex);
+                        this.currentStepIndex = this.currentStory.steps.length - 1 === this.currentStepIndex
+                            ? 0
+                            : this.currentStepIndex + 1;
                     }, this.currentStory.storyInterval);
                 }
             }
@@ -387,24 +383,24 @@ export default {
 
 
         async loadThreeDFiles () {
-            // Toggles 3D map mode
-            if (!Radio.request("Map", "isMap3d")) {
-                await store.dispatch("Maps/activateMap3D");
-            }
-            const promises = [];
-
-            this.currentStory.steps.forEach((step) => {
-                if (step.threeDFiles) {
-                    step.threeDFiles.forEach((item) => {
-                        // console.log(this.backendConfig.url);
-                        this.addEntity(item, `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`);
-                    });
+            // Check if 3D map mode needed
+            if (this.currentStory.steps.filter((step) => step.threeDFiles?.length > 0).length > 0) {
+                // Toggles 3D map mode
+                if (!Radio.request("Map", "isMap3d")) {
+                    await store.dispatch("Maps/activateMap3D");
                 }
-            });
 
-            console.log(this.importedEntities);
+                this.currentStory.steps.forEach((step) => {
+                    if (step.threeDFiles) {
+                        step.threeDFiles.forEach((item) => {
+                        // console.log(this.backendConfig.url);
+                            this.addEntity(item, `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`);
+                        });
+                    }
+                });
 
-            return Promise.all(promises);
+                console.log(this.importedEntities);
+            }
         },
 
         addEntity (item, path = "") {
@@ -440,7 +436,6 @@ export default {
          * @returns {void}
          */
         async loadStep () {
-
 
             this.disableOwnDatasource();
 
@@ -590,13 +585,25 @@ export default {
         v-if="currentStory !== undefined && currentStory.steps && currentStep"
         id="tool-dataNarrator-player"
     >
-        <PlayerHeader
-            :chapter="currentChapter"
-            @click="() => currentStepIndex = null"
+        <ClassicPlayer
+            v-if="showMode === 'classic'"
+            :current-step-index="currentStepIndex"
+            :current-chapter="currentChapter"
+            :current-step="currentStep"
+            @setCurrentStepIndex="(index) => currentStepIndex = index"
+            @toggleAutoPlay="toggleAutoPlay"
+            @toggleScrollytelling="toggleScrollytelling"
             v-on="$listeners"
         />
-        <PlayerContent :step="currentStep" />
-        <PlayerFooter v-model="currentStepIndex" />
+        <ScrollyTeller
+            v-else
+            :current-step-index="currentStepIndex"
+            :chapters="chapters"
+            :steps="currentStory.steps"
+            @setCurrentStepIndex="(index) => currentStepIndex = index"
+            @toggleScrollytelling="toggleScrollytelling"
+            v-on="$listeners"
+        />
     </div>
 
     <TableOfContents
@@ -616,41 +623,12 @@ export default {
     height: 100%;
 }
 
-#tool-dataNarrator-tableOfContents {
-    display: grid;
-    grid-gap: 10px;
-    overflow: hidden;
-}
-
-.tableOfContents {
-    padding-left: 0;
-    overflow: auto;
-    font-size: 1rem;
-    line-height: 1.75;
-
-    &,
-    ol {
-        list-style: none;
-    }
-
-    > li {
-        &:not(last-child) {
-            margin-bottom: 10px;
-        }
-
-        > ol li,
-        > span {
-            display: block;
-            cursor: pointer;
-        }
-    }
-}
 </style>
 
 <style lang="scss">
 #tool-dataNarrator-player {
     .tool-dataNarrator-content {
-        overflow: auto;
+        overflow: scroll;
 
         &::v-deep {
             img {
