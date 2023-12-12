@@ -67,6 +67,16 @@ export default {
         },
 
         /**
+         * Return to the step form
+         * @param {Object} step the step to edit
+         * @returns {void}
+         */
+        returnToFileForm (step) {
+            this.stepToEdit = step;
+            this.view = this.constants.storyCreationViews.THREE_D;
+        },
+
+        /**
          * Opens the 3d file form
          * @returns {void}
          */
@@ -114,7 +124,7 @@ export default {
             v-if="view === constants.storyCreationViews.ENTITY_EDITOR"
             :edited-step="stepToEdit"
             @openView="newView => (view = newView)"
-            @return="returnToStepForm"
+            @return="returnToFileForm"
             v-on="$listeners"
         />
     </div>

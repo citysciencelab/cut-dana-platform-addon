@@ -240,51 +240,56 @@ function prepareHtml (story, images) {
             stepNumber: step.stepNumber
         });
 
-        const formData = new FormData();
 
         /**
          * Recursive function to process the tree and add files to FormData
          * @param {Array} node the tree to process
+         * @param {FormData} formdata the FormData to append files to
          * @param {string} path the path of the current node
          * @returns {void}
          */
-        function processNode (node, path = "") {
+        function processNode (node, formdata, path = "") {
             if (node.file && node.obj) {
                 // It's a file, append it to FormData
                 const fullPath = path;
 
-                formData.append(fullPath, node.obj);
-                delete node.obj;
+                formdata.append(fullPath, node.obj);
+                console.log(node);
             }
             else if (node.children && Array.isArray(node.children) && node.children.length > 0) {
                 // It's a folder, recurse into its children
                 node.children.forEach(child => {
-                    processNode(child, path ? `${path}/${node.name}` : node.name);
+                    processNode(child, formdata, path ? `${path}/${node.name}` : node.name);
                 });
             }
             else if (node.children && node.children.length === 0) {
                 delete node.children;
             }
-            delete node.id;
         }
 
 
         if (step.threeDFiles) {
+            const formData = new FormData();
+
             step.threeDFiles.forEach(node => {
-                processNode(node);
+                processNode(node, formData, "");
+            });
+
+            threeDFileArray.push({
+                threeDFiles: formData,
+                stepNumber: step.stepNumber
             });
         }
 
 
-        threeDFileArray.push({
-            threeDFiles: formData,
-            stepNumber: step.stepNumber
-        });
+        // console.log(threeDFileArray);
 
         delete step.html;
         delete step._id;
         return step;
     });
+
+
     return [story, imageArray, htmlArray, threeDFileArray];
 }
 
@@ -414,6 +419,13 @@ function uploadStoryFiles ({state}) {
 
                 return axios.patch(query_url, {threeDFilesUrl: files[0].folder});
             });
+
+        // loop over all the fields in the form
+        for (const threeDFile of threeDFileArray) {
+            for (const [key, value] of threeDFile.threeDFiles.entries()) {
+                console.log(key, value);
+            }
+        }
 
         return Promise.all(threeDFUploads);
     }).then(() => {

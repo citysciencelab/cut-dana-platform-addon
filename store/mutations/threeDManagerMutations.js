@@ -147,11 +147,11 @@ function importFile (state, payload) {
         // else if (fileExtension === "geojson") {
         //     this.handleGeoJsonFile(event.target.result, fileId);
         // }
-        else {
-            store.dispatch("Alerting/addSingleAlert", {content: i18next.t("common:modules.tools.modeler3D.import.alertingMessages.missingFormat", {format: fileExtension})}, {root: true});
-            state.loading = false;
-            // this.setIsLoading(false);
-        }
+        // else {
+        //     store.dispatch("Alerting/addSingleAlert", {content: i18next.t("common:modules.tools.modeler3D.import.alertingMessages.missingFormat", {format: fileExtension})}, {root: true});
+        //     state.loading = false;
+        //     // this.setIsLoading(false);
+        // }
     };
 
     reader.onerror = (e) => {
@@ -160,6 +160,9 @@ function importFile (state, payload) {
     };
 
     if (fileExtension === "dae") {
+        reader.readAsDataURL(file);
+    }
+    else if (fileExtension === "png" || fileExtension === "jpg" || fileExtension === "jpeg") {
         reader.readAsDataURL(file);
     }
     else {

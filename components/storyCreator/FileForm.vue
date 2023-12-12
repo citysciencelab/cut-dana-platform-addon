@@ -12,7 +12,7 @@ import BackButton from "../shared/BackButton.vue";
 import {
     mdiCodeJson, mdiFileDocumentOutline, mdiFileExcel, mdiFileImage, mdiFilePdf,
     mdiFolder, mdiFolderOpen, mdiFolderPlus, mdiLanguageHtml5, mdiLanguageMarkdown,
-    mdiNodejs, mdiPlus
+    mdiNodejs, mdiPlus, mdiDelete
 } from "@mdi/js";
 
 
@@ -42,7 +42,8 @@ export default {
                 mdiFolderOpen,
                 mdiPlus,
                 mdiFolderPlus,
-                mdiFileDocumentOutline
+                mdiFileDocumentOutline,
+                mdiDelete
             },
             addFolderInputOpen: false,
             addFolderInputValue: "",
@@ -246,13 +247,53 @@ export default {
             }, true);
             this.importFile({files: [file], fileId: randomItemId});
 
-            this.openEntityEditor(randomItemId);
+            if (file.name.split(".").pop() === "gltf") {
+                this.openEntityEditor(randomItemId);
+            }
+
 
         },
 
         openEntityEditor (entityId) {
             this.setSelectedEntityId(entityId);
             this.$emit("openView", constants.storyCreationViews.ENTITY_EDITOR);
+        },
+
+        removeItem (itemId) {
+            const itemsCopy = JSON.parse(JSON.stringify(this.threeDFiles));
+
+            /**
+             * Function to recursively search and remove the item
+             * @param {Array} items the items to search
+             * @returns {boolean} true if the item was removed, false otherwise
+             */
+            function removeRecursive (items) {
+                for (let i = 0; i < items.length; i++) {
+                    const item = items[i];
+
+                    console.log(item, itemId);
+
+                    if (item.id === itemId) {
+                        console.log(item);
+                        items.splice(i, 1);
+                        return true;
+                    }
+                    // If the item has children, recursively search them
+                    if (item.children && item.children.length > 0) {
+                        if (removeRecursive(item.children)) {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            removeRecursive(itemsCopy);
+
+            this.threeDFiles = itemsCopy;
+            this.step.threeDFiles = this.threeDFiles;
+
         },
 
         createFormData () {
@@ -392,18 +433,26 @@ export default {
                         >
                     </button>
 
-                    <div v-if="!item.file">
+                    <div>
                         <v-btn
+                            v-if="!item.file"
                             icon
                             @click.stop="openFileDialog(item.id)"
                         >
                             <v-icon>{{ icons.mdiPlus }}</v-icon>
                         </v-btn>
                         <v-btn
+                            v-if="!item.file"
                             icon
                             @click.stop="() => addFolder(item.id, true)"
                         >
                             <v-icon>{{ icons.mdiFolderPlus }}</v-icon>
+                        </v-btn>
+                        <v-btn
+                            icon
+                            @click.stop="() => removeItem(item.id)"
+                        >
+                            <v-icon>{{ icons.mdiDelete }}</v-icon>
                         </v-btn>
                     </div>
                 </div>

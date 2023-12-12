@@ -424,7 +424,9 @@ export default {
             }
             if (item.children && item.children.length > 0) {
                 item.children.forEach((child) => {
-                    this.addEntity(child, `${path}/${item.name}`);
+                    const newPath = item.name !== "files" ? `${path}/${item.name}` : path;
+
+                    this.addEntity(child, `${newPath}`);
                 });
             }
 
