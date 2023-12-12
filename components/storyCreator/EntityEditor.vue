@@ -187,24 +187,32 @@ export default {
             this.northing += 0.1;
             // Fix potential floating point precision issue
             this.northing = parseFloat(this.northing.toFixed(1));
+
+            this.updatePosition();
         },
 
         decrementNorhting () {
             this.northing -= 0.1;
             // Fix potential floating point precision issue
             this.northing = parseFloat(this.northing.toFixed(1));
+
+            this.updatePosition();
         },
 
         incrementEasting () {
             this.easting += 0.1;
             // Fix potential floating point precision issue
             this.easting = parseFloat(this.easting.toFixed(1));
+
+            this.updatePosition();
         },
 
         decrementEasting () {
             this.easting -= 0.1;
             // Fix potential floating point precision issue
             this.easting = parseFloat(this.easting.toFixed(1));
+
+            this.updatePosition();
         }
     }
 };
