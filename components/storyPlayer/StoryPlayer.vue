@@ -422,7 +422,8 @@ export default {
                     file: item.file,
                     uri: `${path}/${item.name}`,
                     scale: item.scale,
-                    position: position
+                    position: position,
+                    clampToGround: true
                     // orientation: quaternion
                 });
                 return;

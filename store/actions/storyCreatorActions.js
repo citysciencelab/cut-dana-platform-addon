@@ -339,6 +339,7 @@ function uploadStoryFiles ({state}) {
     let storyId = state.currentStoryId,
         requestUrl = `${backendUrl}/stories`,
         imagePathPrefix = `${backendUrl}/images/`,
+        storyFilePath = state.currentStory.threeDFilesUrl,
         axiosMethod = axios.post;
 
     if (storyId) {
@@ -350,6 +351,7 @@ function uploadStoryFiles ({state}) {
     return axiosMethod(requestUrl, story).then((response) => {
         // Save entire story
         storyId ||= response.data.storyId;
+        storyFilePath ||= response.data.threeDFilesUrl;
         imagePathPrefix += storyId + "/";
     }).then(() => {
         // Upload and replace images in story
@@ -385,17 +387,16 @@ function uploadStoryFiles ({state}) {
 
 
         for (const {stepNumber, threeDFiles, files} of threeDFileArray) {
-            const url = threeDFilesPathPrefix + storyId + "/" + stepNumber,
+            const url = threeDFilesPathPrefix + storyId + "/" + stepNumber;
 
-                response = await fetch(url, {
-                    method: "POST",
-                    body: threeDFiles
-                });
+            url.search = new URLSearchParams({storyFilesUrl: files});
 
-            // await fetch(url, {
-            //     method: "PATCH",
-            //     body: files
-            // });
+            // eslint-disable-next-line
+            const response = await fetch(url, {
+                method: "POST",
+                body: threeDFiles
+            });
+
 
             threeDFileUploads.push(await response.json());
 

@@ -10,6 +10,9 @@ import BackButton from "../shared/BackButton.vue";
 import {getItemRecursive, replaceFileItem} from "../../utils/threeDFiles";
 
 import {mdiChevronUp, mdiChevronDown} from "@mdi/js";
+import proj4 from "proj4";
+
+proj4.defs("EPSG:32632", "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
 
 
 export default {
@@ -40,13 +43,15 @@ export default {
             position: null,
             orientation: null,
             scale: 1,
-            number: 0
+            northing: 0,
+            easting: 0,
+            altitude: 0
         };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
         ...mapGetters(["namedProjections"]),
-        ...mapGetters("Maps", ["altitude", "longitude", "latitude", "clickCoordinate", "mouseCoordinate"]),
+        ...mapGetters("Maps", ["clickCoordinate", "mouseCoordinate"]),
         selectedEntity () {
             return mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities.getById(this.selectedEntityId);
         }
@@ -79,7 +84,28 @@ export default {
                 //     pitch: simpleOrientationObject.pitch,
                 //     roll: simpleOrientationObject.roll
                 // }
-            });
+            }),
+            wgs84Projection = "EPSG:4326",
+            utmProjection = "EPSG:32632",
+            positionObject = new Cesium.Cartesian3(this.position._value.x, this.position._value.y, this.position._value.z),
+
+            cartographic = Cesium.Cartographic.fromCartesian(positionObject),
+            latitude = Cesium.Math.toDegrees(cartographic.latitude),
+            longitude = Cesium.Math.toDegrees(cartographic.longitude),
+
+            [easting, northing] = proj4(utmProjection, wgs84Projection, [longitude, latitude]);
+
+        // this.updatePosition();
+
+        console.log("MOUNT", this.position, this.position.height, cartographic, latitude, longitude);
+        this.northing = northing;
+        this.easting = easting;
+        this.alittude = this.position.height;
+
+        // this.altitude = this.position.height;
+        // this.northing = northing;
+        // this.easting = easting;
+
 
         this.threeDFiles = newItems;
         this.step.threeDFiles = this.threeDFiles;
@@ -104,19 +130,69 @@ export default {
                     scale: this.scale
                 });
 
+
             this.threeDFiles = newItems;
             this.step.threeDFiles = this.threeDFiles;
         },
 
-        addValue () {
-            this.number += 0.1;
-            // Fix potential floating point precision issue
-            this.number = parseFloat(this.number.toFixed(1));
+        updatePosition (easting, northing, altitude) {
+
+            let e, n, a;
+
+            if (!easting) {
+                e = this.easting;
+            }
+
+            if (!northing) {
+                n = this.northing;
+            }
+
+            if (!altitude) {
+                a = this.altitude;
+            }
+
+            const utmProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                [longitude, latitude] = proj4(utmProjection, "EPSG:4326", [e, n]),
+                currentItem = getItemRecursive(this.threeDFiles, this.selectedEntityId),
+                position = Cesium.Cartesian3.fromDegrees(longitude, latitude),
+                newItems = replaceFileItem(this.threeDFiles, this.selectedEntityId, {
+                    ...currentItem,
+                    position: position
+                });
+
+            this.changeEntityLocation({
+                entityId: this.selectedEntityId, newLocation: position
+            });
+
+            this.position = position;
+
+            this.threeDFiles = newItems;
+            this.step.threeDFiles = this.threeDFiles;
+
         },
-        subtractValue () {
-            this.number -= 0.1;
+
+        incrementNorhting () {
+            this.northing += 0.1;
             // Fix potential floating point precision issue
-            this.number = parseFloat(this.number.toFixed(1));
+            this.northing = parseFloat(this.northing.toFixed(1));
+        },
+
+        decrementNorhting () {
+            this.northing -= 0.1;
+            // Fix potential floating point precision issue
+            this.northing = parseFloat(this.northing.toFixed(1));
+        },
+
+        incrementEasting () {
+            this.easting += 0.1;
+            // Fix potential floating point precision issue
+            this.easting = parseFloat(this.easting.toFixed(1));
+        },
+
+        decrementEasting () {
+            this.easting -= 0.1;
+            // Fix potential floating point precision issue
+            this.easting = parseFloat(this.easting.toFixed(1));
         }
     }
 };
@@ -157,10 +233,11 @@ export default {
                     <v-row>
                         <v-col cols="auto">
                             <v-text-field
-                                v-model="number"
-                                label="Number"
+                                v-model="northing"
+                                label="Northing"
                                 type="number"
                                 outlined
+                                @change="(value) => updatePosition(easting, value, altitude)"
                             />
                         </v-col>
                         <v-col cols="auto">
@@ -168,7 +245,7 @@ export default {
                                 <v-btn
                                     icon
                                     small
-                                    @click="addValue"
+                                    @click="incrementNorhting"
                                 >
                                     <v-icon>{{ icons.mdiChevronUp }}</v-icon>
                                 </v-btn>
@@ -177,7 +254,40 @@ export default {
                                 <v-btn
                                     icon
                                     small
-                                    @click="subtractValue"
+                                    @click="decrementNorhting"
+                                >
+                                    <v-icon>{{ icons.mdiChevronDown }}</v-icon>
+                                </v-btn>
+                            </v-row>
+                        </v-col>
+                    </v-row>
+                </v-container>
+                <v-container>
+                    <v-row>
+                        <v-col cols="auto">
+                            <v-text-field
+                                v-model="easting"
+                                label="Easting"
+                                type="number"
+                                outlined
+                                @change="(value) => updatePosition(value, northing, altitude)"
+                            />
+                        </v-col>
+                        <v-col cols="auto">
+                            <v-row>
+                                <v-btn
+                                    icon
+                                    small
+                                    @click="incrementEasting"
+                                >
+                                    <v-icon>{{ icons.mdiChevronUp }}</v-icon>
+                                </v-btn>
+                            </v-row>
+                            <v-row>
+                                <v-btn
+                                    icon
+                                    small
+                                    @click="decrementEasting"
                                 >
                                     <v-icon>{{ icons.mdiChevronDown }}</v-icon>
                                 </v-btn>

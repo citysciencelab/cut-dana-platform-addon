@@ -158,7 +158,7 @@ export default {
 
             const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer", isBaseLayer: false}),
 
-                layer3d = Radio.request("ModelList", "getModelByAttributes", {parentId: "3d_daten", isVisibleInMap: true});
+                layer3d = Radio.request("Parser", "getItemsByAttributes", {id: "12884"});
 
             console.log(layer3d);
 
@@ -336,12 +336,13 @@ export default {
         }
     },
     mounted () {
+        // Radio.trigger("Menu", "rerender");
         if (!this.step.layers) {
             this.step.layers = [];
         }
 
         if (this.step.threeDLayers) {
-            console.log(this.step);
+            // console.log(this.step);
         }
 
         this.$store.commit("Tools/Draw/setActive", true);

@@ -5,6 +5,7 @@ import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader.js";
 import {ColladaLoader} from "three/examples/jsm/loaders/ColladaLoader.js";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter.js";
 import crs from "@masterportal/masterportalapi/src/crs";
+import proj4 from "proj4";
 
 
 /**
@@ -181,9 +182,7 @@ function handleGltfFile (state, payload) {
 
     const {file, fileName, fileId} = payload,
         viewer = mapCollection.getMap("3D"),
-        entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
         currentLocation = viewer.camera_.cam_.position,
-        models = state.importedEntities,
 
         entity = createEntity(state, {
             viewer,
@@ -193,26 +192,29 @@ function handleGltfFile (state, payload) {
             orientation: undefined,
             visibility: true,
             uri: URL.createObjectURL(file),
+            clampToGround: true,
             position: currentLocation
         });
+
+    console.log(currentLocation);
 
 
     state.selectedEntityId = entity.id;
     // this.moveEntity(undefined, fileId);
     // this.writeEntityDataToItems(entity, fileId);
 
-    entities.add(entity);
+    // entities.add(entity);
 
-    models.push({
-        id: entity.id,
-        name: fileName,
-        show: true,
-        edit: false,
-        heading: 0
-    });
+    // models.push({
+    //     id: entity.id,
+    //     name: fileName,
+    //     show: true,
+    //     edit: false,
+    //     heading: 0
+    // });
 
 
-    state.importedEntities = models;
+    // state.importedEntities = models;
     state.loading = false;
 }
 
@@ -376,17 +378,19 @@ function toggleEntityVisibility (state, payload) {
  * @param {Object} state state of the datanarrator module
  * @param {Object} payload payload of the action
  * @param {*} payload.entityId the entity id
- * @param {*} payload.newLocation the new location in the format [longitude, latitude, height]
+ * @param {*} payload.newLocation the new location
  * @returns {void}
  */
 function changeEntityLocation (state, payload) {
-    const {entityId, newLocation} = payload,
+    const {entityId} = payload,
         viewer = mapCollection.getMap("3D"),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
         entity = entities.getById(entityId);
 
+    console.log(payload.newLocation, "POSITION:", entity.position, "enitityID:", payload.entityId);
+
     if (entity && entity.position) {
-        entity.position = Cesium.Cartesian3.fromDegrees(newLocation[0], newLocation[1], newLocation[2]);
+        entity.position = payload.newLocation;
     }
 }
 
@@ -440,7 +444,7 @@ function createEntity (state, payload) {
             position: position
         });
 
-    entities.add(entity);
+    // entities.add(entity);
 
     // Add the entity to the state
     state.importedEntities.push(entity);
