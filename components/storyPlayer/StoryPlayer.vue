@@ -100,7 +100,6 @@ export default {
         if (this.currentStory) {
             this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
             this.currentStepIndex = this.stepIndex;
-            await this.loadThreeDFiles();
         }
         this.activateInterval();
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
@@ -495,6 +494,7 @@ export default {
                     },
                     easingFunction: Cesium.EasingFunction.QUADRATIC_OUT
                 });
+                await this.loadThreeDFiles();
             }
 
             const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
