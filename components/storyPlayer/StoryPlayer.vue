@@ -399,7 +399,6 @@ export default {
                     }
                 });
 
-                console.log(this.importedEntities);
             }
         },
 
@@ -410,7 +409,6 @@ export default {
 
 
             if (item.file) {
-                console.log("ITEM", item);
                 const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z);
 
                 this.createEntity({

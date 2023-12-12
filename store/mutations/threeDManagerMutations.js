@@ -5,7 +5,6 @@ import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader.js";
 import {ColladaLoader} from "three/examples/jsm/loaders/ColladaLoader.js";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter.js";
 import crs from "@masterportal/masterportalapi/src/crs";
-import proj4 from "proj4";
 
 
 /**

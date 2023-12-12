@@ -67,8 +67,6 @@ export default {
             this.scale = parseFloat(this.selectedEntity.model.scale);
         }
 
-        console.log(this.selectedEntity.position._value, this.selectedEntity.orientation, this.selectedEntity.model.scale);
-
 
         const currentItem = getItemRecursive(this.threeDFiles, this.selectedEntityId),
             newItems = replaceFileItem(this.threeDFiles, this.selectedEntityId, {
@@ -86,18 +84,20 @@ export default {
                 // }
             }),
             wgs84Projection = "EPSG:4326",
-            utmProjection = "EPSG:32632",
+            utm32UProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+            utmProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
             positionObject = new Cesium.Cartesian3(this.position._value.x, this.position._value.y, this.position._value.z),
 
             cartographic = Cesium.Cartographic.fromCartesian(positionObject),
             latitude = Cesium.Math.toDegrees(cartographic.latitude),
             longitude = Cesium.Math.toDegrees(cartographic.longitude),
 
-            [easting, northing] = proj4(utmProjection, wgs84Projection, [longitude, latitude]);
+            [easting, northing] = proj4(utm32UProjection).forward([longitude, latitude]);
+
 
         // this.updatePosition();
 
-        console.log("MOUNT", this.position, this.position.height, cartographic, latitude, longitude);
+        console.log("MOUNT", this.position, this.position.height, cartographic, latitude, longitude, easting, northing);
         this.northing = northing;
         this.easting = easting;
         this.alittude = this.position.height;
@@ -136,25 +136,38 @@ export default {
         },
 
         updatePosition (easting, northing, altitude) {
-
             let e, n, a;
 
             if (!easting) {
-                e = this.easting;
+                e = parseFloat(this.easting);
+            }
+            else {
+                e = parseFloat(easting);
             }
 
             if (!northing) {
-                n = this.northing;
+                n = parseFloat(this.northing);
+            }
+            else {
+                n = parseFloat(northing);
             }
 
             if (!altitude) {
-                a = this.altitude;
+                a = parseFloat(this.altitude);
+            }
+            else {
+                a = parseFloat(altitude);
             }
 
-            const utmProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-                [longitude, latitude] = proj4(utmProjection, "EPSG:4326", [e, n]),
+            // Define the UTM Zone 32 projection
+            proj4.defs("EPSG:32632", "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+
+            // Correct the order of the projections and include the altitude in the conversion
+            const
+                utm32UProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                geographicCoords = proj4(utm32UProjection).inverse([e, n, a]),
                 currentItem = getItemRecursive(this.threeDFiles, this.selectedEntityId),
-                position = Cesium.Cartesian3.fromDegrees(longitude, latitude),
+                position = Cesium.Cartesian3.fromDegrees(geographicCoords[0], geographicCoords[1], geographicCoords[2]),
                 newItems = replaceFileItem(this.threeDFiles, this.selectedEntityId, {
                     ...currentItem,
                     position: position
@@ -168,7 +181,6 @@ export default {
 
             this.threeDFiles = newItems;
             this.step.threeDFiles = this.threeDFiles;
-
         },
 
         incrementNorhting () {
@@ -237,7 +249,7 @@ export default {
                                 label="Northing"
                                 type="number"
                                 outlined
-                                @change="(value) => updatePosition(easting, value, altitude)"
+                                @change="(value) => updatePosition()"
                             />
                         </v-col>
                         <v-col cols="auto">
@@ -270,7 +282,7 @@ export default {
                                 label="Easting"
                                 type="number"
                                 outlined
-                                @change="(value) => updatePosition(value, northing, altitude)"
+                                @change="(value) => updatePosition()"
                             />
                         </v-col>
                         <v-col cols="auto">
