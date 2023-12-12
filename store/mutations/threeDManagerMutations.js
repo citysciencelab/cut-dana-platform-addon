@@ -376,6 +376,39 @@ function toggleEntityVisibility (state, payload) {
 }
 
 /**
+ * Disables the visibility of an entity.
+ * @param {Object} state state of the datanarrator module
+ * @param {Object} payload payload of the action
+ * @param {*} payload.viewer the cesium viewer
+ * @param {*} payload.entityId the entity id
+ * @returns {void}
+ */
+function disableEntityVisibility (state, payload) {
+    const {viewer, entityId} = payload,
+        entity = viewer.entities.getById(entityId);
+
+    if (entity) {
+        entity.show = false;
+    }
+}
+
+/**
+ * Disables the visibility of all entities.
+ * @param {Object} state state of the datanarrator module
+ * @param {Object} payload payload of the action
+ * @param {*} payload.viewer the cesium viewer
+ * @returns {void}
+ */
+function disableAllEntities () {
+    const viewer = mapCollection.getMap("3D"),
+        entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
+
+    entities.values.forEach(entity => {
+        entity.show = false;
+    });
+}
+
+/**
  * Changes the location of an entity.
  * @param {Object} state state of the datanarrator module
  * @param {Object} payload payload of the action
@@ -477,11 +510,14 @@ function createEntity (state, payload) {
     return entity;
 }
 
+
 export default {
     importFile,
     removeEntity,
     toggleEntityVisibility,
     changeEntityLocation,
     scaleEntity,
-    createEntity
+    createEntity,
+    disableEntityVisibility,
+    disableAllEntities
 };

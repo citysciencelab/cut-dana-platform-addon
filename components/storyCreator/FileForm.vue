@@ -264,7 +264,6 @@ export default {
             }
 
             event.target.value = "";
-            console.log(this.threeDFiles);
         },
 
         openEntityEditor (entityId) {
@@ -302,7 +301,6 @@ export default {
             removeRecursive(this.threeDFiles);
 
             this.step.threeDFiles = this.threeDFiles;
-
         },
 
         createFormData () {
