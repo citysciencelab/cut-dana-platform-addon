@@ -237,7 +237,6 @@ export default {
         handleFileUpload (event, itemId) {
             for (const file of event.target.files) {
                 const randomItemId = this.randomId(),
-
                     // Read the file into a Blob object
                     reader = new FileReader();
 

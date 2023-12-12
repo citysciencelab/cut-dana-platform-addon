@@ -24,6 +24,7 @@ function addETRS893GK3 (state, payload) {
     for (const key in epsg8395[0]) {
         etrs89_3GK3Proj[key] = epsg8395[0][key];
     }
+
     etrs89_3GK3Proj.name = "ETRS893GK3";
     etrs89_3GK3Proj.epsg = "EPSG:8395";
     etrs89_3GK3Proj.id = "http://www.opengis.net/gml/srs/epsg.xml#ETRS893GK3";
@@ -144,6 +145,7 @@ function importFile (state, payload) {
         else if (fileExtension === "dae") {
             this.handleDaeFile(event.target.result, fileName, fileId);
         }
+        state.loading = false;
         // else if (fileExtension === "geojson") {
         //     this.handleGeoJsonFile(event.target.result, fileId);
         // }
