@@ -14,7 +14,7 @@ import disableStoryLayers from "../utils/disableStoryLayers";
 
 import RenderUtilities from "../mixins/RenderUtilities";
 
-import DashboardPanel from "./Dashboard/DashboardPanel2.vue";
+import DashboardPanel from "./Dashboard/DashboardPanel.vue";
 import SnackBar from "./shared/SnackBar.vue";
 import StoryCreator from "./storyCreator/StoryCreator.vue";
 import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
