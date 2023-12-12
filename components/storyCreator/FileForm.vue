@@ -440,7 +440,7 @@ export default {
                 >
                     <button
                         @click="event => {
-                            if (item.file)
+                            if (item.file && item.name.split('.').pop() === 'gltf')
                                 openEntityEditor(item.id)
                         }
                         "

@@ -97,7 +97,6 @@ export default {
 
         // this.updatePosition();
 
-        console.log("MOUNT", this.position, this.position.height, cartographic, latitude, longitude, easting, northing);
         this.northing = northing;
         this.easting = easting;
         this.alittude = this.position.height;
@@ -109,7 +108,6 @@ export default {
 
         this.threeDFiles = newItems;
         this.step.threeDFiles = this.threeDFiles;
-        // console.log("mounted");
     },
     beforeDestroy () {
         // console.log("beforeDestroy");
