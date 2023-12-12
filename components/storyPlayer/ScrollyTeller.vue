@@ -152,8 +152,8 @@ export default {
     }
 
     .stepper {
-        min-height: 200px;
-        margin: 100px 0;
+        min-height: 350px;
+        margin-bottom: 300px;
         background-color: transparent !important;
         padding: 20px;
         border-radius: 12px;
