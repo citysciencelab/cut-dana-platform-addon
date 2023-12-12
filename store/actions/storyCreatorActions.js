@@ -6,6 +6,7 @@ import {intersects} from "ol/extent";
 import {WMSCapabilities} from "ol/format.js";
 import dataURLtoFile from "../../utils/dataURLtoFile.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
+import printFormDataAsTable from "../../utils/printFormData.js";
 
 /**
  * Adds a chapter to the story
@@ -213,7 +214,6 @@ function prepareHtml (story, images) {
         htmlArray = [],
         threeDFileArray = [];
 
-    console.log(story.steps);
 
     story.steps = story.steps.map((step) => {
         let html = step.html;
@@ -251,10 +251,13 @@ function prepareHtml (story, images) {
         function processNode (node, formdata, path = "") {
             if (node.file && node.obj) {
                 // It's a file, append it to FormData
-                const fullPath = path;
+                let fullPath = path;
 
+                if (fullPath === "") {
+                    fullPath = "ROOT_FILES_FOLDER_8943012";
+                }
                 formdata.append(fullPath, node.obj);
-                console.log(node);
+                delete node.children;
             }
             else if (node.children && Array.isArray(node.children) && node.children.length > 0) {
                 // It's a folder, recurse into its children
@@ -288,6 +291,10 @@ function prepareHtml (story, images) {
         delete step._id;
         return step;
     });
+
+    for (const threeDFileItem of threeDFileArray) {
+        printFormDataAsTable(threeDFileItem.threeDFiles);
+    }
 
 
     return [story, imageArray, htmlArray, threeDFileArray];
@@ -411,7 +418,6 @@ function uploadStoryFiles ({state}) {
         return threeDFileUploads;
 
     }).then((files) => {
-        console.log(files);
         // Upload html parts
         const pathPrefix = `${backendUrl}/stories/`,
             threeDFUploads = threeDFileArray.map((element) => {
@@ -420,12 +426,6 @@ function uploadStoryFiles ({state}) {
                 return axios.patch(query_url, {threeDFilesUrl: files[0].folder});
             });
 
-        // loop over all the fields in the form
-        for (const threeDFile of threeDFileArray) {
-            for (const [key, value] of threeDFile.threeDFiles.entries()) {
-                console.log(key, value);
-            }
-        }
 
         return Promise.all(threeDFUploads);
     }).then(() => {

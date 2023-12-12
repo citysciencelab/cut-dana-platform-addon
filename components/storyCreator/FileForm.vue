@@ -55,7 +55,9 @@ export default {
             ignoreFolderChange: false,
             forceFolderRerenderKey: 0,
             step: this.editedStep,
-            threeDFiles: this.editedStep.threeDFiles || []
+            threeDFiles: this.editedStep.threeDFiles || [],
+
+            rootInputId: this.randomId()
         };
     },
     computed: {
@@ -71,7 +73,6 @@ export default {
     },
     mounted () {
         // set map to 3d
-        console.log(this.currentStory, this.step);
 
         // load the existing files
 
@@ -134,15 +135,15 @@ export default {
 
         addItem (parentId, newItem, asChild = true) {
             // Create a copy of the items
-            const itemsCopy = JSON.parse(JSON.stringify(this.threeDFiles));
 
-            if (!parentId) {
+            if (!parentId || parentId === "") {
                 // If no parent id is provided, add the item to the root
-                itemsCopy.push(newItem);
-                // Update the original items with the modified copy
-                this.threeDFiles = itemsCopy;
-                return;
+                this.threeDFiles.push(newItem);
             }
+            else {
+                addRecursive(this.threeDFiles, parentId, newItem);
+            }
+
 
             /**
              * Recursive function to add an item to the tree
@@ -178,10 +179,9 @@ export default {
             }
 
             // Use the copied items for recursive addition
-            addRecursive(itemsCopy, parentId, newItem);
 
+            console.log(this.threeDFiles);
             // Update the original items with the modified copy
-            this.threeDFiles = itemsCopy;
             this.step.threeDFiles = this.threeDFiles;
         },
 
@@ -235,23 +235,36 @@ export default {
         },
 
         handleFileUpload (event, itemId) {
+            for (const file of event.target.files) {
+                const randomItemId = this.randomId(),
 
-            const randomItemId = this.randomId(),
-                file = event.target.files[0];
+                    // Read the file into a Blob object
+                    reader = new FileReader();
 
-            this.addItem(itemId, {
-                id: randomItemId,
-                name: file.name,
-                file: file.name.split(".").pop(),
-                obj: file
-            }, true);
-            this.importFile({files: [file], fileId: randomItemId});
+                reader.onload = (event) => {
+                    // Create a new Blob object from the file data
+                    const blob = new Blob([event.target.result], {type: file.type}),
 
-            if (file.name.split(".").pop() === "gltf") {
-                this.openEntityEditor(randomItemId);
+                        // Create a new File object from the Blob
+                        fileCopy = new File([blob], file.name, {type: file.type});
+
+                    this.addItem(itemId, {
+                        id: randomItemId,
+                        name: fileCopy.name,
+                        file: fileCopy.name.split(".").pop(),
+                        obj: fileCopy
+                    }, true);
+                    this.importFile({files: [fileCopy], fileId: randomItemId});
+
+                    if (file.name.split(".").pop() === "gltf") {
+                        this.openEntityEditor(randomItemId);
+                    }
+                };
+                reader.readAsArrayBuffer(file);
             }
 
-
+            event.target.value = "";
+            console.log(this.threeDFiles);
         },
 
         openEntityEditor (entityId) {
@@ -260,7 +273,6 @@ export default {
         },
 
         removeItem (itemId) {
-            const itemsCopy = JSON.parse(JSON.stringify(this.threeDFiles));
 
             /**
              * Function to recursively search and remove the item
@@ -271,10 +283,8 @@ export default {
                 for (let i = 0; i < items.length; i++) {
                     const item = items[i];
 
-                    console.log(item, itemId);
 
                     if (item.id === itemId) {
-                        console.log(item);
                         items.splice(i, 1);
                         return true;
                     }
@@ -289,9 +299,8 @@ export default {
                 return false;
             }
 
-            removeRecursive(itemsCopy);
+            removeRecursive(this.threeDFiles);
 
-            this.threeDFiles = itemsCopy;
             this.step.threeDFiles = this.threeDFiles;
 
         },
@@ -330,6 +339,7 @@ export default {
 
 
             this.step.threeDFiles = this.threeDFiles;
+            console.log("SUBMIT", this.step.threeDFiles);
             this.returnToStepForm();
 
         },
@@ -389,6 +399,23 @@ export default {
                 icon
                 @click="() => addFolder(null, false)"
             ><v-icon>{{ icons.mdiFolderPlus }}</v-icon></v-btn>
+
+            <label :for="'fileInput' + rootInputId" />
+            <input
+                :id="'fileInput' + rootInputId"
+                :ref="'fileInput' + rootInputId"
+                type="file"
+                multiple
+                hidden
+                @change="(event) => handleFileUpload(event, '')"
+            >
+
+            <v-btn
+                icon
+                @click.stop="openFileDialog(rootInputId)"
+            >
+                <v-icon>{{ icons.mdiPlus }}</v-icon>
+            </v-btn>
         </span>
         <v-treeview
             v-model="tree"
@@ -423,6 +450,7 @@ export default {
                             :id="'fileInput' + item.id"
                             :ref="'fileInput' + item.id"
                             type="file"
+                            multiple
                             hidden
                             @change="(event) => {
                                 if (!item.file) {

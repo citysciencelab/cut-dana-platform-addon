@@ -160,7 +160,6 @@ export default {
 
                 layer3d = Radio.request("Parser", "getItemsByAttributes", {id: "12884"});
 
-            console.log(layer3d);
 
             return layerList.map(layer => layer);
         },

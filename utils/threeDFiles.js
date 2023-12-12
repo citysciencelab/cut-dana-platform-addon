@@ -7,7 +7,7 @@
  */
 export function replaceFileItem (fileItems, itemId, newItem) {
     // Create a copy of the items
-    const itemsCopy = JSON.parse(JSON.stringify(fileItems));
+    const itemsCopy = fileItems;
 
 
     /**
