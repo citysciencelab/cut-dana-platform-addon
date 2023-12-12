@@ -134,6 +134,11 @@ export default {
                 this.hideWmslayer(layer.url);
             });
         }
+
+        if (Radio.request("Map", "isMap3d")) {
+            this.disableAllEntities();
+            // store.dispatch("Maps/deactivateMap3D");
+        }
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -403,6 +408,22 @@ export default {
             }
         },
 
+        enableThreeDModels () {
+            if (this.currentStory.steps.filter((step) => step.threeDFiles?.length > 0).length > 0) {
+
+
+                this.currentStory.steps.forEach((step) => {
+                    if (step.threeDFiles) {
+                        step.threeDFiles.forEach((item) => {
+                            // console.log(this.backendConfig.url);
+                            this.enableEntityVisibility(item);
+                        });
+                    }
+                });
+
+            }
+        },
+
         addEntity (item, path = "") {
             // the item is a file and not a folder
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
@@ -418,7 +439,8 @@ export default {
                     uri: `${path}/${item.name}`,
                     scale: item.scale,
                     position: position,
-                    clampToGround: true
+                    clampToGround: true,
+                    show: false
                     // orientation: quaternion
                 });
                 return;

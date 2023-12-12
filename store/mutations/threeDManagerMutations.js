@@ -376,6 +376,24 @@ function toggleEntityVisibility (state, payload) {
 }
 
 /**
+ * Enables the visibility of an entity.
+ * @param {Object} state state of the datanarrator module
+ * @param {Object} payload payload of the action
+ * @param {*} payload.viewer the cesium viewer
+ * @param {*} payload.entityId the entity id
+ * @returns {void}
+ */
+function enableEntityVisibility (state, payload) {
+    const {viewer, entityId} = payload,
+        entity = viewer.entities.getById(entityId);
+
+    if (entity) {
+        entity.show = true;
+    }
+}
+
+
+/**
  * Disables the visibility of an entity.
  * @param {Object} state state of the datanarrator module
  * @param {Object} payload payload of the action
@@ -519,5 +537,6 @@ export default {
     scaleEntity,
     createEntity,
     disableEntityVisibility,
-    disableAllEntities
+    disableAllEntities,
+    enableEntityVisibility
 };
