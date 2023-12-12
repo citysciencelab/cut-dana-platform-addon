@@ -432,19 +432,43 @@ function scaleEntity (state, payload) {
 function createEntity (state, payload) {
     const {entityId, scale, orientation, visibility, uri, position} = payload,
         viewer = mapCollection.getMap("3D"),
-        entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
+        entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
+        // check if entity already exists, if it does, just replace all the values in the entity and set it to visible
 
-        entity = entities.add({
-            id: entityId,
-            model: {
-                uri: uri, // replace with your model path
-                scale: scale
-            },
-            clampToGround: payload.clampToGround,
-            // orientation: orientation,
-            show: visibility,
-            position: position
-        });
+    // entity = entities.add({
+    //     id: entityId,
+    //     model: {
+    //         uri: uri, // replace with your model path
+    //         scale: scale
+    //     },
+    //     clampToGround: payload.clampToGround,
+    //     // orientation: orientation,
+    //     show: visibility,
+    //     position: position
+    // });
+
+    let entity = entities.getById(entityId);
+
+    if (entity) {
+        entity.model.uri = uri;
+        entity.model.scale = scale;
+        entity.clampToGround = payload.clampToGround;
+        entity.show = true;
+        entity.position = position;
+        return entity;
+    }
+    entity = entities.add({
+        id: entityId,
+        model: {
+            uri: uri, // replace with your model path
+            scale: scale
+        },
+        clampToGround: payload.clampToGround,
+        // orientation: orientation,
+        show: visibility,
+        position: position
+    });
+
 
     // entities.add(entity);
 
