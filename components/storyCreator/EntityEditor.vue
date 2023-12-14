@@ -8,6 +8,7 @@ import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import BackButton from "../shared/BackButton.vue";
 import {getItemRecursive, replaceFileItem} from "../../utils/threeDFiles";
+import getEntityValues from "../../utils/getEntityValues";
 
 import {mdiChevronUp, mdiChevronDown} from "@mdi/js";
 import proj4 from "proj4";
@@ -24,6 +25,7 @@ export default {
 
     props: {
         // The initial values for a step to edit
+
         editedStep: {
             type: Object,
             default: () => ({})
@@ -33,9 +35,7 @@ export default {
         return {
             constants,
             // items: this.editedStep?.threeDLayers || {},
-
             step: this.editedStep,
-            threeDFiles: this.editedStep.threeDFiles || [],
             icons: {
                 mdiChevronDown,
                 mdiChevronUp
@@ -66,10 +66,10 @@ export default {
             this.orientation = this.selectedEntity.orientation;
             this.scale = parseFloat(this.selectedEntity.model.scale);
         }
+        console.log(this.step);
 
-
-        const currentItem = getItemRecursive(this.threeDFiles, this.selectedEntityId),
-            newItems = replaceFileItem(this.threeDFiles, this.selectedEntityId, {
+        const currentItem = getItemRecursive(this.step.selectedModelIds, this.selectedEntityId),
+            newItems = replaceFileItem(this.step.selectedModelIds, this.selectedEntityId, {
                 ...currentItem,
                 scale: this.scale,
                 position: {
@@ -83,9 +83,7 @@ export default {
                 //     roll: simpleOrientationObject.roll
                 // }
             }),
-            wgs84Projection = "EPSG:4326",
             utm32UProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-            utmProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
             positionObject = new Cesium.Cartesian3(this.position._value.x, this.position._value.y, this.position._value.z),
 
             cartographic = Cesium.Cartographic.fromCartesian(positionObject),
@@ -107,7 +105,10 @@ export default {
 
 
         this.threeDFiles = newItems;
-        this.step.threeDFiles = this.threeDFiles;
+        this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
+            modelId,
+            ...getEntityValues(modelId)
+        }));
     },
     beforeDestroy () {
         // console.log("beforeDestroy");
@@ -122,15 +123,10 @@ export default {
 
             // console.log(this.threeDFiles, this.selectedEntityId);
 
-            const currentItem = getItemRecursive(this.threeDFiles, this.selectedEntityId),
-                newItems = replaceFileItem(this.threeDFiles, this.selectedEntityId, {
-                    ...currentItem,
-                    scale: this.scale
-                });
-
-
-            this.threeDFiles = newItems;
-            this.step.threeDFiles = this.threeDFiles;
+            this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
+                modelId,
+                ...getEntityValues(modelId)
+            }));
         },
 
         updatePosition (easting, northing, altitude) {
@@ -164,12 +160,8 @@ export default {
             const
                 utm32UProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
                 geographicCoords = proj4(utm32UProjection).inverse([e, n, a]),
-                currentItem = getItemRecursive(this.threeDFiles, this.selectedEntityId),
-                position = Cesium.Cartesian3.fromDegrees(geographicCoords[0], geographicCoords[1], geographicCoords[2]),
-                newItems = replaceFileItem(this.threeDFiles, this.selectedEntityId, {
-                    ...currentItem,
-                    position: position
-                });
+                position = Cesium.Cartesian3.fromDegrees(geographicCoords[0], geographicCoords[1], geographicCoords[2]);
+
 
             this.changeEntityLocation({
                 entityId: this.selectedEntityId, newLocation: position
@@ -177,8 +169,10 @@ export default {
 
             this.position = position;
 
-            this.threeDFiles = newItems;
-            this.step.threeDFiles = this.threeDFiles;
+            this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
+                modelId,
+                ...getEntityValues(modelId)
+            }));
         },
 
         incrementNorhting () {
@@ -223,7 +217,6 @@ export default {
     >
         <BackButton
             tooltip="additional:modules.tools.dataNarrator.button.backToStory"
-            :text="step.title"
             @click="$emit('return', step)"
         />
         <div

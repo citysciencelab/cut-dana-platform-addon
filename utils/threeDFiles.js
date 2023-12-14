@@ -48,16 +48,8 @@ export function replaceFileItem (fileItems, itemId, newItem) {
  */
 export function getItemRecursive (items, itemId) {
     for (let i = 0; i < items.length; i++) {
-        if (items[i].id === itemId) {
+        if (items[i].modelId === itemId) {
             return items[i];
-        }
-        // If the item has children, recursively search them
-        if (items[i].children && items[i].children.length > 0) {
-            const found = getItemRecursive(items[i].children, itemId);
-
-            if (found) {
-                return found;
-            }
         }
     }
     return null;

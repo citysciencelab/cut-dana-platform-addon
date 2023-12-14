@@ -431,7 +431,6 @@ export default {
             // only load the file if the file is a gltf file
 
             if (item.file && item.file === "gltf") {
-                console.log(path);
                 const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z);
 
                 this.createEntity({

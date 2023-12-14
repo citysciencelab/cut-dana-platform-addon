@@ -334,14 +334,21 @@ export default {
 
         }
     },
-    mounted () {
+    async mounted () {
         // Radio.trigger("Menu", "rerender");
         if (!this.step.layers) {
             this.step.layers = [];
         }
 
-        if (this.step.threeDLayers) {
-            // console.log(this.step);
+        if (this.step.is3D && !Radio.request("Map", "isMap3d")) {
+            await this.$store.dispatch("Maps/activateMap3D");
+
+            Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
+
+            // load 3d models here.
+        }
+        else if (!this.step.is3D && Radio.request("Map", "isMap3d")) {
+            await this.$store.dispatch("Maps/deactivateMap3D");
         }
 
         this.$store.commit("Tools/Draw/setActive", true);
@@ -380,6 +387,8 @@ export default {
                 this.updateSelectedCapabilities(layer.selectedLayers, layer.url, this.allWmsLayers);
             });
         }
+
+        Radio.trigger("Menu", "rerender");
 
     },
     beforeDestroy () {
@@ -535,6 +544,62 @@ export default {
                 layer.selectedLayers = selectedCapabilities;
             }
         },
+
+
+        async loadThreeDFiles () {
+            // Check if 3D map mode needed
+            // Toggles 3D map mode
+
+            this.disableAllEntities();
+
+            if (this.currentStory.threeDFiles) {
+                this.currentStory.threeDFiles.forEach((item) => {
+                    // console.log(this.backendConfig.url);
+                    this.addEntity(item, `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`);
+                });
+            }
+        },
+
+        enableThreeDModels () {
+            if (this.currentStory.threeDFiles) {
+                this.currentStory.threeDFiles.forEach((item) => {
+                    // console.log(this.backendConfig.url);
+                    this.enableEntityVisibility(item);
+                });
+            }
+        },
+
+        addEntity (item, path = "") {
+            // the item is a file and not a folder
+            // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
+            //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
+            // only load the file if the file is a gltf file
+
+            if (item.file && item.file === "gltf") {
+                const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z);
+
+                this.createEntity({
+                    entityId: item.id,
+                    file: item.file,
+                    uri: `${path}/${item.name}`,
+                    scale: item.scale,
+                    position: position,
+                    clampToGround: true,
+                    show: false
+                    // orientation: quaternion
+                });
+                return;
+            }
+            if (item.children && item.children.length > 0) {
+                item.children.forEach((child) => {
+                    const newPath = item.name !== "files" ? `${path}/${item.name}` : path;
+
+                    this.addEntity(child, `${newPath}`);
+                });
+            }
+
+        },
+
 
         async onWmsLayersAdd () {
             // Radio.trigger("Parser", "addWMSRemotely", document.querySelector("#own_wmsLayers").value);
@@ -784,21 +849,21 @@ export default {
         },
 
         async open3D () {
+            this.step.is3D = true;
 
+            await this.$store.dispatch("Maps/activateMap3D");
+
+            this.step.navigation3D = this.get3DMapCenter();
             this.$emit(
                 "openView",
                 constants.storyCreationViews.THREE_D
             );
-            await this.$store.dispatch("Maps/activateMap3D");
-            // this.$store.commit("Tools/3DMap/setActive", true);
         },
 
 
         updateThreeDFormData (formdata) {
             this.threeDUploadFormData = formdata;
         }
-
-
     }
 };
 </script>

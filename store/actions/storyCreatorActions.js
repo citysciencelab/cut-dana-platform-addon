@@ -215,6 +215,47 @@ function prepareHtml (story, images) {
         threeDFileArray = [];
 
 
+    /**
+     * Recursive function to process the tree and add files to FormData
+     * @param {Array} node the tree to process
+     * @param {FormData} formdata the FormData to append files to
+     * @param {string} path the path of the current node
+     * @returns {void}
+     */
+    function processNode (node, formdata, path = "") {
+        if (node.file && node.obj) {
+            // It's a file, append it to FormData
+            let fullPath = path;
+
+            if (fullPath === "") {
+                fullPath = "ROOT_FILES_FOLDER_8943012";
+            }
+            formdata.append(fullPath, node.obj);
+            delete node.children;
+        }
+        else if (node.children && Array.isArray(node.children) && node.children.length > 0) {
+            // It's a folder, recurse into its children
+            node.children.forEach(child => {
+                processNode(child, formdata, path ? `${path}/${node.name}` : node.name);
+            });
+        }
+        else if (node.children && node.children.length === 0) {
+            delete node.children;
+        }
+    }
+
+
+    if (story.threeDFiles) {
+        const formData = new FormData();
+
+        story.threeDFiles.forEach(node => {
+            processNode(node, formData, "");
+        });
+
+        threeDFileArray.push({
+            threeDFiles: formData
+        });
+    }
     story.steps = story.steps.map((step) => {
         let html = step.html;
 
@@ -239,50 +280,6 @@ function prepareHtml (story, images) {
             associatedChapter: step.associatedChapter,
             stepNumber: step.stepNumber
         });
-
-
-        /**
-         * Recursive function to process the tree and add files to FormData
-         * @param {Array} node the tree to process
-         * @param {FormData} formdata the FormData to append files to
-         * @param {string} path the path of the current node
-         * @returns {void}
-         */
-        function processNode (node, formdata, path = "") {
-            if (node.file && node.obj) {
-                // It's a file, append it to FormData
-                let fullPath = path;
-
-                if (fullPath === "") {
-                    fullPath = "ROOT_FILES_FOLDER_8943012";
-                }
-                formdata.append(fullPath, node.obj);
-                delete node.children;
-            }
-            else if (node.children && Array.isArray(node.children) && node.children.length > 0) {
-                // It's a folder, recurse into its children
-                node.children.forEach(child => {
-                    processNode(child, formdata, path ? `${path}/${node.name}` : node.name);
-                });
-            }
-            else if (node.children && node.children.length === 0) {
-                delete node.children;
-            }
-        }
-
-
-        if (step.threeDFiles) {
-            const formData = new FormData();
-
-            step.threeDFiles.forEach(node => {
-                processNode(node, formData, "");
-            });
-
-            threeDFileArray.push({
-                threeDFiles: formData,
-                stepNumber: step.stepNumber
-            });
-        }
 
 
         // console.log(threeDFileArray);
@@ -338,7 +335,6 @@ function uploadStoryFiles ({state}) {
                 };
             });
         }
-
     }
 
 
@@ -398,8 +394,8 @@ function uploadStoryFiles ({state}) {
         const threeDFileUploads = [];
 
 
-        for (const {stepNumber, threeDFiles, files} of threeDFileArray) {
-            const url = threeDFilesPathPrefix + storyId + "/" + stepNumber;
+        for (const {threeDFiles, files} of threeDFileArray) {
+            const url = threeDFilesPathPrefix + storyId;
 
             url.search = new URLSearchParams({storyFilesUrl: files});
 

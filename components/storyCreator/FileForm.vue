@@ -7,16 +7,15 @@ import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import BackButton from "../shared/BackButton.vue";
+import getEntityValues from "../../utils/getEntityValues";
 
 
 import {
-    mdiCodeJson, mdiFileDocumentOutline, mdiFileExcel, mdiFileImage, mdiFilePdf,
-    mdiFolder, mdiFolderOpen, mdiFolderPlus, mdiLanguageHtml5, mdiLanguageMarkdown,
-    mdiNodejs, mdiPlus, mdiDelete
+    mdiFileDocumentOutline,
+    mdiFolder, mdiFolderOpen, mdiFolderPlus,
+    mdiPlus, mdiDelete
 } from "@mdi/js";
 
-
-const eventHandler = null;
 
 export default {
     name: "FileForm",
@@ -27,6 +26,10 @@ export default {
 
     props: {
         // The initial values for a step to edit
+        editedStory: {
+            type: Object,
+            default: () => ({})
+        },
         editedStep: {
             type: Object,
             default: () => ({})
@@ -37,7 +40,7 @@ export default {
             constants,
             // items: this.editedStep?.threeDLayers || {},
             tree: [],
-            icons: {
+            logos: {
                 mdiFolder,
                 mdiFolderOpen,
                 mdiPlus,
@@ -54,8 +57,9 @@ export default {
             ],
             ignoreFolderChange: false,
             forceFolderRerenderKey: 0,
+            story: this.editedStory,
             step: this.editedStep,
-            threeDFiles: this.editedStep.threeDFiles || [],
+            threeDFiles: this.editedStory.threeDFiles || [],
 
             rootInputId: this.randomId()
         };
@@ -65,17 +69,17 @@ export default {
         ...mapGetters(["namedProjections"]),
         ...mapGetters("Maps", ["altitude", "longitude", "latitude", "clickCoordinate", "mouseCoordinate"])
 
-
     },
     watch: {
 
-
     },
     mounted () {
+
+        // load the tree from this.step.selectedModelIds
+        this.tree = this.step.selectedModelIds.map(model => model.modelId);
         // set map to 3d
 
         // load the existing files
-
         // this.importFile({files: this.step.threeDFiles.map(file => file.obj), fileId: null});
 
         // console.log("mounted");
@@ -89,7 +93,7 @@ export default {
         ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
 
 
-        addFolder (parentId = null, asChild = true) {
+        addFolder (parentId = null) {
             this.targetParentId = parentId;
             this.addFolderInputOpen = true;
             const addFolderInput = this.$refs.addFolderInput;
@@ -177,12 +181,7 @@ export default {
                 }
                 return false;
             }
-
-            // Use the copied items for recursive addition
-
-            console.log(this.threeDFiles);
-            // Update the original items with the modified copy
-            this.step.threeDFiles = this.threeDFiles;
+            this.story.threeDFiles = this.threeDFiles;
         },
 
 
@@ -240,9 +239,9 @@ export default {
                     // Read the file into a Blob object
                     reader = new FileReader();
 
-                reader.onload = (event) => {
+                reader.onload = (readerEvent) => {
                     // Create a new Blob object from the file data
-                    const blob = new Blob([event.target.result], {type: file.type}),
+                    const blob = new Blob([readerEvent.target.result], {type: file.type}),
 
                         // Create a new File object from the Blob
                         fileCopy = new File([blob], file.name, {type: file.type});
@@ -256,7 +255,7 @@ export default {
                     this.importFile({files: [fileCopy], fileId: randomItemId});
 
                     if (file.name.split(".").pop() === "gltf") {
-                        this.openEntityEditor(randomItemId);
+                        this.entityEditor(randomItemId);
                     }
                 };
                 reader.readAsArrayBuffer(file);
@@ -265,9 +264,16 @@ export default {
             event.target.value = "";
         },
 
-        openEntityEditor (entityId) {
+        entityEditor (entityId) {
             this.setSelectedEntityId(entityId);
-            this.$emit("openView", constants.storyCreationViews.ENTITY_EDITOR);
+
+            this.tree.push(entityId);
+
+            this.step.selectedModelIds = this.tree.map(id => ({
+                modelId: id,
+                ...getEntityValues(id)
+            }));
+            this.$emit("openEntityEditor", this.step);
         },
 
         removeItem (itemId) {
@@ -298,8 +304,6 @@ export default {
             }
 
             removeRecursive(this.threeDFiles);
-
-            this.step.threeDFiles = this.threeDFiles;
         },
 
         createFormData () {
@@ -333,10 +337,8 @@ export default {
             // for (const [key, value] of formData.entries()) {
             //     console.log(key, value);
             // }
+            this.story.threeDFiles = this.threeDFiles;
 
-
-            this.step.threeDFiles = this.threeDFiles;
-            console.log("SUBMIT", this.step.threeDFiles);
             this.returnToStepForm();
 
         },
@@ -347,7 +349,8 @@ export default {
          * @returns {void}
          */
         returnToStepForm () {
-            this.$emit("return", this.step);
+
+            this.$emit("return", this.story, this.step);
         }
 
 
@@ -366,7 +369,6 @@ export default {
             >
                 <BackButton
                     tooltip="additional:modules.tools.dataNarrator.button.backToStep"
-                    :text="step.title"
                     @click="returnToStepForm"
                 />
             </v-col>
@@ -395,7 +397,7 @@ export default {
             <v-btn
                 icon
                 @click="() => addFolder(null, false)"
-            ><v-icon>{{ icons.mdiFolderPlus }}</v-icon></v-btn>
+            ><v-icon>{{ logos.mdiFolderPlus }}</v-icon></v-btn>
 
             <label :for="'fileInput' + rootInputId" />
             <input
@@ -411,7 +413,7 @@ export default {
                 icon
                 @click.stop="openFileDialog(rootInputId)"
             >
-                <v-icon>{{ icons.mdiPlus }}</v-icon>
+                <v-icon>{{ logos.mdiPlus }}</v-icon>
             </v-btn>
         </span>
         <v-treeview
@@ -419,14 +421,15 @@ export default {
             :items="threeDFiles"
             item-children="children"
             activatable
+            selectable
             open-all
         >
             <template #prepend="{ item, open }">
                 <v-icon v-if="!item.file">
-                    {{ open ? icons.mdiFolderOpen : icons.mdiFolder }}
+                    {{ open ? logos.mdiFolderOpen : logos.mdiFolder }}
                 </v-icon>
                 <v-icon v-else>
-                    {{ constants.threeDManagerConstants.fileTypes[item.file] ? constants.threeDManagerConstants.fileTypes[item.file] : icons.mdiFileDocumentOutline }}
+                    {{ constants.threeDManagerConstants.fileTypes[item.file] ? constants.threeDManagerConstants.fileTypes[item.file] : logos.mdiFileDocumentOutline }}
                 </v-icon>
             </template>
 
@@ -438,7 +441,7 @@ export default {
                     <button
                         @click="event => {
                             if (item.file && item.name.split('.').pop() === 'gltf')
-                                openEntityEditor(item.id)
+                                entityEditor(item.id)
                         }
                         "
                     >
@@ -464,20 +467,20 @@ export default {
                             icon
                             @click.stop="openFileDialog(item.id)"
                         >
-                            <v-icon>{{ icons.mdiPlus }}</v-icon>
+                            <v-icon>{{ logos.mdiPlus }}</v-icon>
                         </v-btn>
                         <v-btn
                             v-if="!item.file"
                             icon
                             @click.stop="() => addFolder(item.id, true)"
                         >
-                            <v-icon>{{ icons.mdiFolderPlus }}</v-icon>
+                            <v-icon>{{ logos.mdiFolderPlus }}</v-icon>
                         </v-btn>
                         <v-btn
                             icon
                             @click.stop="() => removeItem(item.id)"
                         >
-                            <v-icon>{{ icons.mdiDelete }}</v-icon>
+                            <v-icon>{{ logos.mdiDelete }}</v-icon>
                         </v-btn>
                     </div>
                 </div>

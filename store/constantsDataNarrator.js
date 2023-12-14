@@ -27,7 +27,8 @@ const storyTellingModes = {
         displayType: "classic",
         chapters: [],
         steps: [],
-        threeDFilesId: ""
+        threeDFilesId: "",
+        threeDFiles: []
     },
     emptyStep = {
         stepNumber: null,
@@ -51,7 +52,7 @@ const storyTellingModes = {
             heading: null,
             pitch: null
         },
-        threeDFiles: []
+        selectedModelIds: []
     },
     stepPalette = [
         {main: "#413FAB", secondary: "#A3C4FF"},

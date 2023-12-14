@@ -113,13 +113,11 @@ export default {
         loadThreeDFiles () {
             const promises = [];
 
-            this.currentStory.steps.forEach((step) => {
-                if (step.threeDFiles) {
-                    step.threeDFiles.forEach((item) => {
-                        this.addEntity(item, `${this.backendUrl.url}${this.currentStory.threeDFilesId}`);
-                    });
-                }
-            });
+            if (this.currentStory.threeDFiles) {
+                this.currentStory.threeDFiles.forEach((item) => {
+                    this.addEntity(item, `${this.backendUrl.url}${this.currentStory.threeDFilesId}`);
+                });
+            }
 
             return Promise.all(promises);
         },

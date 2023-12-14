@@ -24,7 +24,8 @@ export default {
         return {
             constants,
             view: constants.storyCreationViews.STORY_CREATION,
-            stepToEdit: {}
+            stepToEdit: {},
+            storyToEdit: {}
         };
     },
     computed: {
@@ -58,21 +59,24 @@ export default {
 
         /**
          * Return to the step form
+         * @param {Object} story the story to edit
          * @param {Object} step the step to edit
          * @returns {void}
          */
-        returnToStepForm (step) {
+        returnToStepForm (story, step) {
             this.stepToEdit = step;
+            // this.setCurrentStory(story);
             this.view = this.constants.storyCreationViews.STEP_CREATION;
         },
 
         /**
-         * Return to the step form
+         * Return to the file edit form
          * @param {Object} step the step to edit
          * @returns {void}
          */
         returnToFileForm (step) {
             this.stepToEdit = step;
+            // this.setCurrentStory(story);
             this.view = this.constants.storyCreationViews.THREE_D;
         },
 
@@ -82,6 +86,18 @@ export default {
          */
         onEdit3D () {
             this.view = this.constants.storyCreationViews.THREE_D;
+        },
+
+        /**
+         * navigates to the entityEditor
+         * @param {object} step the current step that is edited
+         * @returns {void}
+         */
+        openEntityEditor (step) {
+            this.stepToEdit = step;
+            console.log(step);
+            // this.setCurrentStory(story);
+            this.view = this.constants.storyCreationViews.ENTITY_EDITOR;
         }
 
 
@@ -100,6 +116,7 @@ export default {
 
         <StepForm
             v-if="view === constants.storyCreationViews.STEP_CREATION"
+            :edited-story="currentStory"
             :edited-step="stepToEdit"
             @openView="newView => (view = newView)"
             @return="returnToStoryForm"
@@ -113,10 +130,12 @@ export default {
 
         <FileForm
             v-if="view === constants.storyCreationViews.THREE_D"
+            :edited-story="currentStory"
             :edited-step="stepToEdit"
             @openView="newView => (view = newView)"
             @edit3D="onEdit3D"
             @return="returnToStepForm"
+            @openEntityEditor="openEntityEditor"
             v-on="$listeners"
         />
 
