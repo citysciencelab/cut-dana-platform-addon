@@ -39,10 +39,7 @@ export default {
         // The initial values for a step to edit
         editedStep: {
             type: Object,
-            default: () => ({
-                ...constants.emptyStep,
-                _id: uuid.v4()
-            })
+            default: () => ({...constants.emptyStep})
         }
     },
     data () {
@@ -54,7 +51,7 @@ export default {
             visibleBackgroundMap: null,
             minStepWidth: 280,
             maxStepWidth: 1000,
-            step: this.editedStep,
+            step: {_id: uuid.v4(), ...this.editedStep},
             newChapterTitle: this.editedStep.chapterTitle || "",
 
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
