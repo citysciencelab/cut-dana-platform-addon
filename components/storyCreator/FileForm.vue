@@ -72,14 +72,22 @@ export default {
     },
     watch: {
 
+        tree: {
+            handler (val) {
+                this.step = {
+                    ...this.step,
+                    selectedModelIds: val.map(id => ({
+                        modelId: id,
+                        ...getEntityValues(id)
+                    }))
+                };
+            },
+            deep: true
+        }
     },
     mounted () {
-        console.log("FILEFORM STEP", this.step);
-
         // load the tree from this.step.selectedModelIds
         this.tree = this.step.selectedModelIds.map(model => model.modelId);
-
-        console.log("FILEFORM", this.step.selectedModelIds, this.threeDFiles, this.tree);
         // set map to 3d
 
         // load the existing files

@@ -5,7 +5,7 @@ import {
 } from "@mdi/js";
 import * as uuid from "uuid";
 import {VueEditor} from "vue2-editor";
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
 
 import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImportAddon";
@@ -24,6 +24,7 @@ import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 
 import LayerSelector from "./LayerSelector.vue";
 import BackgroundMap from "./inputs/BackgroundMap.vue";
+import mutations from "../../store/mutationsDataNarrator";
 
 
 export default {
@@ -348,65 +349,7 @@ export default {
         }
     },
     async mounted () {
-        console.log("MOUNT", this.step);
-        // Radio.trigger("Menu", "rerender");
-        if (!this.step.layers) {
-            this.step.layers = [];
-        }
-
-        if (this.step.is3D && !Radio.request("Map", "isMap3d")) {
-            await this.$store.dispatch("Maps/activateMap3D");
-
-            Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
-
-            // load 3d models here.
-        }
-        else if (!this.step.is3D && Radio.request("Map", "isMap3d")) {
-            await this.$store.dispatch("Maps/deactivateMap3D");
-        }
-
-        this.$store.commit("Tools/Draw/setActive", true);
-        if (this.step.associatedChapter === null) {
-            const diff = this.chapterOptions.length > 1 ? 2 : 1;
-
-            this.step.associatedChapter = this.chapterOptions[this.chapterOptions.length - diff].value;
-        }
-        if (this.step.stepNumber === null) {
-            this.step.stepNumber = this.allStepNumbers[this.allStepNumbers.length - 1];
-        }
-        if (this.step.stepWidth === null) {
-            this.step.stepWidth = this.$store.state.Tools.DataNarrator.initialWidth;
-        }
-        for (const importedItem of this.importedFileNames) {
-            const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
-
-            model.setIsVisibleInMap(false);
-            model.set("isSelected", false);
-        }
-        for (const layer of this.step.layers) {
-            const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
-
-            model.setIsVisibleInMap(false);
-            model.set("isSelected", false);
-        }
-
-        this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
-
-        this.existingDatasources();
-
-        if (this.step.wmsLayers) {
-            this.step.wmsLayers.forEach(layer => {
-                this.importWMSLayers(layer.url, layer.selectedLayers);
-
-                this.updateSelectedCapabilities(layer.selectedLayers, layer.url, this.allWmsLayers);
-            });
-        }
-
-        const layers = this.layer3dOptions;
-
-        console.log(layers);
-
-        Radio.trigger("Menu", "rerender");
+        this.loadStep();
 
     },
     beforeDestroy () {
@@ -443,6 +386,7 @@ export default {
     },
     methods: {
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/FileImportAddon", [
             "importKML",
             "setSelectedFiletype"
@@ -884,6 +828,74 @@ export default {
 
         updateThreeDFormData (formdata) {
             this.threeDUploadFormData = formdata;
+        },
+
+        /**
+         * Handles all the loading of the step
+         * @returns {void}
+         */
+        async loadStep () {
+            console.log("MOUNT", this.step);
+            // Radio.trigger("Menu", "rerender");
+            if (!this.step.layers) {
+                this.step.layers = [];
+            }
+
+            if (this.step.is3D && !Radio.request("Map", "isMap3d")) {
+                await this.$store.dispatch("Maps/activateMap3D");
+
+                Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
+
+                await this.loadThreeDFiles();
+
+                // load 3d models here.
+            }
+            else if (!this.step.is3D && Radio.request("Map", "isMap3d")) {
+                await this.$store.dispatch("Maps/deactivateMap3D");
+            }
+
+            this.$store.commit("Tools/Draw/setActive", true);
+            if (this.step.associatedChapter === null) {
+                const diff = this.chapterOptions.length > 1 ? 2 : 1;
+
+                this.step.associatedChapter = this.chapterOptions[this.chapterOptions.length - diff].value;
+            }
+            if (this.step.stepNumber === null) {
+                this.step.stepNumber = this.allStepNumbers[this.allStepNumbers.length - 1];
+            }
+            if (this.step.stepWidth === null) {
+                this.step.stepWidth = this.$store.state.Tools.DataNarrator.initialWidth;
+            }
+            for (const importedItem of this.importedFileNames) {
+                const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
+
+                model.setIsVisibleInMap(false);
+                model.set("isSelected", false);
+            }
+            for (const layer of this.step.layers) {
+                const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
+
+                model.setIsVisibleInMap(false);
+                model.set("isSelected", false);
+            }
+
+            this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
+
+            this.existingDatasources();
+
+            if (this.step.wmsLayers) {
+                this.step.wmsLayers.forEach(layer => {
+                    this.importWMSLayers(layer.url, layer.selectedLayers);
+
+                    this.updateSelectedCapabilities(layer.selectedLayers, layer.url, this.allWmsLayers);
+                });
+            }
+
+            const layers = this.layer3dOptions;
+
+            console.log(layers);
+
+            Radio.trigger("Menu", "rerender");
         }
     }
 };
