@@ -400,13 +400,10 @@ function uploadStoryFiles ({state}) {
             url.search = new URLSearchParams({storyFilesUrl: files});
 
             // eslint-disable-next-line
-            const response = await fetch(url, {
-                method: "POST",
-                body: threeDFiles
-            });
+            const response = await axios.post(url, threeDFiles);
 
 
-            threeDFileUploads.push(await response.json());
+            threeDFileUploads.push(response);
 
         }
 

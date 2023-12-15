@@ -32,7 +32,7 @@ export default {
         },
         editedStep: {
             type: Object,
-            default: () => ({})
+            default: () => ({...constants.emptyStep})
         }
     },
     data () {
@@ -74,9 +74,12 @@ export default {
 
     },
     mounted () {
+        console.log("FILEFORM STEP", this.step);
 
         // load the tree from this.step.selectedModelIds
         this.tree = this.step.selectedModelIds.map(model => model.modelId);
+
+        console.log("FILEFORM", this.step.selectedModelIds, this.threeDFiles, this.tree);
         // set map to 3d
 
         // load the existing files
@@ -269,10 +272,13 @@ export default {
 
             this.tree.push(entityId);
 
-            this.step.selectedModelIds = this.tree.map(id => ({
-                modelId: id,
-                ...getEntityValues(id)
-            }));
+            this.step = {
+                ...this.step,
+                selectedModelIds: this.tree.map(id => ({
+                    modelId: id,
+                    ...getEntityValues(id)
+                }))
+            };
             this.$emit("openEntityEditor", this.step);
         },
 
@@ -350,7 +356,7 @@ export default {
          */
         returnToStepForm () {
 
-            this.$emit("return", this.story, this.step);
+            this.$emit("return", this.step);
         }
 
 
@@ -440,6 +446,7 @@ export default {
                 >
                     <button
                         @click="event => {
+                            event.stopPropagation();
                             if (item.file && item.name.split('.').pop() === 'gltf')
                                 entityEditor(item.id)
                         }
@@ -452,6 +459,8 @@ export default {
                             type="file"
                             multiple
                             hidden
+                            class="fileInputFolder"
+                            :disabled="item.file"
                             @change="(event) => {
                                 if (!item.file) {
                                     handleFileUpload(event, item.id)
@@ -515,6 +524,10 @@ export default {
         justify-content: space-between;
         align-items: center;
         width: 100%;
+    }
+
+    input.fileInputFolder {
+        pointer-events: none;
     }
 
     .addFolderInput {

@@ -162,6 +162,22 @@ export default {
         },
 
         /**
+         * the 3d layer options
+         * @returns {Object[]} layers to select
+         */
+        layer3dOptions () {
+            const layerList = Radio.request(
+                "Parser",
+                "getItemsByAttributes",
+                {}
+            );
+
+            return layerList.filter(layer => {
+                return this.layerTypes3DSpecific.includes(layer.typ);
+            });
+        },
+
+        /**
          * The addon options
          * @returns {Object[]} available addons to activate
          */
@@ -332,6 +348,7 @@ export default {
         }
     },
     async mounted () {
+        console.log("MOUNT", this.step);
         // Radio.trigger("Menu", "rerender");
         if (!this.step.layers) {
             this.step.layers = [];
@@ -385,6 +402,10 @@ export default {
             });
         }
 
+        const layers = this.layer3dOptions;
+
+        console.log(layers);
+
         Radio.trigger("Menu", "rerender");
 
     },
@@ -416,6 +437,9 @@ export default {
 
         this.$store.commit("Tools/Draw/setActive", false);
         this.switchBackgroundMap(this.visibleBackgroundMap);
+
+
+        console.log(this.step);
     },
     methods: {
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
@@ -852,8 +876,8 @@ export default {
 
             this.step.navigation3D = this.get3DMapCenter();
             this.$emit(
-                "openView",
-                constants.storyCreationViews.THREE_D
+                "openFileForm",
+                this.step
             );
         },
 

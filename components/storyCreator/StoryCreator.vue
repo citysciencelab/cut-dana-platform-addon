@@ -59,11 +59,10 @@ export default {
 
         /**
          * Return to the step form
-         * @param {Object} story the story to edit
          * @param {Object} step the step to edit
          * @returns {void}
          */
-        returnToStepForm (story, step) {
+        returnToStepForm (step) {
             this.stepToEdit = step;
             // this.setCurrentStory(story);
             this.view = this.constants.storyCreationViews.STEP_CREATION;
@@ -120,6 +119,7 @@ export default {
             :edited-step="stepToEdit"
             @openView="newView => (view = newView)"
             @return="returnToStoryForm"
+            @openFileForm="returnToFileForm"
             v-on="$listeners"
         />
 
