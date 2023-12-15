@@ -486,7 +486,9 @@ function createEntity (state, payload) {
     const {entityId, scale, orientation, visibility, uri, position} = payload,
         viewer = mapCollection.getMap("3D"),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
-        // check if entity already exists, if it does, just replace all the values in the entity and set it to visible
+    // check if entity already exists, if it does, just replace all the values in the entity and set it to visible
+
+    console.log(payload);
 
     // entity = entities.add({
     //     id: entityId,

@@ -411,12 +411,13 @@ function uploadStoryFiles ({state}) {
         return threeDFileUploads;
 
     }).then((files) => {
+        console.log(files);
         // Upload html parts
         const pathPrefix = `${backendUrl}/stories/`,
             threeDFUploads = threeDFileArray.map((element) => {
                 const query_url = `${pathPrefix}${storyId}/files`;
 
-                return axios.patch(query_url, {threeDFilesUrl: files[0].folder});
+                return axios.patch(query_url, {threeDFilesUrl: files[0].data.folder});
             });
 
 

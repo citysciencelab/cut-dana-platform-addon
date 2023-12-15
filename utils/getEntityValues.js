@@ -10,6 +10,12 @@ export default function getEntityValues (entityId) {
 
         entity = entities.getById(entityId);
 
+    if (!entity) {
+        return {};
+    }
+
+
+    console.log("enitity", entity);
     return {
         position: getEntityPosition(entity),
         scale: getEntityScale(entity)

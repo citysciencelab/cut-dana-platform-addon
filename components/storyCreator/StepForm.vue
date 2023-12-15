@@ -58,7 +58,7 @@ export default {
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
 
             is3DLayerActive: false,
-            layerTypes3DSpecific: ["Entities3D", "TileSet3D", "Terrain3D"],
+            layerTypes3DSpecific: ["Oblique", "Entities3D", "TileSet3D", "Terrain3D"],
             backgroundMapId: this.editedStep?.backgroundMapId,
             mapMovedPosition: {
                 cameraPosition: [
@@ -520,7 +520,20 @@ export default {
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
                     // console.log(this.backendConfig.url);
-                    this.addEntity(item, `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`);
+                    const uri = `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`,
+                        modelData = this.step.selectedModelIds.find(model => {
+                            return model.modelId === item.id;
+                        });
+
+
+                    if (modelData) {
+                        console.log("LOAD", item, modelData);
+                        this.addEntity({
+                            ...item,
+                            position: modelData.position,
+                            scale: modelData.scale
+                        }, uri);
+                    }
                 });
             }
         },
@@ -539,7 +552,7 @@ export default {
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
             //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
             // only load the file if the file is a gltf file
-
+            console.log("ADDENTITYPARENT", item, path, item.file && item.file === "gltf");
             if (item.file && item.file === "gltf") {
                 const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z);
 
@@ -550,12 +563,13 @@ export default {
                     scale: item.scale,
                     position: position,
                     clampToGround: true,
-                    show: false
+                    show: true
                     // orientation: quaternion
                 });
                 return;
             }
             if (item.children && item.children.length > 0) {
+                console.log("ADDENTITYCHILDREN", item, path);
                 item.children.forEach((child) => {
                     const newPath = item.name !== "files" ? `${path}/${item.name}` : path;
 
@@ -752,6 +766,20 @@ export default {
             };
         },
 
+        set3DMapCenter () {
+            const camera = Radio.request("Map", "getMap3d").getCesiumScene().camera;
+
+            camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(this.step.navigation3D.cameraPosition[0], this.step.navigation3D.cameraPosition[1], this.step.navigation3D.cameraPosition[2]),
+                orientation: {
+                    heading: this.step.navigation3D.heading,
+                    pitch: this.step.navigation3D.pitch,
+                    roll: 0.0
+                }
+            });
+
+        },
+
         /**
          * Toggles 3D map mode via checkbox
          * @param {boolean} checkboxValue the flag indicating if 3D map should be activated
@@ -844,14 +872,21 @@ export default {
             if (this.step.is3D && !Radio.request("Map", "isMap3d")) {
                 await this.$store.dispatch("Maps/activateMap3D");
 
+
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
 
-                await this.loadThreeDFiles();
 
-                // load 3d models here.
+                this.set3DMapCenter();
+
+                await this.loadThreeDFiles();
             }
             else if (!this.step.is3D && Radio.request("Map", "isMap3d")) {
                 await this.$store.dispatch("Maps/deactivateMap3D");
+            }
+            else if (this.step.is3D && Radio.request("Map", "isMap3d")) {
+                this.set3DMapCenter();
+
+                await this.loadThreeDFiles();
             }
 
             this.$store.commit("Tools/Draw/setActive", true);
