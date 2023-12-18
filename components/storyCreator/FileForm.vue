@@ -265,9 +265,11 @@ export default {
                     }, true);
                     this.importFile({files: [fileCopy], fileId: randomItemId});
 
-                    if (file.name.split(".").pop() === "gltf") {
+                    if (file.name.split(".").pop() === "gltf" || file.name.split(".").pop() === "obj" || file.name.split(".").pop() === "dae") {
                         this.entityEditor(randomItemId);
                     }
+
+
                 };
                 reader.readAsArrayBuffer(file);
             }

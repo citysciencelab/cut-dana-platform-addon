@@ -450,6 +450,27 @@ function changeEntityLocation (state, payload) {
 }
 
 /**
+ * Changes the orientation of an entity.
+ * @param {Object} state state of the datanarrator module
+ * @param {Object} payload payload of the action
+ * @param {*} payload.entityId the entity id
+ * @param {*} payload.newOrientation the new orientation
+ * @returns {void}
+ */
+function changeEntityOrientation (state, payload) {
+    const {entityId, newOrientation} = payload,
+        viewer = mapCollection.getMap("3D"),
+        entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
+        entity = entities.getById(entityId);
+
+    console.log(payload.newOrientation, "ORIENTATION:", entity.orientation, "entityID:", payload.entityId, entity);
+
+    if (entity) {
+        entity.orientation = newOrientation;
+    }
+}
+
+/**
  * Scales an entity.
  * @param {Object} state state of the datanarrator module
  * @param {Object} payload payload of the action
@@ -488,7 +509,6 @@ function createEntity (state, payload) {
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
     // check if entity already exists, if it does, just replace all the values in the entity and set it to visible
 
-    console.log(payload);
 
     // entity = entities.add({
     //     id: entityId,
@@ -538,6 +558,7 @@ export default {
     removeEntity,
     toggleEntityVisibility,
     changeEntityLocation,
+    changeEntityOrientation,
     scaleEntity,
     createEntity,
     disableEntityVisibility,

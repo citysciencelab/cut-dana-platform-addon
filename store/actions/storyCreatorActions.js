@@ -307,7 +307,7 @@ function prepareHtml (story, images) {
 function uploadStoryFiles ({state}) {
     const backendUrl = state.backendConfig.url,
         datasourcePathPrefix = `${backendUrl}/datasources/`,
-        threeDFilesPathPrefix = `${backendUrl}/files/`,
+        threeDFilesPathPrefix = `${backendUrl}/files`,
         [story, imageArray, htmlArray, threeDFileArray] = prepareHtml({...state.currentStory}, state.htmlContentsImages),
         datasources = [];
 
@@ -347,7 +347,7 @@ function uploadStoryFiles ({state}) {
     let storyId = state.currentStoryId,
         requestUrl = `${backendUrl}/stories`,
         imagePathPrefix = `${backendUrl}/images/`,
-        storyFilePath = state.currentStory.threeDFilesUrl,
+        storyFilePath = state.currentStory.threeDFilesId,
         axiosMethod = axios.post;
 
     if (storyId) {
@@ -394,34 +394,49 @@ function uploadStoryFiles ({state}) {
         const threeDFileUploads = [];
 
 
-        for (const {threeDFiles, files} of threeDFileArray) {
-            const url = threeDFilesPathPrefix + storyId;
+        for (const {threeDFiles} of threeDFileArray) {
+            if (story.threeDFilesId) {
+                const url = threeDFilesPathPrefix,
+                    method = axios.patch,
+                    response = await method(url, threeDFiles, {
+                        params: {
+                            threeDFilesId: story.threeDFilesId
+                        }
+                    });
 
-            url.search = new URLSearchParams({storyFilesUrl: files});
+                threeDFileUploads.push(response);
 
-            // eslint-disable-next-line
-            const response = await axios.post(url, threeDFiles);
+            }
+            else {
+                const url = threeDFilesPathPrefix + "/" + storyId,
+                    method = axios.post,
+                    response = await method(url, threeDFiles, {
+                        params: {
+                        }
+                    });
 
 
-            threeDFileUploads.push(response);
+                threeDFileUploads.push(response);
+            }
 
         }
-
-
         return threeDFileUploads;
-
     }).then((files) => {
-        console.log(files);
+        console.log(files, story.threeDFilesId);
+
+        if (story.threeDFilesId === "") {
+            const pathPrefix = `${backendUrl}/stories/`,
+                threeDFUploads = threeDFileArray.map((element) => {
+                    const query_url = `${pathPrefix}${storyId}/files`;
+
+                    return axios.patch(query_url, {threeDFilesUrl: files[0].data.folder});
+                });
+
+
+            return Promise.all(threeDFUploads);
+        }
         // Upload html parts
-        const pathPrefix = `${backendUrl}/stories/`,
-            threeDFUploads = threeDFileArray.map((element) => {
-                const query_url = `${pathPrefix}${storyId}/files`;
-
-                return axios.patch(query_url, {threeDFilesUrl: files[0].data.folder});
-            });
-
-
-        return Promise.all(threeDFUploads);
+        return [];
     }).then(() => {
         // Upload html parts
         const pathPrefix = `${backendUrl}/stories/${storyId}/`,

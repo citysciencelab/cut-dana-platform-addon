@@ -552,7 +552,6 @@ export default {
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
             //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
             // only load the file if the file is a gltf file
-            console.log("ADDENTITYPARENT", item, path, item.file && item.file === "gltf");
             if (item.file && item.file === "gltf") {
                 const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z);
 

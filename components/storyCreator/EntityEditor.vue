@@ -45,7 +45,10 @@ export default {
             scale: 1,
             northing: 0,
             easting: 0,
-            altitude: 0
+            altitude: 0,
+            heading: 0,
+            pitch: 0,
+            roll: 0
         };
     },
     computed: {
@@ -175,6 +178,36 @@ export default {
             }));
         },
 
+        updateOrientation (heading, pitch, roll) {
+
+            console.log(heading);
+
+            // eslint-disable-next-line radix
+            const h = heading !== undefined ? Cesium.Math.toRadians(parseInt(heading)) : Cesium.Math.toRadians(parseInt(this.heading)),
+                // eslint-disable-next-line radix
+                p = pitch !== undefined ? Cesium.Math.toRadians(parseInt(pitch)) : Cesium.Math.toRadians(parseInt(this.pitch)),
+                // eslint-disable-next-line radix
+                r = roll !== undefined ? Cesium.Math.toRadians(parseInt(roll)) : Cesium.Math.toRadians(parseInt(this.roll)),
+
+                hpr = new Cesium.HeadingPitchRoll(h, p, r),
+
+                orientation = Cesium.Transforms.headingPitchRollQuaternion(this.position.getValue(Cesium.JulianDate.now()), hpr);
+
+            console.log(this.position, hpr, h, this.heading, orientation);
+
+
+            this.changeEntityOrientation({
+                entityId: this.selectedEntityId, newOrientation: orientation
+            });
+
+            this.orientation = orientation;
+
+            this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
+                modelId,
+                ...getEntityValues(modelId)
+            }));
+        },
+
         incrementNorhting () {
             this.northing += 0.1;
             // Fix potential floating point precision issue
@@ -205,6 +238,27 @@ export default {
             this.easting = parseFloat(this.easting.toFixed(1));
 
             this.updatePosition();
+        },
+
+        incrementHeading () {
+            this.heading += 1;
+            // Fix potential floating point precision issue
+
+            // eslint-disable-next-line radix
+            this.heading = parseInt(this.heading);
+
+            this.updateOrientation();
+        },
+
+        decrementHeading () {
+            this.heading -= 1;
+            // Fix potential floating point precision issue
+
+
+            // eslint-disable-next-line radix
+            this.heading = parseInt(this.heading);
+
+            this.updateOrientation();
         }
     }
 };
@@ -299,6 +353,39 @@ export default {
                                     icon
                                     small
                                     @click="decrementEasting"
+                                >
+                                    <v-icon>{{ icons.mdiChevronDown }}</v-icon>
+                                </v-btn>
+                            </v-row>
+                        </v-col>
+                    </v-row>
+                </v-container>
+                <v-container>
+                    <v-row>
+                        <v-col cols="auto">
+                            <v-text-field
+                                v-model="heading"
+                                label="Heading"
+                                type="number"
+                                outlined
+                                @change="(value) => updateOrientation()"
+                            />
+                        </v-col>
+                        <v-col cols="auto">
+                            <v-row>
+                                <v-btn
+                                    icon
+                                    small
+                                    @click="incrementHeading"
+                                >
+                                    <v-icon>{{ icons.mdiChevronUp }}</v-icon>
+                                </v-btn>
+                            </v-row>
+                            <v-row>
+                                <v-btn
+                                    icon
+                                    small
+                                    @click="decrementHeading"
                                 >
                                     <v-icon>{{ icons.mdiChevronDown }}</v-icon>
                                 </v-btn>
