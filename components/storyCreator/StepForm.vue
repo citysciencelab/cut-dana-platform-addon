@@ -531,7 +531,8 @@ export default {
                         this.addEntity({
                             ...item,
                             position: modelData.position,
-                            scale: modelData.scale
+                            scale: modelData.scale,
+                            orientation: modelData.orientation
                         }, uri);
                     }
                 });
@@ -548,12 +549,14 @@ export default {
         },
 
         addEntity (item, path = "") {
+            console.log(item, path);
             // the item is a file and not a folder
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
             //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
             // only load the file if the file is a gltf file
             if (item.file && item.file === "gltf") {
-                const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z);
+                const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
+                    orientation = new Cesium.Quaternion(item.orientation.x, item.orientation.y, item.orientation.z, item.orientation.w);
 
                 this.createEntity({
                     entityId: item.id,
@@ -562,8 +565,8 @@ export default {
                     scale: item.scale,
                     position: position,
                     clampToGround: true,
-                    show: true
-                    // orientation: quaternion
+                    show: true,
+                    orientation: orientation
                 });
                 return;
             }

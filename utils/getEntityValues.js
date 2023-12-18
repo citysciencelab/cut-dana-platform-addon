@@ -14,8 +14,6 @@ export default function getEntityValues (entityId) {
         return {};
     }
 
-
-    console.log("enitity", entity);
     return {
         position: getEntityPosition(entity),
         scale: getEntityScale(entity),
@@ -56,8 +54,9 @@ function getEntityOrientation (entity) {
         return {};
     }
     return {
-        heading: entity.orientation._value.heading,
-        pitch: entity.orientation._value.pitch,
-        roll: entity.orientation._value.roll
+        w: entity.orientation._value.w,
+        x: entity.orientation._value.x,
+        y: entity.orientation._value.y,
+        z: entity.orientation._value.z
     };
 }

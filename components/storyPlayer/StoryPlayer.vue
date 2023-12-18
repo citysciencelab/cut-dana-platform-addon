@@ -431,7 +431,8 @@ export default {
             // only load the file if the file is a gltf file
 
             if (item.file && item.file === "gltf") {
-                const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z);
+                const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
+                    orientation = new Cesium.Quaternion(item.orientation.x, item.orientation.y, item.orientation.z, item.orientation.w);
 
                 this.createEntity({
                     entityId: item.id,
@@ -440,8 +441,8 @@ export default {
                     scale: item.scale,
                     position: position,
                     clampToGround: true,
-                    show: false
-                    // orientation: quaternion
+                    show: false,
+                    orientation: orientation
                 });
                 return;
             }

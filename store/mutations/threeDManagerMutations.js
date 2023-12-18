@@ -530,6 +530,7 @@ function createEntity (state, payload) {
         entity.clampToGround = payload.clampToGround;
         entity.show = true;
         entity.position = position;
+        entity.orientation = orientation;
         return entity;
     }
     entity = entities.add({
@@ -541,7 +542,8 @@ function createEntity (state, payload) {
         clampToGround: payload.clampToGround,
         // orientation: orientation,
         show: visibility,
-        position: position
+        position: position,
+        orientation: orientation
     });
 
 

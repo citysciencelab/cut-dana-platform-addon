@@ -69,7 +69,6 @@ export default {
             this.orientation = this.selectedEntity.orientation;
             this.scale = parseFloat(this.selectedEntity.model.scale);
         }
-        console.log(this.step);
 
         const currentItem = getItemRecursive(this.step.selectedModelIds, this.selectedEntityId),
             newItems = replaceFileItem(this.step.selectedModelIds, this.selectedEntityId, {
@@ -79,12 +78,13 @@ export default {
                     x: this.position._value.x,
                     y: this.position._value.y,
                     z: this.position._value.z
+                },
+                orientation: {
+                    w: this.orientation._value.w,
+                    x: this.orientation._value.x,
+                    y: this.orientation._value.y,
+                    z: this.orientation._value.z
                 }
-                // orientation: {
-                //     heading: simpleOrientationObject.heading,
-                //     pitch: simpleOrientationObject.pitch,
-                //     roll: simpleOrientationObject.roll
-                // }
             }),
             utm32UProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
             positionObject = new Cesium.Cartesian3(this.position._value.x, this.position._value.y, this.position._value.z),
@@ -93,14 +93,16 @@ export default {
             latitude = Cesium.Math.toDegrees(cartographic.latitude),
             longitude = Cesium.Math.toDegrees(cartographic.longitude),
 
-            [easting, northing] = proj4(utm32UProjection).forward([longitude, latitude]);
+            [easting, northing] = proj4(utm32UProjection).forward([longitude, latitude]),
 
+            hpr = Cesium.HeadingPitchRoll.fromQuaternion(this.orientation);
 
         // this.updatePosition();
 
         this.northing = northing;
         this.easting = easting;
         this.alittude = this.position.height;
+        this.heading = Cesium.Math.toDegrees(hpr.heading);
 
         // this.altitude = this.position.height;
         // this.northing = northing;
@@ -180,8 +182,6 @@ export default {
 
         updateOrientation (heading, pitch, roll) {
 
-            console.log(heading);
-
             // eslint-disable-next-line radix
             const h = heading !== undefined ? Cesium.Math.toRadians(parseInt(heading)) : Cesium.Math.toRadians(parseInt(this.heading)),
                 // eslint-disable-next-line radix
@@ -192,9 +192,6 @@ export default {
                 hpr = new Cesium.HeadingPitchRoll(h, p, r),
 
                 orientation = Cesium.Transforms.headingPitchRollQuaternion(this.position.getValue(Cesium.JulianDate.now()), hpr);
-
-            console.log(this.position, hpr, h, this.heading, orientation);
-
 
             this.changeEntityOrientation({
                 entityId: this.selectedEntityId, newOrientation: orientation
