@@ -1,7 +1,7 @@
 <script>
 import {
     mdiBackspaceOutline, mdiCancel, mdiCheck, mdiClose, mdiPinOutline,
-    mdiTrashCanOutline
+    mdiTrashCanOutline, mdiHelpCircleOutline
 } from "@mdi/js";
 import * as uuid from "uuid";
 import {VueEditor} from "vue2-editor";
@@ -75,7 +75,8 @@ export default {
                 mdiCheck,
                 mdiPinOutline,
                 mdiBackspaceOutline,
-                mdiClose
+                mdiClose,
+                mdiHelpCircleOutline
             },
             rawDatasources: this.editedStep?.datasources || [],
             datasources: [],
@@ -1365,16 +1366,28 @@ export default {
             />
 
             <div class="form-group">
-                <label
-                    class="form-label"
-                    for="own_dataSource"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.ownDatasource"
-                        )
-                    }}
-                </label>
+                <v-tooltip top>
+                    <template #activator="{ on }">
+                        <label
+                            class="form-label"
+                            for="own_dataSource"
+                            v-on="on"
+                        >
+                            {{ $t("additional:modules.tools.dataNarrator.label.ownDatasource") }}
+                        </label>
+
+                        <v-icon
+                            dense
+                            small
+                            v-on="on"
+                        >
+                            {{ icons.mdiHelpCircleOutline }}
+                        </v-icon>
+                    </template>
+                    <span>
+                        {{ $t("additional:modules.tools.dataNarrator.dashboardView.description") }}
+                    </span>
+                </v-tooltip>
                 <v-expansion-panels
                     id="step-layer"
                     class="expansion-panels"
@@ -1421,11 +1434,7 @@ export default {
                     class="form-label"
                     for="own_wmsLayers"
                 >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.ownWmsLayers"
-                        )
-                    }}
+                    {{ $t("additional:modules.tools.dataNarrator.label.ownWmsLayers") }}
                 </label>
                 <v-expansion-panels
                     id="step-layer"
