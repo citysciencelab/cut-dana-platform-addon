@@ -549,7 +549,6 @@ export default {
         },
 
         addEntity (item, path = "") {
-            console.log(item, path);
             // the item is a file and not a folder
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
             //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
@@ -860,12 +859,21 @@ export default {
             this.threeDUploadFormData = formdata;
         },
 
+        enableDrawTool () {
+
+            this.$store.commit("Tools/Draw/setActive", true);
+        },
+
+        disableDrawTool () {
+
+            this.$store.commit("Tools/Draw/setActive", false);
+        },
+
         /**
          * Handles all the loading of the step
          * @returns {void}
          */
         async loadStep () {
-            console.log("MOUNT", this.step);
             // Radio.trigger("Menu", "rerender");
             if (!this.step.layers) {
                 this.step.layers = [];
@@ -891,7 +899,6 @@ export default {
                 await this.loadThreeDFiles();
             }
 
-            this.$store.commit("Tools/Draw/setActive", true);
             if (this.step.associatedChapter === null) {
                 const diff = this.chapterOptions.length > 1 ? 2 : 1;
 
