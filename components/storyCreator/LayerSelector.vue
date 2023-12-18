@@ -375,6 +375,7 @@ export default {
                             open-on-click
                             search
                             selectable
+                            dense
                             @input="updateSelectedItems"
                         />
                     </v-col>

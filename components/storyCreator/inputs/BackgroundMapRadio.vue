@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: "BackgroundMap",
+    name: "BackgroundMapRadio",
     props: {
         selectedId: {
             type: String,
@@ -65,6 +65,8 @@ export default {
         >
             <v-radio-group
                 v-model="selected"
+                dense
+                column
                 @change="onChange"
             >
                 <v-radio
@@ -72,8 +74,19 @@ export default {
                     :key="index"
                     :label="`${item.name}`"
                     :value="item.id"
+                    class="background-map-radio"
+                    ripple
                 />
             </v-radio-group>
         </v-container>
     </div>
 </template>
+
+<style lang="scss">
+
+.background-map-radio  {
+    .v-label {
+        font-size: 12px !important;
+    }
+}
+</style>

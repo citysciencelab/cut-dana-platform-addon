@@ -23,7 +23,7 @@ import modelerGetters from "../../../../../src/modules/tools/modeler3D/store/get
 import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 
 import LayerSelector from "./LayerSelector.vue";
-import BackgroundMap from "./inputs/BackgroundMap.vue";
+import BackgroundMap from "./inputs/BackgroundMapSelect.vue";
 import mutations from "../../store/mutationsDataNarrator";
 
 
