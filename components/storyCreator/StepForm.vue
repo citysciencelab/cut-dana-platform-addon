@@ -207,47 +207,7 @@ export default {
          * @returns {void}
          */
         "step.layers" (newSelectedLayerIds) {
-            console.log(newSelectedLayerIds);
-            const
-                layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
-                selectedItems = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true, backgroundMap: false});
-
-            this.disableLayers(selectedItems);
-
-            for (const layer of newSelectedLayerIds) {
-
-                let layerModels;
-
-                if (typeof layer === "string") {
-
-                    // check if model is already in modelList
-                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer});
-
-                    if (layerModels.length === 0) {
-                        const foundLayer = layerList.find(l => l.id === layer);
-
-                        foundLayer.isVisibleInTree = true;
-                        Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                        layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
-                    }
-                }
-                else {
-                    layerModels = Radio.request("ModelList", "getModelsByAttributes", {id: layer.id});
-
-                    if (layerModels.length === 0) {
-                        const foundLayer = layerList.find(l => l.id === layer.id);
-
-                        foundLayer.isVisibleInTree = true;
-                        foundLayer.selectionIDX = layer.selectionIDX;
-                        foundLayer.transparency = layer.transparency;
-                        Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                        layerModels = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, id: foundLayer.id});
-                    }
-                }
-
-                this.enableLayers(layerModels);
-            }
-
+            this.rebuildLayers(newSelectedLayerIds);
 
             this.is3DLayerActive = Radio.request(
                 "ModelList",
@@ -313,7 +273,6 @@ export default {
         "newChapterTitle" (newTitle) {
             this.newChapterTitle = newTitle;
             this.step.chapterTitle = newTitle;
-
         }
     },
     async mounted () {

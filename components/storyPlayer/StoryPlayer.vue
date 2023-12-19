@@ -475,45 +475,10 @@ export default {
                 });
             }
 
-            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
-                enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false}),
-                stepLayers = this.currentStep.layers || [];
+            const stepLayers = this.currentStep.layers || [];
 
-            this.disableLayers(enabledLayers);
-
-            for (const layer of stepLayers) {
-                let layerModel;
-
-                if (typeof layer === "string") {
-
-                    // check if model is already in modelList
-                    layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer});
-
-                    if (!layerModel) {
-                        const foundLayer = layerList.find(l => l.id === layer);
-
-                        Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: foundLayer.id});
-                    }
-                }
-                else {
-                    layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
-
-                    if (!layerModel) {
-                        const foundLayer = layerList.find(l => l.id === layer.id);
-
-                        foundLayer.selectionIDX = layer.selectionIDX;
-                        foundLayer.transparency = layer.transparency;
-                        Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: foundLayer.id});
-                    }
-                }
-                this.enableLayer(layerModel);
-            }
-
-
+            this.rebuildLayers(stepLayers);
             this.switchBackgroundMap(this.currentStep.backgroundMapId);
-
             this.getDataSources();
 
 

@@ -10,11 +10,11 @@ export default {
          * @returns {Object[]} layers to select
          */
         allLayerOptions () {
-            const layers = Radio.request("Parser", "getItemsByAttributes", {type: "layer", isBaseLayer: false}),
+            const allLayers = Radio.request("Parser", "getItemsByAttributes", {type: "layer", isBaseLayer: false}),
                 layers3D = [],
                 plainLayers = [];
 
-            layers.forEach(layer => {
+            allLayers.forEach(layer => {
                 if (this.layerTypes3DSpecific.includes(layer.typ)) {
                     layers3D.push(layer);
                 }
@@ -22,7 +22,7 @@ export default {
                     plainLayers.push(layer);
                 }
             });
-            return {layers3D, plainLayers};
+            return {layers3D, plainLayers, allLayers};
         }
     },
     methods: {
@@ -93,6 +93,36 @@ export default {
          */
         getLayerNameFromFile (fileName) {
             return fileName.split(".")[0];
+        },
+
+        rebuildLayers (selectedLayers) {
+            const layerList = this.allLayerOptions.allLayers,
+                enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
+
+            this.disableLayers(enabledLayers);
+
+            for (const layer of selectedLayers) {
+                let layerModel;
+                const layerId = typeof layer === "string" ? layer : layer.id;
+
+                // check if model is already in modelList
+                layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layerId});
+
+                if (!layerModel) {
+                    const foundLayer = layerList.find(l => l.id === layerId);
+
+                    // Somtimes, we don't have entire model, only ID
+                    if (layerId !== layer) {
+                        foundLayer.selectionIDX = layer.selectionIDX;
+                        foundLayer.transparency = layer.transparency;
+                    }
+
+                    Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
+                    layerModel = Radio.request("ModelList", "getModelByAttributes", {id: foundLayer.id});
+                }
+                this.enableLayer(layerModel);
+            }
+
         }
     }
 };
