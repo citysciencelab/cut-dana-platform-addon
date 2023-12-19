@@ -12,6 +12,8 @@ import ClassicPlayer from "./ClassicPlayer.vue";
 import ScrollyTeller from "./ScrollyTeller.vue";
 import TableOfContents from "./TableOfContents.vue";
 
+import LayerUtilities from "../../mixins/LayerUtilities";
+
 export default {
     name: "StoryPlayer",
     components: {
@@ -19,6 +21,7 @@ export default {
         ScrollyTeller,
         TableOfContents
     },
+    mixins: [LayerUtilities],
     props: {
         // Step to show
         stepIndex: {
@@ -181,16 +184,11 @@ export default {
                     return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
                 });
 
-            allCapabilitiesModels.forEach(model => {
-                if (model) {
-                    model.setIsVisibleInMap(false);
-                    model.set("isSelected", false);
-                }
-            });
+            this.disableLayers(allCapabilitiesModels);
+
 
             layerModels.forEach(model => {
-                model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
-                model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
+                this.toggleLayer(model, selectedCapabilities.includes(model.get("layers")));
             });
 
             if (layer) {
@@ -203,9 +201,9 @@ export default {
                 const reader = new FileReader();
 
                 reader.onload = f => {
-                    const layerName = this.getLayerName(file.name),
+                    const layerName = this.getLayerNameFromFile(file.name),
                         checkSameLayer = this.importedFileNames.filter(importedFileName => {
-                            return this.getLayerName(file.name) === this.getLayerName(importedFileName);
+                            return this.getLayerNameFromFile(file.name) === this.getLayerNameFromFile(importedFileName);
                         });
 
                     this.importKML({raw: f.target.result, checkSameLayer: checkSameLayer, layerName: layerName, filename: file.name, pointImages: this.pointImages, textColors: this.textColors, textSizes: this.textSizes});
@@ -214,15 +212,6 @@ export default {
                 reader.readAsText(file);
             });
         },
-        /**
-         * Getting the layer name from the file name without the postfix as file format
-         * @param {String} fileName name of the file
-         * @returns {String} Returns the layer name
-         */
-        getLayerName (fileName) {
-            return fileName.substr(0, fileName.lastIndexOf("."));
-        },
-
 
         /**
          * Activates a tool
@@ -266,35 +255,6 @@ export default {
                     );
                 }
             });
-        },
-
-        /**
-         * Toggles a layer on the map
-         * @param {Object} layer the layer to enable
-         * @param {Boolean} enabled enables the layer if `true`, disables the layer if `false`
-         * @returns {void}
-         */
-        toggleLayer (layer, enabled) {
-            layer.setIsVisibleInMap(enabled);
-            layer.set("isSelected", enabled);
-        },
-
-        /**
-         * Enables a layer on the map
-         * @param {Object} layer the layer to enable
-         * @returns {void}
-         */
-        enableLayer (layer) {
-            this.toggleLayer(layer, true);
-        },
-
-        /**
-         * Disables a layer on the map
-         * @param {Object} layer the layer to disable
-         * @returns {void}
-         */
-        disableLayer (layer) {
-            this.toggleLayer(layer, false);
         },
 
         /**
@@ -355,9 +315,7 @@ export default {
                 for (const dataSource of dataSources) {
                     // const response = this.ownDataSources(dataSource.key);
                     if (this.importedFileNames.includes(dataSource.name)) {
-                        const model = Radio.request("ModelList", "getModelByAttributes", {name: dataSource.name.split(".")[0]});
-
-                        this.enableLayer(model);
+                        this.enableLayerByName(dataSource.name);
                     }
                     else {
                         axios.get(this.backendConfig.url + "/datasources/" + this.currentStoryId + "/" + dataSource.key, {
@@ -378,14 +336,8 @@ export default {
         },
 
         disableOwnDatasource () {
-            for (const importedItem of this.importedFileNames) {
-                const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
-
-                this.disableLayer(model);
-            }
-
+            this.disableLayersByName(this.importedFileNames);
         },
-
 
         async loadThreeDFiles () {
             // Check if 3D map mode needed
@@ -527,10 +479,7 @@ export default {
                 enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false}),
                 stepLayers = this.currentStep.layers || [];
 
-            for (const enabledLayer of enabledLayers) {
-                this.disableLayer(enabledLayer);
-            }
-
+            this.disableLayers(enabledLayers);
 
             for (const layer of stepLayers) {
                 let layerModel;
@@ -597,10 +546,7 @@ export default {
         clearAllLayers () {
             const layerList = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true});
 
-            for (const layer of layerList) {
-                this.disableLayer(layer);
-            }
-
+            this.disableLayers(layerList);
             this.disableOwnDatasource();
         }
     }

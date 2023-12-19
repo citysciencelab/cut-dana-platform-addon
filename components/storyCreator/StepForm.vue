@@ -27,6 +27,9 @@ import BackgroundMap from "./inputs/BackgroundMapSelect.vue";
 import mutations from "../../store/mutationsDataNarrator";
 
 
+import LayerUtilities from "../../mixins/LayerUtilities";
+
+
 export default {
     name: "StepForm",
 
@@ -35,7 +38,7 @@ export default {
         LayerSelector,
         BackgroundMap
     },
-
+    mixins: [LayerUtilities],
     props: {
         // The initial values for a step to edit
         editedStep: {
@@ -52,13 +55,13 @@ export default {
             visibleBackgroundMap: null,
             minStepWidth: 280,
             maxStepWidth: 1000,
-            step: {_id: uuid.v4(), ...this.editedStep},
+            step: {_id: uuid.v4(), layers: [], ...this.editedStep},
             newChapterTitle: this.editedStep.chapterTitle || "",
 
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
 
             is3DLayerActive: false,
-            layerTypes3DSpecific: ["Oblique", "Entities3D", "TileSet3D", "Terrain3D"],
+
             backgroundMapId: this.editedStep?.backgroundMapId,
             mapMovedPosition: {
                 cameraPosition: [
@@ -153,47 +156,6 @@ export default {
         },
 
         /**
-         * The layer options
-         * @returns {Object[]} layers to select
-         */
-        layerOptions () {
-
-            const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer", isBaseLayer: false}),
-
-                layer3d = Radio.request("Parser", "getItemsByAttributes", {id: "12884"}),
-
-                uniqueTypes = [...new Set(layerList.map(item => item.typ))];
-
-            console.log("NON3D", uniqueTypes);
-
-            return layerList.map(layer => layer);
-        },
-
-        /**
-         * the 3d layer options
-         * @returns {Object[]} layers to select
-         */
-        layer3dOptions () {
-            const layerList = Radio.request(
-                    "Parser",
-                    "getItemsByAttributes",
-                    {typ: "Entities3D"}
-                ),
-
-                uniqueTypes = [...new Set(layerList.map(item => item.typ))];
-
-            console.log(uniqueTypes);
-
-
-            return layerList.filter(layer => {
-                if (layer.typ === "Oblique" || layer.typ === "Entities3D" || layer.typ === "TileSet3D" || layer.typ === "Terrain3D") {
-                    console.log(layer);
-                }
-                return this.layerTypes3DSpecific.includes(layer.typ);
-            });
-        },
-
-        /**
          * The addon options
          * @returns {Object[]} available addons to activate
          */
@@ -209,7 +171,6 @@ export default {
                         addon.key
                 }));
         },
-
 
         backgroundMaps () {
             const bgMaps = Radio.request("Parser", "getItemsByAttributes", {backgroundMap: true}),
@@ -246,18 +207,14 @@ export default {
          * @returns {void}
          */
         "step.layers" (newSelectedLayerIds) {
+            console.log(newSelectedLayerIds);
             const
                 layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
                 selectedItems = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true, backgroundMap: false});
 
-            for (const selectedItem of selectedItems) {
-                selectedItem.setIsVisibleInMap(false);
-                selectedItem.set("isSelected", false);
-            }
-
+            this.disableLayers(selectedItems);
 
             for (const layer of newSelectedLayerIds) {
-
 
                 let layerModels;
 
@@ -288,11 +245,7 @@ export default {
                     }
                 }
 
-
-                for (const layerModel of layerModels) {
-                    layerModel.setIsVisibleInMap(true);
-                    layerModel.set("isSelected", true);
-                }
+                this.enableLayers(layerModels);
             }
 
 
@@ -368,26 +321,8 @@ export default {
 
     },
     beforeDestroy () {
-        for (const importedItem of this.importedFileNames) {
-            const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
-
-            if (model) {
-                model.setIsVisibleInMap(false);
-                model.set("isSelected", false);
-            }
-        }
-
-        if (this.step.layers) {
-            for (const layer of this.step.layers) {
-                const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
-
-                if (model) {
-                    model.setIsVisibleInMap(false);
-                    model.set("isSelected", false);
-                }
-            }
-        }
-
+        this.disableLayersByName(this.importedFileNames);
+        this.disableLayersById(this.step.layers);
 
         for (const layer of this.wmsLayers) {
             this.hideWmsLayer(layer.url);
@@ -413,15 +348,12 @@ export default {
             if (value) {
                 this.backgroundMaps.forEach(model => {
                     if (model.get("id") === value) {
-
                         if (!model.get("isVisibleInMap") && !model.get("isSelected")) {
-                            model.setIsVisibleInMap(true);
-                            model.setIsSelected(true);
+                            this.enableLayer(model);
                         }
                     }
                     else {
-                        model.setIsVisibleInMap(false);
-                        model.setIsSelected(false);
+                        this.disableLayer(model);
                     }
                 });
             }
@@ -431,9 +363,7 @@ export default {
             for (const dataSource of this.rawDatasources) {
                 // const response = this.ownDataSources(dataSource.key);
                 if (this.importedFileNames.includes(dataSource.name)) {
-                    const model = Radio.request("ModelList", "getModelByAttributes", {name: dataSource.name.split(".")[0]});
-
-                    this.enableLayer(model);
+                    this.enableLayerByName(dataSource.name);
                 }
                 else {
                     axios.get(this.backendConfig.url + "/datasources/" + this.currentStoryId + "/" + dataSource.key, {
@@ -455,9 +385,9 @@ export default {
                 const reader = new FileReader();
 
                 reader.onload = f => {
-                    const layerName = this.getLayerName(file.name),
+                    const layerName = this.getLayerNameFromFile(file.name),
                         checkSameLayer = this.importedFileNames.filter(importedFileName => {
-                            return this.getLayerName(file.name) === this.getLayerName(importedFileName);
+                            return this.getLayerNameFromFile(file.name) === this.getLayerNameFromFile(importedFileName);
                         });
 
                     this.importKML({raw: f.target.result, checkSameLayer: checkSameLayer, layerName: layerName, filename: file.name, pointImages: this.pointImages, textColors: this.textColors, textSizes: this.textSizes});
@@ -492,7 +422,6 @@ export default {
         },
 
         updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
-
             const layer = this.wmsLayers.find(url => url.url === layerUrl),
                 layerModels = selectedCapabilities.map(capability => {
                     const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
@@ -508,16 +437,15 @@ export default {
                     return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
                 });
 
-            allCapabilitiesModels.forEach(model => {
-                if (model) {
-                    model.setIsVisibleInMap(false);
-                    model.set("isSelected", false);
-                }
-            });
+            this.disableLayers(allCapabilitiesModels);
 
             layerModels.forEach(model => {
-                model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
-                model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
+                if (selectedCapabilities.includes(model.get("layers"))) {
+                    this.enableLayer(model);
+                }
+                else {
+                    this.disableLayer(model);
+                }
             });
 
             if (layer) {
@@ -600,7 +528,6 @@ export default {
             }
 
         },
-
 
         async onWmsLayersAdd () {
             // Radio.trigger("Parser", "addWMSRemotely", document.querySelector("#own_wmsLayers").value);
@@ -845,14 +772,6 @@ export default {
             this.backgroundMapId = value;
             this.switchBackgroundMap(value);
         },
-        /**
-         * Getting the layer name from the file name without the postfix as file format
-         * @param {String} fileName name of the file
-         * @returns {String} Returns the layer name
-         */
-        getLayerName (fileName) {
-            return fileName.substr(0, fileName.lastIndexOf("."));
-        },
 
         /**
          * Removes the layer from the list of layers
@@ -900,17 +819,10 @@ export default {
          * @returns {void}
          */
         async loadStep () {
-            // Radio.trigger("Menu", "rerender");
-            if (!this.step.layers) {
-                this.step.layers = [];
-            }
-
             if (this.step.is3D && !Radio.request("Map", "isMap3d")) {
                 await this.$store.dispatch("Maps/activateMap3D");
 
-
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
-
 
                 this.set3DMapCenter();
 
@@ -936,18 +848,9 @@ export default {
             if (this.step.stepWidth === null) {
                 this.step.stepWidth = this.$store.state.Tools.DataNarrator.initialWidth;
             }
-            for (const importedItem of this.importedFileNames) {
-                const model = Radio.request("ModelList", "getModelByAttributes", {name: importedItem.split(".")[0]});
 
-                model.setIsVisibleInMap(false);
-                model.set("isSelected", false);
-            }
-            for (const layer of this.step.layers) {
-                const model = Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()});
-
-                model.setIsVisibleInMap(false);
-                model.set("isSelected", false);
-            }
+            this.disableLayersByName(this.importedFileNames);
+            this.disableLayersById(this.step.layers);
 
             this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
 
@@ -960,10 +863,6 @@ export default {
                     this.updateSelectedCapabilities(layer.selectedLayers, layer.url, this.allWmsLayers);
                 });
             }
-
-            const layers = this.layer3dOptions;
-
-            console.log(layers);
 
             Radio.trigger("Menu", "rerender");
         }
@@ -1386,7 +1285,7 @@ export default {
             />
 
             <LayerSelector
-                :items="layerOptions"
+                :items="allLayerOptions.plainLayers"
                 :selected.sync="step.layers"
             />
 
