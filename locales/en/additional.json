@@ -45,7 +45,9 @@
           "backgroundMap": "Background Map",
           "advancedOptions": "Advanced options",
           "ownDatasource": "Own Datasource",
-          "ownWmsLayers": "Own WMS Layers"
+          "ownWmsLayers": "Own WMS Layers",
+          "threeDFiles": "3D Files",
+          "openDrawTool": "Open Draw Tool"
         },
         "storyList": {
           "all": "All Stories",

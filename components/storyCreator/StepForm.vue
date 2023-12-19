@@ -1,7 +1,7 @@
 <script>
 import {
     mdiBackspaceOutline, mdiCancel, mdiCheck, mdiClose, mdiPinOutline,
-    mdiTrashCanOutline, mdiHelpCircleOutline
+    mdiTrashCanOutline, mdiHelpCircleOutline, mdiPencilOutline
 } from "@mdi/js";
 import * as uuid from "uuid";
 import {VueEditor} from "vue2-editor";
@@ -76,12 +76,15 @@ export default {
                 mdiPinOutline,
                 mdiBackspaceOutline,
                 mdiClose,
-                mdiHelpCircleOutline
+                mdiHelpCircleOutline,
+                mdiPencilOutline
             },
             rawDatasources: this.editedStep?.datasources || [],
             datasources: [],
             wmsLayers: this.editedStep?.wmsLayers || [],
-            allWmsLayers: this.editedStep?.wmsLayers || []
+            allWmsLayers: this.editedStep?.wmsLayers || [],
+
+            drawToolOpen: false
         };
     },
     computed: {
@@ -878,13 +881,18 @@ export default {
         },
 
         enableDrawTool () {
-
-            this.$store.commit("Tools/Draw/setActive", true);
+            this.drawToolOpen = true;
+            this.$store.commit("Tools/Draw/setActive", this.drawToolOpen);
         },
 
         disableDrawTool () {
+            this.drawToolOpen = false;
+            this.$store.commit("Tools/Draw/setActive", this.drawToolOpen);
+        },
 
-            this.$store.commit("Tools/Draw/setActive", false);
+        toggleDrawTool () {
+            this.drawToolOpen = !this.drawToolOpen;
+            this.$store.commit("Tools/Draw/setActive", this.drawToolOpen);
         },
 
         /**
@@ -1430,20 +1438,38 @@ export default {
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                <v-row>
-                    <v-col>
-                        <input
-                            id="own_dataSource"
-                            ref="own_dataSource_input"
-                            type="file"
-                            name="ownDataSource"
-                            class="form-control"
-                            accept=".kml, .geojson, .json, .gpx"
-                            multiple
-                            @change="onCustomDataUpload"
-                        >
-                    </v-col>
-                </v-row>
+                <v-container>
+                    <v-row no-gutters>
+                        <v-col cols="11">
+                            <input
+                                id="own_dataSource"
+                                ref="own_dataSource_input"
+                                type="file"
+                                name="ownDataSource"
+                                class="form-control"
+                                accept=".kml, .geojson, .json, .gpx"
+                                multiple
+                                @change="onCustomDataUpload"
+                            >
+                        </v-col>
+                        <v-col cols="1">
+                            <v-tooltip top>
+                                <template #activator="{ on }">
+                                    <v-icon
+                                        class="ml-2 mr-1"
+                                        v-on="on"
+                                        @click="toggleDrawTool"
+                                    >
+                                        {{ icons.mdiPencilOutline }}
+                                    </v-icon>
+                                </template>
+                                <span>
+                                    {{ $t("additional:modules.tools.dataNarrator.label.openDrawTool") }}
+                                </span>
+                            </v-tooltip>
+                        </v-col>
+                    </v-row>
+                </v-container>
             </div>
 
             <div class="form-group">
@@ -1509,7 +1535,7 @@ export default {
                     color="primary"
                     @click="open3D"
                 >
-                    Test
+                    {{ $t( "additional:modules.tools.dataNarrator.label.threeDFiles" ) }}
                 </v-btn>
             </div>
 

@@ -45,7 +45,10 @@
           "backgroundMap": "Hintergrundkarte",
           "advancedOptions": "Erweiterte Optionen",
           "ownDatasource": "Eigene Datenquelle",
-          "ownWmsLayers": "Eigene WMS Layer"
+          "ownWmsLayers": "Eigene WMS Layer",
+
+          "threeDFiles": "3D Dateien",
+          "openDrawTool": "Zeichenwerkzeug öffnen"
         },
         "storyList": {
           "all": "Alle Stories",

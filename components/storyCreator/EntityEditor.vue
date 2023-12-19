@@ -310,6 +310,7 @@ export default {
                                 :max="2"
                                 :min="0"
                                 step="0.1"
+                                track-color="primary-50"
                                 @input="updateScale"
                             />
                         </v-col>
@@ -317,105 +318,145 @@ export default {
                 </v-container>
                 <v-container>
                     <v-row>
-                        <v-col cols="auto">
-                            <v-text-field
+                        <v-col cols="10">
+                            <input
                                 v-model="northing"
+                                class="form-control"
                                 label="Northing"
                                 type="number"
                                 outlined
                                 @change="(value) => updatePosition()"
-                            />
+                            >
                         </v-col>
-                        <v-col cols="auto">
-                            <v-row>
-                                <v-btn
-                                    icon
-                                    small
-                                    @click="incrementNorhting"
-                                >
-                                    <v-icon>{{ icons.mdiChevronUp }}</v-icon>
-                                </v-btn>
-                            </v-row>
-                            <v-row>
-                                <v-btn
-                                    icon
-                                    small
-                                    @click="decrementNorhting"
-                                >
-                                    <v-icon>{{ icons.mdiChevronDown }}</v-icon>
-                                </v-btn>
-                            </v-row>
+                        <v-col cols="2">
+                            <div class="input-group d-flex justify-content-center">
+                                <v-tooltip top>
+                                    <template #activator="{ on }">
+                                        <v-icon
+                                            class="ml-2 mr-1"
+                                            v-on="on"
+                                            @click="incrementNorhting"
+                                        >
+                                            {{ icons.mdiChevronUp }}
+                                        </v-icon>
+                                    </template>
+                                    <span>
+                                        {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                    </span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template #activator="{ on }">
+                                        <v-icon
+                                            class="ml-2 mr-1"
+                                            v-on="on"
+                                            @click="decrementNorhting"
+                                        >
+                                            {{ icons.mdiChevronDown }}
+                                        </v-icon>
+                                    </template>
+                                    <span>
+                                        {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                    </span>
+                                </v-tooltip>
+                            </div>
                         </v-col>
                     </v-row>
                 </v-container>
                 <v-container>
                     <v-row>
-                        <v-col cols="auto">
-                            <v-text-field
+                        <v-col cols="10">
+                            <input
                                 v-model="easting"
+                                class="form-control"
                                 label="Easting"
                                 type="number"
                                 outlined
                                 @change="(value) => updatePosition()"
-                            />
+                            >
                         </v-col>
-                        <v-col cols="auto">
-                            <v-row>
-                                <v-btn
-                                    icon
-                                    small
-                                    @click="incrementEasting"
-                                >
-                                    <v-icon>{{ icons.mdiChevronUp }}</v-icon>
-                                </v-btn>
-                            </v-row>
-                            <v-row>
-                                <v-btn
-                                    icon
-                                    small
-                                    @click="decrementEasting"
-                                >
-                                    <v-icon>{{ icons.mdiChevronDown }}</v-icon>
-                                </v-btn>
-                            </v-row>
+                        <v-col cols="2">
+                            <div class="input-group d-flex justify-content-center">
+                                <v-tooltip top>
+                                    <template #activator="{ on }">
+                                        <v-icon
+                                            class="ml-2 mr-1"
+                                            v-on="on"
+                                            @click="incrementEasting"
+                                        >
+                                            {{ icons.mdiChevronUp }}
+                                        </v-icon>
+                                    </template>
+                                    <span>
+                                        {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                    </span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template #activator="{ on }">
+                                        <v-icon
+                                            class="ml-2 mr-1"
+                                            v-on="on"
+                                            @click="decrementEasting"
+                                        >
+                                            {{ icons.mdiChevronDown }}
+                                        </v-icon>
+                                    </template>
+                                    <span>
+                                        {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                    </span>
+                                </v-tooltip>
+                            </div>
                         </v-col>
                     </v-row>
                 </v-container>
                 <v-container>
                     <v-row>
-                        <v-col cols="auto">
-                            <v-text-field
+                        <v-col cols="10">
+                            <input
                                 v-model="heading"
+                                class="form-control"
                                 label="Heading"
                                 type="number"
                                 outlined
                                 @change="(value) => updateOrientation()"
-                            />
+                            >
                         </v-col>
-                        <v-col cols="auto">
-                            <v-row>
-                                <v-btn
-                                    icon
-                                    small
-                                    @click="incrementHeading"
-                                >
-                                    <v-icon>{{ icons.mdiChevronUp }}</v-icon>
-                                </v-btn>
-                            </v-row>
-                            <v-row>
-                                <v-btn
-                                    icon
-                                    small
-                                    @click="decrementHeading"
-                                >
-                                    <v-icon>{{ icons.mdiChevronDown }}</v-icon>
-                                </v-btn>
-                            </v-row>
+                        <v-col cols="2">
+                            <div class="input-group d-flex justify-content-center">
+                                <v-tooltip top>
+                                    <template #activator="{ on }">
+                                        <v-icon
+                                            class="ml-2 mr-1"
+                                            v-on="on"
+                                            @click="incrementHeading"
+                                        >
+                                            {{ icons.mdiChevronUp }}
+                                        </v-icon>
+                                    </template>
+                                    <span>
+                                        {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                    </span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template #activator="{ on }">
+                                        <v-icon
+                                            class="ml-2 mr-1"
+                                            v-on="on"
+                                            @click="decrementHeading"
+                                        >
+                                            {{ icons.mdiChevronDown }}
+                                        </v-icon>
+                                    </template>
+                                    <span>
+                                        {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                    </span>
+                                </v-tooltip>
+                            </div>
                         </v-col>
                     </v-row>
                 </v-container>
             </div>
         </div>
+    </div>
     </div>
 </template>
 
