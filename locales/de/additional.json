@@ -48,7 +48,13 @@
           "ownWmsLayers": "Eigene WMS Layer",
 
           "threeDFiles": "3D Dateien",
-          "openDrawTool": "Zeichenwerkzeug öffnen"
+          "openDrawTool": "Zeichenwerkzeug öffnen",
+          "scale": "Skalierung",
+          "threeDNorthing": "Nordwert",
+          "threeDEasting": "Ostwert",
+          "threeDRotation": "Rotation",
+          "increase": "Erhöhen",
+          "decrease": "Verringern"
         },
         "storyList": {
           "all": "Alle Stories",

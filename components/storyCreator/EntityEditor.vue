@@ -306,7 +306,7 @@ export default {
                         <v-col cols="12">
                             <v-slider
                                 v-model="scale"
-                                label="Scale"
+                                :label="$t('additional:modules.tools.dataNarrator.label.scale')"
                                 :max="2"
                                 :min="0"
                                 step="0.1"
@@ -317,9 +317,16 @@ export default {
                     </v-row>
                 </v-container>
                 <v-container>
+                    <label
+                        class="form-label"
+                        for="northing"
+                    >
+                        {{ $t( "additional:modules.tools.dataNarrator.label.threeDNorthing" ) }}
+                    </label>
                     <v-row>
                         <v-col cols="10">
                             <input
+                                id="northing"
                                 v-model="northing"
                                 class="form-control"
                                 label="Northing"
@@ -341,7 +348,7 @@ export default {
                                         </v-icon>
                                     </template>
                                     <span>
-                                        {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                        {{ $t("additional:modules.tools.dataNarrator.label.increase") }}
                                     </span>
                                 </v-tooltip>
                                 <v-tooltip top>
@@ -355,7 +362,7 @@ export default {
                                         </v-icon>
                                     </template>
                                     <span>
-                                        {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                        {{ $t("additional:modules.tools.dataNarrator.label.threeDNorthing") }}
                                     </span>
                                 </v-tooltip>
                             </div>
@@ -363,9 +370,16 @@ export default {
                     </v-row>
                 </v-container>
                 <v-container>
+                    <label
+                        class="form-label"
+                        for="easting"
+                    >
+                        {{ $t( "additional:modules.tools.dataNarrator.label.threeDEasting" ) }}
+                    </label>
                     <v-row>
                         <v-col cols="10">
                             <input
+                                id="easting"
                                 v-model="easting"
                                 class="form-control"
                                 label="Easting"
@@ -387,7 +401,7 @@ export default {
                                         </v-icon>
                                     </template>
                                     <span>
-                                        {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                        {{ $t("additional:modules.tools.dataNarrator.label.threeDRotation") }}
                                     </span>
                                 </v-tooltip>
                                 <v-tooltip top>
@@ -409,9 +423,16 @@ export default {
                     </v-row>
                 </v-container>
                 <v-container>
+                    <label
+                        class="form-label"
+                        for="rotation"
+                    >
+                        {{ $t( "additional:modules.tools.dataNarrator.label.threeDRotation" ) }}
+                    </label>
                     <v-row>
                         <v-col cols="10">
                             <input
+                                id="rotation"
                                 v-model="heading"
                                 class="form-control"
                                 label="Heading"

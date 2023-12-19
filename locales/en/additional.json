@@ -47,7 +47,13 @@
           "ownDatasource": "Own Datasource",
           "ownWmsLayers": "Own WMS Layers",
           "threeDFiles": "3D Files",
-          "openDrawTool": "Open Draw Tool"
+          "openDrawTool": "Open Draw Tool",
+          "scale": "Scale",
+          "threeDNorthing": "Northing",
+          "threeDEasting": "Easting",
+          "threeDRotation": "Rotation",
+          "increase": "Increase",
+          "decrease": "Decrease"
         },
         "storyList": {
           "all": "All Stories",
