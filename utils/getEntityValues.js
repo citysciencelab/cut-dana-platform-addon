@@ -16,8 +16,7 @@ export default function getEntityValues (entityId) {
 
     return {
         position: getEntityPosition(entity),
-        scale: getEntityScale(entity),
-        orientation: getEntityOrientation(entity)
+        scale: getEntityScale(entity)
     };
 
 }
@@ -44,19 +43,18 @@ function getEntityScale (entity) {
     return parseFloat(entity.model.scale);
 }
 
-/**
- * Returns the position of the entity in the correct format
- * @param {Object} entity the entity
- * @returns {Object} returns an object with the entity position
- */
-function getEntityOrientation (entity) {
-    if (!entity.orientation) {
-        return {};
-    }
-    return {
-        w: entity.orientation._value.w,
-        x: entity.orientation._value.x,
-        y: entity.orientation._value.y,
-        z: entity.orientation._value.z
-    };
-}
+// /**
+//  * Returns the position of the entity in the correct format
+//  * @param {Object} entity the entity
+//  * @returns {Object} returns an object with the entity position
+//  */
+// function getEntityOrientation (entity) {
+//     if (!entity.orientation) {
+//         return {};
+//     }
+//     return {
+//         heading: entity.orientation._value.heading,
+//         pitch: entity.orientation._value.pitch,
+//         roll: entity.orientation._value.roll
+//     };
+// }

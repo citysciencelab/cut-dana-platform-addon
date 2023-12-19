@@ -157,8 +157,11 @@ export default {
 
             const layerList = Radio.request("Parser", "getItemsByAttributes", {type: "layer", isBaseLayer: false}),
 
-                layer3d = Radio.request("Parser", "getItemsByAttributes", {id: "12884"});
+                layer3d = Radio.request("Parser", "getItemsByAttributes", {id: "12884"}),
 
+                uniqueTypes = [...new Set(layerList.map(item => item.typ))];
+
+            console.log("NON3D", uniqueTypes);
 
             return layerList.map(layer => layer);
         },
@@ -169,12 +172,20 @@ export default {
          */
         layer3dOptions () {
             const layerList = Radio.request(
-                "Parser",
-                "getItemsByAttributes",
-                {}
-            );
+                    "Parser",
+                    "getItemsByAttributes",
+                    {typ: "Entities3D"}
+                ),
+
+                uniqueTypes = [...new Set(layerList.map(item => item.typ))];
+
+            console.log(uniqueTypes);
+
 
             return layerList.filter(layer => {
+                if (layer.typ === "Oblique" || layer.typ === "Entities3D" || layer.typ === "TileSet3D" || layer.typ === "Terrain3D") {
+                    console.log(layer);
+                }
                 return this.layerTypes3DSpecific.includes(layer.typ);
             });
         },
@@ -550,14 +561,20 @@ export default {
         },
 
         addEntity (item, path = "") {
+            console.log("ADDENTITY");
             // the item is a file and not a folder
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
             //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
             // only load the file if the file is a gltf file
-            if (item.file && item.file === "gltf") {
-                const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
-                    orientation = new Cesium.Quaternion(item.orientation.x, item.orientation.y, item.orientation.z, item.orientation.w);
 
+            if (item.file && item.file === "gltf") {
+                console.log(item);
+                const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
+                    hpr = item.orientation ? new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll) : new Cesium.HeadingPitchRoll(0, 0, 0),
+
+                    orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+                console.log(orientation);
                 this.createEntity({
                     entityId: item.id,
                     file: item.file,
@@ -565,7 +582,7 @@ export default {
                     scale: item.scale,
                     position: position,
                     clampToGround: true,
-                    show: true,
+                    show: false,
                     orientation: orientation
                 });
                 return;

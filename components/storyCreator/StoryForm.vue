@@ -122,27 +122,36 @@ export default {
             return Promise.all(promises);
         },
 
-        addEntity (item, path = "") {
-            console.log(item, path);
-            // the item is a file and not a folder
-            const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
-                orientation = new Cesium.Quaternion(item.orientation.x, item.orientation.y, item.orientation.z, item.orientation.w);
 
-            if (item.file) {
+        addEntity (item, path = "") {
+            // the item is a file and not a folder
+            // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
+            //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
+            // only load the file if the file is a gltf file
+
+            if (item.file && item.file === "gltf") {
+                const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
+                    hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
+
+                    orientation = Cesium.Transforms.headingPitchRollQuaternion(position.getValue(Cesium.JulianDate.now()), hpr);
+
                 this.createEntity({
                     entityId: item.id,
                     file: item.file,
                     uri: `${path}/${item.name}`,
                     scale: item.scale,
                     position: position,
-                    orientation: orientation,
-                    clampToGround: true
+                    clampToGround: true,
+                    show: false,
+                    orientation: orientation
                 });
                 return;
             }
             if (item.children && item.children.length > 0) {
                 item.children.forEach((child) => {
-                    this.addEntity(child, `${path}/${item.name}`);
+                    const newPath = item.name !== "files" ? `${path}/${item.name}` : path;
+
+                    this.addEntity(child, `${newPath}`);
                 });
             }
 

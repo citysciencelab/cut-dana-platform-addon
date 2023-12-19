@@ -187,13 +187,16 @@ function handleGltfFile (state, payload) {
     const {file, fileName, fileId} = payload,
         viewer = mapCollection.getMap("3D"),
         currentLocation = viewer.camera_.cam_.position,
+        hpr = new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(0.0), Cesium.Math.toRadians(0.0), Cesium.Math.toRadians(0.0)),
+
+        orientation = Cesium.Transforms.headingPitchRollQuaternion(currentLocation, hpr),
 
         entity = createEntity(state, {
             viewer,
             entityId: fileId,
             name: fileName,
             scale: 1,
-            orientation: undefined,
+            orientation: orientation,
             visibility: true,
             uri: URL.createObjectURL(file),
             clampToGround: true,

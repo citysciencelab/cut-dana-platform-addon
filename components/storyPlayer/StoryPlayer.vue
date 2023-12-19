@@ -432,7 +432,9 @@ export default {
 
             if (item.file && item.file === "gltf") {
                 const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
-                    orientation = new Cesium.Quaternion(item.orientation.x, item.orientation.y, item.orientation.z, item.orientation.w);
+                    hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
+
+                    orientation = Cesium.Transforms.headingPitchRollQuaternion(position.getValue(Cesium.JulianDate.now()), hpr);
 
                 this.createEntity({
                     entityId: item.id,

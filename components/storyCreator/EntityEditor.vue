@@ -63,12 +63,15 @@ export default {
 
     },
     mounted () {
+        console.log(this.selectedEntity);
         // set map to 3d
         if (this.selectedEntity) {
             this.position = this.selectedEntity.position;
             this.orientation = this.selectedEntity.orientation;
             this.scale = parseFloat(this.selectedEntity.model.scale);
         }
+
+        console.log("HERE", this.orientation);
 
         const currentItem = getItemRecursive(this.step.selectedModelIds, this.selectedEntityId),
             newItems = replaceFileItem(this.step.selectedModelIds, this.selectedEntityId, {
@@ -80,10 +83,9 @@ export default {
                     z: this.position._value.z
                 },
                 orientation: {
-                    w: this.orientation._value.w,
-                    x: this.orientation._value.x,
-                    y: this.orientation._value.y,
-                    z: this.orientation._value.z
+                    heading: this.heading,
+                    pitch: this.pitch,
+                    roll: this.roll
                 }
             }),
             utm32UProjection = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
@@ -95,14 +97,19 @@ export default {
 
             [easting, northing] = proj4(utm32UProjection).forward([longitude, latitude]),
 
-            hpr = Cesium.HeadingPitchRoll.fromQuaternion(this.orientation);
 
-        // this.updatePosition();
+            hpr = Cesium.HeadingPitchRoll.fromQuaternion(this.orientation),
+
+            // this.updatePosition();
+            tempHeading = Cesium.Math.toDegrees(hpr.heading);
+
+
+        console.log(hpr, tempHeading);
 
         this.northing = northing;
         this.easting = easting;
         this.alittude = this.position.height;
-        this.heading = Cesium.Math.toDegrees(hpr.heading);
+        this.heading = tempHeading ? tempHeading : 0;
 
         // this.altitude = this.position.height;
         // this.northing = northing;
@@ -176,22 +183,34 @@ export default {
 
             this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
                 modelId,
-                ...getEntityValues(modelId)
+                ...getEntityValues(modelId),
+                orientation: {
+                    heading: this.heading,
+                    pitch: this.pitch,
+                    roll: this.roll
+                }
             }));
         },
 
         updateOrientation (heading, pitch, roll) {
 
             // eslint-disable-next-line radix
-            const h = heading !== undefined ? Cesium.Math.toRadians(parseInt(heading)) : Cesium.Math.toRadians(parseInt(this.heading)),
+            const h = heading !== undefined ? Cesium.Math.toRadians(parseFloat(heading)) : Cesium.Math.toRadians(parseFloat(this.heading) * 1.0),
                 // eslint-disable-next-line radix
-                p = pitch !== undefined ? Cesium.Math.toRadians(parseInt(pitch)) : Cesium.Math.toRadians(parseInt(this.pitch)),
+                p = pitch !== undefined ? Cesium.Math.toRadians(parseFloat(pitch)) : Cesium.Math.toRadians(parseFloat(this.pitch) * 1.0),
                 // eslint-disable-next-line radix
-                r = roll !== undefined ? Cesium.Math.toRadians(parseInt(roll)) : Cesium.Math.toRadians(parseInt(this.roll)),
+                r = roll !== undefined ? Cesium.Math.toRadians(parseFloat(roll)) : Cesium.Math.toRadians(parseFloat(this.roll) * 1.0),
+                hpr = new Cesium.HeadingPitchRoll(h, p, r);
 
-                hpr = new Cesium.HeadingPitchRoll(h, p, r),
+            let orientation;
 
-                orientation = Cesium.Transforms.headingPitchRollQuaternion(this.position.getValue(Cesium.JulianDate.now()), hpr);
+            if (this.position instanceof Cesium.Cartesian3) {
+                orientation = Cesium.Transforms.headingPitchRollQuaternion(this.position, hpr);
+            }
+            else {
+                orientation = Cesium.Transforms.headingPitchRollQuaternion(new Cesium.Cartesian3(this.position._value.x, this.position._value.y, this.position._value.z), hpr);
+            }
+
 
             this.changeEntityOrientation({
                 entityId: this.selectedEntityId, newOrientation: orientation
@@ -201,7 +220,12 @@ export default {
 
             this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
                 modelId,
-                ...getEntityValues(modelId)
+                ...getEntityValues(modelId),
+                orientation: {
+                    heading: this.heading,
+                    pitch: this.pitch,
+                    roll: this.roll
+                }
             }));
         },
 
