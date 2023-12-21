@@ -1,7 +1,7 @@
 <script>
 // import draggable from "vuedraggable";
 import {mdiChevronDown, mdiChevronUp, mdiClose} from "@mdi/js";
-import sortBy from "../../../../../src/utils/sortBy";
+import sortBy from "../../../../../../src/utils/sortBy";
 export default {
     name: "LayerSelector",
 
@@ -13,6 +13,10 @@ export default {
         selected: {
             type: Array,
             default: () => []
+        },
+        legend: {
+            type: String,
+            default: "additional:modules.tools.dataNarrator.label.layers"
         }
     },
     data () {
@@ -245,8 +249,6 @@ export default {
             this.$emit("update:selected", tmpSelected);
         },
         moveLayer (layer, direction) {
-
-
             // sorted layers base on layer.get("selectionIDX")
             const sortedLayers = sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this),
                 index = sortedLayers.findIndex(item => item.id === layer.id);
@@ -312,7 +314,7 @@ export default {
                 class="form-label"
                 for="available-layers"
             >
-                {{ $t( "additional:modules.tools.dataNarrator.label.layers" ) }}
+                {{ $t(legend) }}
             </label>
             <v-expansion-panels
                 id="step-layer"

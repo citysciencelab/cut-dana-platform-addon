@@ -12,20 +12,17 @@ import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImpo
 import actions from "../../store/actionsDataNarrator";
 import * as constants from "../../store/constantsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
+import mutations from "../../store/mutationsDataNarrator";
 
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
 import getFileExtension from "../../utils/getFileExtension";
-import {getHTMLContentReference, getStepReference} from "../../utils/getReference";
-
 
 import axios from "axios";
 import modelerGetters from "../../../../../src/modules/tools/modeler3D/store/gettersModeler3D";
 import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 
-import LayerSelector from "./LayerSelector.vue";
+import LayerSelector from "./inputs/LayerSelector.vue";
 import BackgroundMap from "./inputs/BackgroundMapSelect.vue";
-import mutations from "../../store/mutationsDataNarrator";
-
 
 import LayerUtilities from "../../mixins/LayerUtilities";
 
@@ -50,12 +47,10 @@ export default {
         return {
             constants,
             getFileExtension,
-            getStepReference,
-            getHTMLContentReference,
             visibleBackgroundMap: null,
             minStepWidth: 280,
             maxStepWidth: 1000,
-            step: {_id: uuid.v4(), layers: [], ...this.editedStep},
+            step: {_id: uuid.v4(), layers: [], layers3D: [], ...this.editedStep},
             newChapterTitle: this.editedStep.chapterTitle || "",
 
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
@@ -209,15 +204,24 @@ export default {
          * @returns {void}
          */
         "step.layers" (newSelectedLayerIds) {
-            this.rebuildLayers(newSelectedLayerIds);
+            this.rebuildLayers(newSelectedLayerIds, "plainLayers");
+            Radio.trigger("Menu", "rerender");
+        },
 
-            this.is3DLayerActive = Radio.request(
-                "ModelList",
-                "getModelsByAttributes",
-                {isVisibleInMap: true}
-            ).filter(layer => {
+        /**
+         * Toggles map 3D layers according to the selection for the step
+         * @param {Array} newSelectedLayerIds the selected layers
+         * @returns {void}
+         */
+        "step.layers3D" (newSelectedLayerIds) {
+            this.rebuildLayers(newSelectedLayerIds, "layers3D");
+
+            this.is3DLayerActive = this.enabledLayers().filter(layer => {
                 return this.layerTypes3DSpecific.includes(layer.attributes.typ);
             }).length > 0;
+            if (!this.step.is3D && this.is3DLayerActive) {
+                this.activate3DMap(true);
+            }
 
             Radio.trigger("Menu", "rerender");
         },
@@ -279,13 +283,13 @@ export default {
     },
     async mounted () {
         this.loadStep();
-
     },
     beforeDestroy () {
         this.disableLayersByName(this.importedFileNames);
-        this.disableLayersById(this.step.layers);
+        this.disableStepLayers(this.step);
 
 
+        this.$store.dispatch("Maps/deactivateMap3D");
         this.$store.commit("Tools/Draw/setActive", false);
         this.switchBackgroundMap(this.visibleBackgroundMap);
     },
@@ -515,8 +519,6 @@ export default {
                 this.importWMSLayers(url, capabilites);
 
             }
-
-
         },
 
 
@@ -678,6 +680,7 @@ export default {
         get3DMapCenter () {
             const camera = Radio.request("Map", "getMap3d").getCesiumScene().camera;
 
+            console.log(this.toDegrees(camera.position));
 
             return {
                 "cameraPosition": this.toDegrees(camera.position),
@@ -687,17 +690,22 @@ export default {
         },
 
         set3DMapCenter () {
-            const camera = Radio.request("Map", "getMap3d").getCesiumScene().camera;
+            if (this.step.navigation3D.cameraPosition[0] &&
+                this.step.navigation3D.cameraPosition[1] &&
+                this.step.navigation3D.cameraPosition[2] &&
+                this.step.navigation3D.heading &&
+                this.step.navigation3D.pitch) {
+                const camera = Radio.request("Map", "getMap3d").getCesiumScene().camera;
 
-            camera.flyTo({
-                destination: Cesium.Cartesian3.fromDegrees(this.step.navigation3D.cameraPosition[0], this.step.navigation3D.cameraPosition[1], this.step.navigation3D.cameraPosition[2]),
-                orientation: {
-                    heading: this.step.navigation3D.heading,
-                    pitch: this.step.navigation3D.pitch,
-                    roll: 0.0
-                }
-            });
-
+                camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(this.step.navigation3D.cameraPosition[0], this.step.navigation3D.cameraPosition[1], this.step.navigation3D.cameraPosition[2]),
+                    orientation: {
+                        heading: this.step.navigation3D.heading,
+                        pitch: this.step.navigation3D.pitch,
+                        roll: 0.0
+                    }
+                });
+            }
         },
 
         /**
@@ -707,7 +715,9 @@ export default {
          */
         async activate3DMap (checkboxValue) {
             this.step.is3D = checkboxValue;
-            if (this.step.is3D && !Radio.request("Map", "isMap3d")) {
+            const isMap3d = Radio.request("Map", "isMap3d");
+
+            if (this.step.is3D && !isMap3d) {
                 await this.$store.dispatch("Maps/activateMap3D");
 
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(() => {
@@ -717,7 +727,7 @@ export default {
                 this.step.navigation3D = this.get3DMapCenter();
                 this.mapMovedPosition = this.step.navigation3D;
             }
-            else if (!this.step.is3D && Radio.request("Map", "isMap3d")) {
+            else if (!this.step.is3D && isMap3d) {
                 await this.$store.dispatch("Maps/deactivateMap3D");
             }
 
@@ -804,7 +814,6 @@ export default {
                 await this.$store.dispatch("Maps/activateMap3D");
 
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
-
                 this.set3DMapCenter();
 
                 await this.loadThreeDFiles();
@@ -815,7 +824,6 @@ export default {
             else if (this.step.is3D && Radio.request("Map", "isMap3d")) {
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
                 this.set3DMapCenter();
-
                 await this.loadThreeDFiles();
             }
 
@@ -831,8 +839,10 @@ export default {
                 this.step.stepWidth = this.$store.state.Tools.DataNarrator.initialWidth;
             }
 
-            this.disableLayersByName(this.importedFileNames);
-            this.disableLayersById(this.step.layers);
+            const stepLayers = this.step.layers || [],
+                stepLayers3D = this.step.layers3D || [];
+
+            this.rebuildLayers(stepLayers.concat(stepLayers3D));
 
             this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
 
@@ -1298,6 +1308,13 @@ export default {
             <LayerSelector
                 :items="allLayerOptions.plainLayers"
                 :selected.sync="step.layers"
+                legend="additional:modules.tools.dataNarrator.label.layers"
+            />
+
+            <LayerSelector
+                :items="allLayerOptions.layers3D"
+                :selected.sync="step.layers3D"
+                legend="additional:modules.tools.dataNarrator.label.layers3D"
             />
 
             <div class="form-group">

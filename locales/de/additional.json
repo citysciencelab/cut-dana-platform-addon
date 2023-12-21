@@ -29,6 +29,7 @@
           "centerCoordinate": "Position der Karte",
           "zoomLevel": "Zoomstufe der Karte",
           "layers": "Layer",
+          "layers3D": "3D Layer",
           "availableLayers": "Verfügbare Layer",
           "interactionAddons": "Erweiterungen",
           "is3D": "Karte in 3D anzeigen",

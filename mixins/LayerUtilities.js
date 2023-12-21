@@ -36,7 +36,7 @@ export default {
 
         disableLayersById (layers) {
             this.disableLayers(
-                layers.map(layer => Radio.request("ModelList", "getModelByAttributes", {id: layer.toString()}))
+                layers.map(layer => this.getLayerById(layer))
             );
         },
 
@@ -47,7 +47,19 @@ export default {
         },
 
         enableLayerByName (name) {
-            this.disableLayer(this.getLayerModelByName(name));
+            this.enableLayer(this.getLayerModelByName(name));
+        },
+
+        enableLayersById (layers) {
+            this.enableLayers(
+                layers.map(layer => this.getLayerById(layer))
+            );
+        },
+
+        getLayerById (layer) {
+            const layerId = typeof layer === "string" ? layer : layer.id;
+
+            return Radio.request("ModelList", "getModelByAttributes", {id: layerId});
         },
 
         getLayerModelByName (name) {
@@ -83,7 +95,20 @@ export default {
        * @returns {void}
        */
         disableLayer (layer) {
-            this.toggleLayer(layer, false);
+            if (layer) {
+                // hide 3D layers in 3D mode
+
+
+                this.toggleLayer(layer, false);
+                if (this.layerTypes3DSpecific.includes(layer.attributes.typ)) {
+                    // It doesn't work for 3D layers 🤷🏼
+                    // const map = Radio.request("Map", "getMap3d");
+
+                    // layer.layer.setVisible(false, map);
+                    // console.log("hidden 3D layer", layer);
+
+                }
+            }
         },
 
         /**
@@ -95,18 +120,29 @@ export default {
             return fileName.split(".")[0];
         },
 
-        rebuildLayers (selectedLayers) {
-            const layerList = this.allLayerOptions.allLayers,
-                enabledLayers = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
+        enabledLayers () {
+            return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
+        },
 
-            this.disableLayers(enabledLayers);
+        enabledLayersWithMode (mode) {
+            return this.enabledLayers().filter(layer => {
+                return (mode === "allLayers") ||
+                    (mode === "layers3D" && this.layerTypes3DSpecific.includes(layer.typ)) ||
+                    (mode === "plainLayers" && !this.layerTypes3DSpecific.includes(layer.typ));
+            });
+        },
+
+        rebuildLayers (selectedLayers, mode = "allLayers") {
+            const layerList = this.allLayerOptions[mode];
+
+            this.disableLayers(this.enabledLayersWithMode(mode));
 
             for (const layer of selectedLayers) {
                 let layerModel;
                 const layerId = typeof layer === "string" ? layer : layer.id;
 
                 // check if model is already in modelList
-                layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layerId});
+                layerModel = this.getLayerById(layerId);
 
                 if (!layerModel) {
                     const foundLayer = layerList.find(l => l.id === layerId);
@@ -118,11 +154,35 @@ export default {
                     }
 
                     Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                    layerModel = Radio.request("ModelList", "getModelByAttributes", {id: foundLayer.id});
+                    layerModel = this.getLayerById(foundLayer);
                 }
                 this.enableLayer(layerModel);
             }
+        },
 
+        disableStoryLayers (story) {
+            const layerList = this.enabledLayers();
+
+            story?.steps?.forEach(step => this.disableStepLayers(step, layerList, true));
+            Radio.trigger("Menu", "rerender");
+        },
+
+        disableStepLayers (step, layers = null, skipReRender = false) {
+            const layerList = layers || this.enabledLayers();
+
+            step?.layers?.forEach(layer => {
+                const layerId = typeof layer === "string" ? layer : layer.id;
+
+                this.disableLayer(layerList.find(l => l.attributes.id === layerId));
+            });
+            step?.layers3D?.forEach(layer => {
+                const layerId = typeof layer === "string" ? layer : layer.id;
+
+                this.disableLayer(layerList.find(l => l.attributes.id === layerId));
+            });
+            if (!skipReRender) {
+                Radio.trigger("Menu", "rerender");
+            }
         }
     }
 };

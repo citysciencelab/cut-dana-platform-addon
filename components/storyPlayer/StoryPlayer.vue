@@ -50,11 +50,11 @@ export default {
          * @returns {Object} current step
          */
         currentStep () {
-            return this.currentStory.steps[this.currentStepIndex];
+            return this.currentStory?.steps[this.currentStepIndex];
         },
 
         chapters () {
-            return this.currentStory.chapters;
+            return this.currentStory?.chapters;
         },
 
         /**
@@ -79,7 +79,7 @@ export default {
                 this.previousStepIndex = oldValue;
                 this.loadStep();
             }
-            this.loadStep();
+            // this.loadStep();
         },
         /**
          * Observes the activeTools array and detects which tools need to be closed
@@ -101,6 +101,7 @@ export default {
     },
     async mounted () {
         if (this.currentStory) {
+            this.loadStep();
             this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
             this.currentStepIndex = this.stepIndex;
             await this.loadThreeDFiles();
@@ -121,7 +122,6 @@ export default {
     beforeDestroy () {
         // // Hides all story layers
 
-
         if (this.currentStory) {
             if (Object.hasOwn(this.currentStory, "displayType") && this.currentStory.displayType.toUpperCase() === "DIPAS") {
                 this.$store.commit(
@@ -132,7 +132,6 @@ export default {
         }
 
         this.switchBackgroundMap(this.visibleBackgroundMap);
-
 
         if (Radio.request("Map", "isMap3d")) {
             this.disableAllEntities();
@@ -238,8 +237,10 @@ export default {
          * @returns {void}
          */
         resetStoryPlayer () {
+            // this.disableStepLayers({...this.currentStep});
             this.disableOwnDatasource();
             this.currentStepIndex = 0;
+            this.$emit("reset");
         },
 
         /**
@@ -476,9 +477,10 @@ export default {
                 });
             }
 
-            const stepLayers = this.currentStep.layers || [];
+            const stepLayers = this.currentStep.layers || [],
+                stepLayers3D = this.currentStep.layers3D || [];
 
-            this.rebuildLayers(stepLayers);
+            this.rebuildLayers(stepLayers.concat(stepLayers3D));
             this.switchBackgroundMap(this.currentStep.backgroundMapId);
             this.getDataSources();
 
@@ -506,13 +508,6 @@ export default {
                 // Activate all tools of the current step
                 interactionAddons.forEach(this.activateTool);
             }
-        },
-
-        clearAllLayers () {
-            const layerList = Radio.request("ModelList", "getModelsByAttributes", {isVisibleInTree: true, isSelected: true});
-
-            this.disableLayers(layerList);
-            this.disableOwnDatasource();
         }
     }
 };
@@ -531,6 +526,7 @@ export default {
             @setCurrentStepIndex="(index) => currentStepIndex = index"
             @toggleAutoPlay="toggleAutoPlay"
             @toggleScrollytelling="toggleScrollytelling"
+            @reset="resetStoryPlayer"
             v-on="$listeners"
         />
         <ScrollyTeller
@@ -540,6 +536,7 @@ export default {
             :steps="currentStory.steps"
             @setCurrentStepIndex="(index) => currentStepIndex = index"
             @toggleScrollytelling="toggleScrollytelling"
+            @reset="resetStoryPlayer"
             v-on="$listeners"
         />
     </div>

@@ -10,9 +10,8 @@ import actions from "../store/actionsDataNarrator";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 
-import disableStoryLayers from "../utils/disableStoryLayers";
-
 import RenderUtilities from "../mixins/RenderUtilities";
+import LayerUtilities from "../mixins/LayerUtilities";
 
 import DashboardPanel from "./Dashboard/DashboardPanel.vue";
 import SnackBar from "./shared/SnackBar.vue";
@@ -28,7 +27,7 @@ export default {
         StoryCreator,
         StoryPlayer
     },
-    mixins: [RenderUtilities],
+    mixins: [RenderUtilities, LayerUtilities],
     data () {
         return {
             constants,
@@ -191,16 +190,14 @@ export default {
 
         resetDataNarrator () {
             if (this.currentStory) {
-                disableStoryLayers(this.currentStory.steps);
-
+                this.disableStoryLayers(this.currentStory);
                 for (const step of this.currentStory.steps) {
                     for (const layer of step.wmsLayers) {
                         this.hideWmsLayer(layer.url);
                     }
                 }
-
             }
-
+            this.$store.dispatch("Maps/deactivateMap3D");
             this.resetModule();
             this.setMode(constants.storyTellingModes.DASHBOARD);
         },

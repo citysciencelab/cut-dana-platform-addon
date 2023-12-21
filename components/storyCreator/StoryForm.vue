@@ -8,7 +8,6 @@ import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 
 import errorHandling from "../../utils/errorHandling";
-import {getStepReference} from "../../utils/getReference";
 import ShareSettings from "./inputs/ShareSettings.vue";
 
 import {
@@ -25,7 +24,6 @@ export default {
     data () {
         return {
             constants,
-            getStepReference,
             hasCover: false,
             minInterval: 0,
             maxInterval: 59,
@@ -181,6 +179,9 @@ export default {
 
         },
 
+        getStepReference (chapterNumber, stepNumber) {
+            return `${chapterNumber}.${stepNumber}`;
+        },
 
         loadStoryWms () {
             if (this.currentStory.steps) {
