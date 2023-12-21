@@ -60,6 +60,8 @@ export default {
             story: this.editedStory,
             step: this.editedStep,
             threeDFiles: this.editedStory.threeDFiles || [],
+            definitiveThreeDFiles: [],
+            key: 0,
 
             rootInputId: this.randomId()
         };
@@ -110,6 +112,7 @@ export default {
             const addFolderInput = this.$refs.addFolderInput;
 
             addFolderInput.focus();
+
             // console.log("addFolder", parentId, asChild);
             // this.addItem(parentId, {
             //     id: this.randomId(),
@@ -128,7 +131,7 @@ export default {
                     name: this.addFolderInputValue
                 }, true);
                 this.resetFolderInput();
-
+                console.log(this.threeDFiles);
             }
         },
 
@@ -149,7 +152,6 @@ export default {
         },
 
         addItem (parentId, newItem, asChild = true) {
-            // Create a copy of the items
 
             if (!parentId || parentId === "") {
                 // If no parent id is provided, add the item to the root
@@ -192,6 +194,8 @@ export default {
                 }
                 return false;
             }
+            this.key++;
+            this.definitiveThreeDFiles = this.threeDFiles;
             this.story.threeDFiles = this.threeDFiles;
         },
 
@@ -433,8 +437,9 @@ export default {
             </v-btn>
         </span>
         <v-treeview
+            :key="key"
             v-model="tree"
-            :items="threeDFiles"
+            :items="definitiveThreeDFiles"
             item-children="children"
             activatable
             selectable
