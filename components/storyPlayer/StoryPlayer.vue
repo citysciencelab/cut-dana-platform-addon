@@ -50,7 +50,6 @@ export default {
          * @returns {Object} current step
          */
         currentStep () {
-            console.log(this.currentStory, this.currentStepIndex);
             return this.currentStory.steps[this.currentStepIndex];
         },
 
@@ -102,7 +101,6 @@ export default {
     },
     async mounted () {
         if (this.currentStory) {
-            console.log(this.currentStory);
             this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
             this.currentStepIndex = this.stepIndex;
             await this.loadThreeDFiles();

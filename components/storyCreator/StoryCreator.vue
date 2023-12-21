@@ -9,7 +9,6 @@ import FileForm from "./FileForm.vue";
 import StepForm from "./StepForm.vue";
 import StoryForm from "./StoryForm.vue";
 import EntityEditor from "./EntityEditor.vue";
-import * as uuid from "uuid";
 
 export default {
     name: "StoryCreator",
@@ -94,7 +93,6 @@ export default {
          */
         openEntityEditor (step) {
             this.stepToEdit = step;
-            console.log(step);
             // this.setCurrentStory(story);
             this.view = this.constants.storyCreationViews.ENTITY_EDITOR;
         }

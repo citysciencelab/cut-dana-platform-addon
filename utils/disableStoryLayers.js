@@ -1,7 +1,7 @@
 /**
  * Disable all layers that are used in the story.
  * @param {Array} steps list of story steps
- * return {void}
+ * @returns {void}
  */
 export default function disableStoryLayers (steps) {
     // Hides all story layers

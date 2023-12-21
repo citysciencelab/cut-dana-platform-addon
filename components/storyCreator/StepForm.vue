@@ -565,6 +565,7 @@ export default {
          * @returns {void}
          */
         onWmsLayerRemove (layer) {
+            this.hideWmsLayer(layer.url);
             this.wmsLayers = this.wmsLayers.filter(l => l.url !== layer.url);
             this.allWmsLayers = this.allWmsLayers.filter(l => l.url !== layer.url);
         },
@@ -1350,6 +1351,10 @@ export default {
                 <v-container>
                     <v-row no-gutters>
                         <v-col cols="11">
+                            <label
+                                class="form-label"
+                                for="own_dataSource"
+                            />
                             <input
                                 id="own_dataSource"
                                 ref="own_dataSource_input"

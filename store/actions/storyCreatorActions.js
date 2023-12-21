@@ -423,7 +423,6 @@ function uploadStoryFiles ({state}) {
         }
         return threeDFileUploads;
     }).then((files) => {
-        console.log(files, story.threeDFilesId);
 
         if (story.threeDFilesId === "") {
             const pathPrefix = `${backendUrl}/stories/`,
@@ -668,7 +667,6 @@ function getReversedData ({state}, data) {
  * @returns {Boolean} true or false
  */
 function getIfInExtent ({state}, capability, currentExtent, projection) {
-    console.log("OWN", projection);
     const layer = capability?.Capability?.Layer?.BoundingBox?.filter(bbox => {
         return bbox?.crs && bbox?.crs.includes("EPSG") && crs.getProjection(bbox?.crs) !== undefined && Array.isArray(bbox?.extent) && bbox?.extent.length === 4;
     });
@@ -740,7 +738,6 @@ function capabilityOptions ({state}, layerUrl) {
  * @returns {Promise} return nothing
  */
 async function hideWmsLayer (context, layerUrl) {
-    console.log("HIDE WMS LAYER", layerUrl);
     const capabilites = await capabilityOptions({}, layerUrl),
         allCapabilitiesModels = capabilites.map(capability => {
             return Radio.request("ModelList", "getModelByAttributes", {id: getParsedTitle({}, capability.Title)});
