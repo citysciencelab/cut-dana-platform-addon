@@ -9,6 +9,7 @@ import mutations from "../../store/mutationsDataNarrator";
 import BackButton from "../shared/BackButton.vue";
 import {getItemRecursive, replaceFileItem} from "../../utils/threeDFiles";
 import getEntityValues from "../../utils/getEntityValues";
+import getGfiFeatures from "../../../../../src/api/gfi/getGfiFeaturesByTileFeature";
 
 import {mdiChevronUp, mdiChevronDown} from "@mdi/js";
 import proj4 from "proj4";
@@ -48,7 +49,8 @@ export default {
             altitude: 0,
             heading: 0,
             pitch: 0,
-            roll: 0
+            roll: 0,
+            hiddenObjects: []
         };
     },
     computed: {
@@ -63,7 +65,6 @@ export default {
 
     },
     mounted () {
-        console.log(this.selectedEntity);
         // set map to 3d
         if (this.selectedEntity) {
             this.position = this.selectedEntity.position;
@@ -71,7 +72,6 @@ export default {
             this.scale = parseFloat(this.selectedEntity.model.scale);
         }
 
-        console.log("HERE", this.orientation);
 
         const currentItem = getItemRecursive(this.step.selectedModelIds, this.selectedEntityId),
             newItems = replaceFileItem(this.step.selectedModelIds, this.selectedEntityId, {
@@ -102,9 +102,6 @@ export default {
 
             // this.updatePosition();
             tempHeading = Cesium.Math.toDegrees(hpr.heading);
-
-
-        console.log(hpr, tempHeading);
 
         this.northing = northing;
         this.easting = easting;
@@ -280,6 +277,35 @@ export default {
             this.heading = parseInt(this.heading);
 
             this.updateOrientation();
+        },
+
+
+        /**
+         * Selects an object based on the provided event.
+         * @param {Event} event - The event object containing the position information.
+         * @returns {void}
+         */
+        selectObject (event) {
+
+            const scene = mapCollection.getMap("3D").getCesiumScene(),
+                picked = scene.pick(event.position);
+
+            if (Cesium.defined(picked)) {
+
+                if (picked instanceof Cesium.Cesium3DTileFeature) {
+                    const features = getGfiFeatures.getGfiFeaturesByTileFeature(picked),
+                        gmlId = features[0]?.getProperties()[this.gmlIdPath],
+                        tileSetModels = this.updateAllLayers ?
+                            Radio.request("ModelList", "getModelsByAttributes", {typ: "TileSet3D"}) :
+                            Radio.request("ModelList", "getModelsByAttributes", {typ: "TileSet3D", id: picked.tileset.layerReferenceId});
+
+                    tileSetModels.forEach(model => model.hideObjects([gmlId], this.updateAllLayers));
+
+                    this.hiddenObjects.push({
+                        name: gmlId
+                    });
+                }
+            }
         }
     }
 };

@@ -87,7 +87,9 @@ export default {
             wmsLayers: this.editedStep?.wmsLayers || [],
             allWmsLayers: this.editedStep?.wmsLayers || [],
 
-            drawToolOpen: false
+            drawToolOpen: false,
+
+            key: 0
         };
     },
     computed: {
@@ -384,26 +386,18 @@ export default {
             console.log("TEST", selectedCapabilities, layerUrl, allCapabilities);
             const layer = this.wmsLayers.find(url => url.url === layerUrl),
                 layerModels = selectedCapabilities.map(capability => {
-
-                    console.log("TEST11");
                     const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
-
-                    console.log("TEST12", parsedModel);
                     let models = [];
 
                     Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
                     models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
-
-                    console.log("TEST13");
                     return models;
                 }),
                 allCapabilitiesModels = allCapabilities.map(capability => {
                     return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
                 });
 
-            console.log("TEST1");
             this.disableLayers(allCapabilitiesModels);
-            console.log("TEST2");
 
             layerModels.forEach(model => {
                 if (selectedCapabilities.includes(model.get("layers"))) {
@@ -414,13 +408,11 @@ export default {
                 }
             });
 
-            console.log("TEST3");
 
             if (layer) {
                 layer.selectedLayers = selectedCapabilities;
             }
 
-            console.log("TEST4");
         },
 
 
@@ -440,7 +432,6 @@ export default {
 
 
                     if (modelData) {
-                        console.log("LOAD", item, modelData);
                         this.addEntity({
                             ...item,
                             position: modelData.position,
@@ -462,20 +453,17 @@ export default {
         },
 
         addEntity (item, path = "") {
-            console.log("ADDENTITY");
             // the item is a file and not a folder
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
             //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
             // only load the file if the file is a gltf file
 
             if (item.file && item.file === "gltf") {
-                console.log(item);
                 const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
                     hpr = item.orientation ? new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll) : new Cesium.HeadingPitchRoll(0, 0, 0),
 
                     orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
 
-                console.log(orientation);
                 this.createEntity({
                     entityId: item.id,
                     file: item.file,
@@ -489,7 +477,6 @@ export default {
                 return;
             }
             if (item.children && item.children.length > 0) {
-                console.log("ADDENTITYCHILDREN", item, path);
                 item.children.forEach((child) => {
                     const newPath = item.name !== "files" ? `${path}/${item.name}` : path;
 
@@ -500,11 +487,9 @@ export default {
         },
 
         removeURLParameters (url) {
-            console.log(url);
             const urlObj = new URL(url),
                 baseUrl = urlObj.origin + urlObj.pathname;
 
-            console.log(urlObj, baseUrl);
             return baseUrl;
         },
 
@@ -528,11 +513,6 @@ export default {
                 });
 
                 this.importWMSLayers(url, capabilites);
-            }
-
-            console.log(this.allWmsLayers);
-            for (const item of this.allWmsLayers) {
-                console.log(item);
             }
 
 
@@ -724,7 +704,12 @@ export default {
             if (this.step.is3D && !Radio.request("Map", "isMap3d")) {
                 await this.$store.dispatch("Maps/activateMap3D");
 
-                Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
+                Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(() => {
+                    console.log("here");
+                    this.mapMovedHandler();
+                });
+                this.step.navigation3D = this.get3DMapCenter();
+                this.mapMovedPosition = this.step.navigation3D;
             }
             else if (!this.step.is3D && Radio.request("Map", "isMap3d")) {
                 await this.$store.dispatch("Maps/deactivateMap3D");
@@ -746,10 +731,15 @@ export default {
          * @returns {void}
          */
         isCameraPositionDifferent () {
-            return this.step.navigation3D.cameraPosition[0] && this.mapMovedPosition.cameraPosition[0]
+
+            const different = this.step.navigation3D.cameraPosition[0] && this.mapMovedPosition.cameraPosition[0]
                 && (this.step.navigation3D.cameraPosition[0] !== this.mapMovedPosition.cameraPosition[0]
-                    || this.step.navigation3D.cameraPosition[0] !== this.mapMovedPosition.cameraPosition[0]
-                    || this.step.navigation3D.cameraPosition[0] !== this.mapMovedPosition.cameraPosition[0]);
+                    || this.step.navigation3D.cameraPosition[1] !== this.mapMovedPosition.cameraPosition[1]
+                    || this.step.navigation3D.cameraPosition[2] !== this.mapMovedPosition.cameraPosition[2]);
+
+            console.log("different", different, this.step.navigation3D, this.mapMovedPosition);
+
+            return different;
         },
 
         setBackgroundMap (value) {
@@ -771,6 +761,7 @@ export default {
             this.step.is3D = true;
 
             await this.$store.dispatch("Maps/activateMap3D");
+            Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
 
             this.step.navigation3D = this.get3DMapCenter();
             this.$emit(
@@ -817,6 +808,7 @@ export default {
                 await this.$store.dispatch("Maps/deactivateMap3D");
             }
             else if (this.step.is3D && Radio.request("Map", "isMap3d")) {
+                Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
                 this.set3DMapCenter();
 
                 await this.loadThreeDFiles();
@@ -1148,6 +1140,7 @@ export default {
                 <div class="stepForm-inputs-centerCoordinate">
                     <input
                         id="step-center"
+                        :key="`centerCoordinatex${key}`"
                         class="form-control"
                         :value="
                             step.centerCoordinate && step.centerCoordinate[0]
@@ -1155,6 +1148,7 @@ export default {
                         readonly
                     >
                     <input
+                        :key="`centerCoordinatey${key}`"
                         class="form-control"
                         :value="
                             step.centerCoordinate && step.centerCoordinate[1]
@@ -1168,7 +1162,10 @@ export default {
                                 <v-icon
                                     class="ml-2 mr-1"
                                     v-on="on"
-                                    @click="step.centerCoordinate = center()"
+                                    @click="() => {
+                                        key++;
+                                        step.centerCoordinate = center()
+                                    }"
                                 >
                                     {{ icons.mdiPinOutline }}
                                 </v-icon>
@@ -1217,6 +1214,7 @@ export default {
                 <div class="stepForm-inputs-zoomLevel">
                     <input
                         id="step-zoom"
+                        :key="`zoom${key}`"
                         class="form-control"
                         :value="step.zoomLevel"
                         readonly
@@ -1228,7 +1226,10 @@ export default {
                                 <v-icon
                                     class="ml-2 mr-1"
                                     v-on="on"
-                                    @click="step.zoomLevel = zoom()"
+                                    @click="() => {
+                                        key++;
+                                        step.zoomLevel = zoom()
+                                    }"
                                 >
                                     {{ icons.mdiPinOutline }}
                                 </v-icon>

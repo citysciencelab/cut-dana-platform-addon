@@ -439,7 +439,7 @@ export default {
         <v-treeview
             :key="key"
             v-model="tree"
-            :items="definitiveThreeDFiles"
+            :items="threeDFiles"
             item-children="children"
             activatable
             selectable
