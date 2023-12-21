@@ -7,6 +7,7 @@ import {WMSCapabilities} from "ol/format.js";
 import dataURLtoFile from "../../utils/dataURLtoFile.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 import printFormDataAsTable from "../../utils/printFormData.js";
+import store from "../../../../../src/app-store";
 
 /**
  * Adds a chapter to the story
@@ -475,7 +476,7 @@ function importWMSLayers ({state}, layerUrl, capabilities) {
 
     // LoaderOverlay.show();
     axios({
-        url: url + "?request=GetCapabilities&service=WMS"
+        url: `${url}${url.includes("?") ? "&" : "?"}request=GetCapabilities&service=WMS`
     })
         .then(response => {
             return response.data;
@@ -488,22 +489,23 @@ function importWMSLayers ({state}, layerUrl, capabilities) {
                     capability = parser.read(data),
                     version = capability?.version,
                     checkVersion = isVersionEnabled({}, version),
-                    currentExtent = Radio.request("Parser", "getPortalConfig")?.mapView?.extent;
+                    currentExtent = Radio.request("Parser", "getPortalConfig")?.mapView?.extent,
+                    projection = store.getters["Maps/projection"].code_;
 
 
-                let checkExtent = getIfInExtent({}, capability, currentExtent),
+                let checkExtent = getIfInExtent({}, capability, currentExtent, projection),
                     finalCapability = capability;
 
                 if (!checkVersion) {
                     const reversedData = getReversedData({}, data);
 
                     finalCapability = parser.read(reversedData);
-                    checkExtent = getIfInExtent({}, finalCapability, currentExtent);
+                    checkExtent = getIfInExtent({}, finalCapability, currentExtent, projection);
                 }
 
 
                 if (!checkExtent) {
-                    // this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.ifInExtent"));
+                    this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.ifInExtent"));
                     return;
                 }
 
@@ -523,7 +525,7 @@ function importWMSLayers ({state}, layerUrl, capabilities) {
 
             }
             catch (e) {
-                console.error(e);
+                console.error("HERE", e);
                 // this.displayErrorMessage();
             }
         }, () => {
@@ -656,9 +658,11 @@ function getReversedData ({state}, data) {
  * @param {Object} context actions context object.
  * @param {Object} capability the response of the imported wms layer in parsed format
  * @param {Number[]} currentExtent the extent of current map view
+ * @param {String} projection the projection of the map
  * @returns {Boolean} true or false
  */
-function getIfInExtent ({state}, capability, currentExtent) {
+function getIfInExtent ({state}, capability, currentExtent, projection) {
+    console.log("OWN", projection);
     const layer = capability?.Capability?.Layer?.BoundingBox?.filter(bbox => {
         return bbox?.crs && bbox?.crs.includes("EPSG") && crs.getProjection(bbox?.crs) !== undefined && Array.isArray(bbox?.extent) && bbox?.extent.length === 4;
     });
@@ -674,15 +678,15 @@ function getIfInExtent ({state}, capability, currentExtent) {
             secondLayerExtent = [];
 
         layer.forEach(singleLayer => {
-            if (singleLayer.crs === this.projection.getCode()) {
+            if (singleLayer.crs === projection) {
                 firstLayerExtent = [singleLayer.extent[0], singleLayer.extent[1]];
                 secondLayerExtent = [singleLayer.extent[2], singleLayer.extent[3]];
             }
         });
 
         if (!firstLayerExtent.length && !secondLayerExtent.length) {
-            firstLayerExtent = crs.transform(layer[0].crs, this.projection.getCode(), [layer[0].extent[0], layer[0].extent[1]]);
-            secondLayerExtent = crs.transform(layer[0].crs, this.projection.getCode(), [layer[0].extent[2], layer[0].extent[3]]);
+            firstLayerExtent = crs.transform(layer[0].crs, projection, [layer[0].extent[0], layer[0].extent[1]]);
+            secondLayerExtent = crs.transform(layer[0].crs, projection, [layer[0].extent[2], layer[0].extent[3]]);
         }
 
         layerExtent = [firstLayerExtent[0], firstLayerExtent[1], secondLayerExtent[0], secondLayerExtent[1]];

@@ -381,22 +381,29 @@ export default {
         },
 
         updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
+            console.log("TEST", selectedCapabilities, layerUrl, allCapabilities);
             const layer = this.wmsLayers.find(url => url.url === layerUrl),
                 layerModels = selectedCapabilities.map(capability => {
+
+                    console.log("TEST11");
                     const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
 
+                    console.log("TEST12", parsedModel);
                     let models = [];
 
                     Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
                     models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
 
+                    console.log("TEST13");
                     return models;
                 }),
                 allCapabilitiesModels = allCapabilities.map(capability => {
                     return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
                 });
 
+            console.log("TEST1");
             this.disableLayers(allCapabilitiesModels);
+            console.log("TEST2");
 
             layerModels.forEach(model => {
                 if (selectedCapabilities.includes(model.get("layers"))) {
@@ -407,9 +414,13 @@ export default {
                 }
             });
 
+            console.log("TEST3");
+
             if (layer) {
                 layer.selectedLayers = selectedCapabilities;
             }
+
+            console.log("TEST4");
         },
 
 
@@ -488,9 +499,19 @@ export default {
 
         },
 
+        removeURLParameters (url) {
+            console.log(url);
+            const urlObj = new URL(url),
+                baseUrl = urlObj.origin + urlObj.pathname;
+
+            console.log(urlObj, baseUrl);
+            return baseUrl;
+        },
+
         async onWmsLayersAdd () {
             // Radio.trigger("Parser", "addWMSRemotely", document.querySelector("#own_wmsLayers").value);
-            const url = document.querySelector("#own_wmsLayers").value,
+
+            const url = this.removeURLParameters(document.querySelector("#own_wmsLayers").value),
                 capabilites = await this.capabilityOptions(url),
                 exists = this.wmsLayers.filter(layer => layer.url === url).length > 0;
 
@@ -507,6 +528,11 @@ export default {
                 });
 
                 this.importWMSLayers(url, capabilites);
+            }
+
+            console.log(this.allWmsLayers);
+            for (const item of this.allWmsLayers) {
+                console.log(item);
             }
 
 
