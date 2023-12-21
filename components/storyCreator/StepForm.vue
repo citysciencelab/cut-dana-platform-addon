@@ -85,7 +85,7 @@ export default {
             rawDatasources: this.editedStep?.datasources || [],
             datasources: [],
             wmsLayers: this.editedStep?.wmsLayers || [],
-            allWmsLayers: this.editedStep?.wmsLayers || [],
+            allWmsLayers: [],
 
             drawToolOpen: false,
 
@@ -285,15 +285,9 @@ export default {
         this.disableLayersByName(this.importedFileNames);
         this.disableLayersById(this.step.layers);
 
-        for (const layer of this.wmsLayers) {
-            this.hideWmsLayer(layer.url);
-        }
 
         this.$store.commit("Tools/Draw/setActive", false);
         this.switchBackgroundMap(this.visibleBackgroundMap);
-
-
-        console.log(this.step);
     },
     methods: {
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
@@ -382,15 +376,18 @@ export default {
             }
         },
 
+
         updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
-            console.log("TEST", selectedCapabilities, layerUrl, allCapabilities);
             const layer = this.wmsLayers.find(url => url.url === layerUrl),
                 layerModels = selectedCapabilities.map(capability => {
                     const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
                     let models = [];
 
-                    Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
-                    models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
+                    if (parsedModel) {
+
+                        Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
+                        models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
+                    }
                     return models;
                 }),
                 allCapabilitiesModels = allCapabilities.map(capability => {
@@ -400,12 +397,15 @@ export default {
             this.disableLayers(allCapabilitiesModels);
 
             layerModels.forEach(model => {
-                if (selectedCapabilities.includes(model.get("layers"))) {
-                    this.enableLayer(model);
+                if (model && layerModels.length > 0) {
+                    if (selectedCapabilities.includes(model.get("layers"))) {
+                        this.enableLayer(model);
+                    }
+                    else {
+                        this.disableLayer(model);
+                    }
                 }
-                else {
-                    this.disableLayer(model);
-                }
+
             });
 
 
@@ -513,6 +513,7 @@ export default {
                 });
 
                 this.importWMSLayers(url, capabilites);
+
             }
 
 
@@ -650,6 +651,10 @@ export default {
             }
 
             this.saveStoryStep({step: this.step, images: this.images, datasources: newDatasources, wmsLayers: this.wmsLayers});
+
+            for (const layer of this.wmsLayers) {
+                this.hideWmsLayer(layer.url);
+            }
             // Trigger submit action to return to story overview
             this.$emit("return");
         },
@@ -705,7 +710,7 @@ export default {
                 await this.$store.dispatch("Maps/activateMap3D");
 
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(() => {
-                    console.log("here");
+
                     this.mapMovedHandler();
                 });
                 this.step.navigation3D = this.get3DMapCenter();
@@ -737,7 +742,6 @@ export default {
                     || this.step.navigation3D.cameraPosition[1] !== this.mapMovedPosition.cameraPosition[1]
                     || this.step.navigation3D.cameraPosition[2] !== this.mapMovedPosition.cameraPosition[2]);
 
-            console.log("different", different, this.step.navigation3D, this.mapMovedPosition);
 
             return different;
         },
@@ -834,10 +838,30 @@ export default {
             this.existingDatasources();
 
             if (this.step.wmsLayers) {
-                this.step.wmsLayers.forEach(layer => {
-                    this.importWMSLayers(layer.url, layer.selectedLayers);
+                this.step.wmsLayers.forEach(async (l) => {
+                    const url = l.url,
+                        capabilites = await this.capabilityOptions(url),
+                        exists = this.allWmsLayers.filter(layer => layer.url === url).length > 0;
 
-                    this.updateSelectedCapabilities(layer.selectedLayers, layer.url, this.allWmsLayers);
+
+                    if (!exists) {
+                        this.wmsLayers.push({
+                            url: url,
+                            selectedLayers: l.selectedLayers
+                        });
+                        this.allWmsLayers.push({
+                            url: url,
+                            selectedLayers: capabilites
+                        });
+
+                        this.key++;
+
+                        this.importWMSLayers(url, capabilites);
+
+                        this.updateSelectedCapabilities(l.selectedLayers, l.url, this.allWmsLayers);
+                    }
+
+
                 });
             }
 
@@ -1381,6 +1405,8 @@ export default {
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <v-treeview
+                                :key="`wmsLayers${index}${key}`"
+                                :selected="wmsLayers.map(({url, selectedLayers}) => url === item.url ? selectedLayers : [])"
                                 selectable
                                 :items="item.selectedLayers"
                                 item-key="Name"

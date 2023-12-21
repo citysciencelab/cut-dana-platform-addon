@@ -50,6 +50,7 @@ export default {
          * @returns {Object} current step
          */
         currentStep () {
+            console.log(this.currentStory, this.currentStepIndex);
             return this.currentStory.steps[this.currentStepIndex];
         },
 
@@ -101,9 +102,19 @@ export default {
     },
     async mounted () {
         if (this.currentStory) {
+            console.log(this.currentStory);
             this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
             this.currentStepIndex = this.stepIndex;
             await this.loadThreeDFiles();
+            if (this.currentStory.steps) {
+                this.currentStory.steps.forEach(step => {
+                    if (step.wmsLayers) {
+                        step.wmsLayers.forEach(async layer => {
+                            this.importWMSLayers(layer.url, layer.selectedLayers);
+                        });
+                    }
+                });
+            }
         }
         this.activateInterval();
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
@@ -111,15 +122,7 @@ export default {
 
     beforeDestroy () {
         // // Hides all story layers
-        const layerList = Radio.request("ModelList", "getModelsByAttributes", {
-            isVisibleInMap: true, isBaseLayer: false
-        });
 
-        for (const layer of layerList) {
-            if (this.currentStep.layers.includes(layer.attributes.id)) {
-                this.disableLayer(layer);
-            }
-        }
 
         if (this.currentStory) {
             if (Object.hasOwn(this.currentStory, "displayType") && this.currentStory.displayType.toUpperCase() === "DIPAS") {
@@ -132,15 +135,10 @@ export default {
 
         this.switchBackgroundMap(this.visibleBackgroundMap);
 
-        if (this.currentStep.wmsLayers) {
-            this.currentStep.wmsLayers.forEach(async layer => {
-                this.hideWmslayer(layer.url);
-            });
-        }
 
         if (Radio.request("Map", "isMap3d")) {
             this.disableAllEntities();
-            // store.dispatch("Maps/deactivateMap3D");
+            store.dispatch("Maps/deactivateMap3D");
         }
     },
     methods: {
@@ -184,11 +182,16 @@ export default {
                     return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
                 });
 
-            this.disableLayers(allCapabilitiesModels);
-
+            allCapabilitiesModels.forEach(model => {
+                if (model) {
+                    model.setIsVisibleInMap(false);
+                    model.set("isSelected", false);
+                }
+            });
 
             layerModels.forEach(model => {
-                this.toggleLayer(model, selectedCapabilities.includes(model.get("layers")));
+                model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
+                model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
             });
 
             if (layer) {
@@ -481,15 +484,14 @@ export default {
             this.switchBackgroundMap(this.currentStep.backgroundMapId);
             this.getDataSources();
 
-
             if (this.currentStep.wmsLayers) {
                 this.currentStep.wmsLayers.forEach(async layer => {
-                    this.importWMSLayers(layer.url, layer.selectedLayers);
                     const allCapabilities = await this.capabilityOptions(layer.url);
 
                     this.updateSelectedCapabilities(layer.selectedLayers, layer.url, allCapabilities);
                 });
             }
+
 
             setTimeout(() => {
                 Radio.trigger("Menu", "rerender");

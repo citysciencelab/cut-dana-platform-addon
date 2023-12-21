@@ -192,7 +192,15 @@ export default {
         resetDataNarrator () {
             if (this.currentStory) {
                 disableStoryLayers(this.currentStory.steps);
+
+                for (const step of this.currentStory.steps) {
+                    for (const layer of step.wmsLayers) {
+                        this.hideWmsLayer(layer.url);
+                    }
+                }
+
             }
+
             this.resetModule();
             this.setMode(constants.storyTellingModes.DASHBOARD);
         },

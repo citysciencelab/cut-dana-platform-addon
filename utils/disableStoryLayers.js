@@ -31,6 +31,8 @@ export default function disableStoryLayers (steps) {
                 }
             }
         }
+
+
         // for (const layer of layerList) {
         //     if (step.layers.map(l => l.id).includes(layer.attributes.id)) {
         //         layer.setIsVisibleInMap(false);

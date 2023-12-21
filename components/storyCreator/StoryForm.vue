@@ -51,6 +51,7 @@ export default {
             }
             this.hasCover = true;
         }
+        this.loadStoryWms();
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -110,18 +111,41 @@ export default {
                 this.$set(this.currentStory, "displayType", "classic");
         },
 
-        loadThreeDFiles () {
-            const promises = [];
+        async loadThreeDFiles () {
+            // Check if 3D map mode needed
+            // Toggles 3D map mode
+
+            this.disableAllEntities();
 
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
-                    this.addEntity(item, `${this.backendUrl.url}${this.currentStory.threeDFilesId}`);
+                    // console.log(this.backendConfig.url);
+                    const uri = `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`,
+                        modelData = this.step.selectedModelIds.find(model => {
+                            return model.modelId === item.id;
+                        });
+
+
+                    if (modelData) {
+                        this.addEntity({
+                            ...item,
+                            position: modelData.position,
+                            scale: modelData.scale,
+                            orientation: modelData.orientation
+                        }, uri);
+                    }
                 });
             }
-
-            return Promise.all(promises);
         },
 
+        enableThreeDModels () {
+            if (this.currentStory.threeDFiles) {
+                this.currentStory.threeDFiles.forEach((item) => {
+                    // console.log(this.backendConfig.url);
+                    this.enableEntityVisibility(item);
+                });
+            }
+        },
 
         addEntity (item, path = "") {
             // the item is a file and not a folder
@@ -131,9 +155,9 @@ export default {
 
             if (item.file && item.file === "gltf") {
                 const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
-                    hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
+                    hpr = item.orientation ? new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll) : new Cesium.HeadingPitchRoll(0, 0, 0),
 
-                    orientation = Cesium.Transforms.headingPitchRollQuaternion(position.getValue(Cesium.JulianDate.now()), hpr);
+                    orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
 
                 this.createEntity({
                     entityId: item.id,
@@ -155,6 +179,20 @@ export default {
                 });
             }
 
+        },
+
+
+        loadStoryWms () {
+            if (this.currentStory.steps) {
+                this.currentStory.steps.forEach(step => {
+                    if (step.wmsLayers) {
+                        step.wmsLayers.forEach((item) => {
+                            this.importWMSLayers(item.url, item.selectedLayers);
+                        });
+                    }
+                });
+
+            }
         }
     }
 };

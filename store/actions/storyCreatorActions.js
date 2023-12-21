@@ -461,7 +461,7 @@ function uploadStoryFiles ({state}) {
  * @fires Core.ConfigLoader#RadioTriggerParserAddFolder
  * @returns {void}
  */
-function importWMSLayers ({state}, layerUrl, capabilities) {
+async function importWMSLayers ({state, dispatch}, layerUrl, capabilities) {
     const url = layerUrl;
 
     this.invalidUrl = false;
@@ -470,7 +470,13 @@ function importWMSLayers ({state}, layerUrl, capabilities) {
         return;
     }
     else if (url.includes("http:")) {
-        this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.errorHttpsMessage"));
+        dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.errorHttpsMessage"), {root: true});
+        return;
+    }
+
+    // if the wms layer is already imported, it will not be imported again
+    if (Radio.request("Parser", "getItemByAttributes", {url: url})) {
+        // dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.errorHttpsMessage"), {root: true});
         return;
     }
 
@@ -505,7 +511,7 @@ function importWMSLayers ({state}, layerUrl, capabilities) {
 
 
                 if (!checkExtent) {
-                    this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.ifInExtent"));
+                    dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.ifInExtent"), {root: true});
                     return;
                 }
 
@@ -706,7 +712,6 @@ function getIfInExtent ({state}, capability, currentExtent, projection) {
 function capabilityOptions ({state}, layerUrl) {
 
     return axios({
-        timeout: 4000,
         url: layerUrl + "?request=GetCapabilities&service=WMS"
     })
         .then(response => response.data)
@@ -730,15 +735,16 @@ function capabilityOptions ({state}, layerUrl) {
 
 /**
  *
+ * @param {Object} context actions context object.
  * @param {String} layerUrl the wms url
  * @returns {Promise} return nothing
  */
-async function hideWmsLayer (layerUrl) {
+async function hideWmsLayer (context, layerUrl) {
+    console.log("HIDE WMS LAYER", layerUrl);
     const capabilites = await capabilityOptions({}, layerUrl),
         allCapabilitiesModels = capabilites.map(capability => {
-            return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+            return Radio.request("ModelList", "getModelByAttributes", {id: getParsedTitle({}, capability.Title)});
         });
-
 
     allCapabilitiesModels.forEach(model => {
         if (model) {
