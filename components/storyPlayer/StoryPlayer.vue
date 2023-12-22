@@ -79,7 +79,7 @@ export default {
                 this.previousStepIndex = oldValue;
                 this.loadStep();
             }
-            // this.loadStep();
+            this.loadStep();
         },
         /**
          * Observes the activeTools array and detects which tools need to be closed
@@ -104,7 +104,6 @@ export default {
             this.loadStep();
             this.showMode = this.currentStory?.displayType ? this.currentStory.displayType : "classic";
             this.currentStepIndex = this.stepIndex;
-            await this.loadThreeDFiles();
             if (this.currentStory.steps) {
                 this.currentStory.steps.forEach(step => {
                     if (step.wmsLayers) {
@@ -137,6 +136,10 @@ export default {
             this.disableAllEntities();
             store.dispatch("Maps/deactivateMap3D");
         }
+
+
+        this.disableOwnDatasource();
+        this.disableAllEntities();
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -343,42 +346,42 @@ export default {
 
         async loadThreeDFiles () {
             // Check if 3D map mode needed
-            if (this.currentStory.steps.filter((step) => step.threeDFiles?.length > 0).length > 0) {
-                // Toggles 3D map mode
-                if (!Radio.request("Map", "isMap3d")) {
-                    await store.dispatch("Maps/activateMap3D");
-                }
-                this.disableAllEntities();
+            // Toggles 3D map mode
 
-                this.currentStory.steps.forEach((step) => {
-                    if (step.threeDFiles) {
-                        step.threeDFiles.forEach((item) => {
-                        // console.log(this.backendConfig.url);
-                            this.addEntity(item, `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`);
+            await store.dispatch("Maps/activateMap3D");
+
+            if (this.currentStory.threeDFiles) {
+                this.currentStory.threeDFiles.forEach((item) => {
+                    // console.log(this.backendConfig.url);
+                    const uri = `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`,
+                        modelData = this.currentStep.selectedModelIds.find(model => {
+                            return model.modelId === item.id;
                         });
+
+                    console.log("modelData", modelData);
+                    if (modelData) {
+                        this.addEntity({
+                            ...item,
+                            ...modelData,
+                            show: false
+                        }, uri);
                     }
                 });
-
             }
         },
 
         enableThreeDModels () {
-            if (this.currentStory.steps.filter((step) => step.threeDFiles?.length > 0).length > 0) {
+            this.disableAllEntities();
 
-
-                this.currentStory.steps.forEach((step) => {
-                    if (step.threeDFiles) {
-                        step.threeDFiles.forEach((item) => {
-                            // console.log(this.backendConfig.url);
-                            this.enableEntityVisibility(item);
-                        });
-                    }
+            if (this.currentStep.selectedModelIds) {
+                this.currentStep.selectedModelIds.forEach((item) => {
+                    this.enableEntityVisibility({entityId: item.modelId});
                 });
-
             }
         },
 
         addEntity (item, path = "") {
+            console.log(item);
             // the item is a file and not a folder
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
             //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
@@ -386,12 +389,12 @@ export default {
 
             if (item.file && item.file === "gltf") {
                 const position = new Cesium.Cartesian3(item.position.x, item.position.y, item.position.z),
-                    hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
+                    hpr = new Cesium.HeadingPitchRoll(item.orientation?.heading ? item.orientation.heading : 0, item.orientation?.pitch ? item.orientation.pitch : 0, item.orientation?.roll ? item.orientation.roll : 0),
 
-                    orientation = Cesium.Transforms.headingPitchRollQuaternion(position.getValue(Cesium.JulianDate.now()), hpr);
+                    orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
 
                 this.createEntity({
-                    entityId: item.id,
+                    entityId: item.modelId,
                     file: item.file,
                     uri: `${path}/${item.name}`,
                     scale: item.scale,
@@ -432,6 +435,8 @@ export default {
             // Toggles 3D map mode
             if (this.currentStep.is3D && !Radio.request("Map", "isMap3d")) {
                 await store.dispatch("Maps/activateMap3D");
+
+                await this.loadThreeDFiles();
             }
             else if (!this.currentStep.is3D && Radio.request("Map", "isMap3d")) {
                 this.isChangeFrom3D = true;
@@ -475,6 +480,8 @@ export default {
                     },
                     easingFunction: Cesium.EasingFunction.QUADRATIC_OUT
                 });
+
+                this.enableThreeDModels();
             }
 
             const stepLayers = this.currentStep.layers || [],

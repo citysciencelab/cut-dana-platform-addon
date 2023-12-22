@@ -185,7 +185,7 @@ function handleGltfFile (state, payload) {
     // this.checkMapCollection(fileId);
 
     const {file, fileName, fileId} = payload,
-        viewer = mapCollection.getMap("3D"),
+        viewer = Radio.request("Map", "getMap3d"),
         currentLocation = viewer.camera_.cam_.position,
         hpr = new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(0.0), Cesium.Math.toRadians(0.0), Cesium.Math.toRadians(0.0)),
 
@@ -355,7 +355,8 @@ function handleDaeFile (state, payload) {
  * @returns {void}
  */
 function removeEntity (state, payload) {
-    const {viewer, entityId} = payload,
+    const {entityId} = payload,
+        viewer = Radio.request("Map", "getMap3d"),
         entity = viewer.entities.getById(entityId);
 
     if (entity) {
@@ -372,7 +373,8 @@ function removeEntity (state, payload) {
  * @returns {void}
  */
 function toggleEntityVisibility (state, payload) {
-    const {viewer, entityId} = payload,
+    const {entityId} = payload,
+        viewer = Radio.request("Map", "getMap3d"),
         entity = viewer.entities.getById(entityId);
 
     if (entity) {
@@ -389,9 +391,11 @@ function toggleEntityVisibility (state, payload) {
  * @returns {void}
  */
 function enableEntityVisibility (state, payload) {
-    const {viewer, entityId} = payload,
-        entity = viewer.entities.getById(entityId);
+    const {entityId} = payload,
+        viewer = Radio.request("Map", "getMap3d"),
+        entity = viewer.getDataSourceDisplay().defaultDataSource.entities.getById(entityId);
 
+    console.log("ENTITY", entityId, entity);
     if (entity) {
         entity.show = true;
     }
@@ -407,7 +411,8 @@ function enableEntityVisibility (state, payload) {
  * @returns {void}
  */
 function disableEntityVisibility (state, payload) {
-    const {viewer, entityId} = payload,
+    const {entityId} = payload,
+        viewer = Radio.request("Map", "getMap3d"),
         entity = viewer.entities.getById(entityId);
 
     if (entity) {
@@ -423,7 +428,7 @@ function disableEntityVisibility (state, payload) {
  * @returns {void}
  */
 function disableAllEntities () {
-    const viewer = mapCollection.getMap("3D"),
+    const viewer = Radio.request("Map", "getMap3d"),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
 
     entities.values.forEach(entity => {
@@ -441,11 +446,10 @@ function disableAllEntities () {
  */
 function changeEntityLocation (state, payload) {
     const {entityId} = payload,
-        viewer = mapCollection.getMap("3D"),
+        viewer = Radio.request("Map", "getMap3d"),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
         entity = entities.getById(entityId);
 
-    console.log(payload.newLocation, "POSITION:", entity.position, "enitityID:", payload.entityId);
 
     if (entity && entity.position) {
         entity.position = payload.newLocation;
@@ -462,11 +466,10 @@ function changeEntityLocation (state, payload) {
  */
 function changeEntityOrientation (state, payload) {
     const {entityId, newOrientation} = payload,
-        viewer = mapCollection.getMap("3D"),
+        viewer = Radio.request("Map", "getMap3d"),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
         entity = entities.getById(entityId);
 
-    console.log(payload.newOrientation, "ORIENTATION:", entity.orientation, "entityID:", payload.entityId, entity);
 
     if (entity) {
         entity.orientation = newOrientation;
@@ -484,7 +487,7 @@ function changeEntityOrientation (state, payload) {
 function scaleEntity (state, payload) {
 
     const {entityId, scale} = payload,
-        viewer = mapCollection.getMap("3D"),
+        viewer = Radio.request("Map", "getMap3d"),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
         entity = entities.getById(entityId);
 
@@ -508,7 +511,7 @@ function scaleEntity (state, payload) {
  */
 function createEntity (state, payload) {
     const {entityId, scale, orientation, visibility, uri, position} = payload,
-        viewer = mapCollection.getMap("3D"),
+        viewer = Radio.request("Map", "getMap3d"),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
     // check if entity already exists, if it does, just replace all the values in the entity and set it to visible
 
