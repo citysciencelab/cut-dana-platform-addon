@@ -16,17 +16,12 @@ import proj4 from "proj4";
 
 proj4.defs("EPSG:32632", "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
 
-
 export default {
     name: "EntityEditor",
-
     components: {
         BackButton
     },
-
     props: {
-        // The initial values for a step to edit
-
         editedStep: {
             type: Object,
             default: () => ({})
@@ -61,17 +56,15 @@ export default {
             return mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities.getById(this.selectedEntityId);
         }
     },
-    watch: {
-
-    },
-    mounted () {
+    async mounted () {
         // set map to 3d
+        await this.$store.dispatch("Maps/activateMap3D");
+
         if (this.selectedEntity) {
             this.position = this.selectedEntity.position;
             this.orientation = this.selectedEntity.orientation;
             this.scale = parseFloat(this.selectedEntity.model.scale);
         }
-
 
         const currentItem = getItemRecursive(this.step.selectedModelIds, this.selectedEntityId),
             newItems = replaceFileItem(this.step.selectedModelIds, this.selectedEntityId, {
@@ -118,9 +111,6 @@ export default {
             modelId,
             ...getEntityValues(modelId)
         }));
-    },
-    beforeDestroy () {
-        // console.log("beforeDestroy");
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
