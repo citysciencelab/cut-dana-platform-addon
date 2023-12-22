@@ -87,10 +87,11 @@ export default {
             deep: true
         }
     },
-    mounted () {
+    async mounted () {
         // load the tree from this.step.selectedModelIds
         this.tree = this.step.selectedModelIds.map(model => model.modelId);
         // set map to 3d
+        await this.$store.dispatch("Maps/activateMap3D");
 
         // load the existing files
         // this.importFile({files: this.step.threeDFiles.map(file => file.obj), fileId: null});
@@ -104,7 +105,6 @@ export default {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
-
 
         addFolder (parentId = null) {
             this.targetParentId = parentId;
@@ -358,7 +358,6 @@ export default {
             //     console.log(key, value);
             // }
             this.story.threeDFiles = this.threeDFiles;
-
             this.returnToStepForm();
 
         },
@@ -369,7 +368,6 @@ export default {
          * @returns {void}
          */
         returnToStepForm () {
-
             this.$emit("return", this.step);
         }
 
