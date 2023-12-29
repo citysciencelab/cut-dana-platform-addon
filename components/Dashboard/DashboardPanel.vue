@@ -110,6 +110,11 @@ export default {
                 });
         },
 
+        /**
+         * Handles the infinite loading
+         * @param {Object} $state The state of the infinite loading
+         * @returns {void}
+         */
         infiniteHandler ($state) {
             setTimeout(() => {
                 this.storyListPage += 1;

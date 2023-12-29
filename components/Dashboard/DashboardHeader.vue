@@ -28,6 +28,10 @@ export default {
         ...mapGetters(["mobile"])
     },
     methods: {
+        /**
+         * Returns the available story list modes.
+         * @returns {string[]} The available story list modes.
+         */
         availableStoryListModes () {
             const modes = ["all", "featured", "popular"];
 

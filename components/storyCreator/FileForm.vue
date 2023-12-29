@@ -106,6 +106,12 @@ export default {
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
 
+        /**
+         * Add a new folder to the tree
+         * @param {string} parentId the id of the parent folder
+         * @param {boolean} asChild true if the folder should be added as a child of the parent, false if it should be added as a sibling
+         * @returns {void}
+         */
         addFolder (parentId = null) {
             this.targetParentId = parentId;
             this.addFolderInputOpen = true;
@@ -131,14 +137,22 @@ export default {
                     name: this.addFolderInputValue
                 }, true);
                 this.resetFolderInput();
-                console.log(this.threeDFiles);
             }
         },
 
+        /**
+         * Save the value of the folder input to state
+         * @param {string} value the value of the input
+         * @returns {void}
+         */
         handleFolderInput (value) {
             this.addFolderInputValue = value;
         },
 
+        /**
+         * Clear the folder input
+         * @returns {void}
+         */
         resetFolderInput () {
             this.ignoreFolderChange = true;
 
@@ -151,6 +165,13 @@ export default {
             });
         },
 
+        /**
+         * Add an item to the tree
+         * @param {string} parentId the id of the parent item
+         * @param {*} newItem the new item to add
+         * @param {boolean} asChild true if the item should be added as a child of the parent, false if it should be added as a sibling
+         * @returns {void}
+         */
         addItem (parentId, newItem, asChild = true) {
 
             if (!parentId || parentId === "") {
@@ -199,7 +220,12 @@ export default {
             this.story.threeDFiles = this.threeDFiles;
         },
 
-
+        /**
+         * Rename an item in the tree
+         * @param {string} itemId the id of the item to rename
+         * @param {string} newName the new name of the item
+         * @returns {void}
+         */
         renameItem (itemId, newName) {
             /**
              * Function to recursively search and rename the item
@@ -223,12 +249,21 @@ export default {
             renameRecursive(this.threeDFiles);
         },
 
-        openFileDialog (index) {
-            const element = this.$refs["fileInput" + index];
+        /**
+         * Open the file selection dialog of the file input
+         * @param {string} itemId the id the file input belongs to
+         * @returns {void}
+         */
+        openFileDialog (itemId) {
+            const element = this.$refs["fileInput" + itemId];
 
             element.click();
         },
 
+        /**
+         * Generate a random id for the tree items based on the current time for uniqueness
+         * @returns {string} the random id
+         */
         randomId () {
             let d = new Date().getTime(), // Timestamp
                 d2 = ((typeof performance !== "undefined") && performance.now && (performance.now() * 1000)) || 0;// Time in microseconds since page-load or 0 if unsupported
@@ -248,6 +283,12 @@ export default {
             });
         },
 
+        /**
+         * Handle the file upload
+         * @param {Event} event the event
+         * @param {string} itemId the id of the item the file belongs to
+         * @returns {void}
+         */
         handleFileUpload (event, itemId) {
             for (const file of event.target.files) {
                 const randomItemId = this.randomId(),
@@ -281,6 +322,11 @@ export default {
             event.target.value = "";
         },
 
+        /**
+         * Open the entity editor
+         * @param {string} entityId the id of the entity to edit
+         * @returns {void}
+         */
         entityEditor (entityId) {
             this.setSelectedEntityId(entityId);
 
@@ -296,6 +342,11 @@ export default {
             this.$emit("openEntityEditor", this.step);
         },
 
+        /**
+         * Remove an item from the tree
+         * @param {string} itemId the id of the item to remove
+         * @returns {void}
+         */
         removeItem (itemId) {
 
             /**
@@ -326,6 +377,10 @@ export default {
             removeRecursive(this.threeDFiles);
         },
 
+        /**
+         * Create the FormData object from the tree
+         * @returns {void}
+         */
         createFormData () {
             // const formData = new FormData();
 

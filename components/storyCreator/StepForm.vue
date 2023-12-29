@@ -318,6 +318,11 @@ export default {
             }
         },
 
+        /**
+         * Converts the external rawDatasources to the internal datasources
+         * @param {Object[]} rawDatasources the external rawDatasources
+         * @returns {Object[]} the internal datasources
+         */
         existingDatasources () {
             for (const dataSource of this.rawDatasources) {
                 // const response = this.ownDataSources(dataSource.key);
@@ -339,6 +344,11 @@ export default {
             }
         },
 
+        /**
+         * Handles the file upload
+         * @param {files} files - The files from the file input
+         * @returns {void}
+         */
         addFile (files) {
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
@@ -381,6 +391,13 @@ export default {
         },
 
 
+        /**
+         * Updates the selected capabilities of a WMS layer
+         * @param {String[]} selectedCapabilities the selected capabilities
+         * @param {String} layerUrl the url of the layer
+         * @param {Object[]} allCapabilities all capabilities of the layer
+         * @returns {void}
+         */
         updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
             const layer = this.wmsLayers.find(url => url.url === layerUrl),
                 layerModels = selectedCapabilities.map(capability => {
@@ -420,6 +437,11 @@ export default {
         },
 
 
+        /**
+         * Handles the loading of threeDFiles in a step
+         * @calls this.addEntity
+         * @returns {void}
+         */
         async loadThreeDFiles () {
             // Check if 3D map mode needed
             // Toggles 3D map mode
@@ -447,6 +469,10 @@ export default {
             }
         },
 
+        /**
+         * Enables the visibility of all entities in the current step
+         * @returns {void}
+         */
         enableThreeDModels () {
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
@@ -456,6 +482,12 @@ export default {
             }
         },
 
+        /**
+         * Actually adds the enitiy to the 3D map
+         * @param {Object} item the item to add
+         * @param {String} path the path to the item
+         * @returns {void}
+         */
         addEntity (item, path = "") {
             // the item is a file and not a folder
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
@@ -490,6 +522,11 @@ export default {
 
         },
 
+        /**
+         * Removes URL parameters from a URL since the function adds and handles those itself
+         * @param {string} url the item to enable
+         * @returns {string} the url without parameters
+         */
         removeURLParameters (url) {
             const urlObj = new URL(url),
                 baseUrl = urlObj.origin + urlObj.pathname;
@@ -497,6 +534,12 @@ export default {
             return baseUrl;
         },
 
+        /**
+         * Handles adding a WMS layer to the step
+         * @param {String} url the url of the layer
+         * @param {Object[]} capabilities the capabilities of the layer
+         * @returns {void}
+         */
         async onWmsLayersAdd () {
             // Radio.trigger("Parser", "addWMSRemotely", document.querySelector("#own_wmsLayers").value);
 
@@ -680,8 +723,6 @@ export default {
         get3DMapCenter () {
             const camera = Radio.request("Map", "getMap3d").getCesiumScene().camera;
 
-            console.log(this.toDegrees(camera.position));
-
             return {
                 "cameraPosition": this.toDegrees(camera.position),
                 "heading": camera.heading,
@@ -689,6 +730,10 @@ export default {
             };
         },
 
+        /**
+         * Sets the 3D map center
+         * @returns {void}
+         */
         set3DMapCenter () {
             if (this.step.navigation3D.cameraPosition[0] &&
                 this.step.navigation3D.cameraPosition[1] &&
@@ -772,6 +817,10 @@ export default {
             this.rawDatasources = this.rawDatasources.filter(datasource => datasource.key !== model.key);
         },
 
+        /**
+         * Enables the 3D mode and opens the file upload form
+         * @returns {void}
+         */
         async open3D () {
             this.step.is3D = true;
 
@@ -786,6 +835,11 @@ export default {
         },
 
 
+        /**
+         * Handles the change of the formData
+         * @param {FormData} formdata - The formdata of the 3D fileform
+         * @returns {void}
+         */
         updateThreeDFormData (formdata) {
             this.threeDUploadFormData = formdata;
         },

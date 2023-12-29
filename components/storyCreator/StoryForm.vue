@@ -94,14 +94,28 @@ export default {
             });
         },
 
+        /**
+         * Converts the story interval for scrolling stories to seconds
+         * @returns {Number} returns the story interval in seconds
+         */
         getStoryInterval () {
             return this.currentStory.storyInterval / 1000;
         },
 
+        /**
+         * Sets the story interval for scrolling stories and converts it to milliseconds
+         * @param {Event} event - The change event
+         * @returns {void}
+         */
         setStoryInterval (event) {
             this.currentStory.storyInterval = event.target.value * 1000;
         },
 
+        /**
+         * Change the story display type
+         * @param {Event} event - The change event
+         * @returns {void}
+         */
         changeScrollyMode (event) {
             // Reactive setter
             this.currentStory.displayType = event.target.checked ?
@@ -109,6 +123,11 @@ export default {
                 this.$set(this.currentStory, "displayType", "classic");
         },
 
+        /**
+         * Handles the loading of threeDFiles in a step
+         * @calls this.addEntity
+         * @returns {void}
+         */
         async loadThreeDFiles () {
             // Check if 3D map mode needed
             // Toggles 3D map mode
@@ -136,6 +155,10 @@ export default {
             }
         },
 
+        /**
+         * Enables the visibility of all entities in the current step
+         * @returns {void}
+         */
         enableThreeDModels () {
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
@@ -145,6 +168,12 @@ export default {
             }
         },
 
+        /**
+         * Actually adds the enitiy to the 3D map
+         * @param {Object} item the item to add
+         * @param {String} path the path to the item
+         * @returns {void}
+         */
         addEntity (item, path = "") {
             // the item is a file and not a folder
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
@@ -179,10 +208,20 @@ export default {
 
         },
 
+        /**
+         * Returns the step reference
+         * @param {Number} chapterNumber the chapter number
+         * @param {Number} stepNumber the step number
+         * @returns {String} the step reference
+         */
         getStepReference (chapterNumber, stepNumber) {
             return `${chapterNumber}.${stepNumber}`;
         },
 
+        /**
+         * Loads the WMS layers for the current story
+         * @returns {void}
+         */
         loadStoryWms () {
             if (this.currentStory.steps) {
                 this.currentStory.steps.forEach(step => {

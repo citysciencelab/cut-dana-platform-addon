@@ -117,6 +117,11 @@ export default {
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
 
+        /**
+         * Updates the scale of the selected entity.
+         * Partially based on code from src/modules/tools/modeler3d
+         * @returns {void}
+         */
         updateScale () {
             this.scaleEntity({entityId: this.selectedEntityId, scale: this.scale});
 
@@ -128,6 +133,14 @@ export default {
             }));
         },
 
+        /**
+         * Updates the position of the selected entity.
+         * Partially based on code from src/modules/tools/modeler3d
+         * @param {Number} easting The easting value.
+         * @param {Number} northing The northing value.
+         * @param {Number} altitude The altitude value.
+         * @returns {void}
+         */
         updatePosition (easting, northing, altitude) {
             let e, n, a;
 
@@ -179,6 +192,14 @@ export default {
             }));
         },
 
+        /**
+         * Updates the orientation of the selected entity.
+         * Partially based on code from src/modules/tools/modeler3d
+         * @param {Number} heading The heading value.
+         * @param {Number} pitch The pitch value.
+         * @param {Number} roll The roll value.
+         * @returns {void}
+         */
         updateOrientation (heading, pitch, roll) {
 
             // eslint-disable-next-line radix
@@ -272,6 +293,7 @@ export default {
 
         /**
          * Selects an object based on the provided event.
+         * Partially based on code from src/modules/tools/modeler3d
          * @param {Event} event - The event object containing the position information.
          * @returns {void}
          */
@@ -493,7 +515,6 @@ export default {
                 </v-container>
             </div>
         </div>
-    </div>
     </div>
 </template>
 
