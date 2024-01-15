@@ -91,6 +91,15 @@ export default {
         this.applyTranslationKey(this.name);
         // this.createModeOptions();
 
+        // Apply layout hacks to the tool window
+        this.toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0];
+        this.heading = this.toolWindow.getElementsByClassName("win-heading")[0];
+        this.heading.style.border = "none";
+        this.heading.style.height = "15px";
+        this.heading.innerHTML = "";
+        // Hide the main menu
+        document.getElementById("main-nav").style.display = "none";
+
         if (this.$store.state.Tools.DataNarrator.backendURL) {
             this.setBackendConfig({url: this.$store.state.Tools.DataNarrator.backendURL});
         }
