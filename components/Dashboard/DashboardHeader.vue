@@ -1,10 +1,14 @@
 <script>
-import {mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mdiMapLegend} from "@mdi/js";
 
 import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
 import ListButton from "./Tools/ListButton.vue";
 import LoginButton from "./Tools/LoginButton.vue";
+import mutations from "../../../../../src/modules/legend/store/mutationsLegend";
+import actions from "../../../../../src/modules/legend/store/actionsLegend";
+import getters from "../../../../../src/modules/legend/store/gettersLegend";
 
 export default {
     name: "DashboardHeader",
@@ -24,10 +28,27 @@ export default {
             default: "all"
         }
     },
+    data () {
+        return {
+            icons: {
+                mdiMapLegend
+            }
+        };
+    },
     computed: {
-        ...mapGetters(["mobile"])
+        ...mapGetters(["mobile"]),
+        ...mapGetters("Legend", Object.keys(getters))
+    },
+    mounted () {
+        this.getLegendConfig();
+        document.getElementById("top-right-fallback").appendChild(document.getElementById("dana-legend-button"));
+        document.getElementById("button3D").style.backgroundColor = "white";
+        document.getElementById("button3D").style.color = "black";
+        document.getElementById("button3D").style.borderRadius = "0.25rem";
     },
     methods: {
+        ...mapActions("Legend", Object.keys(actions)),
+        ...mapMutations("Legend", Object.keys(mutations)),
         /**
          * Returns the available story list modes.
          * @returns {string[]} The available story list modes.
@@ -39,6 +60,13 @@ export default {
                 modes.push("my");
             }
             return modes;
+        },
+        /**
+         * Toggles the visibility of the legend
+         * @returns {void}
+         */
+        toggleLegend () {
+            this.setShowLegend(!this.showLegend);
         }
     }
 };
@@ -53,11 +81,25 @@ export default {
             </v-col>
         </v-row>
 
+        <div
+            id="dana-legend-button"
+            class="row controls-row-right d-none d-md-block"
+        >
+            <div>
+                <v-icon
+                    id="dana-legend-icon"
+                    class="bootstrap-icon"
+                    @click="toggleLegend()"
+                >
+                    {{ icons.mdiMapLegend }}
+                </v-icon>
+            </div>
+        </div>
+
         <v-row
             class="with-fancy-background"
-            :style="`background-image: url(${require(mobile ? '../../img/header_small.png' : '../../img/header.png')})`"
+            :style="`background-image: url(${require(mobile ? '../../img/cutcsl_depiction.png' : '../../img/cutcsl_depiction.png')})`"
         >
-
             <v-col
                 cols="12"
                 class="d-flex justify-start align-center"
@@ -72,9 +114,10 @@ export default {
                         class="d-flex align-start justify-center"
                     >
                         <img
-                            src="../../img/logo.png"
+                            src="../../img/logonotext-xs.png"
                             alt="logo"
                             class="header-logo"
+                            width="55"
                         >
                     </v-col>
                     <v-col
@@ -118,6 +161,11 @@ export default {
     margin-top: -1rem !important;
 }
 
+#dana-legend-icon {
+    background-color: white;
+    padding: 0.37rem;
+    border-radius: 0.25rem;
+}
 
 .with-fancy-background {
     background-position: right top;
