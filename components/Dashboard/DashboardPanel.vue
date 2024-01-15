@@ -192,6 +192,10 @@ export default {
         <InfiniteLoading
             ref="infiniteLoading"
             @infinite="infiniteHandler"
-        />
+        >
+            <div slot="no-results">
+                {{ $t("additional:modules.tools.dataNarrator.dashboardView.noResults") }}
+            </div>
+        </InfiniteLoading>
     </div>
 </template>

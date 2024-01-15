@@ -68,9 +68,10 @@
           "delete": "Löschen"
         },
         "dashboardView": {
-          "title": "Story Dashboard",
-          "subtitle": "Ein Tool zum Sichtbarmachen.",
-          "description": "Ein Data Story Tool, das die Geo-Daten von Hamburg integriert. Mithilfe dieser Software können Nutzer geografische Informationen nutzen, um anschauliche und informative Erzählungen über Hamburg zu gestalten, sei es zu Themen wie städtischer Entwicklung, Umwelttrends oder kultureller Vielfalt."
+          "title": "Data Narrator",
+          "subtitle": "Datenstories für Hamburg",
+          "description": "Ein Data Story Tool, das die Geo-Daten von Hamburg integriert. Mithilfe dieser Software können Nutzer geografische Informationen nutzen, um anschauliche und informative Erzählungen über Hamburg zu gestalten, sei es zu Themen wie städtischer Entwicklung, Umwelttrends oder kultureller Vielfalt.",
+          "noResults": "Keine weiteren Stories gefunden."
         },
         "success": {
           "storyCreated": "Story erfolgreich erstellt.",
@@ -79,6 +80,10 @@
           "loggedOut": "Sie wurden abgemeldet"
         },
         "warning": {
+          "requiredFields": "Erforderlich.",
+          "requiredFieldMinCharacters": "Mindestens 5 Zeichen.",
+          "requiredNumeric": "Bitte geben Sie eine Zahl ein.",
+          "requiredNumericMinMax": "Ggeben Sie eine Zahl zwischen 0 und 20 ein.",
           "mapMoved": "Die eingetragene Position entspricht nicht der aktuellen Ansicht der Karte.",
           "mapZoomed": "Die eingetragene Zoomstufe entspricht nicht der aktuellen Ansicht der Karte.",
           "sendNoSteps": "Story abschicken ist erst möglich sobald mindestens ein Schritt zur Story hinzugefügt wurde.",

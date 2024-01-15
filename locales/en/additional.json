@@ -67,9 +67,10 @@
           "delete": "Delete"
         },
         "dashboardView": {
-          "title": "Story Dashboard",
-          "subtitle": "Tool for visualization.",
-          "description": "Data story tool that integrates Hamburg's geodata. With the help of this software, users can use geographical information to create vivid and informative narratives about Hamburg, on topics such as urban development, environmental trends or cultural diversity."
+          "title": "Data Narrator",
+          "subtitle": "Datastories for Hamburg",
+          "description": "Data story tool that integrates Hamburg's geodata. With the help of this software, users can use geographical information to create vivid and informative narratives about Hamburg, on topics such as urban development, environmental trends or cultural diversity.",
+          "noResults": "No further stories found."
         },
         "success": {
           "storyCreated": "Story created.",
@@ -78,6 +79,10 @@
           "loggedOut": "You've Been Logged Out"
         },
         "warning": {
+          "requiredFields": "Required.",
+          "requiredFieldMinCharacters": "Min 5 characters.",
+          "requiredNumeric": "Please enter a number.",
+          "requiredNumericMinMax": "Enter number between 0 and 20.",
           "mapMoved": "The entered position doesn't match the current map view.",
           "mapZoomed": "The entered zoom level doesn't match the current map view.",
           "sendNoSteps": "Submitting a story is only possible once at least one step has been added to the story.",
