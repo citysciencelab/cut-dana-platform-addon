@@ -22,24 +22,13 @@ export default {
 <template>
     <div id="shareSettingsInput">
         <div class="form-group">
-            <label
-                class="form-label"
-                for="story-private"
-            >
-                {{
-                    $t(
-                        "additional:modules.tools.dataNarrator.label.private"
-                    )
-                }}
-            </label>
-
-            <input
+            <v-switch
                 id="story-private"
-                :checked="privateStory"
-                class="checkbox"
-                type="checkbox"
-                @change="$emit('update:private-story', $event.target.checked)"
-            >
+                :value="privateStory"
+                :label="$t('additional:modules.tools.dataNarrator.label.private')"
+                hide-details="auto"
+                @change="$emit('update:private-story', $event)"
+            />
         </div>
 
         <div

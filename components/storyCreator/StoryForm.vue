@@ -13,7 +13,8 @@ import ShareSettings from "./inputs/ShareSettings.vue";
 import {
     mdiCancel,
     mdiCheck,
-    mdiEyeOutline
+    mdiEyeOutline,
+    mdiCamera
 } from "@mdi/js";
 
 export default {
@@ -23,6 +24,14 @@ export default {
     },
     data () {
         return {
+            rules: [
+                value => Boolean(value) || this.$t("additional:modules.tools.dataNarrator.warning.requiredFields"),
+                value => (value && value.length >= 5) || this.$t("additional:modules.tools.dataNarrator.warning.requiredFieldMinCharacters")
+            ],
+            ruleInterval: [
+                value => Boolean(value) || this.$t("additional:modules.tools.dataNarrator.warning.requiredNumeric"),
+                value => (value && value >= 0 && value <= 20) || this.$t("additional:modules.tools.dataNarrator.warning.requiredNumericMinMax")
+            ],
             constants,
             hasCover: false,
             minInterval: 0,
@@ -31,7 +40,8 @@ export default {
             icons: {
                 mdiCancel,
                 mdiCheck,
-                mdiEyeOutline
+                mdiEyeOutline,
+                mdiCamera
             }
         };
     },
@@ -61,11 +71,18 @@ export default {
          * @returns {void}
          */
         onCoverChange (event) {
-            const file = event.target.files[0];
+            const file = event;
 
-            this.$refs.preview_image.src = URL.createObjectURL(file);
-            this.currentStory.titleImage = file;
-            this.hasCover = true;
+            if (!file) {
+                this.$refs.preview_image.src = "";
+                this.currentStory.titleImage = "";
+                this.hasCover = false;
+            }
+            else {
+                this.$refs.preview_image.src = URL.createObjectURL(file);
+                this.currentStory.titleImage = file;
+                this.hasCover = true;
+            }
         },
 
 
@@ -108,7 +125,7 @@ export default {
          * @returns {void}
          */
         setStoryInterval (event) {
-            this.currentStory.storyInterval = event.target.value * 1000;
+            this.currentStory.storyInterval = event * 1000;
         },
 
         /**
@@ -118,7 +135,7 @@ export default {
          */
         changeScrollyMode (event) {
             // Reactive setter
-            this.currentStory.displayType = event.target.checked ?
+            this.currentStory.displayType = event ?
                 this.$set(this.currentStory, "displayType", "scrolly") :
                 this.$set(this.currentStory, "displayType", "classic");
         },
@@ -249,69 +266,46 @@ export default {
             @submit.prevent="saveStoryToBackend"
         >
             <div class="form-group">
-                <label
-                    for="title"
-                    class="form-label required"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.storyName"
-                        )
-                    }}
-                </label>
-
-                <input
+                <v-text-field
                     id="title"
                     v-model="currentStory.title"
-                    class="form-control"
-                    type="text"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label
-                    for="description"
-                    class="form-label"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.storyDescription"
-                        )
-                    }}
-                </label>
-
-                <textarea
-                    id="description"
-                    v-model="currentStory.description"
-                    class="form-control"
+                    :label="$t(
+                        'additional:modules.tools.dataNarrator.label.storyName'
+                    )"
+                    :rules="rules"
+                    hide-details="auto"
                 />
             </div>
 
             <div class="form-group">
-                <label
-                    class="form-label"
-                    for="cover"
-                >
-                    {{
-                        $t(
-                            "additional:modules.tools.dataNarrator.label.cover"
-                        )
-                    }}
-                </label>
+                <v-textarea
+                    id="description"
+                    v-model="currentStory.description"
+                    solo
+                    hide-details="true"
+                    rows="3"
+                    :label="$t(
+                        'additional:modules.tools.dataNarrator.label.storyDescription'
+                    )"
+                />
+            </div>
+
+            <div class="form-group">
                 <v-row>
                     <v-col
                         cols="10"
                     >
-                        <input
+                        <v-file-input
                             id="cover"
                             ref="image_input"
-                            type="file"
+                            :prepend-icon="icons.mdiCamera"
                             name="cover"
-                            class="form-control"
+                            :label="$t(
+                                'additional:modules.tools.dataNarrator.label.cover'
+                            )"
                             accept="image/png, image/jpeg"
                             @change="onCoverChange"
-                        >
+                        />
                     </v-col>
                     <v-col cols2>
                         <img
@@ -333,14 +327,58 @@ export default {
                 @update:shared-with="newValue => currentStory.sharedWith = newValue"
             />
 
-            <div class="form-group">
-                <label
-                    class="form-label"
-                    for="slide-navigation"
-                >
-                    {{ $t("additional:modules.tools.dataNarrator.label.steps") }}
-                </label>
 
+            <v-expansion-panels id="advanced-options">
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        {{
+                            $t("additional:modules.tools.dataNarrator.label.advancedOptions")
+                        }}
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <div class="form-group">
+                            <v-switch
+                                id="story-scrolly"
+                                :value="currentStory?.displayType === 'scrolly'"
+                                :label="$t('additional:modules.tools.dataNarrator.label.scrolly')"
+                                @change="changeScrollyMode"
+                            />
+                        </div>
+                        <div
+                            v-if="currentStory?.displayType !== 'scrolly'"
+                            class="form-group"
+                        >
+                            <div class="vue-label-style">
+                                {{ $t('additional:modules.tools.dataNarrator.label.interval') }}
+                            </div>
+                            <v-slider
+                                id="story-interval"
+                                v-model="currentStory.storyInterval"
+                                step="1"
+                                max="40"
+                                min="0"
+                                thumb-label
+                                @change="setStoryInterval"
+                            />
+
+                            <!--
+                            TODO: Unsure if the combination of both (scroll and interval) is a necessity
+                            <v-alert
+                                v-show="storyConf.displayType === 'scrolly' && storyConf.storyInterval > 0"
+                                type="info"
+                            >
+                                {{
+                                    $t("additional:modules.tools.dataNarrator.warning.noIntervalOnScrolly")
+                                }}
+                            </v-alert>-->
+                        </div>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+
+            <v-divider />
+
+            <div class="form-group">
                 <v-slide-group
                     id="slide-navigation"
                     show-arrows
@@ -377,23 +415,38 @@ export default {
                     </v-slide-item>
 
                     <v-slide-item>
-                        <v-btn
-                            class="story-step-button"
-                            icon
-                            :title="
-                                $t(
-                                    'additional:modules.tools.dataNarrator.button.addStep'
-                                )
-                            "
-                            @click="
-                                $emit(
-                                    'openView',
-                                    constants.storyCreationViews.STEP_CREATION
-                                )
-                            "
-                        >
-                            <v-icon>add_circle</v-icon>
-                        </v-btn>
+                        <v-row>
+                            <v-col class="d-flex justify-center align-center">
+                                <v-btn
+                                    class="story-step-button story-step-button-add"
+                                    icon
+                                    :title="
+                                        $t(
+                                            'additional:modules.tools.dataNarrator.button.addStep'
+                                        )
+                                    "
+                                    @click="
+                                        $emit(
+                                            'openView',
+                                            constants.storyCreationViews.STEP_CREATION
+                                        )
+                                    "
+                                >
+                                    <v-icon>add</v-icon>
+                                </v-btn>
+                                <div
+                                    class="vue-label-style add-step-label"
+                                    @click="
+                                        $emit(
+                                            'openView',
+                                            constants.storyCreationViews.STEP_CREATION
+                                        )
+                                    "
+                                >
+                                    {{ $t("additional:modules.tools.dataNarrator.label.steps") }}
+                                </div>
+                            </v-col>
+                        </v-row>
                     </v-slide-item>
                 </v-slide-group>
             </div>
@@ -406,75 +459,6 @@ export default {
                 rounded
                 color="lime"
             />
-
-            <v-expansion-panels id="advanced-options">
-                <v-expansion-panel>
-                    <v-expansion-panel-header>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.label.advancedOptions")
-                        }}
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        <div class="form-group">
-                            <label
-                                class="form-label"
-                                for="story-scrolly"
-                            >
-                                {{
-                                    $t(
-                                        "additional:modules.tools.dataNarrator.label.scrolly"
-                                    )
-                                }}
-                            </label>
-
-                            <input
-                                id="story-scrolly"
-                                class="checkbox"
-                                type="checkbox"
-                                :checked="currentStory?.displayType === 'scrolly'"
-                                @change="changeScrollyMode"
-                            >
-                        </div>
-                        <div
-                            v-if="currentStory?.displayType !== 'scrolly'"
-                            class="form-group"
-                        >
-                            <label
-                                class="form-label"
-                                for="story-interval"
-                            >
-                                {{
-                                    $t(
-                                        "additional:modules.tools.dataNarrator.label.interval"
-                                    )
-                                }}
-                            </label>
-
-                            <input
-                                id="story-interval"
-                                class="form-control"
-                                type="number"
-                                :value="getStoryInterval()"
-                                :min="minInterval"
-                                :max="maxInterval"
-                                step="1"
-                                @change="setStoryInterval"
-                            >
-                            <!--
-                            // Unsure if the combination of both (scroll and interval) is a necessity
-                            <v-alert
-                                v-show="storyConf.displayType === 'scrolly' && storyConf.storyInterval > 0"
-                                type="info"
-                            >
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.warning.noIntervalOnScrolly")
-                                }}
-                            </v-alert>
-                            -->
-                        </div>
-                    </v-expansion-panel-content>
-                </v-expansion-panel>
-            </v-expansion-panels>
 
             <v-footer
                 v-if="notSaving"
@@ -657,6 +641,22 @@ export default {
         padding: 0;
     }
 
+    .story-step-button-add {
+        min-width: 23px !important;
+        width: 23px;
+        margin-right: 10px;
+        .v-btn__content {
+            border: 2px solid rgba(0,0,0,.3);
+            border-radius: 10px;
+            width: 10px !important;
+            height: 35px;
+        }
+    }
+
+    .add-step-label {
+        cursor: pointer;
+    }
+
     .tool-dataNarrator-creator-actions {
         position: sticky;
         margin-top: 20px;
@@ -673,6 +673,11 @@ export default {
         padding-left: 5px;
         max-height: 30px;
         max-width: 70px;
+    }
+
+    .vue-label-style {
+        font-size: 16px;
+        color: rgba(0,0,0,.6);
     }
 
     .b-form-tags {
