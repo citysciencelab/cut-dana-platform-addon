@@ -19,6 +19,12 @@ export default {
         FileForm,
         EntityEditor
     },
+    props: {
+        uid: {
+            type: String,
+            default: null
+        }
+    },
     data () {
         return {
             constants,
@@ -106,6 +112,7 @@ export default {
     <div id="tool-dataNarrator-creator">
         <StoryForm
             v-if="view === constants.storyCreationViews.STORY_CREATION"
+            :uid="uid"
             @openView="newView => (view = newView)"
             @editStep="(step) => onEditStep(step, true)"
             v-on="$listeners"

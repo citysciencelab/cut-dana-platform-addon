@@ -307,6 +307,7 @@ export default {
 
                 <StoryCreator
                     v-else-if="mode === constants.storyTellingModes.CREATE"
+                    :uid="uid"
                     @confirm="confirmDialog"
                     @reset-tool="reset"
                 />

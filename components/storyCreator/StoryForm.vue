@@ -21,6 +21,12 @@ export default {
     components: {
         ShareSettings
     },
+    props: {
+        uid: {
+            type: String,
+            default: null
+        }
+    },
     data () {
         return {
             constants,
@@ -327,6 +333,7 @@ export default {
 
 
             <ShareSettings
+                v-if="uid"
                 :private-story="currentStory.private"
                 :shared-with="currentStory.sharedWith"
                 @update:private-story="newValue => currentStory.private = newValue"
