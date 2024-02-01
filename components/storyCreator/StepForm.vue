@@ -223,7 +223,6 @@ export default {
         "step.layers3D" (newSelectedLayerIds) {
             this.rebuildLayers(newSelectedLayerIds, "layers3D");
 
-            console.log(newSelectedLayerIds);
 
             this.is3DLayerActive = this.enabledLayers().filter(layer => {
                 return this.layerTypes3DSpecific.includes(layer.attributes.typ);
@@ -878,7 +877,7 @@ export default {
          */
         async loadStep () {
             if (this.step.is3D && !Radio.request("Map", "isMap3d")) {
-                await this.$store.dispatch("Maps/activateMap3D");
+                this.disable3D();
 
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
                 this.set3DMapCenter();
@@ -886,7 +885,7 @@ export default {
                 await this.loadThreeDFiles();
             }
             else if (!this.step.is3D && Radio.request("Map", "isMap3d")) {
-                await this.$store.dispatch("Maps/deactivateMap3D");
+                this.disable3D();
             }
             else if (this.step.is3D && Radio.request("Map", "isMap3d")) {
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
