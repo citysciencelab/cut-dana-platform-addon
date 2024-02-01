@@ -15,6 +15,8 @@ import {
     mdiFolder, mdiFolderOpen, mdiFolderPlus,
     mdiPlus, mdiDelete
 } from "@mdi/js";
+import store from "../../../../../src/app-store";
+import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 
 
 export default {
@@ -23,6 +25,7 @@ export default {
     components: {
         BackButton
     },
+    mixins: [ThreeDUtilities],
 
     props: {
         // The initial values for a step to edit
@@ -91,7 +94,8 @@ export default {
         // load the tree from this.step.selectedModelIds
         this.tree = this.step.selectedModelIds.map(model => model.modelId);
         // set map to 3d
-        await this.$store.dispatch("Maps/activateMap3D");
+
+        this.enable3D();
 
         // load the existing files
         // this.importFile({files: this.step.threeDFiles.map(file => file.obj), fileId: null});

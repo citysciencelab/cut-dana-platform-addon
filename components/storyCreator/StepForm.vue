@@ -25,6 +25,7 @@ import LayerSelector from "./inputs/LayerSelector.vue";
 import BackgroundMap from "./inputs/BackgroundMapSelect.vue";
 
 import LayerUtilities from "../../mixins/LayerUtilities";
+import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 
 
 export default {
@@ -35,7 +36,7 @@ export default {
         LayerSelector,
         BackgroundMap
     },
-    mixins: [LayerUtilities],
+    mixins: [LayerUtilities, ThreeDUtilities],
     props: {
         // The initial values for a step to edit
         editedStep: {
@@ -216,11 +217,16 @@ export default {
         "step.layers3D" (newSelectedLayerIds) {
             this.rebuildLayers(newSelectedLayerIds, "layers3D");
 
+            console.log(newSelectedLayerIds);
+
             this.is3DLayerActive = this.enabledLayers().filter(layer => {
                 return this.layerTypes3DSpecific.includes(layer.attributes.typ);
             }).length > 0;
             if (!this.step.is3D && this.is3DLayerActive) {
                 this.activate3DMap(true);
+            }
+            else if (this.step.is3D && this.is3DLayerActive && newSelectedLayerIds.length === 0) {
+                this.activate3DMap(false);
             }
 
             Radio.trigger("Menu", "rerender");
@@ -289,7 +295,7 @@ export default {
         this.disableStepLayers(this.step);
 
 
-        this.$store.dispatch("Maps/deactivateMap3D");
+        this.$store.commit("Maps/setMode", "2D");
         this.$store.commit("Tools/Draw/setActive", false);
         this.switchBackgroundMap(this.visibleBackgroundMap);
     },
@@ -763,17 +769,18 @@ export default {
             const isMap3d = Radio.request("Map", "isMap3d");
 
             if (this.step.is3D && !isMap3d) {
-                await this.$store.dispatch("Maps/activateMap3D");
+                // Found in the ThreeDUtilities Mixin
+                this.enable3D();
 
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(() => {
-
                     this.mapMovedHandler();
                 });
                 this.step.navigation3D = this.get3DMapCenter();
                 this.mapMovedPosition = this.step.navigation3D;
             }
             else if (!this.step.is3D && isMap3d) {
-                await this.$store.dispatch("Maps/deactivateMap3D");
+                // Found in the ThreeDUtilities Mixin
+                this.disable3D();
             }
 
             Radio.trigger("Menu", "rerender");
