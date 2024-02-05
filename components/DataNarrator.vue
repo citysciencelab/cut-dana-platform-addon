@@ -17,6 +17,7 @@ import DashboardPanel from "./Dashboard/DashboardPanel.vue";
 import SnackBar from "./shared/SnackBar.vue";
 import StoryCreator from "./storyCreator/StoryCreator.vue";
 import StoryPlayer from "./storyPlayer/StoryPlayer.vue";
+import ThreeDUtilities from "../mixins/ThreeDUtilities";
 
 export default {
     name: "DataNarrator",
@@ -27,7 +28,7 @@ export default {
         StoryCreator,
         StoryPlayer
     },
-    mixins: [RenderUtilities, LayerUtilities],
+    mixins: [RenderUtilities, LayerUtilities, ThreeDUtilities],
     data () {
         return {
             constants,
@@ -206,7 +207,8 @@ export default {
                     }
                 }
             }
-            this.$store.dispatch("Maps/deactivateMap3D");
+
+            this.disable3D();
             this.resetModule();
             this.setMode(constants.storyTellingModes.DASHBOARD);
         },
@@ -307,6 +309,7 @@ export default {
 
                 <StoryCreator
                     v-else-if="mode === constants.storyTellingModes.CREATE"
+                    :uid="uid"
                     @confirm="confirmDialog"
                     @reset-tool="reset"
                 />

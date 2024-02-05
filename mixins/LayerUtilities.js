@@ -10,7 +10,7 @@ export default {
          * @returns {Object[]} layers to select
          */
         allLayerOptions () {
-            const allLayers = Radio.request("Parser", "getItemsByAttributes", {type: "layer", isBaseLayer: false}),
+            const allLayers = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
                 layers3D = [],
                 plainLayers = [];
 

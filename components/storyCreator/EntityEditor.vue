@@ -13,6 +13,8 @@ import getGfiFeatures from "../../../../../src/api/gfi/getGfiFeaturesByTileFeatu
 
 import {mdiChevronUp, mdiChevronDown} from "@mdi/js";
 import proj4 from "proj4";
+import store from "../../../../../src/app-store";
+import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 
 proj4.defs("EPSG:32632", "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
 
@@ -21,6 +23,7 @@ export default {
     components: {
         BackButton
     },
+    mixins: [ThreeDUtilities],
     props: {
         editedStep: {
             type: Object,
@@ -58,7 +61,7 @@ export default {
     },
     async mounted () {
         // set map to 3d
-        await this.$store.dispatch("Maps/activateMap3D");
+        this.enable3D();
 
         if (this.selectedEntity) {
             this.position = this.selectedEntity.position;

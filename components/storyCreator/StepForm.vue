@@ -25,6 +25,7 @@ import LayerSelector from "./inputs/LayerSelector.vue";
 import BackgroundMap from "./inputs/BackgroundMapSelect.vue";
 
 import LayerUtilities from "../../mixins/LayerUtilities";
+import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 
 
 export default {
@@ -35,7 +36,7 @@ export default {
         LayerSelector,
         BackgroundMap
     },
-    mixins: [LayerUtilities],
+    mixins: [LayerUtilities, ThreeDUtilities],
     props: {
         // The initial values for a step to edit
         editedStep: {
@@ -198,6 +199,12 @@ export default {
             this.setInitialWidth(newStepWidth);
         },
 
+        "isMap3D" (newState) {
+            this.step.navigation3D = this.get3DMapCenter();
+            this.mapMovedPosition = this.step.navigation3D;
+            this.setStep3DMode(newState);
+        },
+
         /**
          * Toggles map layers according to the selection for the step
          * @param {Array} newSelectedLayerIds the selected layers
@@ -216,11 +223,15 @@ export default {
         "step.layers3D" (newSelectedLayerIds) {
             this.rebuildLayers(newSelectedLayerIds, "layers3D");
 
+
             this.is3DLayerActive = this.enabledLayers().filter(layer => {
                 return this.layerTypes3DSpecific.includes(layer.attributes.typ);
             }).length > 0;
             if (!this.step.is3D && this.is3DLayerActive) {
                 this.activate3DMap(true);
+            }
+            else if (this.step.is3D && this.is3DLayerActive && newSelectedLayerIds.length === 0) {
+                this.activate3DMap(false);
             }
 
             Radio.trigger("Menu", "rerender");
@@ -289,7 +300,7 @@ export default {
         this.disableStepLayers(this.step);
 
 
-        this.$store.dispatch("Maps/deactivateMap3D");
+        this.$store.commit("Maps/setMode", "2D");
         this.$store.commit("Tools/Draw/setActive", false);
         this.switchBackgroundMap(this.visibleBackgroundMap);
     },
@@ -763,17 +774,18 @@ export default {
             const isMap3d = Radio.request("Map", "isMap3d");
 
             if (this.step.is3D && !isMap3d) {
-                await this.$store.dispatch("Maps/activateMap3D");
+                // Found in the ThreeDUtilities Mixin
+                this.enable3D();
 
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(() => {
-
                     this.mapMovedHandler();
                 });
                 this.step.navigation3D = this.get3DMapCenter();
                 this.mapMovedPosition = this.step.navigation3D;
             }
             else if (!this.step.is3D && isMap3d) {
-                await this.$store.dispatch("Maps/deactivateMap3D");
+                // Found in the ThreeDUtilities Mixin
+                this.disable3D();
             }
 
             Radio.trigger("Menu", "rerender");
@@ -865,7 +877,7 @@ export default {
          */
         async loadStep () {
             if (this.step.is3D && !Radio.request("Map", "isMap3d")) {
-                await this.$store.dispatch("Maps/activateMap3D");
+                this.disable3D();
 
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
                 this.set3DMapCenter();
@@ -873,7 +885,7 @@ export default {
                 await this.loadThreeDFiles();
             }
             else if (!this.step.is3D && Radio.request("Map", "isMap3d")) {
-                await this.$store.dispatch("Maps/deactivateMap3D");
+                this.disable3D();
             }
             else if (this.step.is3D && Radio.request("Map", "isMap3d")) {
                 Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
@@ -931,6 +943,16 @@ export default {
             }
 
             Radio.trigger("Menu", "rerender");
+        },
+
+
+        /**
+         * Sets the 3d mode of the step
+         * @param {boolean} newValue The new 3d value the step should have.
+         * @returns {void}
+         */
+        setStep3DMode (newValue) {
+            this.step.is3D = newValue;
         }
     }
 };
@@ -1052,306 +1074,313 @@ export default {
                 >
             </div>
 
-            <div
-                v-if="step.is3D"
-                class="form-group"
-            >
-                <label
-                    class="form-label"
-                    for="step-3d-center"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.centerCoordinate3D" ) }}
-                </label>
+            <div v-if="step.is3D">
                 <div
-                    class="stepForm-inputs-centerCoordinate stepForm-inputs-3d-position"
+                    class="form-group"
                 >
-                    <input
-                        id="step-3d-center"
-                        class="form-control"
-                        :value="
+                    <label
+                        class="form-label"
+                        for="step-3d-center"
+                    >
+                        {{ $t( "additional:modules.tools.dataNarrator.label.centerCoordinate3D" ) }}
+                    </label>
+                    <div
+                        class="stepForm-inputs-centerCoordinate stepForm-inputs-3d-position"
+                    >
+                        <input
+                            id="step-3d-center"
+                            class="form-control"
+                            :value="
                             step.navigation3D.cameraPosition[0]
                         "
-                        readonly
-                    >
-                    <input
-                        class="form-control"
-                        :value="
+                            readonly
+                        >
+                        <input
+                            class="form-control"
+                            :value="
                             step.navigation3D.cameraPosition[1]
                         "
-                        readonly
-                    >
-                    <input
-                        class="form-control"
-                        :value="
+                            readonly
+                        >
+                        <input
+                            class="form-control"
+                            :value="
                             step.navigation3D.cameraPosition[2]
                         "
-                        readonly
-                    >
+                            readonly
+                        >
 
-                    <div class="input-group">
-                        <button
-                            type="button"
-                            class="btn"
-                            @click="step.navigation3D.cameraPosition = get3DMapCenter()['cameraPosition']"
-                        >
-                            <v-icon>{{ icons.mdiPinOutline }}</v-icon>
-                        </button>
-                        <button
-                            type="button"
-                            class="btn"
-                            @click="step.navigation3D.cameraPosition = null"
-                        >
-                            <v-icon>backspace</v-icon>
-                        </button>
+                        <div class="input-group">
+                            <button
+                                type="button"
+                                class="btn"
+                                @click="step.navigation3D.cameraPosition = get3DMapCenter()['cameraPosition']"
+                            >
+                                <v-icon>{{ icons.mdiPinOutline }}</v-icon>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn"
+                                @click="step.navigation3D.cameraPosition = null"
+                            >
+                                <v-icon>backspace</v-icon>
+                            </button>
+                        </div>
                     </div>
+                    <p
+                        v-if="isCameraPositionDifferent()"
+                        class="text-warning"
+                    >
+                        <small>
+                            {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
+                        </small>
+                    </p>
                 </div>
-                <p
-                    v-if="isCameraPositionDifferent()"
-                    class="text-warning"
-                >
-                    <small>
-                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
-                    </small>
-                </p>
-            </div>
-            <div
-                v-if="step.is3D"
-                class="form-group"
-            >
-                <label
-                    class="form-label"
-                    for="step-3d-heading"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.heading" ) }}
-                </label>
-
                 <div
-                    class="stepForm-inputs-centerCoordinate stepForm-3d-others"
+                    class="form-group"
                 >
-                    <input
-                        id="step-3d-heading"
-                        class="form-control"
-                        :value="
+                    <label
+                        class="form-label"
+                        for="step-3d-heading"
+                    >
+                        {{ $t( "additional:modules.tools.dataNarrator.label.heading" ) }}
+                    </label>
+
+                    <div
+                        class="stepForm-inputs-centerCoordinate stepForm-3d-others"
+                    >
+                        <input
+                            id="step-3d-heading"
+                            class="form-control"
+                            :value="
                             step.navigation3D.heading
                         "
-                        readonly
-                    >
-                    <div class="input-group">
-                        <button
-                            type="button"
-                            class="btn"
-                            @click="step.navigation3D.heading = get3DMapCenter()['heading']"
+                            readonly
                         >
-                            <v-icon>{{ icons.mdiPinOutline }}</v-icon>
-                        </button>
-                        <button
-                            type="button"
-                            class="btn"
-                            @click="step.navigation3D.heading = null"
-                        >
-                            <v-icon>backspace</v-icon>
-                        </button>
+                        <div class="input-group">
+                            <button
+                                type="button"
+                                class="btn"
+                                @click="step.navigation3D.heading = get3DMapCenter()['heading']"
+                            >
+                                <v-icon>{{ icons.mdiPinOutline }}</v-icon>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn"
+                                @click="step.navigation3D.heading = null"
+                            >
+                                <v-icon>backspace</v-icon>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <p
-                    v-if="
-                        mapMovedPosition.heading && step.navigation3D.heading &&
+                    <p
+                        v-if="
+                            mapMovedPosition.heading && step.navigation3D.heading &&
                             step.navigation3D.heading !== mapMovedPosition.heading "
-                    class="text-warning"
-                >
-                    <small>
-                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
-                    </small>
-                </p>
-            </div>
-            <div
-                v-if="step.is3D"
-                class="form-group"
-            >
-                <label
-                    class="form-label"
-                    for="step-3d-pitch"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.pitch" ) }}
-                </label>
+                        class="text-warning"
+                    >
+                        <small>
+                            {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
+                        </small>
+                    </p>
+                </div>
                 <div
-                    class="stepForm-inputs-centerCoordinate stepForm-3d-others"
+                    class="form-group"
                 >
-                    <input
-                        id="step-3d-pitch"
-                        class="form-control"
-                        :value="
+                    <label
+                        class="form-label"
+                        for="step-3d-pitch"
+                    >
+                        {{ $t( "additional:modules.tools.dataNarrator.label.pitch" ) }}
+                    </label>
+                    <div
+                        class="stepForm-inputs-centerCoordinate stepForm-3d-others"
+                    >
+                        <input
+                            id="step-3d-pitch"
+                            class="form-control"
+                            :value="
                             step.navigation3D.pitch
                         "
-                        readonly
-                    >
+                            readonly
+                        >
 
-                    <div class="input-group">
-                        <button
-                            type="button"
-                            class="btn"
-                            @click="step.navigation3D.pitch = get3DMapCenter()['pitch']"
-                        >
-                            <v-icon>add_circle</v-icon>
-                        </button>
-                        <button
-                            type="button"
-                            class="btn"
-                            @click="step.navigation3D.pitch = null"
-                        >
-                            <v-icon>backspace</v-icon>
-                        </button>
+                        <div class="input-group">
+                            <button
+                                type="button"
+                                class="btn"
+                                @click="step.navigation3D.pitch = get3DMapCenter()['pitch']"
+                            >
+                                <v-icon>add_circle</v-icon>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn"
+                                @click="step.navigation3D.pitch = null"
+                            >
+                                <v-icon>backspace</v-icon>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <p
-                    v-if="
+                    <p
+                        v-if="
                         mapMovedPosition.pitch && step.navigation3D.pitch &&
                             step.navigation3D.pitch !== mapMovedPosition.pitch"
-                    class="text-warning"
-                >
-                    <small>
-                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
-                    </small>
-                </p>
+                        class="text-warning"
+                    >
+                        <small>
+                            {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
+                        </small>
+                    </p>
+                </div>
             </div>
 
-            <div
-                v-if="!step.is3D"
-                class="form-group"
-            >
-                <label
-                    class="form-label"
-                    for="step-center"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.centerCoordinate" ) }}
-                </label>
 
-                <div class="stepForm-inputs-centerCoordinate">
-                    <input
-                        id="step-center"
-                        :key="`centerCoordinatex${key}`"
-                        class="form-control"
-                        :value="
-                            step.centerCoordinate && step.centerCoordinate[0]
-                        "
-                        readonly
+
+
+            <div
+                v-else
+            >
+                <div
+                    class="form-group"
+                >
+                    <label
+                        class="form-label"
+                        for="step-center"
                     >
-                    <input
-                        :key="`centerCoordinatey${key}`"
-                        class="form-control"
-                        :value="
+                        {{ $t( "additional:modules.tools.dataNarrator.label.centerCoordinate" ) }}
+                    </label>
+
+                    <div class="stepForm-inputs-centerCoordinate">
+                        <input
+                            id="step-center"
+                            :key="`centerCoordinatex${key}`"
+                            class="form-control"
+                            :value="
+                             step.centerCoordinate && step.centerCoordinate[0]
+                        "
+                            readonly
+                        >
+                        <input
+                            :key="`centerCoordinatey${key}`"
+                            class="form-control"
+                            :value="
                             step.centerCoordinate && step.centerCoordinate[1]
                         "
-                        readonly
-                    >
+                            readonly
+                        >
 
-                    <div class="input-group d-flex justify-content-center">
-                        <v-tooltip top>
-                            <template #activator="{ on }">
-                                <v-icon
-                                    class="ml-2 mr-1"
-                                    v-on="on"
-                                    @click="() => {
+                        <div class="input-group d-flex justify-content-center">
+                            <v-tooltip top>
+                                <template #activator="{ on }">
+                                    <v-icon
+                                        class="ml-2 mr-1"
+                                        v-on="on"
+                                        @click="() => {
                                         key++;
                                         step.centerCoordinate = center()
                                     }"
-                                >
-                                    {{ icons.mdiPinOutline }}
-                                </v-icon>
-                            </template>
-                            <span>
+                                    >
+                                        {{ icons.mdiPinOutline }}
+                                    </v-icon>
+                                </template>
+                                <span>
                                 {{ $t("additional:modules.tools.dataNarrator.label.centerCoordinate") }}
                             </span>
-                        </v-tooltip>
-                        <v-tooltip top>
-                            <template #activator="{ on }">
-                                <v-icon
-                                    class="ml-2 mr-1"
-                                    v-on="on"
-                                    @click="step.centerCoordinate = null"
-                                >
-                                    {{ icons.mdiBackspaceOutline }}
-                                </v-icon>
-                            </template>
-                            <span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template #activator="{ on }">
+                                    <v-icon
+                                        class="ml-2 mr-1"
+                                        v-on="on"
+                                        @click="step.centerCoordinate = null"
+                                    >
+                                        {{ icons.mdiBackspaceOutline }}
+                                    </v-icon>
+                                </template>
+                                <span>
                                 {{ $t("additional:modules.tools.dataNarrator.label.centerCoordinate") }}
                             </span>
-                        </v-tooltip>
+                            </v-tooltip>
+                        </div>
                     </div>
-                </div>
-                <p
-                    v-if="step.centerCoordinate && step.centerCoordinate !== center() "
-                    class="text-warning"
-                >
-                    <small>
-                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
-                    </small>
-                </p>
-            </div>
-
-            <div
-                v-if="!step.is3D"
-                class="form-group"
-            >
-                <label
-                    class="form-label"
-                    for="step-zoom"
-                >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.zoomLevel" ) }}
-                </label>
-
-                <div class="stepForm-inputs-zoomLevel">
-                    <input
-                        id="step-zoom"
-                        :key="`zoom${key}`"
-                        class="form-control"
-                        :value="step.zoomLevel"
-                        readonly
+                    <p
+                        v-if="step.centerCoordinate && step.centerCoordinate !== center() "
+                        class="text-warning"
                     >
+                        <small>
+                            {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }}
+                        </small>
+                    </p>
+                </div>
 
-                    <div class="input-group d-flex justify-content-center">
-                        <v-tooltip top>
-                            <template #activator="{ on }">
-                                <v-icon
-                                    class="ml-2 mr-1"
-                                    v-on="on"
-                                    @click="() => {
+                <div
+                    class="form-group"
+                >
+                    <label
+                        class="form-label"
+                        for="step-zoom"
+                    >
+                        {{ $t( "additional:modules.tools.dataNarrator.label.zoomLevel" ) }}
+                    </label>
+
+                    <div class="stepForm-inputs-zoomLevel">
+                        <input
+                            id="step-zoom"
+                            :key="`zoom${key}`"
+                            class="form-control"
+                            :value="step.zoomLevel"
+                            readonly
+                        >
+
+                        <div class="input-group d-flex justify-content-center">
+                            <v-tooltip top>
+                                <template #activator="{ on }">
+                                    <v-icon
+                                        class="ml-2 mr-1"
+                                        v-on="on"
+                                        @click="() => {
                                         key++;
                                         step.zoomLevel = zoom()
                                     }"
-                                >
-                                    {{ icons.mdiPinOutline }}
-                                </v-icon>
-                            </template>
-                            <span>
+                                    >
+                                        {{ icons.mdiPinOutline }}
+                                    </v-icon>
+                                </template>
+                                <span>
                                 {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
                             </span>
-                        </v-tooltip>
-                        <v-tooltip top>
-                            <template #activator="{ on }">
-                                <v-icon
-                                    class="ml-2 mr-1"
-                                    v-on="on"
-                                    @click="step.zoomLevel = null"
-                                >
-                                    {{ icons.mdiBackspaceOutline }}
-                                </v-icon>
-                            </template>
-                            <span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template #activator="{ on }">
+                                    <v-icon
+                                        class="ml-2 mr-1"
+                                        v-on="on"
+                                        @click="step.zoomLevel = null"
+                                    >
+                                        {{ icons.mdiBackspaceOutline }}
+                                    </v-icon>
+                                </template>
+                                <span>
                                 {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
                             </span>
-                        </v-tooltip>
+                            </v-tooltip>
+                        </div>
                     </div>
+                    <p
+                        v-if="step.zoomLevel !== null && step.zoomLevel !== zoom()"
+                        class="text-warning"
+                    >
+                        <small>
+                            {{ $t( "additional:modules.tools.dataNarrator.warning.mapZoomed" ) }}
+                        </small>
+                    </p>
                 </div>
-                <p
-                    v-if="step.zoomLevel !== null && step.zoomLevel !== zoom()"
-                    class="text-warning"
-                >
-                    <small>
-                        {{ $t( "additional:modules.tools.dataNarrator.warning.mapZoomed" ) }}
-                    </small>
-                </p>
             </div>
+
+
+
 
             <BackgroundMap
                 :selected-id="backgroundMapId"
