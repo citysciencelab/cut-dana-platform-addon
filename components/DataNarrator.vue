@@ -139,6 +139,8 @@ export default {
         resizeHandler () {
             const doResize = this.mode === constants.storyTellingModes.DASHBOARD && this.currentStory === null;
 
+            console.log("resizeHandler", doResize, this.mode, constants.storyTellingModes.DASHBOARD, this.currentStory, this.initialWidth);
+
             // mixin
             this.resizeTool(doResize, this.initialWidth);
         },
@@ -166,7 +168,6 @@ export default {
                 this.confirmDialog("closeStoryCreation", actionCallback);
             }
             else {
-                console.log("confirm", actionCallback);
                 actionCallback();
             }
         },
@@ -213,6 +214,7 @@ export default {
 
             this.disable3D();
             this.resetModule();
+
             this.setMode(constants.storyTellingModes.DASHBOARD);
         },
 
@@ -294,7 +296,7 @@ export default {
         :render-to-window="renderToWindow"
         :resizable-window="resizableWindow"
         :deactivate-gfi="deactivateGFI"
-        :initial-width="innerWidth"
+        :initial-width="777"
     >
         <template #toolBody>
             <v-app
