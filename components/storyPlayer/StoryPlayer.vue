@@ -352,6 +352,7 @@ export default {
             // Toggles 3D map mode
 
             await store.dispatch("Maps/activateMap3D");
+            Radio.trigger("Map", "mapChangeTo3d");
 
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
