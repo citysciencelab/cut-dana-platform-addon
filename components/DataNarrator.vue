@@ -139,8 +139,6 @@ export default {
         resizeHandler () {
             const doResize = this.mode === constants.storyTellingModes.DASHBOARD && this.currentStory === null;
 
-            console.log("resizeHandler", doResize, this.mode, constants.storyTellingModes.DASHBOARD, this.currentStory, this.initialWidth);
-
             // mixin
             this.resizeTool(doResize, this.initialWidth);
         },
@@ -296,7 +294,7 @@ export default {
         :render-to-window="renderToWindow"
         :resizable-window="resizableWindow"
         :deactivate-gfi="deactivateGFI"
-        :initial-width="777"
+        :initial-width="initialWidth"
     >
         <template #toolBody>
             <v-app

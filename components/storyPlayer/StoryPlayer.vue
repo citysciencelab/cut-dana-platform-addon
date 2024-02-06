@@ -438,6 +438,7 @@ export default {
             // Toggles 3D map mode
             if (this.currentStep.is3D && !Radio.request("Map", "isMap3d")) {
                 await store.dispatch("Maps/activateMap3D");
+                Radio.trigger("Map", "mapChangeTo3d");
 
                 await this.loadThreeDFiles();
             }
