@@ -66,12 +66,13 @@ export default {
          * @returns {void}
          */
         resizeTool (doResize, initialWidth) {
-
+            console.log("RESIZETOOL", doResize, initialWidth);
             const toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0],
 
                 width = doResize ? this.toolWidth(window.innerWidth) : initialWidth,
                 padding = doResize ? this.sidePadding(window.innerWidth) : defaultTemplatePadding;
 
+            console.log(width, padding, toolWindow);
             toolWindow?.style?.setProperty("--initialToolWidth", `${width}px`, "important");
             toolWindow?.style?.setProperty("--currentPadding", `${padding}px`, "important");
         },

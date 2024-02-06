@@ -27,11 +27,6 @@ export default {
             // makes sure the current mode is in 3D so that it properly and reliably changes to 2d
             await this.$store.commit("Maps/setMode", "3D");
             Radio.trigger("Map", "mapChangeTo3d");
-        },
-
-
-        disableAllEntities () {
-            console.log("disableAllEntites");
         }
     }
 };

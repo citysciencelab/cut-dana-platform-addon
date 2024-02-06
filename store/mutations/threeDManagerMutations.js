@@ -428,12 +428,17 @@ function disableEntityVisibility (state, payload) {
  * @returns {void}
  */
 function disableAllEntities () {
-    const viewer = Radio.request("Map", "getMap3d"),
-        entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
+    try {
+        const viewer = Radio.request("Map", "getMap3d"),
+            entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
 
-    entities.values.forEach(entity => {
-        entity.show = false;
-    });
+        entities.values.forEach(entity => {
+            entity.show = false;
+        });
+    }
+    catch (e) {
+        console.log(e);
+    }
 }
 
 /**
