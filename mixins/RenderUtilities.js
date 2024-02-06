@@ -66,7 +66,6 @@ export default {
          * @returns {void}
          */
         resizeTool (doResize, initialWidth) {
-
             const toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0],
 
                 width = doResize ? this.toolWidth(window.innerWidth) : initialWidth,

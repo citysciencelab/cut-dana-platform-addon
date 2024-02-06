@@ -74,10 +74,12 @@ export default {
                 }
             }
         }
+
     },
     created () {
         this.$on("close", this.close);
         window.addEventListener("resize", this.resizeHandler);
+        this.resizeHandler();
     },
     beforeDestroy () {
         // removes event listener
@@ -164,6 +166,7 @@ export default {
                 this.confirmDialog("closeStoryCreation", actionCallback);
             }
             else {
+                console.log("confirm", actionCallback);
                 actionCallback();
             }
         },
@@ -291,7 +294,7 @@ export default {
         :render-to-window="renderToWindow"
         :resizable-window="resizableWindow"
         :deactivate-gfi="deactivateGFI"
-        :initial-width="initialWidth"
+        :initial-width="innerWidth"
     >
         <template #toolBody>
             <v-app
