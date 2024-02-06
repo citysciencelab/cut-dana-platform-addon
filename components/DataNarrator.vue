@@ -73,7 +73,7 @@ export default {
                     }, 50);
                 }
             }
-        },
+        }
 
     },
     created () {
@@ -84,7 +84,6 @@ export default {
     beforeDestroy () {
         // removes event listener
         window.removeEventListener("resize", this.resizeHandler);
-        console.log("remove resize handler");
     },
     /**
      * Put initialize here if mounting occurs after config parsing
@@ -139,8 +138,6 @@ export default {
 
         resizeHandler () {
             const doResize = this.mode === constants.storyTellingModes.DASHBOARD && this.currentStory === null;
-
-            console.log("RESIZE", this.initialWidth, constants.storyTellingModes.DASHBOARD, this.currentStory === null, this.currentStory, this.mode, doResize);
 
             // mixin
             this.resizeTool(doResize, this.initialWidth);
@@ -297,7 +294,7 @@ export default {
         :render-to-window="renderToWindow"
         :resizable-window="resizableWindow"
         :deactivate-gfi="deactivateGFI"
-        :initial-width="toolWidth(window.innerWidth)"
+        :initial-width="innerWidth"
     >
         <template #toolBody>
             <v-app
