@@ -13,6 +13,7 @@ import ScrollyTeller from "./ScrollyTeller.vue";
 import TableOfContents from "./TableOfContents.vue";
 
 import LayerUtilities from "../../mixins/LayerUtilities";
+import RenderUtilities from "../../mixins/RenderUtilities";
 
 export default {
     name: "StoryPlayer",
@@ -21,7 +22,7 @@ export default {
         ScrollyTeller,
         TableOfContents
     },
-    mixins: [LayerUtilities],
+    mixins: [LayerUtilities, RenderUtilities],
     props: {
         // Step to show
         stepIndex: {
@@ -77,6 +78,7 @@ export default {
         currentStepIndex (newValue, oldValue) {
             if (newValue !== oldValue) {
                 this.previousStepIndex = oldValue;
+                this.resizeTool(false, this.initialWidth);
                 this.loadStep();
             }
             this.loadStep();
@@ -241,6 +243,7 @@ export default {
          */
         resetStoryPlayer () {
             // this.disableStepLayers({...this.currentStep});
+            this.resizeTool(false, this.initialWidth);
             this.disableOwnDatasource();
             this.currentStepIndex = 0;
             this.$emit("reset");
@@ -359,7 +362,7 @@ export default {
                             return model.modelId === item.id;
                         });
 
-                    console.log("modelData", modelData);
+                    // console.log("modelData", modelData);
                     if (modelData) {
                         this.addEntity({
                             ...item,
@@ -382,7 +385,7 @@ export default {
         },
 
         addEntity (item, path = "") {
-            console.log(item);
+            // console.log(item);
             // the item is a file and not a folder
             // const hpr = new Cesium.HeadingPitchRoll(item.orientation.heading, item.orientation.pitch, item.orientation.roll),
             //     quaternion = Cesium.Transforms.headingPitchRollQuaternion(Cesium.Cartesian3.ZERO, hpr),
@@ -430,7 +433,7 @@ export default {
 
             // Updates the tool width
             if (this.currentStep.stepWidth) {
-                this.setInitialWidth(this.currentStep.stepWidth);
+                this.resizeTool(false, this.currentStep.stepWidth);
             }
 
             // Toggles 3D map mode
