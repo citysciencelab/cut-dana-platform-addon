@@ -3,7 +3,7 @@ export default {
 
     computed: {
         // Computed property to get the value from Vuex store
-        isMap3D () {
+        is3D () {
             return Radio.request("Map", "isMap3d");
         }
     },

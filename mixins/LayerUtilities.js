@@ -135,6 +135,7 @@ export default {
         rebuildLayers (selectedLayers, mode = "allLayers") {
             const layerList = this.allLayerOptions[mode];
 
+
             this.disableLayers(this.enabledLayersWithMode(mode));
 
             for (const layer of selectedLayers) {

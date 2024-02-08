@@ -203,7 +203,6 @@ function handleGltfFile (state, payload) {
             position: currentLocation
         });
 
-    console.log(currentLocation);
 
 
     state.selectedEntityId = entity.id;
@@ -395,7 +394,6 @@ function enableEntityVisibility (state, payload) {
         viewer = Radio.request("Map", "getMap3d"),
         entity = viewer.getDataSourceDisplay().defaultDataSource.entities.getById(entityId);
 
-    console.log("ENTITY", entityId, entity);
     if (entity) {
         entity.show = true;
     }
@@ -437,7 +435,7 @@ function disableAllEntities () {
         });
     }
     catch (e) {
-        console.log(e);
+        console.error(e);
     }
 }
 

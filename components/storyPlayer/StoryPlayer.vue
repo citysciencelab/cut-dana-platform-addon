@@ -14,6 +14,7 @@ import TableOfContents from "./TableOfContents.vue";
 
 import LayerUtilities from "../../mixins/LayerUtilities";
 import RenderUtilities from "../../mixins/RenderUtilities";
+import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 
 export default {
     name: "StoryPlayer",
@@ -22,7 +23,7 @@ export default {
         ScrollyTeller,
         TableOfContents
     },
-    mixins: [LayerUtilities, RenderUtilities],
+    mixins: [LayerUtilities, RenderUtilities, ThreeDUtilities],
     props: {
         // Step to show
         stepIndex: {
@@ -136,7 +137,7 @@ export default {
 
         if (Radio.request("Map", "isMap3d")) {
             this.disableAllEntities();
-            store.dispatch("Maps/deactivateMap3D");
+            this.disable3D();
         }
 
 
@@ -351,8 +352,7 @@ export default {
             // Check if 3D map mode needed
             // Toggles 3D map mode
 
-            await store.dispatch("Maps/activateMap3D");
-            Radio.trigger("Map", "mapChangeTo3d");
+            this.enable3D();
 
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
@@ -438,14 +438,13 @@ export default {
 
             // Toggles 3D map mode
             if (this.currentStep.is3D && !Radio.request("Map", "isMap3d")) {
-                await store.dispatch("Maps/activateMap3D");
-                Radio.trigger("Map", "mapChangeTo3d");
+                this.enable3D();
 
                 await this.loadThreeDFiles();
             }
             else if (!this.currentStep.is3D && Radio.request("Map", "isMap3d")) {
                 this.isChangeFrom3D = true;
-                await store.dispatch("Maps/deactivateMap3D");
+                this.disable3D();
             }
 
             // Updates the map center

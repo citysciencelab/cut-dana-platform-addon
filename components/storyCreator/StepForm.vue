@@ -221,12 +221,20 @@ export default {
          * @returns {void}
          */
         "step.layers3D" (newSelectedLayerIds) {
-            this.rebuildLayers(newSelectedLayerIds, "layers3D");
+            if (newSelectedLayerIds.length > 0) {
+                this.enable3D();
+            }
+            else {
+                this.disable3D();
+            }
 
+            this.rebuildLayers(newSelectedLayerIds, "layers3D");
 
             this.is3DLayerActive = this.enabledLayers().filter(layer => {
                 return this.layerTypes3DSpecific.includes(layer.attributes.typ);
             }).length > 0;
+
+
             if (!this.step.is3D && this.is3DLayerActive) {
                 this.activate3DMap(true);
             }
@@ -771,6 +779,7 @@ export default {
          */
         async activate3DMap (checkboxValue) {
             this.step.is3D = checkboxValue;
+
             const isMap3d = Radio.request("Map", "isMap3d");
 
             if (this.step.is3D && !isMap3d) {
@@ -836,7 +845,7 @@ export default {
         async open3D () {
             this.step.is3D = true;
 
-            await this.$store.dispatch("Maps/activateMap3D");
+            this.enable3D();
             Radio.request("Map", "getMap3d").getCesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
 
             this.step.navigation3D = this.get3DMapCenter();
@@ -953,6 +962,12 @@ export default {
          */
         setStep3DMode (newValue) {
             this.step.is3D = newValue;
+            if (newValue) {
+                this.enable3D();
+            }
+            else {
+                this.disable3D();
+            }
         }
     }
 };
@@ -1090,23 +1105,17 @@ export default {
                         <input
                             id="step-3d-center"
                             class="form-control"
-                            :value="
-                            step.navigation3D.cameraPosition[0]
-                        "
+                            :value="step.navigation3D.cameraPosition[0]"
                             readonly
                         >
                         <input
                             class="form-control"
-                            :value="
-                            step.navigation3D.cameraPosition[1]
-                        "
+                            :value="step.navigation3D.cameraPosition[1]"
                             readonly
                         >
                         <input
                             class="form-control"
-                            :value="
-                            step.navigation3D.cameraPosition[2]
-                        "
+                            :value="step.navigation3D.cameraPosition[2]"
                             readonly
                         >
 
@@ -1152,9 +1161,7 @@ export default {
                         <input
                             id="step-3d-heading"
                             class="form-control"
-                            :value="
-                            step.navigation3D.heading
-                        "
+                            :value="step.navigation3D.heading"
                             readonly
                         >
                         <div class="input-group">
@@ -1176,8 +1183,7 @@ export default {
                     </div>
                     <p
                         v-if="
-                            mapMovedPosition.heading && step.navigation3D.heading &&
-                            step.navigation3D.heading !== mapMovedPosition.heading "
+                            mapMovedPosition.heading && step.navigation3D.heading && step.navigation3D.heading !== mapMovedPosition.heading "
                         class="text-warning"
                     >
                         <small>
@@ -1200,9 +1206,7 @@ export default {
                         <input
                             id="step-3d-pitch"
                             class="form-control"
-                            :value="
-                            step.navigation3D.pitch
-                        "
+                            :value="step.navigation3D.pitch"
                             readonly
                         >
 
@@ -1224,8 +1228,7 @@ export default {
                         </div>
                     </div>
                     <p
-                        v-if="
-                        mapMovedPosition.pitch && step.navigation3D.pitch &&
+                        v-if="mapMovedPosition.pitch && step.navigation3D.pitch &&
                             step.navigation3D.pitch !== mapMovedPosition.pitch"
                         class="text-warning"
                     >
@@ -1235,9 +1238,6 @@ export default {
                     </p>
                 </div>
             </div>
-
-
-
 
             <div
                 v-else
@@ -1257,17 +1257,13 @@ export default {
                             id="step-center"
                             :key="`centerCoordinatex${key}`"
                             class="form-control"
-                            :value="
-                             step.centerCoordinate && step.centerCoordinate[0]
-                        "
+                            :value="step.centerCoordinate && step.centerCoordinate[0]"
                             readonly
                         >
                         <input
                             :key="`centerCoordinatey${key}`"
                             class="form-control"
-                            :value="
-                            step.centerCoordinate && step.centerCoordinate[1]
-                        "
+                            :value="step.centerCoordinate && step.centerCoordinate[1]"
                             readonly
                         >
 
@@ -1277,17 +1273,14 @@ export default {
                                     <v-icon
                                         class="ml-2 mr-1"
                                         v-on="on"
-                                        @click="() => {
-                                        key++;
-                                        step.centerCoordinate = center()
-                                    }"
+                                        @click="() => {key++;step.centerCoordinate = center()}"
                                     >
                                         {{ icons.mdiPinOutline }}
                                     </v-icon>
                                 </template>
                                 <span>
-                                {{ $t("additional:modules.tools.dataNarrator.label.centerCoordinate") }}
-                            </span>
+                                    {{ $t("additional:modules.tools.dataNarrator.label.centerCoordinate") }}
+                                </span>
                             </v-tooltip>
                             <v-tooltip top>
                                 <template #activator="{ on }">
@@ -1300,8 +1293,8 @@ export default {
                                     </v-icon>
                                 </template>
                                 <span>
-                                {{ $t("additional:modules.tools.dataNarrator.label.centerCoordinate") }}
-                            </span>
+                                    {{ $t("additional:modules.tools.dataNarrator.label.centerCoordinate") }}
+                                </span>
                             </v-tooltip>
                         </div>
                     </div>
@@ -1340,17 +1333,14 @@ export default {
                                     <v-icon
                                         class="ml-2 mr-1"
                                         v-on="on"
-                                        @click="() => {
-                                        key++;
-                                        step.zoomLevel = zoom()
-                                    }"
+                                        @click="() => {key++;step.zoomLevel = zoom()}"
                                     >
                                         {{ icons.mdiPinOutline }}
                                     </v-icon>
                                 </template>
                                 <span>
-                                {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
-                            </span>
+                                    {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                </span>
                             </v-tooltip>
                             <v-tooltip top>
                                 <template #activator="{ on }">
@@ -1363,8 +1353,8 @@ export default {
                                     </v-icon>
                                 </template>
                                 <span>
-                                {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
-                            </span>
+                                    {{ $t("additional:modules.tools.dataNarrator.label.zoomLevel") }}
+                                </span>
                             </v-tooltip>
                         </div>
                     </div>
@@ -1786,7 +1776,7 @@ export default {
 }
 #tool-dataNarrator-creator-stepForm {
     max-width: 460px;
-    position: relatieve;
+    position: relative;
 
     #tool-dataNarrator-creator-noHTML {
         margin-top: 10px;
@@ -1861,7 +1851,7 @@ export default {
     }
 
     .stepForm-inputs-htmlEditor {
-        background: "#fff";
+        background-color: "#ffffff";
     }
 }
 </style>
