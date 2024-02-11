@@ -142,6 +142,7 @@ export default {
 
 
         this.disableOwnDatasource();
+        this.disableOwnWMS();
         this.disableAllEntities();
     },
     methods: {
@@ -246,6 +247,7 @@ export default {
             // this.disableStepLayers({...this.currentStep});
             this.resizeTool(false, this.initialWidth);
             this.disableOwnDatasource();
+            this.disableOwnWMS();
             this.currentStepIndex = 0;
             this.$emit("reset");
         },
@@ -348,6 +350,30 @@ export default {
             this.disableLayersByName(this.importedFileNames);
         },
 
+
+        disableOwnWMS () {
+            if (this.currentStep.wmsLayers) {
+                this.currentStep.wmsLayers.forEach(async layer => {
+                    console.log(layer.url);
+                    const allCapabilitiesModels = Radio.request("ModelList", "getModelsByAttributes", {url: layer.url});
+
+                    console.log("capabilities", allCapabilitiesModels);
+
+                    allCapabilitiesModels.forEach(model => {
+                        console.log(model);
+                        if (model) {
+                            model.setIsVisibleInMap(false);
+                            model.set("isSelected", false);
+                        }
+                    });
+                    // this.updateSelectedCapabilities(layer.selectedLayers, layer.url, allCapabilities);
+                });
+            }
+
+
+
+        },
+
         async loadThreeDFiles () {
             // Check if 3D map mode needed
             // Toggles 3D map mode
@@ -426,6 +452,7 @@ export default {
         async loadStep () {
 
             this.disableOwnDatasource();
+            this.disableOwnWMS();
 
             if (!this.currentStep) {
                 return;
