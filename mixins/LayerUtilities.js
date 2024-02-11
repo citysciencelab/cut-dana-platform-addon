@@ -186,6 +186,18 @@ export default {
             if (!skipReRender) {
                 Radio.trigger("Menu", "rerender");
             }
+        },
+
+
+
+        setDefaultBackgroundLayer () {
+            this.disableLayers(this.enabledLayers());
+
+            const defaultBackgroundMap = Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: "1043"});
+
+            this.enableLayer(defaultBackgroundMap);
+
+            // console.log("default background", Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: "1043"}));
         }
     }
 };
