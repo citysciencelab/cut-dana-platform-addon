@@ -26,6 +26,7 @@ import BackgroundMap from "./inputs/BackgroundMapSelect.vue";
 
 import LayerUtilities from "../../mixins/LayerUtilities";
 import ThreeDUtilities from "../../mixins/ThreeDUtilities";
+import {timer} from "../../utils/timing";
 
 
 export default {
@@ -331,14 +332,13 @@ export default {
         ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
 
         async toggle3DMode (value) {
-            console.log("toggle 1");
             if (value) {
                 await this.enable3D();
             }
             else {
                 await this.disable3D();
             }
-            console.log("toggle 3");
+
         },
 
         switchBackgroundMap (value) {
@@ -805,30 +805,50 @@ export default {
 
             if (this.step.is3D && !isMap3d) {
                 // Found in the ThreeDUtilities Mixin
-                await this.toggle3DMode(true);
+                const startTime = performance.now();
 
-                if (this.cesiumEnabled) {
+                this.enable3D().then((result) => {
+                    console.log(result); // This will print the string passed to resolve()
+
+                    console.log(`Execution of the enable3D function took ${performance.now() - startTime}ms`);
                     this.step.navigation3D = this.get3DMapCenter();
                     this.mapMovedPosition = this.step.navigation3D;
 
                     this.cesiumCamera.moveEnd.addEventListener(() => {
                         this.mapMovedHandler();
                     });
-                }
-                else {
-                    setTimeout(() => {
+
+                    this.cesiumEnabled = true;
+                }).catch((error) => {
+                    console.error(error); // This will handle any errors
+                });
 
 
-                        this.step.navigation3D = this.get3DMapCenter();
-                        this.mapMovedPosition = this.step.navigation3D;
 
-                        this.cesiumCamera.moveEnd.addEventListener(() => {
-                            this.mapMovedHandler();
-                        });
 
-                        this.cesiumEnabled = true;
-                    }, 300);
-                }
+                // if (this.cesiumEnabled) {
+                //     this.step.navigation3D = this.get3DMapCenter();
+                //     this.mapMovedPosition = this.step.navigation3D;
+                //
+                //     this.cesiumCamera.moveEnd.addEventListener(() => {
+                //         this.mapMovedHandler();
+                //     });
+                // }
+                // else {
+                //
+                //     setTimeout(() => {
+                //
+                //
+                //         this.step.navigation3D = this.get3DMapCenter();
+                //         this.mapMovedPosition = this.step.navigation3D;
+                //
+                //         this.cesiumCamera.moveEnd.addEventListener(() => {
+                //             this.mapMovedHandler();
+                //         });
+                //
+                //         this.cesiumEnabled = true;
+                //     }, 500);
+                // }
 
 
 

@@ -1,3 +1,4 @@
+import Radio from "backbone.radio/build/backbone.radio";
 
 export default {
 
@@ -27,10 +28,32 @@ export default {
          * @returns {void}
          */
         async enable3D () {
-            // makes sure the current mode is in 2D so that it properly and reliably changes to 3d
+
+            // Ensure the current mode is set to 2D before switching to 3D.
             this.$store.commit("Maps/setMode", "2D");
             Radio.trigger("Map", "mapChangeTo3d");
-            // console.log("cesiumScene enabled3d", params, this.cesiumScene);
+
+            /**
+             * Get the 3d map
+             * It avoids direct reassignment of map3D in a way that could cause race conditions.
+             * @returns {Object} the 3dmap object
+             */
+            function getMap3D () {
+                return Radio.request("Map", "getMap3d");
+            }
+
+            return new Promise((resolve) => {
+                let counter = 0;
+                const intervalId = setInterval(() => {
+                    const map3D = getMap3D();
+
+                    if (map3D) {
+                        clearInterval(intervalId);
+                        resolve(map3D);
+                    }
+                    counter = counter + 1;
+                }, 100); // Check every  100ms, adjust as needed
+            });
         },
 
         /**

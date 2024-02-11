@@ -352,6 +352,7 @@ export default {
 
 
         disableOwnWMS () {
+
             if (this.currentStep.wmsLayers) {
                 this.currentStep.wmsLayers.forEach(async layer => {
                     console.log(layer.url);
