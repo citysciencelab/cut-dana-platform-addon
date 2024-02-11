@@ -437,14 +437,14 @@ export default {
             }
 
             // Toggles 3D map mode
-            if (this.currentStep.is3D && !Radio.request("Map", "isMap3d")) {
-                this.enable3D();
+            if (this.currentStep.is3D && !this.is3D) {
+                await this.enable3D();
 
                 await this.loadThreeDFiles();
             }
-            else if (!this.currentStep.is3D && Radio.request("Map", "isMap3d")) {
+            else if (!this.currentStep.is3D && this.is3D) {
                 this.isChangeFrom3D = true;
-                this.disable3D();
+                await this.disable3D();
             }
 
             // Updates the map center
@@ -472,8 +472,8 @@ export default {
                 && this.currentStep.navigation3D.cameraPosition.length > 0
                 && this.currentStep.navigation3D.cameraPosition[0] !== null) {
                 const position = this.currentStep.navigation3D.cameraPosition,
-                    map3d = Radio.request("Map", "getMap3d"),
-                    camera = map3d.getCesiumScene().camera,
+                    map3d = this.cesiumMap,
+                    camera = this.cesiumCamera,
                     destination = Cesium.Cartesian3.fromDegrees(position[0], position[1], position[2]);
 
                 camera.flyTo({
