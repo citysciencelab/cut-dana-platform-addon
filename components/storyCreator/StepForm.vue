@@ -309,9 +309,6 @@ export default {
         this.loadStep();
     },
 
-    beforeUpdate () {
-        console.log("Update", this.step.is3D, this.is3D, this.step.navigation3D);
-    },
     beforeDestroy () {
         this.disableLayersByName(this.importedFileNames);
         this.disableStepLayers(this.step);
@@ -760,7 +757,6 @@ export default {
          */
         get3DMapCenter () {
             const camera = this.cesiumCamera;
-            console.log("Camera", camera);
 
             return {
                 "cameraPosition": this.toDegrees(camera.position),
@@ -805,23 +801,16 @@ export default {
 
             if (this.step.is3D && !isMap3d) {
                 // Found in the ThreeDUtilities Mixin
-                const startTime = performance.now();
+                await this.enable3D();
 
-                this.enable3D().then((result) => {
-                    console.log(result); // This will print the string passed to resolve()
+                this.step.navigation3D = this.get3DMapCenter();
+                this.mapMovedPosition = this.step.navigation3D;
 
-                    console.log(`Execution of the enable3D function took ${performance.now() - startTime}ms`);
-                    this.step.navigation3D = this.get3DMapCenter();
-                    this.mapMovedPosition = this.step.navigation3D;
-
-                    this.cesiumCamera.moveEnd.addEventListener(() => {
-                        this.mapMovedHandler();
-                    });
-
-                    this.cesiumEnabled = true;
-                }).catch((error) => {
-                    console.error(error); // This will handle any errors
+                this.cesiumCamera.moveEnd.addEventListener(() => {
+                    this.mapMovedHandler();
                 });
+
+                this.cesiumEnabled = true;
 
 
 
@@ -907,8 +896,8 @@ export default {
         async open3D () {
             this.step.is3D = true;
 
-            this.activate3DMap(true);
-            this.cesiumScene.camera.moveEnd.addEventListener(this.mapMovedHandler);
+            await this.activate3DMap(true);
+            this.cesiumCamera.moveEnd.addEventListener(this.mapMovedHandler);
 
             this.step.navigation3D = this.get3DMapCenter();
             this.$emit(
@@ -930,7 +919,7 @@ export default {
             if (this.step.is3D && !this.is3D) {
                 this.activate3DMap(true);
 
-                this.cesiumScene.camera.moveEnd.addEventListener(this.mapMovedHandler);
+                this.cesiumCamera.moveEnd.addEventListener(this.mapMovedHandler);
                 this.set3DMapCenter();
 
                 await this.loadThreeDFiles();
@@ -939,6 +928,7 @@ export default {
                 this.activate3DMap(false);
             }
             else if (this.step.is3D && this.is3D) {
+                this.cesiumEnabled = true;
                 this.cesiumScene.camera.moveEnd.addEventListener(this.mapMovedHandler);
                 this.set3DMapCenter();
                 await this.loadThreeDFiles();

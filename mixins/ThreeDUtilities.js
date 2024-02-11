@@ -42,6 +42,8 @@ export default {
                 return Radio.request("Map", "getMap3d");
             }
 
+
+
             return new Promise((resolve) => {
                 let counter = 0;
                 const intervalId = setInterval(() => {

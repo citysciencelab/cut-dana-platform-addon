@@ -137,6 +137,7 @@ export default {
 
         if (Radio.request("Map", "isMap3d")) {
             this.disableAllEntities();
+            // disable all 3d layers
             this.disable3D();
         }
 
@@ -144,6 +145,7 @@ export default {
         this.disableOwnDatasource();
         this.disableOwnWMS();
         this.disableAllEntities();
+        this.disableStepLayers({...this.currentStep}, null, true);
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -170,37 +172,39 @@ export default {
         },
 
         updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
+            if (this.currentStep && this.currentStep.wmsLayers) {
+                const layer = this.currentStep.wmsLayers.find(url => url.url === layerUrl),
+                    layerModels = selectedCapabilities.map(capability => {
+                        const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
 
-            const layer = this.currentStep.wmsLayers.find(url => url.url === layerUrl),
-                layerModels = selectedCapabilities.map(capability => {
-                    const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
+                        let models = [];
 
-                    let models = [];
+                        Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
+                        models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
 
-                    Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
-                    models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
+                        return models;
+                    }),
+                    allCapabilitiesModels = allCapabilities.map(capability => {
+                        return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+                    });
 
-                    return models;
-                }),
-                allCapabilitiesModels = allCapabilities.map(capability => {
-                    return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+                allCapabilitiesModels.forEach(model => {
+                    if (model) {
+                        model.setIsVisibleInMap(false);
+                        model.set("isSelected", false);
+                    }
                 });
 
-            allCapabilitiesModels.forEach(model => {
-                if (model) {
-                    model.setIsVisibleInMap(false);
-                    model.set("isSelected", false);
+                layerModels.forEach(model => {
+                    model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
+                    model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
+                });
+
+                if (layer) {
+                    layer.selectedLayers = selectedCapabilities;
                 }
-            });
-
-            layerModels.forEach(model => {
-                model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
-                model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
-            });
-
-            if (layer) {
-                layer.selectedLayers = selectedCapabilities;
             }
+
         },
 
         addFile (files) {
@@ -244,7 +248,6 @@ export default {
          * @returns {void}
          */
         resetStoryPlayer () {
-            // this.disableStepLayers({...this.currentStep});
             this.resizeTool(false, this.initialWidth);
             this.disableOwnDatasource();
             this.disableOwnWMS();
@@ -353,15 +356,15 @@ export default {
 
         disableOwnWMS () {
 
-            if (this.currentStep.wmsLayers) {
+            if (this.currentStep && this.currentStep.wmsLayers) {
                 this.currentStep.wmsLayers.forEach(async layer => {
-                    console.log(layer.url);
+                    // console.log(layer.url);
                     const allCapabilitiesModels = Radio.request("ModelList", "getModelsByAttributes", {url: layer.url});
 
-                    console.log("capabilities", allCapabilitiesModels);
+                    // console.log("capabilities", allCapabilitiesModels);
 
                     allCapabilitiesModels.forEach(model => {
-                        console.log(model);
+                        // console.log(model);
                         if (model) {
                             model.setIsVisibleInMap(false);
                             model.set("isSelected", false);
@@ -379,7 +382,7 @@ export default {
             // Check if 3D map mode needed
             // Toggles 3D map mode
 
-            this.enable3D();
+            await this.enable3D();
 
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
@@ -523,7 +526,7 @@ export default {
             this.switchBackgroundMap(this.currentStep.backgroundMapId);
             this.getDataSources();
 
-            if (this.currentStep.wmsLayers) {
+            if (this.currentStep && this.currentStep.wmsLayers) {
                 this.currentStep.wmsLayers.forEach(async layer => {
                     const allCapabilities = await this.capabilityOptions(layer.url);
 

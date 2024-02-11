@@ -121,7 +121,8 @@ export default {
         },
 
         enabledLayers () {
-            return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
+            // console.log("enabled layers", Radio.request("ModelList", "getModelsByAttributes", {type: "layer", isVisibleInMap: true}));
+            return Radio.request("ModelList", "getModelsByAttributes", {type: "layer", isVisibleInMap: true});
         },
 
         enabledLayersWithMode (mode) {
@@ -169,6 +170,7 @@ export default {
         },
 
         disableStepLayers (step, layers = null, skipReRender = false) {
+            // console.log(this.enabledLayers());
             const layerList = layers || this.enabledLayers();
 
             step?.layers?.forEach(layer => {
@@ -178,7 +180,7 @@ export default {
             });
             step?.layers3D?.forEach(layer => {
                 const layerId = typeof layer === "string" ? layer : layer.id;
-
+                
                 this.disableLayer(layerList.find(l => l.attributes.id === layerId));
             });
             if (!skipReRender) {
