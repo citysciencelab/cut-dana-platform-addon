@@ -122,7 +122,7 @@ export default {
 
         enabledLayers () {
             // console.log("enabled layers", Radio.request("ModelList", "getModelsByAttributes", {type: "layer", isVisibleInMap: true}));
-            return Radio.request("ModelList", "getModelsByAttributes", {type: "layer", isVisibleInMap: true});
+            return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
         },
 
         enabledLayersWithMode (mode) {
@@ -180,7 +180,7 @@ export default {
             });
             step?.layers3D?.forEach(layer => {
                 const layerId = typeof layer === "string" ? layer : layer.id;
-                
+
                 this.disableLayer(layerList.find(l => l.attributes.id === layerId));
             });
             if (!skipReRender) {
