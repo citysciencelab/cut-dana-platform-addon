@@ -61,7 +61,7 @@ export default {
     },
     async mounted () {
         // set map to 3d
-        this.enable3D();
+        await this.enable3D();
 
         if (this.selectedEntity) {
             this.position = this.selectedEntity.position;

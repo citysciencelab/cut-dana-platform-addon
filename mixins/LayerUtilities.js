@@ -121,6 +121,7 @@ export default {
         },
 
         enabledLayers () {
+            // console.log("enabled layers", Radio.request("ModelList", "getModelsByAttributes", {type: "layer", isVisibleInMap: true}));
             return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
         },
 
@@ -169,6 +170,7 @@ export default {
         },
 
         disableStepLayers (step, layers = null, skipReRender = false) {
+            // console.log(this.enabledLayers());
             const layerList = layers || this.enabledLayers();
 
             step?.layers?.forEach(layer => {

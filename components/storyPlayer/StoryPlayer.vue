@@ -137,12 +137,15 @@ export default {
 
         if (Radio.request("Map", "isMap3d")) {
             this.disableAllEntities();
+            // disable all 3d layers
             this.disable3D();
         }
 
 
         this.disableOwnDatasource();
+        this.disableOwnWMS();
         this.disableAllEntities();
+        this.disableStepLayers({...this.currentStep}, null, true);
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
@@ -169,37 +172,39 @@ export default {
         },
 
         updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
+            if (this.currentStep && this.currentStep.wmsLayers) {
+                const layer = this.currentStep.wmsLayers.find(url => url.url === layerUrl),
+                    layerModels = selectedCapabilities.map(capability => {
+                        const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
 
-            const layer = this.currentStep.wmsLayers.find(url => url.url === layerUrl),
-                layerModels = selectedCapabilities.map(capability => {
-                    const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
+                        let models = [];
 
-                    let models = [];
+                        Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
+                        models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
 
-                    Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
-                    models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
+                        return models;
+                    }),
+                    allCapabilitiesModels = allCapabilities.map(capability => {
+                        return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+                    });
 
-                    return models;
-                }),
-                allCapabilitiesModels = allCapabilities.map(capability => {
-                    return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+                allCapabilitiesModels.forEach(model => {
+                    if (model) {
+                        model.setIsVisibleInMap(false);
+                        model.set("isSelected", false);
+                    }
                 });
 
-            allCapabilitiesModels.forEach(model => {
-                if (model) {
-                    model.setIsVisibleInMap(false);
-                    model.set("isSelected", false);
+                layerModels.forEach(model => {
+                    model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
+                    model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
+                });
+
+                if (layer) {
+                    layer.selectedLayers = selectedCapabilities;
                 }
-            });
-
-            layerModels.forEach(model => {
-                model.setIsVisibleInMap(selectedCapabilities.includes(model.get("layers")));
-                model.set("isSelected", selectedCapabilities.includes(model.get("layers")));
-            });
-
-            if (layer) {
-                layer.selectedLayers = selectedCapabilities;
             }
+
         },
 
         addFile (files) {
@@ -243,9 +248,9 @@ export default {
          * @returns {void}
          */
         resetStoryPlayer () {
-            // this.disableStepLayers({...this.currentStep});
             this.resizeTool(false, this.initialWidth);
             this.disableOwnDatasource();
+            this.disableOwnWMS();
             this.currentStepIndex = 0;
             this.$emit("reset");
         },
@@ -348,11 +353,36 @@ export default {
             this.disableLayersByName(this.importedFileNames);
         },
 
+
+        disableOwnWMS () {
+
+            if (this.currentStep && this.currentStep.wmsLayers) {
+                this.currentStep.wmsLayers.forEach(async layer => {
+                    // console.log(layer.url);
+                    const allCapabilitiesModels = Radio.request("ModelList", "getModelsByAttributes", {url: layer.url});
+
+                    // console.log("capabilities", allCapabilitiesModels);
+
+                    allCapabilitiesModels.forEach(model => {
+                        // console.log(model);
+                        if (model) {
+                            model.setIsVisibleInMap(false);
+                            model.set("isSelected", false);
+                        }
+                    });
+                    // this.updateSelectedCapabilities(layer.selectedLayers, layer.url, allCapabilities);
+                });
+            }
+
+
+
+        },
+
         async loadThreeDFiles () {
             // Check if 3D map mode needed
             // Toggles 3D map mode
 
-            this.enable3D();
+            await this.enable3D();
 
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
@@ -426,6 +456,7 @@ export default {
         async loadStep () {
 
             this.disableOwnDatasource();
+            this.disableOwnWMS();
 
             if (!this.currentStep) {
                 return;
@@ -437,14 +468,14 @@ export default {
             }
 
             // Toggles 3D map mode
-            if (this.currentStep.is3D && !Radio.request("Map", "isMap3d")) {
-                this.enable3D();
+            if (this.currentStep.is3D && !this.is3D) {
+                await this.enable3D();
 
                 await this.loadThreeDFiles();
             }
-            else if (!this.currentStep.is3D && Radio.request("Map", "isMap3d")) {
+            else if (!this.currentStep.is3D && this.is3D) {
                 this.isChangeFrom3D = true;
-                this.disable3D();
+                await this.disable3D();
             }
 
             // Updates the map center
@@ -472,8 +503,8 @@ export default {
                 && this.currentStep.navigation3D.cameraPosition.length > 0
                 && this.currentStep.navigation3D.cameraPosition[0] !== null) {
                 const position = this.currentStep.navigation3D.cameraPosition,
-                    map3d = Radio.request("Map", "getMap3d"),
-                    camera = map3d.getCesiumScene().camera,
+                    map3d = this.cesiumMap,
+                    camera = this.cesiumCamera,
                     destination = Cesium.Cartesian3.fromDegrees(position[0], position[1], position[2]);
 
                 camera.flyTo({
@@ -495,7 +526,7 @@ export default {
             this.switchBackgroundMap(this.currentStep.backgroundMapId);
             this.getDataSources();
 
-            if (this.currentStep.wmsLayers) {
+            if (this.currentStep && this.currentStep.wmsLayers) {
                 this.currentStep.wmsLayers.forEach(async layer => {
                     const allCapabilities = await this.capabilityOptions(layer.url);
 

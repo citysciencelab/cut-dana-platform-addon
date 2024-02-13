@@ -71,14 +71,15 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters(["namedProjections"]),
-        ...mapGetters("Maps", ["altitude", "longitude", "latitude", "clickCoordinate", "mouseCoordinate"])
+        ...mapGetters(["namedProjections"])
+        // ...mapGetters("Maps", ["altitude", "longitude", "latitude", "clickCoordinate", "mouseCoordinate"])
 
     },
     watch: {
 
         tree: {
             handler (val) {
+                console.log("val", val);
                 this.step = {
                     ...this.step,
                     selectedModelIds: val.map(id => ({
@@ -92,10 +93,16 @@ export default {
     },
     async mounted () {
         // load the tree from this.step.selectedModelIds
-        this.tree = this.step.selectedModelIds.map(model => model.modelId);
+        console.log(this.step);
+        if (this.step.selectedModelIds) {
+            this.tree = this.step.selectedModelIds.map(model => model.modelId);
+        } else {
+            this.tree = [];
+        }
+
         // set map to 3d
 
-        this.enable3D();
+        await this.enable3D();
 
         // load the existing files
         // this.importFile({files: this.step.threeDFiles.map(file => file.obj), fileId: null});
@@ -335,6 +342,8 @@ export default {
             this.setSelectedEntityId(entityId);
 
             this.tree.push(entityId);
+
+            console.log(this.tree);
 
             this.step = {
                 ...this.step,
