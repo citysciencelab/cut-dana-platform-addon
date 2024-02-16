@@ -125,6 +125,10 @@ export default {
             return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
         },
 
+        enabledBackgroundLayers () {
+            return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: true});
+        },
+
         enabledLayersWithMode (mode) {
             return this.enabledLayers().filter(layer => {
                 return (mode === "allLayers") ||
@@ -188,16 +192,16 @@ export default {
             }
         },
 
-
-
         setDefaultBackgroundLayer () {
-            this.disableLayers(this.enabledLayers());
+            this.disableLayers(this.enabledBackgroundLayers());
 
             const defaultBackgroundMap = Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: "1043"});
 
             this.enableLayer(defaultBackgroundMap);
+        },
 
-            // console.log("default background", Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: "1043"}));
+        getSelectedBackgroundLayerIds () {
+            return this.enabledBackgroundLayers().map(layer => layer.id);
         }
     }
 };
