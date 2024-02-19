@@ -214,7 +214,9 @@ export default {
             this.resetModule();
 
             this.setMode(constants.storyTellingModes.DASHBOARD);
+            this.setDefaultBackgroundLayer();
         },
+
 
         /**
          * Resets the tool to its initial state

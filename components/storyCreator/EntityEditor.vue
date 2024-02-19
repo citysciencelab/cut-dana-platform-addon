@@ -54,9 +54,15 @@ export default {
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
         ...mapGetters(["namedProjections"]),
-        ...mapGetters("Maps", ["clickCoordinate", "mouseCoordinate"]),
+        // ...mapGetters("Maps", ["clickCoordinate", "mouseCoordinate"]),
         selectedEntity () {
-            return mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities.getById(this.selectedEntityId);
+            const map = this.cesiumMap,
+                dataSourceDisplay = map.getDataSourceDisplay(),
+                defaultDataSource = dataSourceDisplay.defaultDataSource,
+                entities = defaultDataSource.entities;
+
+            console.log(map, dataSourceDisplay, defaultDataSource, entities, this.selectedEntityId);
+            return entities.getById(this.selectedEntityId);
         }
     },
     async mounted () {
@@ -64,6 +70,7 @@ export default {
         await this.enable3D();
 
         if (this.selectedEntity) {
+            console.log("entity", this.selectedEntity);
             this.position = this.selectedEntity.position;
             this.orientation = this.selectedEntity.orientation;
             this.scale = parseFloat(this.selectedEntity.model.scale);

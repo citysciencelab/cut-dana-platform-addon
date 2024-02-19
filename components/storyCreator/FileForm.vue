@@ -15,7 +15,6 @@ import {
     mdiFolder, mdiFolderOpen, mdiFolderPlus,
     mdiPlus, mdiDelete
 } from "@mdi/js";
-import store from "../../../../../src/app-store";
 import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 
 
@@ -339,7 +338,7 @@ export default {
          * @returns {void}
          */
         entityEditor (entityId) {
-            this.setSelectedEntityId(entityId);
+            this.setSelectedEntityId({selectedEntityId: entityId});
 
             this.tree.push(entityId);
 
