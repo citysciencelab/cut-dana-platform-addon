@@ -1,3 +1,5 @@
+import {defaultMap} from "../store/constantsDataNarrator";
+
 export default {
     data () {
         return {
@@ -195,7 +197,7 @@ export default {
         setDefaultBackgroundLayer () {
             this.disableLayers(this.enabledBackgroundLayers());
 
-            const defaultBackgroundMap = Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: "1043"});
+            const defaultBackgroundMap = Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: defaultMap});
 
             this.enableLayer(defaultBackgroundMap);
         },

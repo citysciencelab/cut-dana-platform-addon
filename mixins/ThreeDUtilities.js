@@ -265,7 +265,6 @@ export default {
                     position: currentLocation
                 });
 
-            console.log("entity", entity);
             this.$store.commit("Tools/DataNarrator/setSelectedEntityId", {selectedEntityId: entity.id});
             // this.moveEntity(undefined, fileId);
             // this.writeEntityDataToItems(entity, fileId);

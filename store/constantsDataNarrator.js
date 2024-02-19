@@ -74,12 +74,14 @@ const storyTellingModes = {
         [{color: []}, {background: []}],
         ["link", "image"],
         ["clean"]
-    ];
+    ],
+    defaultMap = "1043";
 
 export {
     threeDManagerConstants,
     dataNarratorRoles,
     emptyStep, emptyStory,
-    htmlEditorToolbar, stepPalette, storyCreationViews, storyTellingModeIcons, storyTellingModes
+    htmlEditorToolbar, stepPalette, storyCreationViews, storyTellingModeIcons, storyTellingModes,
+    defaultMap
 };
 

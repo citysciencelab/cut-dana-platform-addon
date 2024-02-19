@@ -27,6 +27,7 @@ import BackgroundMap from "./inputs/BackgroundMapSelect.vue";
 import LayerUtilities from "../../mixins/LayerUtilities";
 import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 import {timer} from "../../utils/timing";
+import {defaultMap} from "../../store/constantsDataNarrator";
 
 
 export default {
@@ -59,7 +60,7 @@ export default {
 
             is3DLayerActive: false,
 
-            backgroundMapId: this.editedStep?.backgroundMapId,
+            backgroundMapId: this.editedStep?.backgroundMapId || constants.defaultMap,
             mapMovedPosition: {
                 cameraPosition: [
                     null,
@@ -195,8 +196,8 @@ export default {
     },
     watch: {
 
-        "step.associatedChapter" (value) {
-            this.step.is3D = true;
+        "step.associatedChapter" () {
+            // this.step.is3D = true;
         },
 
 
@@ -229,7 +230,7 @@ export default {
         },
 
         "step.is3D" (value) {
-            console.log("map value changed!", value);
+            this.step.is3D = value;
             this.activate3DMap(value);
         },
 
@@ -239,13 +240,11 @@ export default {
          * @returns {void}
          */
         "step.layers3D" (newSelectedLayerIds) {
-            console.log(newSelectedLayerIds, this.step.selectedModelIds.length);
 
-            if (!this.step.is3D && (newSelectedLayerIds.length !== 0 || this.step.selectedModelIds.length !== 0)) {
+            if (!this.step.is3D && newSelectedLayerIds.length !== 0 && this.step.selectedModelIds.length !== 0) {
                 this.activate3DMap(true);
             }
             else if (this.step.is3D && newSelectedLayerIds.length === 0 && this.step.selectedModelIds.length === 0) {
-                console.log("here5");
                 this.activate3DMap(false);
             }
 
@@ -343,6 +342,13 @@ export default {
                 await this.disable3D();
             }
 
+        },
+
+        loadModelsFromFileForm () {
+            this.disableAllEntities();
+            for (const entityId of this.step.selectedModelIds) {
+                this.enableEntityVisibility({entityId: entityId.modelId});
+            }
         },
 
         switchBackgroundMap (value) {
@@ -488,27 +494,35 @@ export default {
             // Check if 3D map mode needed
             // Toggles 3D map mode
 
+
             this.disableAllEntities();
+
 
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
-                    // console.log(this.backendConfig.url);
-                    const uri = `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`,
-                        modelData = this.step.selectedModelIds.find(model => {
-                            return model.modelId === item.id;
-                        });
+                    const selectedIds = this.step.selectedModelIds.map(model => model.modelId);
+
+                    if (!selectedIds.includes(item.id)) {
+                        const uri = `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`,
+                            modelData = this.step.selectedModelIds.find(model => {
+                                return model.modelId === item.id;
+                            });
 
 
-                    if (modelData) {
-                        this.addEntity({
-                            ...item,
-                            position: modelData.position,
-                            scale: modelData.scale,
-                            orientation: modelData.orientation
-                        }, uri);
+                        if (modelData) {
+                            this.addEntity({
+                                ...item,
+                                position: modelData.position,
+                                scale: modelData.scale,
+                                orientation: modelData.orientation
+                            }, uri);
+                        }
                     }
+
                 });
             }
+
+            this.loadModelsFromFileForm();
         },
 
         /**
@@ -518,7 +532,6 @@ export default {
         enableThreeDModels () {
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
-                    // console.log(this.backendConfig.url);
                     this.enableEntityVisibility(item);
                 });
             }
@@ -672,7 +685,6 @@ export default {
                 this.images.push({dataUrl, fileExtension});
                 // Add image to HTML content
                 Editor.insertEmbed(cursorLocation, "image", dataUrl);
-                // console.log("Image added to HTML content");
                 resetUploader();
             }).catch((error) => {
                 console.error(error);
@@ -806,10 +818,7 @@ export default {
 
             const isMap3d = this.is3D; // Get this value from the ThreeDUtilities Mixin
 
-            console.log("here");
-
             if (this.step.is3D && !isMap3d) {
-                console.log("here1");
                 // Found in the ThreeDUtilities Mixin
                 await this.enable3D();
 
@@ -824,7 +833,6 @@ export default {
 
             }
             else if (!this.step.is3D && isMap3d) {
-                console.log("here2");
                 // Found in the ThreeDUtilities Mixin
                 await this.toggle3DMode(false);
             }
@@ -873,7 +881,6 @@ export default {
          */
         async open3D () {
 
-            console.log("here3");
 
             await this.activate3DMap(true);
             this.cesiumCamera.moveEnd.addEventListener(this.mapMovedHandler);
@@ -895,7 +902,6 @@ export default {
          * @returns {void}
          */
         async loadStep () {
-            console.log("loadstep", "step.3d", this.step.is3D, this.is3D);
             if (this.step.is3D && !this.is3D) {
                 this.activate3DMap(true);
 
