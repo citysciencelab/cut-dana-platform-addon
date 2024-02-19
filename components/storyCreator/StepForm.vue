@@ -52,7 +52,7 @@ export default {
             visibleBackgroundMap: null,
             minStepWidth: 280,
             maxStepWidth: 1000,
-            step: {_id: uuid.v4(), layers: [], layers3D: [], is3D: false, ...this.editedStep},
+            step: {_id: uuid.v4(), layers: [], layers3D: [], is3D: this.editedStep.is3D || false, ...this.editedStep},
             newChapterTitle: this.editedStep.chapterTitle || "",
 
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
@@ -195,6 +195,10 @@ export default {
     },
     watch: {
 
+        "step.associatedChapter" (value) {
+            this.step.is3D = true;
+        },
+
 
         "cesiumMap" (value) {
             this.cesiumEnabled = !!value;
@@ -211,7 +215,7 @@ export default {
         "is3D" (newState) {
             this.step.navigation3D = this.get3DMapCenter();
             this.mapMovedPosition = this.step.navigation3D;
-            this.setStep3DMode(newState);
+            this.step.is3D = newState;
         },
 
         /**
@@ -225,6 +229,7 @@ export default {
         },
 
         "step.is3D" (value) {
+            console.log("map value changed!", value);
             this.activate3DMap(value);
         },
 
@@ -234,11 +239,13 @@ export default {
          * @returns {void}
          */
         "step.layers3D" (newSelectedLayerIds) {
+            console.log(newSelectedLayerIds, this.step.selectedModelIds.length);
 
-            if (!this.step.is3D && newSelectedLayerIds.length !== 0) {
+            if (!this.step.is3D && (newSelectedLayerIds.length !== 0 || this.step.selectedModelIds.length !== 0)) {
                 this.activate3DMap(true);
             }
-            else if (this.step.is3D && newSelectedLayerIds.length === 0) {
+            else if (this.step.is3D && newSelectedLayerIds.length === 0 && this.step.selectedModelIds.length === 0) {
+                console.log("here5");
                 this.activate3DMap(false);
             }
 
@@ -799,7 +806,10 @@ export default {
 
             const isMap3d = this.is3D; // Get this value from the ThreeDUtilities Mixin
 
+            console.log("here");
+
             if (this.step.is3D && !isMap3d) {
+                console.log("here1");
                 // Found in the ThreeDUtilities Mixin
                 await this.enable3D();
 
@@ -812,41 +822,9 @@ export default {
 
                 this.cesiumEnabled = true;
 
-
-
-
-                // if (this.cesiumEnabled) {
-                //     this.step.navigation3D = this.get3DMapCenter();
-                //     this.mapMovedPosition = this.step.navigation3D;
-                //
-                //     this.cesiumCamera.moveEnd.addEventListener(() => {
-                //         this.mapMovedHandler();
-                //     });
-                // }
-                // else {
-                //
-                //     setTimeout(() => {
-                //
-                //
-                //         this.step.navigation3D = this.get3DMapCenter();
-                //         this.mapMovedPosition = this.step.navigation3D;
-                //
-                //         this.cesiumCamera.moveEnd.addEventListener(() => {
-                //             this.mapMovedHandler();
-                //         });
-                //
-                //         this.cesiumEnabled = true;
-                //     }, 500);
-                // }
-
-
-
-
-
-
-
             }
             else if (!this.step.is3D && isMap3d) {
+                console.log("here2");
                 // Found in the ThreeDUtilities Mixin
                 await this.toggle3DMode(false);
             }
@@ -894,7 +872,8 @@ export default {
          * @returns {void}
          */
         async open3D () {
-            this.step.is3D = true;
+
+            console.log("here3");
 
             await this.activate3DMap(true);
             this.cesiumCamera.moveEnd.addEventListener(this.mapMovedHandler);
@@ -916,6 +895,7 @@ export default {
          * @returns {void}
          */
         async loadStep () {
+            console.log("loadstep", "step.3d", this.step.is3D, this.is3D);
             if (this.step.is3D && !this.is3D) {
                 this.activate3DMap(true);
 
@@ -925,6 +905,7 @@ export default {
                 await this.loadThreeDFiles();
             }
             else if (!this.step.is3D && this.is3D) {
+
                 this.activate3DMap(false);
             }
             else if (this.step.is3D && this.is3D) {
@@ -986,21 +967,6 @@ export default {
             Radio.trigger("Menu", "rerender");
         },
 
-
-        /**
-         * Sets the 3d mode of the step
-         * @param {boolean} newValue The new 3d value the step should have.
-         * @returns {void}
-         */
-        async setStep3DMode (newValue) {
-            this.step.is3D = newValue;
-            if (newValue) {
-                this.activate3DMap(true);
-            }
-            else {
-                this.activate3DMap(false);
-            }
-        }
     }
 };
 </script>
@@ -1120,7 +1086,7 @@ export default {
                 >
             </div>
 
-            <div v-if="step.is3D && cesiumEnabled">
+            <div v-if="step.is3D">
                 <div
                     class="form-group"
                 >
