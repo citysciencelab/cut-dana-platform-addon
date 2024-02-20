@@ -1,3 +1,5 @@
+import * as cesiumUtils from "./cesium";
+
 /**
  * Collects all the valuable information from the entity and returns them
  *
@@ -5,7 +7,7 @@
  * @returns {Object} returns an object with the entity values
  */
 export default function getEntityValues (entityId) {
-    const viewer = mapCollection.getMap("3D"),
+    const viewer = cesiumUtils.cesiumMap(),
         entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
 
         entity = entities.getById(entityId);

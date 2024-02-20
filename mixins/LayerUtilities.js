@@ -14,7 +14,8 @@ export default {
         allLayerOptions () {
             const allLayers = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
                 layers3D = [],
-                plainLayers = [];
+                plainLayers = [],
+                backgroundLayers = [];
 
             allLayers.forEach(layer => {
                 if (this.layerTypes3DSpecific.includes(layer.typ)) {
@@ -23,8 +24,13 @@ export default {
                 else {
                     plainLayers.push(layer);
                 }
+                if (layer.isBaseLayer) {
+                    backgroundLayers.push(layer);
+                }
             });
-            return {layers3D, plainLayers, allLayers};
+
+            console.log(backgroundLayers);
+            return {layers3D, plainLayers, allLayers, backgroundLayers};
         }
     },
     methods: {
@@ -127,6 +133,10 @@ export default {
             return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
         },
 
+        enabled3DLayers () {
+            return Radio.request("ModelList", "getModelsByAttributes", {parentId: "3d_daten"});
+        },
+
         enabledBackgroundLayers () {
             return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: true});
         },
@@ -198,12 +208,24 @@ export default {
             this.disableLayers(this.enabledBackgroundLayers());
 
             const defaultBackgroundMap = Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: defaultMap});
-
+            console.log(defaultBackgroundMap);
             this.enableLayer(defaultBackgroundMap);
+        },
+
+        disableBackgroundLayers () {
+            this.disableLayers(this.enabledBackgroundLayers());
         },
 
         getSelectedBackgroundLayerIds () {
             return this.enabledBackgroundLayers().map(layer => layer.id);
+        },
+
+        async disable3DLayers () {
+            for (const layer of this.enabled3DLayers()) {
+                layer.setIsVisibleInMap(false);
+                layer.setIsSelected(false);
+            }
+            // this.disableLayer(this.enabled3DLayers());
         }
     }
 };

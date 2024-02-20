@@ -78,7 +78,6 @@ export default {
 
         tree: {
             handler (val) {
-                console.log("val", val);
                 this.step = {
                     ...this.step,
                     selectedModelIds: val.map(id => ({
