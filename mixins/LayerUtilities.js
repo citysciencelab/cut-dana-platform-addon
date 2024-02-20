@@ -29,7 +29,6 @@ export default {
                 }
             });
 
-            console.log(backgroundLayers);
             return {layers3D, plainLayers, allLayers, backgroundLayers};
         }
     },
@@ -208,7 +207,6 @@ export default {
             this.disableLayers(this.enabledBackgroundLayers());
 
             const defaultBackgroundMap = Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: defaultMap});
-            console.log(defaultBackgroundMap);
             this.enableLayer(defaultBackgroundMap);
         },
 
