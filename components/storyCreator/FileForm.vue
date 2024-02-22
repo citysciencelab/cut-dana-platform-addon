@@ -78,7 +78,6 @@ export default {
 
         tree: {
             handler (val) {
-                console.log("val", val);
                 this.step = {
                     ...this.step,
                     selectedModelIds: val.map(id => ({
@@ -86,16 +85,20 @@ export default {
                         ...getEntityValues(id)
                     }))
                 };
+                this.disableAllEntities();
+                val.forEach((value) => {
+                    this.enableEntityVisibility({entityId: value});
+                });
             },
             deep: true
         }
     },
     async mounted () {
         // load the tree from this.step.selectedModelIds
-        console.log(this.step);
         if (this.step.selectedModelIds) {
             this.tree = this.step.selectedModelIds.map(model => model.modelId);
-        } else {
+        }
+        else {
             this.tree = [];
         }
 
@@ -342,8 +345,6 @@ export default {
 
             this.tree.push(entityId);
 
-            console.log(this.tree);
-
             this.step = {
                 ...this.step,
                 selectedModelIds: this.tree.map(id => ({
@@ -394,36 +395,6 @@ export default {
          * @returns {void}
          */
         createFormData () {
-            // const formData = new FormData();
-
-            // /**
-            //  * Recursive function to process the tree and add files to FormData
-            //  * @param {Array} node the tree to process
-            //  * @param {string} path the path of the current node
-            //  * @returns {void}
-            //  */
-            // function processNode (node, path = "") {
-            //     if (node.file && node.obj) {
-            //         // It's a file, append it to FormData
-            //         const fullPath = path;
-
-            //         formData.append(fullPath, node.obj);
-            //     }
-            //     else if (node.children && Array.isArray(node.children)) {
-            //         // It's a folder, recurse into its children
-            //         node.children.forEach(child => {
-            //             processNode(child, path ? `${path}/${node.name}` : node.name);
-            //         });
-            //     }
-            // }
-
-            // this.items.forEach(node => {
-            //     processNode(node);
-            // });
-
-            // for (const [key, value] of formData.entries()) {
-            //     console.log(key, value);
-            // }
             this.story.threeDFiles = this.threeDFiles;
             this.returnToStepForm();
 

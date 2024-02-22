@@ -130,6 +130,9 @@ export default {
         else {
             this.setMode(constants.storyTellingModes.DASHBOARD);
         }
+        this.rebuildLayers(this.allLayerOptions.backgroundLayers);
+        this.disableBackgroundLayers();
+        this.setDefaultBackgroundLayer();
         this.activateTool();
     },
     methods: {
@@ -209,7 +212,7 @@ export default {
                     }
                 }
             }
-
+            this.disable3DLayers();
             this.disable3D();
             this.resetModule();
 

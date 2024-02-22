@@ -26,7 +26,7 @@ import BackgroundMap from "./inputs/BackgroundMapSelect.vue";
 
 import LayerUtilities from "../../mixins/LayerUtilities";
 import ThreeDUtilities from "../../mixins/ThreeDUtilities";
-import {timer} from "../../utils/timing";
+import * as cesiumUtils from "../../utils/cesium";
 
 
 export default {
@@ -52,14 +52,14 @@ export default {
             visibleBackgroundMap: null,
             minStepWidth: 280,
             maxStepWidth: 1000,
-            step: {_id: uuid.v4(), layers: [], layers3D: [], is3D: false, ...this.editedStep},
+            step: {_id: uuid.v4(), layers: [], layers3D: [], is3D: this.editedStep.is3D || false, ...this.editedStep},
             newChapterTitle: this.editedStep.chapterTitle || "",
 
             images: this.$store.state.Tools.DataNarrator.htmlContentsImages[this.editedStep?._id] || [],
 
             is3DLayerActive: false,
 
-            backgroundMapId: this.editedStep?.backgroundMapId,
+            backgroundMapId: this.editedStep?.backgroundMapId || constants.defaultMap,
             mapMovedPosition: {
                 cameraPosition: [
                     null,
@@ -95,7 +95,6 @@ export default {
         ...mapGetters("Tools/FileImportAddon", Object.keys(fileImportGetters)),
         ...mapGetters("Tools/Modeler3D", Object.keys(modelerGetters)),
         ...mapGetters(["mobile"]),
-
 
 
         /**
@@ -195,9 +194,13 @@ export default {
     },
     watch: {
 
+        "step.associatedChapter" () {
+            // this.step.is3D = true;
+        },
+
 
         "cesiumMap" (value) {
-            this.cesiumEnabled = !!value;
+            this.cesiumEnabled = Boolean(value);
         },
         /**
          * Applies the step width to the tool window
@@ -211,7 +214,7 @@ export default {
         "is3D" (newState) {
             this.step.navigation3D = this.get3DMapCenter();
             this.mapMovedPosition = this.step.navigation3D;
-            this.setStep3DMode(newState);
+            this.step.is3D = newState;
         },
 
         /**
@@ -225,6 +228,7 @@ export default {
         },
 
         "step.is3D" (value) {
+            this.step.is3D = value;
             this.activate3DMap(value);
         },
 
@@ -235,10 +239,10 @@ export default {
          */
         "step.layers3D" (newSelectedLayerIds) {
 
-            if (!this.step.is3D && newSelectedLayerIds.length !== 0) {
+            if (!this.step.is3D && (newSelectedLayerIds.length !== 0 || (this.step.selectedModelIds && this.step.selectedModelIds.length !== 0))) {
                 this.activate3DMap(true);
             }
-            else if (this.step.is3D && newSelectedLayerIds.length === 0) {
+            else if (this.step.is3D && newSelectedLayerIds.length === 0 && ((this.step.selectedModelIds && this.step.selectedModelIds.length === 0) || !this.step.selectedModelIds)) {
                 this.activate3DMap(false);
             }
 
@@ -326,7 +330,8 @@ export default {
             "setSelectedFiletype"
         ]),
         // These application wide getters and setters can be found in 'src/modules/map/store'
-        ...mapGetters("Maps", ["center", "zoom", "getMap3d"]),
+        ...mapGetters("Maps", ["center", "zoom"]),
+        ...cesiumUtils,
 
         async toggle3DMode (value) {
             if (value) {
@@ -336,6 +341,13 @@ export default {
                 await this.disable3D();
             }
 
+        },
+
+        loadModelsFromFileForm () {
+            this.disableAllEntities();
+            for (const entityId of this.step.selectedModelIds) {
+                this.enableEntityVisibility({entityId: entityId.modelId});
+            }
         },
 
         switchBackgroundMap (value) {
@@ -355,7 +367,6 @@ export default {
 
         /**
          * Converts the external rawDatasources to the internal datasources
-         * @param {Object[]} rawDatasources the external rawDatasources
          * @returns {Object[]} the internal datasources
          */
         existingDatasources () {
@@ -481,27 +492,35 @@ export default {
             // Check if 3D map mode needed
             // Toggles 3D map mode
 
+
             this.disableAllEntities();
+
 
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
-                    // console.log(this.backendConfig.url);
-                    const uri = `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`,
-                        modelData = this.step.selectedModelIds.find(model => {
-                            return model.modelId === item.id;
-                        });
+                    const selectedIds = this.step.selectedModelIds.map(model => model.modelId);
+
+                    if (!selectedIds.includes(item.id)) {
+                        const uri = `${this.backendConfig.url}/files${this.currentStory.threeDFilesId}`,
+                            modelData = this.step.selectedModelIds.find(model => {
+                                return model.modelId === item.id;
+                            });
 
 
-                    if (modelData) {
-                        this.addEntity({
-                            ...item,
-                            position: modelData.position,
-                            scale: modelData.scale,
-                            orientation: modelData.orientation
-                        }, uri);
+                        if (modelData) {
+                            this.addEntity({
+                                ...item,
+                                position: modelData.position,
+                                scale: modelData.scale,
+                                orientation: modelData.orientation
+                            }, uri);
+                        }
                     }
+
                 });
             }
+
+            this.loadModelsFromFileForm();
         },
 
         /**
@@ -511,14 +530,13 @@ export default {
         enableThreeDModels () {
             if (this.currentStory.threeDFiles) {
                 this.currentStory.threeDFiles.forEach((item) => {
-                    // console.log(this.backendConfig.url);
                     this.enableEntityVisibility(item);
                 });
             }
         },
 
         /**
-         * Actually adds the enitiy to the 3D map
+         * Actually adds the entity to the 3D map
          * @param {Object} item the item to add
          * @param {String} path the path to the item
          * @returns {void}
@@ -563,16 +581,13 @@ export default {
          * @returns {string} the url without parameters
          */
         removeURLParameters (url) {
-            const urlObj = new URL(url),
-                baseUrl = urlObj.origin + urlObj.pathname;
+            const urlObj = new URL(url);
 
-            return baseUrl;
+            return urlObj.origin + urlObj.pathname;
         },
 
         /**
          * Handles adding a WMS layer to the step
-         * @param {String} url the url of the layer
-         * @param {Object[]} capabilities the capabilities of the layer
          * @returns {void}
          */
         async onWmsLayersAdd () {
@@ -665,7 +680,6 @@ export default {
                 this.images.push({dataUrl, fileExtension});
                 // Add image to HTML content
                 Editor.insertEmbed(cursorLocation, "image", dataUrl);
-                // console.log("Image added to HTML content");
                 resetUploader();
             }).catch((error) => {
                 console.error(error);
@@ -756,7 +770,7 @@ export default {
          * @returns {Object} returns object in the format of the story attribute 'navigation3D'
          */
         get3DMapCenter () {
-            const camera = this.cesiumCamera;
+            const camera = this.cesiumCamera();
 
             return {
                 "cameraPosition": this.toDegrees(camera.position),
@@ -775,7 +789,7 @@ export default {
                 this.step.navigation3D.cameraPosition[2] &&
                 this.step.navigation3D.heading &&
                 this.step.navigation3D.pitch) {
-                const camera = this.cesiumScene.camera;
+                const camera = this.cesiumScene().camera;
 
                 camera.flyTo({
                     destination: Cesium.Cartesian3.fromDegrees(this.step.navigation3D.cameraPosition[0], this.step.navigation3D.cameraPosition[1], this.step.navigation3D.cameraPosition[2]),
@@ -806,44 +820,11 @@ export default {
                 this.step.navigation3D = this.get3DMapCenter();
                 this.mapMovedPosition = this.step.navigation3D;
 
-                this.cesiumCamera.moveEnd.addEventListener(() => {
+                this.cesiumCamera().moveEnd.addEventListener(() => {
                     this.mapMovedHandler();
                 });
 
                 this.cesiumEnabled = true;
-
-
-
-
-                // if (this.cesiumEnabled) {
-                //     this.step.navigation3D = this.get3DMapCenter();
-                //     this.mapMovedPosition = this.step.navigation3D;
-                //
-                //     this.cesiumCamera.moveEnd.addEventListener(() => {
-                //         this.mapMovedHandler();
-                //     });
-                // }
-                // else {
-                //
-                //     setTimeout(() => {
-                //
-                //
-                //         this.step.navigation3D = this.get3DMapCenter();
-                //         this.mapMovedPosition = this.step.navigation3D;
-                //
-                //         this.cesiumCamera.moveEnd.addEventListener(() => {
-                //             this.mapMovedHandler();
-                //         });
-                //
-                //         this.cesiumEnabled = true;
-                //     }, 500);
-                // }
-
-
-
-
-
-
 
             }
             else if (!this.step.is3D && isMap3d) {
@@ -894,10 +875,10 @@ export default {
          * @returns {void}
          */
         async open3D () {
-            this.step.is3D = true;
+
 
             await this.activate3DMap(true);
-            this.cesiumCamera.moveEnd.addEventListener(this.mapMovedHandler);
+            this.cesiumCamera().moveEnd.addEventListener(this.mapMovedHandler);
 
             this.step.navigation3D = this.get3DMapCenter();
             this.$emit(
@@ -919,17 +900,18 @@ export default {
             if (this.step.is3D && !this.is3D) {
                 this.activate3DMap(true);
 
-                this.cesiumCamera.moveEnd.addEventListener(this.mapMovedHandler);
+                this.cesiumCamera().moveEnd.addEventListener(this.mapMovedHandler);
                 this.set3DMapCenter();
 
                 await this.loadThreeDFiles();
             }
             else if (!this.step.is3D && this.is3D) {
+
                 this.activate3DMap(false);
             }
             else if (this.step.is3D && this.is3D) {
                 this.cesiumEnabled = true;
-                this.cesiumScene.camera.moveEnd.addEventListener(this.mapMovedHandler);
+                this.cesiumScene().camera.moveEnd.addEventListener(this.mapMovedHandler);
                 this.set3DMapCenter();
                 await this.loadThreeDFiles();
             }
@@ -984,23 +966,8 @@ export default {
             }
 
             Radio.trigger("Menu", "rerender");
-        },
-
-
-        /**
-         * Sets the 3d mode of the step
-         * @param {boolean} newValue The new 3d value the step should have.
-         * @returns {void}
-         */
-        async setStep3DMode (newValue) {
-            this.step.is3D = newValue;
-            if (newValue) {
-                this.activate3DMap(true);
-            }
-            else {
-                this.activate3DMap(false);
-            }
         }
+
     }
 };
 </script>
@@ -1120,7 +1087,7 @@ export default {
                 >
             </div>
 
-            <div v-if="step.is3D && cesiumEnabled">
+            <div v-if="step.is3D">
                 <div
                     class="form-group"
                 >
@@ -1136,17 +1103,17 @@ export default {
                         <input
                             id="step-3d-center"
                             class="form-control"
-                            :value="step.navigation3D.cameraPosition[0] || cesiumScene.camera.position[0]"
+                            :value="step.navigation3D.cameraPosition[0] || cesiumScene().camera.position[0]"
                             readonly
                         >
                         <input
                             class="form-control"
-                            :value="step.navigation3D.cameraPosition[1] || cesiumScene.camera.position[1]"
+                            :value="step.navigation3D.cameraPosition[1] || cesiumScene().camera.position[1]"
                             readonly
                         >
                         <input
                             class="form-control"
-                            :value="step.navigation3D.cameraPosition[2] || cesiumScene.camera.position[2]"
+                            :value="step.navigation3D.cameraPosition[2] || cesiumScene().camera.position[2]"
                             readonly
                         >
 
@@ -1399,9 +1366,6 @@ export default {
                     </p>
                 </div>
             </div>
-
-
-
 
             <BackgroundMap
                 :selected-id="backgroundMapId"

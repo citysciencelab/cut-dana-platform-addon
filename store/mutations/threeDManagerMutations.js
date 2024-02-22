@@ -53,9 +53,7 @@ function setCurrentProjection (state, payload) {
  * @returns {void}
  */
 function setSelectedEntityId (state, payload) {
-    console.log("payload", payload);
     state.selectedEntityId = payload.selectedEntityId;
-    console.log("state", state);
 }
 
 export default {

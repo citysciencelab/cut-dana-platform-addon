@@ -9,6 +9,7 @@ import FileForm from "./FileForm.vue";
 import StepForm from "./StepForm.vue";
 import StoryForm from "./StoryForm.vue";
 import EntityEditor from "./EntityEditor.vue";
+import * as cesiumUtils from "../../utils/cesium";
 
 export default {
     name: "StoryCreator",
@@ -39,7 +40,7 @@ export default {
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-
+        ...cesiumUtils,
         /**
          * Handle editing a step
          * @param {Object} step the step to edit

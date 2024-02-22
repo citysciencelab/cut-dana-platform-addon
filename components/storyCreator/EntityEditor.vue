@@ -13,7 +13,6 @@ import getGfiFeatures from "../../../../../src/api/gfi/getGfiFeaturesByTileFeatu
 
 import {mdiChevronUp, mdiChevronDown} from "@mdi/js";
 import proj4 from "proj4";
-import store from "../../../../../src/app-store";
 import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 
 proj4.defs("EPSG:32632", "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
@@ -53,27 +52,18 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters(["namedProjections"]),
+        ...mapGetters(["namedProjections"])
         // ...mapGetters("Maps", ["clickCoordinate", "mouseCoordinate"]),
-        selectedEntity () {
-            const map = this.cesiumMap,
-                dataSourceDisplay = map.getDataSourceDisplay(),
-                defaultDataSource = dataSourceDisplay.defaultDataSource,
-                entities = defaultDataSource.entities;
 
-            console.log(map, dataSourceDisplay, defaultDataSource, entities, this.selectedEntityId);
-            return entities.getById(this.selectedEntityId);
-        }
     },
     async mounted () {
         // set map to 3d
         await this.enable3D();
 
-        if (this.selectedEntity) {
-            console.log("entity", this.selectedEntity);
-            this.position = this.selectedEntity.position;
-            this.orientation = this.selectedEntity.orientation;
-            this.scale = parseFloat(this.selectedEntity.model.scale);
+        if (this.selectedEntity()) {
+            this.position = this.selectedEntity().position;
+            this.orientation = this.selectedEntity().orientation;
+            this.scale = parseFloat(this.selectedEntity().model.scale);
         }
 
         const currentItem = getItemRecursive(this.step.selectedModelIds, this.selectedEntityId),
@@ -126,6 +116,15 @@ export default {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
         ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
+
+        selectedEntity () {
+            const map = this.cesiumMap(),
+                dataSourceDisplay = map.getDataSourceDisplay(),
+                defaultDataSource = dataSourceDisplay.defaultDataSource,
+                entities = defaultDataSource.entities;
+
+            return entities.getById(this.selectedEntityId);
+        },
 
         /**
          * Updates the scale of the selected entity.

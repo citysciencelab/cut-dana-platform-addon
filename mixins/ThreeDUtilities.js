@@ -4,30 +4,12 @@ import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader.js";
 import {ColladaLoader} from "three/examples/jsm/loaders/ColladaLoader.js";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter.js";
 import crs from "@masterportal/masterportalapi/src/crs";
+import * as cesiumUtils from "../utils/cesium.js";
 
 export default {
 
-    computed: {
-        // Computed property to get the value from Vuex store
-        is3D () {
-            return Radio.request("Map", "isMap3d");
-        },
-
-        cesiumMap () {
-            return Radio.request("Map", "getMap3d");
-        },
-
-        cesiumScene () {
-            return Radio.request("Map", "getMap3d").getCesiumScene();
-        },
-
-        cesiumCamera () {
-            return Radio.request("Map", "getMap3d").getCamera().cam_;
-
-        }
-    },
     methods: {
-
+        ...cesiumUtils,
         /**
          * Enables the 3d mode
          * @returns {void}
@@ -247,8 +229,8 @@ export default {
             // this.checkMapCollection(fileId);
 
             const {file, fileName, fileId} = payload,
-                viewer = this.cesiumMap,
-                currentLocation = this.cesiumCamera.position,
+                viewer = this.cesiumMap(),
+                currentLocation = this.cesiumCamera().position,
                 hpr = new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(0.0), Cesium.Math.toRadians(0.0), Cesium.Math.toRadians(0.0)),
 
                 orientation = Cesium.Transforms.headingPitchRollQuaternion(currentLocation, hpr),
@@ -265,7 +247,6 @@ export default {
                     position: currentLocation
                 });
 
-            console.log("entity", entity);
             this.$store.commit("Tools/DataNarrator/setSelectedEntityId", {selectedEntityId: entity.id});
             // this.moveEntity(undefined, fileId);
             // this.writeEntityDataToItems(entity, fileId);
@@ -345,7 +326,7 @@ export default {
          */
         removeEntity (payload) {
             const {entityId} = payload,
-                viewer = this.cesiumMap,
+                viewer = this.cesiumMap(),
                 entity = viewer.entities.getById(entityId);
 
             if (entity) {
@@ -362,7 +343,7 @@ export default {
          */
         toggleEntityVisibility (payload) {
             const {entityId} = payload,
-                viewer = this.cesiumMap,
+                viewer = this.cesiumMap(),
                 entity = viewer.entities.getById(entityId);
 
             if (entity) {
@@ -379,7 +360,7 @@ export default {
          */
         enableEntityVisibility (payload) {
             const {entityId} = payload,
-                viewer = this.cesiumMap,
+                viewer = this.cesiumMap(),
                 entity = viewer.getDataSourceDisplay().defaultDataSource.entities.getById(entityId);
 
             if (entity) {
@@ -397,7 +378,7 @@ export default {
          */
         disableEntityVisibility (payload) {
             const {entityId} = payload,
-                viewer = this.cesiumMap,
+                viewer = this.cesiumMap(),
                 entity = viewer.entities.getById(entityId);
 
             if (entity) {
@@ -413,7 +394,7 @@ export default {
          */
         disableAllEntities () {
             try {
-                const viewer = this.cesiumMap,
+                const viewer = this.cesiumMap(),
                     entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
 
                 entities.values.forEach(entity => {
@@ -434,7 +415,7 @@ export default {
          */
         changeEntityLocation (payload) {
             const {entityId} = payload,
-                viewer = this.cesiumMap,
+                viewer = this.cesiumMap(),
                 entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
                 entity = entities.getById(entityId);
 
@@ -453,7 +434,7 @@ export default {
          */
         changeEntityOrientation (payload) {
             const {entityId, newOrientation} = payload,
-                viewer = this.cesiumMap,
+                viewer = this.cesiumMap(),
                 entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
                 entity = entities.getById(entityId);
 
@@ -473,7 +454,7 @@ export default {
         scaleEntity (payload) {
 
             const {entityId, scale} = payload,
-                viewer = this.cesiumMap,
+                viewer = this.cesiumMap(),
                 entities = viewer.getDataSourceDisplay().defaultDataSource.entities,
                 entity = entities.getById(entityId);
 
@@ -496,7 +477,7 @@ export default {
          */
         createEntity (payload) {
             const {entityId, scale, orientation, visibility, uri, position} = payload,
-                viewer = this.cesiumMap,
+                viewer = this.cesiumMap(),
                 entities = viewer.getDataSourceDisplay().defaultDataSource.entities;
             // check if entity already exists, if it does, just replace all the values in the entity and set it to visible
 

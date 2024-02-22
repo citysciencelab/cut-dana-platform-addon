@@ -503,8 +503,7 @@ export default {
                 && this.currentStep.navigation3D.cameraPosition.length > 0
                 && this.currentStep.navigation3D.cameraPosition[0] !== null) {
                 const position = this.currentStep.navigation3D.cameraPosition,
-                    map3d = this.cesiumMap,
-                    camera = this.cesiumCamera,
+                    camera = this.cesiumCamera(),
                     destination = Cesium.Cartesian3.fromDegrees(position[0], position[1], position[2]);
 
                 camera.flyTo({
