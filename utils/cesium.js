@@ -35,5 +35,5 @@ export function cesiumScene () {
  * @returns {Object} - Returns the Cesium camera
  */
 export function cesiumCamera () {
-    return Radio.request("Map", "getMap3d").getCamera().cam_;
+    return Radio.request("Map", "getMap3d").getCesiumScene().camera;
 }
