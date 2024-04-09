@@ -75,7 +75,7 @@ const storyTellingModes = {
         ["link", "image"],
         ["clean"]
     ],
-    defaultMap = "1043";
+    defaultMap = "453";
 
 export {
     threeDManagerConstants,
