@@ -2,9 +2,13 @@
 
 import {mapGetters} from "vuex";
 import getters from "../../store/gettersDataNarrator";
+import ShareButton from "../Dashboard/Stories/StoryActionButtons/ShareButton.vue";
 
 export default {
     name: "PlayerFooter",
+    components: {
+        ShareButton
+    },
     props: {
         currentStepIndex: {
             type: Number,
@@ -90,6 +94,11 @@ export default {
             >
                 <v-icon>style</v-icon>
             </span>
+            <ShareButton
+                :story-id="currentStory._id"
+                :step-index="currentStepIndex"
+                v-on="$listeners"
+            />
         </div>
         <div class="d-flex">
             <div class="d-flex justify-content-center align-items-center">
