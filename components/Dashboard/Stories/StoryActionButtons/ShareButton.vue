@@ -7,6 +7,10 @@ export default {
         storyId: {
             type: String,
             default: null
+        },
+        stepIndex: {
+            type: String,
+            default: "s"
         }
     },
     data () {
@@ -26,7 +30,7 @@ export default {
             <v-icon
                 id="share-button"
                 v-on="on"
-                @click="$emit('share-story', storyId, 's')"
+                @click="$emit('share-story', storyId, stepIndex)"
             >
                 {{ icons.mdiLink }}
             </v-icon>

@@ -104,7 +104,7 @@ export default {
 
         // set map to 3d
 
-        await this.enable3D();
+        // await this.enable3D();
 
         // load the existing files
         // this.importFile({files: this.step.threeDFiles.map(file => file.obj), fileId: null});

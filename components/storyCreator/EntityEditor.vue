@@ -531,7 +531,7 @@ export default {
 
 #tool-dataNarrator-creator-entityEditor {
     max-width: 460px;
-    position: relatieve;
+    position: relative;
 
 }
 </style>
