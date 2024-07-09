@@ -26,6 +26,7 @@ export default {
         }
     },
     mounted () {
+        // TODO: DELETE COMPONENT
         this.setName("additional:modules.tools.dataNarrator.tableOfContents");
     },
     methods: {
@@ -51,7 +52,7 @@ export default {
 
 <template lang="html">
     <div>
-        <v-row>
+        <v-row class="mb-2">
             <v-col
                 cols="12"
             >
@@ -80,7 +81,7 @@ export default {
                         <v-list-item
                             :key="`step_${step.stepNumber}`"
                             class="step-item"
-                            :style="{backgroundColor: colorFor(chapter.chapterNumber).secondary}"
+                            :style="{border: `2px solid ${colorFor(chapter.chapterNumber).main} !important`}"
                             :class="{'step-item-active': step._id === currentStepId}"
                             @click="toStep(step)"
                             @keydown="toStep(step)"
@@ -104,14 +105,15 @@ export default {
 }
 
 .step-item {
-  min-height: 30px;
-  padding: 0 10px;
-  margin: 2px 13px;
-  border-radius: 5px;
+    border: 2px solid !important;
+    min-height: 30px;
+    padding: 0 10px;
+    margin: 2px 13px;
+    border-radius: 5px;
 }
 
 .step-item-active {
-  border: 1px solid black;
-  background-color: white !important;
+      border: 1px solid black;
+      background-color: white !important;
 }
 </style>

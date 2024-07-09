@@ -400,7 +400,6 @@ export default {
 
         },
 
-
         /**
          * Handle return back to the stepForm
          * @returns {void}
@@ -408,8 +407,6 @@ export default {
         returnToStepForm () {
             this.$emit("return", this.step);
         }
-
-
     }
 };
 </script>
@@ -560,7 +557,7 @@ export default {
 <style lang="scss" scoped>
 
 #tool-dataNarrator-creator-3dForm {
-    max-width: 460px;
+    max-width: 470px;
     position: relatieve;
 
     .fileActions {

@@ -1,7 +1,6 @@
 <script>
 import axios from "axios";
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import store from "../../../../../src/app-store";
 import fileImportGetters from "../../../../fileImportAddon/store/gettersFileImportAddon";
 import actions from "../../store/actionsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
@@ -11,16 +10,19 @@ import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 import ClassicPlayer from "./ClassicPlayer.vue";
 import ScrollyTeller from "./ScrollyTeller.vue";
 import TableOfContents from "./TableOfContents.vue";
+import TableOfContentsDnD from "./TableOfContentsDnD.vue";
 
 import LayerUtilities from "../../mixins/LayerUtilities";
 import RenderUtilities from "../../mixins/RenderUtilities";
 import ThreeDUtilities from "../../mixins/ThreeDUtilities";
+import {mdiHome} from "@mdi/js";
 
 export default {
     name: "StoryPlayer",
     components: {
         ClassicPlayer,
         ScrollyTeller,
+        TableOfContentsDnD,
         TableOfContents
     },
     mixins: [LayerUtilities, RenderUtilities, ThreeDUtilities],
@@ -40,7 +42,10 @@ export default {
             showMode: "",
             steps: [],
             activeTools: [],
-            interval: null
+            interval: null,
+            icons: {
+                mdiHome
+            }
         };
     },
     computed: {
@@ -119,6 +124,12 @@ export default {
         }
         this.activateInterval();
         this.visibleBackgroundMap = this.backgroundMaps.find(model => model.get("isVisibleInMap"))?.id;
+
+        // Necessary to set the background color of the content body because method is async
+        this.$nextTick(() => {
+            document.getElementById("vue-tool-content-body").style.backgroundColor = "#F6f6f6";
+            document.getElementById("vue-tool-content-body").style.padding = "1rem";
+        });
     },
 
     beforeDestroy () {
@@ -217,7 +228,15 @@ export default {
                             return this.getLayerNameFromFile(file.name) === this.getLayerNameFromFile(importedFileName);
                         });
 
-                    this.importKML({raw: f.target.result, checkSameLayer: checkSameLayer, layerName: layerName, filename: file.name, pointImages: this.pointImages, textColors: this.textColors, textSizes: this.textSizes});
+                    this.importKML({
+                        raw: f.target.result,
+                        checkSameLayer: checkSameLayer,
+                        layerName: layerName,
+                        filename: file.name,
+                        pointImages: this.pointImages,
+                        textColors: this.textColors,
+                        textSizes: this.textSizes
+                    });
                 };
 
                 reader.readAsText(file);
@@ -373,7 +392,6 @@ export default {
                     // this.updateSelectedCapabilities(layer.selectedLayers, layer.url, allCapabilities);
                 });
             }
-
 
 
         },
@@ -549,52 +567,95 @@ export default {
                 // Activate all tools of the current step
                 interactionAddons.forEach(this.activateTool);
             }
+        },
+
+        redirectToMainPage () {
+            window.location.href = "/";
         }
     }
 };
 </script>
 
 <template lang="html">
-    <div
-        v-if="currentStory !== undefined && currentStory.steps && currentStep"
-        id="tool-dataNarrator-player"
-    >
-        <ClassicPlayer
-            v-if="showMode === 'classic'"
-            :current-step-index="currentStepIndex"
-            :current-chapter="currentChapter"
-            :current-step="currentStep"
-            @setCurrentStepIndex="(index) => currentStepIndex = index"
-            @toggleAutoPlay="toggleAutoPlay"
-            @toggleScrollytelling="toggleScrollytelling"
-            @reset="resetStoryPlayer"
-            v-on="$listeners"
-        />
-        <ScrollyTeller
+    <div>
+        <div
+            v-if="currentStory !== undefined && currentStory.steps && currentStep"
+            id="tool-dataNarrator-player"
+        >
+            <ClassicPlayer
+                v-if="showMode === 'classic'"
+                :current-step-index="currentStepIndex"
+                :current-chapter="currentChapter"
+                :current-step="currentStep"
+                @setCurrentStepIndex="(index) => currentStepIndex = index"
+                @toggleAutoPlay="toggleAutoPlay"
+                @toggleScrollytelling="toggleScrollytelling"
+                @reset="resetStoryPlayer"
+                v-on="$listeners"
+            />
+            <ScrollyTeller
+                v-else
+                :current-step-index="currentStepIndex"
+                :chapters="chapters"
+                :steps="currentStory.steps"
+                @setCurrentStepIndex="(index) => currentStepIndex = index"
+                @toggleScrollytelling="toggleScrollytelling"
+                @reset="resetStoryPlayer"
+                v-on="$listeners"
+            />
+        </div>
+        <TableOfContents
             v-else
-            :current-step-index="currentStepIndex"
-            :chapters="chapters"
-            :steps="currentStory.steps"
+            :previous-step-index="previousStepIndex"
             @setCurrentStepIndex="(index) => currentStepIndex = index"
-            @toggleScrollytelling="toggleScrollytelling"
-            @reset="resetStoryPlayer"
-            v-on="$listeners"
         />
-    </div>
+        <!--        <div-->
+        <!--            v-else-->
+        <!--        >-->
+        <!--            <v-row-->
+        <!--                class="mt-5 mb-3"-->
+        <!--            >-->
+        <!--                <v-col-->
+        <!--                    cols="12"-->
+        <!--                    class="d-flex align-self-center justify-content-center"-->
+        <!--                >-->
+        <!--                    Sorry something went wrong-->
+        <!--                </v-col>-->
+        <!--            </v-row>-->
+        <!--            <v-row-->
+        <!--                class="mb-3"-->
+        <!--            >-->
+        <!--                <v-col-->
+        <!--                    cols="12"-->
+        <!--                    class="d-flex align-self-center justify-content-center"-->
+        <!--                >-->
+        <!--                    <v-btn-->
+        <!--                        icon-->
+        <!--                        @click="redirectToMainPage"-->
+        <!--                    >-->
+        <!--                        Go to Main Page-->
+        <!--                        <v-icon>{{ icons.mdiHome }}</v-icon>-->
+        <!--                    </v-btn>-->
+        <!--                </v-col>-->
+        <!--            </v-row>-->
+        <!--        </div>-->
 
-    <TableOfContents
-        v-else
-        :previous-step-index="previousStepIndex"
-        @setCurrentStepIndex="(index) => currentStepIndex = index"
-    />
+
+        <!--        <TableOfContentsDnD-->
+        <!--            v-else-->
+        <!--            :previous-step-index="previousStepIndex"-->
+        <!--            @setCurrentStepIndex="(index) => currentStepIndex = index"-->
+        <!--        />-->
+        <!--</tableofcontentsdnd-->
+    </div>
 </template>
+
 
 <style lang="scss" scoped>
 #tool-dataNarrator-player {
     display: grid;
     grid-template-rows: 1fr auto;
     grid-template-columns: 100%;
-    grid-gap: 20px;
     min-height: 0;
     height: 100%;
 }
@@ -604,7 +665,8 @@ export default {
 <style lang="scss">
 #tool-dataNarrator-player {
     .tool-dataNarrator-content {
-        overflow: scroll;
+        overflow: auto;
+        overflow-x: hidden;
 
         &::v-deep {
             img {

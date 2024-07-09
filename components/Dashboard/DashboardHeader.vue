@@ -30,6 +30,7 @@ export default {
     },
     data () {
         return {
+            legendAdded: false,
             icons: {
                 mdiMapLegend
             }
@@ -41,7 +42,22 @@ export default {
     },
     mounted () {
         this.getLegendConfig();
-        document.getElementById("top-right-fallback").appendChild(document.getElementById("dana-legend-button"));
+
+        // Add the legend button to the top right corner
+        const parentElement = document.getElementById("top-right-fallback"),
+            childElementId = "dana-legend-button";
+
+        if (parentElement && !parentElement.querySelector(`#${childElementId}`)) {
+            const childElement = document.getElementById(childElementId);
+
+            if (childElement) {
+                parentElement.appendChild(childElement);
+            }
+        }
+        else {
+            this.legendAdded = true;
+        }
+
         document.getElementById("button3D").style.backgroundColor = "white";
         document.getElementById("button3D").style.color = "black";
         document.getElementById("button3D").style.borderRadius = "0.25rem";
@@ -82,6 +98,7 @@ export default {
         </v-row>
 
         <div
+            v-if="!legendAdded"
             id="dana-legend-button"
             class="row controls-row-right d-none d-md-block"
         >
@@ -127,8 +144,10 @@ export default {
                         cols="9"
                         class="justify-start align-start"
                     >
-                        <h1 class="header-h1">Data Stories</h1>
-                        <h4 class="header-h4">{{ $t("additional:modules.tools.dataNarrator.dashboardView.subtitle") }}</h4>
+                        <h1 class="header-h1">{{ $t("additional:modules.tools.dataNarrator.dashboardView.title") }}</h1>
+                        <h4 class="header-h4">{{
+                            $t("additional:modules.tools.dataNarrator.dashboardView.subtitle")
+                        }}</h4>
                         <p>{{ $t("additional:modules.tools.dataNarrator.dashboardView.description") }}</p>
                     </v-col>
                 </v-row>
@@ -158,7 +177,8 @@ export default {
 
 <style lang="scss" scoped>
 .login-row {
-    margin-top: -1rem !important;
+    position: sticky;
+    top: 0;
 }
 
 #dana-legend-icon {
@@ -168,13 +188,13 @@ export default {
 }
 
 .with-fancy-background {
-    background-position: right top;
+    background-position: right bottom;
     min-height: 220px;
     align-items: end;
 
-    @media (min-width: 768px){
-      background-position: right top;
-      min-height: 332px;
+    @media (min-width: 768px) {
+        background-position: right top;
+        min-height: 332px;
     }
 }
 
@@ -186,12 +206,12 @@ export default {
     font-size: 2.5rem;
     font-weight: 700;
     text-transform: uppercase;
-    color:black;
+    color: black;
     margin-top: 0.25rem;
 }
 
 .header-h4 {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 
 </style>

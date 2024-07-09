@@ -35,13 +35,19 @@ export default {
                 <span>{{ $t("additional:modules.tools.dataNarrator.tableOfContents") }}</span>
             </v-tooltip>
         </span>
-        <v-chip
-            :color="colorFor(chapter.chapterNumber).main"
-            text-color="white"
-            class="chapter-chip"
+        <v-btn
+            :key="chapter.chapterNumber"
+            class="story-step-button pill-button horizontal chapter-indicator"
+            :style="{backgroundColor: colorFor(chapter.chapterNumber).main}"
+            icon
+            :title="
+                $t(
+                    'additional:modules.tools.dataNarrator.label.chapter'
+                )
+            "
         >
-            {{ chapterLetter(chapter.chapterNumber) }}
-        </v-chip>
+            {{ chapterLetter(chapter.chapterNumber ) }}
+        </v-btn>
         <span class="chapter-title">
             {{ chapter.chapterTitle }}
         </span>
@@ -49,12 +55,6 @@ export default {
 </template>
 
 <style scoped lang="scss">
-.chapter-chip {
-    height: 18px;
-    font-weight: bold;
-    margin-right: 10px;
-    justify-content: center;
-}
 .chapter-item {
     min-height: 30px;
     padding: 0;

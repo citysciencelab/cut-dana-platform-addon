@@ -51,11 +51,12 @@ export default {
 </script>
 
 <template>
-    <div
-        id="tool-dataNarrator-navigation"
-        class="d-flex justify-content-between"
-    >
-        <div class="d-flex align-items-center">
+    <v-row id="tool-dataNarrator-navigation">
+        <!--
+        <v-col
+            cols="1"
+            class="d-flex align-self-center"
+        >
             <span v-if="mode && currentStory.storyInterval">
                 <span
                     id="auto-play-button"
@@ -99,36 +100,42 @@ export default {
                 :step-index="currentStepIndex"
                 v-on="$listeners"
             />
-        </div>
-        <div class="d-flex">
-            <div class="d-flex justify-content-center align-items-center">
-                {{ currentStepIndex + 1 }} / {{ stepLength }}
-            </div>
-        </div>
-
-        <div
-            v-if="showMode==='classic'"
-            class="d-flex align-items-center"
+        </v-col>
+        -->
+        <v-col
+            class="d-flex align-self-center"
+            cols="2"
         >
-            <v-btn
-                v-if="currentStepIndex > 0"
-                class="mx-2"
-                text
-                rounded
-                @click="$emit('setCurrentStepIndex', currentStepIndex - 1)"
+            {{ currentStepIndex + 1 }} / {{ stepLength }}
+        </v-col>
+        <v-col
+            class="d-flex align-self-center justify-content-end"
+            cols="6"
+            offset="4"
+        >
+            <div
+                v-if="showMode==='classic'"
             >
-                {{ $t("additional:modules.tools.dataNarrator.button.previous") }}
-            </v-btn>
+                <v-btn
+                    v-if="currentStepIndex > 0"
+                    class="mx-2"
+                    text
+                    rounded
+                    @click="$emit('setCurrentStepIndex', currentStepIndex - 1)"
+                >
+                    {{ $t("additional:modules.tools.dataNarrator.button.previous") }}
+                </v-btn>
 
-            <v-btn
-                v-if="currentStepIndex < stepLength - 1"
-                class="mx-2"
-                dark
-                rounded
-                @click="$emit('setCurrentStepIndex', currentStepIndex + 1)"
-            >
-                {{ $t("additional:modules.tools.dataNarrator.button.next") }}
-            </v-btn>
-        </div>
-    </div>
+                <v-btn
+                    v-if="currentStepIndex < stepLength - 1"
+                    class="mx-2"
+                    dark
+                    rounded
+                    @click="$emit('setCurrentStepIndex', currentStepIndex + 1)"
+                >
+                    {{ $t("additional:modules.tools.dataNarrator.button.next") }}
+                </v-btn>
+            </div>
+        </v-col>
+    </v-row>
 </template>

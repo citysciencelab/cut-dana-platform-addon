@@ -20,7 +20,9 @@ const storyTellingModes = {
         STEP_CREATION: "step",
         PREVIEW: "preview",
         THREE_D: "3d",
-        ENTITY_EDITOR: "entityEditor"
+        ENTITY_EDITOR: "entityEditor",
+        LAYER_EDITOR: "layerEditor",
+        DATA_EDITOR: "dataEditor"
     },
     emptyStory = {
         storyInterval: 0,
@@ -63,6 +65,7 @@ const storyTellingModes = {
     htmlEditorToolbar = [
         [{header: [false, 1, 2, 3, 4, 5, 6]}],
         ["bold", "italic", "underline", "strike"],
+        [{color: []}, {background: []}],
         [
             {align: ""},
             {align: "center"},
@@ -71,9 +74,7 @@ const storyTellingModes = {
         ],
         [{list: "ordered"}, {list: "bullet"}],
         ["blockquote", "code-block"],
-        [{color: []}, {background: []}],
-        ["link", "image"],
-        ["clean"]
+        ["link", "image"]
     ],
     defaultMap = "453";
 

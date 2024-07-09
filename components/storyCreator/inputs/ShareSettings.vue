@@ -22,7 +22,7 @@ export default {
 <template>
     <div id="shareSettingsInput">
         <div class="form-group">
-            <v-switch
+            <v-checkbox
                 id="story-private"
                 :value="privateStory"
                 :label="$t('additional:modules.tools.dataNarrator.label.private')"
@@ -84,4 +84,3 @@ export default {
     }
 }
 </style>
-```

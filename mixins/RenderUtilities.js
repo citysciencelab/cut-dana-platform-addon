@@ -10,6 +10,7 @@ export default {
         };
     },
     methods: {
+
         /**
          * Returns a color for a chapter number.
          * @param {number} chapterNumber the chapter number

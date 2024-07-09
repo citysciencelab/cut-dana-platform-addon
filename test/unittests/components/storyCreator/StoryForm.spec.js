@@ -60,7 +60,6 @@ describe("StoryForm", () => {
             input = wrapper.find("#cover");
 
         expect(label.exists()).to.be.true;
-        expect(label.text()).to.equal("additional:modules.tools.dataNarrator.label.cover");
         expect(input.exists()).to.be.true;
         expect(input.attributes("type")).to.equal("file");
         expect(input.attributes("accept")).to.equal("image/png, image/jpeg");

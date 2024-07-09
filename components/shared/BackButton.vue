@@ -2,6 +2,7 @@
 
 import {mapGetters} from "vuex";
 import getters from "../../store/gettersDataNarrator";
+import {mdiArrowLeft} from "@mdi/js";
 
 export default {
     name: "BackButton",
@@ -13,7 +14,18 @@ export default {
         text: {
             type: String,
             default: "additional:modules.tools.dataNarrator.button.backToStep"
+        },
+        showStoryTitle: {
+            type: Boolean,
+            default: true
         }
+    },
+    data () {
+        return {
+            icons: {
+                mdiArrowLeft
+            }
+        };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters))
@@ -34,12 +46,17 @@ export default {
                         v-on="on"
                         @click="$emit('click')"
                         @keydown="$emit('click')"
-                    >keyboard_backspace</v-icon>
+                    >{{ icons.mdiArrowLeft }}</v-icon>
                 </template>
                 <span>{{ $t(tooltip) }}</span>
             </v-tooltip>
         </span>
-        <span class="story-title">{{ $t(text) }}</span>
+        <span
+            v-if="showStoryTitle"
+            class="story-title"
+        >
+            {{ $t(text) }}
+        </span>
     </span>
 </template>
 
@@ -49,8 +66,13 @@ export default {
   }
 
   .story-title {
+      position: relative;
+      top: 2px;
       font-weight: bold;
-      text-transform: uppercase;
+      font-size: 1.2em;
       margin-left: 10px;
+  }
+
+  .story-title, .chapter-title {
   }
 </style>

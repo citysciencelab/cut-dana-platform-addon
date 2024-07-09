@@ -171,6 +171,7 @@ export default {
 
 .card-header {
     padding: 10px 12px 0 12px;
+    margin-bottom: 5px !important;
 
     .card-title {
         padding: 0;
@@ -183,6 +184,10 @@ export default {
 
 .card-text {
     padding: 0 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card-actions {

@@ -58,6 +58,8 @@ export default {
         const toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0],
             heading = toolWindow?.getElementsByClassName("title")[0];
 
+        document.getElementById("vue-tool-content-body").style.backgroundColor = "#FFFFFF";
+
         if (heading) {
             heading.innerHTML = this.$t("additional:modules.tools.dataNarrator.dashboardView.title");
         }

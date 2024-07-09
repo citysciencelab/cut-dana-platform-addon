@@ -10,6 +10,26 @@ export default {
 
     methods: {
         ...cesiumUtils,
+
+        /**
+         * Toggles 3D map mode via checkbox
+         * @param {boolean} activate the flag indicating if 3D map should be activated
+         * @returns {void}
+         */
+        async activate3DMap (activate) {
+            this.step.is3D = activate;
+
+            if (this.step.is3D && !this.is3D) {
+                // Found in the ThreeDUtilities Mixin
+                await this.enable3D();
+                this.step.navigation3D = this.get3DMapCenter();
+            }
+            else if (!this.step.is3D && this.is3D) {
+                // Found in the ThreeDUtilities Mixin
+                await this.disable3D();
+            }
+        },
+
         /**
          * Enables the 3d mode
          * @returns {void}
@@ -524,6 +544,32 @@ export default {
             // Add the entity to the state
             this.$store.commit("Tools/DataNarrator/appendImportedEntities", {entity});
             return entity;
+        },
+
+        /**
+         * 3D map center (should be implement in 3DMapRadioBridge)
+         * @returns {Object} returns object in the format of the story attribute 'navigation3D'
+         */
+        get3DMapCenter () {
+            const camera = this.cesiumCamera();
+
+            return {
+                "cameraPosition": this.toDegrees(camera.position),
+                "heading": camera.heading,
+                "pitch": camera.pitch
+            };
+        },
+
+
+        /**
+         * Transform a lon lat position to radians
+         * @param {Object} cartesian3Pos a position defined by longitude, latitude, and height.
+         * @returns {number} value in the resulting object will be in radians
+         */
+        toDegrees (cartesian3Pos) {
+            const pos = Cesium.Cartographic.fromCartesian(cartesian3Pos);
+
+            return [pos.longitude / Math.PI * 180, pos.latitude / Math.PI * 180, pos.height];
         }
     }
 };

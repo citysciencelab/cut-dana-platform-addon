@@ -1,10 +1,10 @@
 <script>
-// import draggable from "vuedraggable";
-import {mdiChevronDown, mdiChevronUp, mdiClose} from "@mdi/js";
-import sortBy from "../../../../../../src/utils/sortBy";
+import LayerSelectedPreview from "./LayerSelectedPreview.vue";
+import LayerUtilities from "../../../mixins/LayerUtilities";
 export default {
     name: "LayerSelector",
-
+    components: {LayerSelectedPreview},
+    mixins: [LayerUtilities],
     props: {
         items: {
             type: Array,
@@ -19,17 +19,7 @@ export default {
             default: "additional:modules.tools.dataNarrator.label.layers"
         }
     },
-    data () {
-        return {
-            icons: {
-                chevronUp: mdiChevronUp,
-                chevronDown: mdiChevronDown,
-                close: mdiClose
-            }
-        };
-    },
     computed: {
-
         propModel: {
             get () {
                 return this.selected.map(item => item.id);
@@ -46,7 +36,6 @@ export default {
                 })));
             }
         },
-        // console.log all the props
         // ...mapGetters("Tools/DataNarrator", Object.keys(getters))
         transformedItems () {
             let id = 0;
@@ -114,7 +103,7 @@ export default {
                 }
                 return newObj;
             }
-            // console.log(this.items);
+
 
             this.items.filter(i => i.datasets?.length > 0).forEach((item) => {
 
@@ -201,165 +190,52 @@ export default {
                         sortedObj[key] = objectToValues(obj[key]);
                     }
                 }
-
                 return sortedObj;
             }
 
             return Object.values(objectToValues(categories));
-        },
-
-        selectedLayers () {
-            const layers = [];
-
-            for (const layer of this.selected) {
-                let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
-
-                const exists = this.items.filter(item => item.id === layer.id).length > 0 && layerModel;
-
-                if (exists) {
-                    if (!layerModel) {
-                        Radio.trigger("ModelList", "addModelsByAttributes", layer);
-                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
-                    }
-                    layers.push(layerModel);
-                }
-
-            }
-
-            return sortBy(layers, (model) => model.get("selectionIDX"), this).reverse();
         }
     },
 
     methods: {
+        forwardUpdateSelected (selected) {
+            this.$emit("update:selected", selected);
+        },
         updateSelectedItems (selectedIds) {
             const
                 // Filter the original items based on the selected IDs
                 selectedItems = selectedIds.map(layer => Radio.request("Parser", "getItemByAttributes", {id: layer}));
-
 
             this.$emit("update:selected", selectedItems.map((layer, index) => ({
                 id: layer.id,
                 transparency: 20,
                 selectionIDX: index + 10
             })));
-        },
-        removeSelected (id) {
-            const tmpSelected = this.selected.filter(item => item.id !== id);
-
-            this.$emit("update:selected", tmpSelected);
-        },
-        moveLayer (layer, direction) {
-            // sorted layers base on layer.get("selectionIDX")
-            const sortedLayers = sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this),
-                index = sortedLayers.findIndex(item => item.id === layer.id);
-
-
-            if (!direction && index > 0) {
-                // Move layer up
-                const targetId = index - 1,
-                    targetModel = Radio.request("ModelList", "getModelByAttributes", {id: sortedLayers[targetId].id}),
-
-                    prevLayerSelectionIDX = layer.get("selectionIDX");
-
-                layer.setSelectionIDX(targetModel.get("selectionIDX"));
-                targetModel.setSelectionIDX(prevLayerSelectionIDX);
-                layer.set("isSelected", true);
-                targetModel.set("isSelected", true);
-            }
-            else if (direction && index < sortedLayers.length - 1) {
-                // Move layer down
-                const targetId = index + 1,
-                    targetModel = Radio.request("ModelList", "getModelByAttributes", {id: sortedLayers[targetId].id}),
-
-                    prevLayerSelectionIDX = layer.get("selectionIDX");
-
-                layer.setSelectionIDX(targetModel.get("selectionIDX"));
-                targetModel.setSelectionIDX(prevLayerSelectionIDX);
-                layer.set("isSelected", true);
-                targetModel.set("isSelected", true);
-            }
-
-
-            // Update the selection
-            this.$emit("update:selected", sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this).map(item => ({
-                id: item.id,
-                transparency: 0,
-                selectionIDX: item.get("selectionIDX")
-            })));
-        },
-
-        changeTransparency (layer, value) {
-
-            for (const l of this.selectedLayers) {
-                if (l.id === layer.id) {
-                    l.setTransparency(value);
-                    l.setIsVisibleInMap(true);
-                }
-            }
-
-            this.$emit("update:selected", sortBy(this.selectedLayers, (model) => model.get("selectionIDX"), this).map(item => ({
-                id: item.id,
-                transparency: item.id === layer.id ? value : item.get("transparency"),
-                selectionIDX: item.get("selectionIDX")
-            })));
         }
+        // TODO: doesnt seem to be needed28.02
+        // removeSelected (id) {
+        //     const tmpSelected = this.selected.filter(item => item.id !== id);
+        //
+        //     this.$emit("update:selected", tmpSelected);
+        // }
     }
 };
 </script>
 
 <template>
     <div id="LayerSelector">
+        <LayerSelectedPreview
+            :selected-layers="getSelectedLayers(selected, items)"
+            :selected="selected"
+            @update:selected="forwardUpdateSelected"
+        />
         <div class="form-group">
             <label
-                class="form-label"
+                class="form-label layer-headline"
                 for="available-layers"
             >
                 {{ $t(legend) }}
             </label>
-            <v-expansion-panels
-                id="step-layer"
-                dense
-                nav
-            >
-                <v-expansion-panel
-                    v-for="(item) in selectedLayers"
-                    :key="item.id"
-                    color="primary"
-                >
-                    <v-expansion-panel-header>
-                        <v-list-item-title>{{ item.attributes.name }}</v-list-item-title>
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        <v-icon
-                            color="grey lighten-1"
-                            @click="removeSelected(item.id)"
-                        >
-                            {{ icons.close }}
-                        </v-icon>
-                        <v-icon
-                            color="grey lighten-1"
-                            @click="moveLayer(item, true)"
-                        >
-                            {{ icons.chevronUp }}
-                        </v-icon>
-                        <v-icon
-                            color="grey lighten-1"
-                            @click="moveLayer(item, false)"
-                        >
-                            {{ icons.chevronDown }}
-                        </v-icon>
-                        <v-slider
-                            v-model="item.attributes.transparency"
-                            :value="item.attributes.transparency"
-                            track-color="grey"
-                            always-dirty
-                            min="0"
-                            max="90"
-                            @change="changeTransparency(item, $event)"
-                        />
-                    </v-expansion-panel-content>
-                </v-expansion-panel>
-            </v-expansion-panels>
             <v-container
                 id="available-layers"
                 fluid
@@ -388,6 +264,10 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.layer-headline {
+    padding-left: 10px;
+    padding-top: 10px;
+}
 
 .custom-row  {
     padding: 0;
@@ -402,4 +282,6 @@ export default {
 .custom-treeview::v-deep .v-treeview-node--disabled .v-treeview-node__label {
     color: rgba(0,0,0,.87) !important;
 }
+
+
 </style>

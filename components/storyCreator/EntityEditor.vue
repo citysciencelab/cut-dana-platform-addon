@@ -530,7 +530,7 @@ export default {
 <style lang="scss" scoped>
 
 #tool-dataNarrator-creator-entityEditor {
-    max-width: 460px;
+    max-width: 470px;
     position: relative;
 
 }

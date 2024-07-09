@@ -96,9 +96,12 @@ export default {
 
         // Apply layout hacks to the tool window
         this.toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0];
+        this.toolWindow.style.borderRadius = "15px";
+        document.getElementById("vue-tool-content-body").style.borderRadius = "15px";
+        document.getElementById("vue-tool-content-body").style.padding = "15px";
         this.heading = this.toolWindow.getElementsByClassName("win-heading")[0];
         this.heading.style.border = "none";
-        this.heading.style.height = "15px";
+        this.heading.style.height = "0";
         this.heading.innerHTML = "";
         // Hide the main menu
         document.getElementById("main-nav").style.display = "none";
@@ -339,6 +342,40 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+#tool-dataNarrator::v-deep {
+    .title-holder, .chapter-title-holder, .step-title-holder {
+        .v-text-field .v-label--active {
+            display: none;
+        }
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .small-fieldset {
+        .v-input__slot fieldset {
+            height: 40px;
+        }
+        .v-label {
+            top: 5px;
+        }
+        .v-label--active {
+            top: 10px;
+        }
+    }
+
+    .v-input__slot {
+        border-radius: 5px !important;
+    }
+
+    .v-textarea {
+        .v-input__slot {
+            border: 1px solid #707070;
+            box-shadow: none;
+        }
+    }
+}
 
 #tool-dataNarrator {
     background: none;
@@ -369,6 +406,20 @@ export default {
 <style lang="scss">
 @import "../css/fixes.scss";
 @import "../css/csl.scss";
+
+
+.v-label, .vue-label-style, .v-expansion-panel-header, .ql-editor.ql-blank::before {
+    font-size: 12px !important;
+    color: #403d3d !important;
+}
+
+.v-text-field .v-label {
+    padding-left: 5px;
+}
+
+.vue-label-style.label-subheader {
+    margin-bottom: 10px;
+}
 
 .table-tools {
     width: 40px !important;
@@ -417,4 +468,73 @@ export default {
         color: rgba(0, 0, 0, .87) !important;
     }
 }
+
+.pill-button {
+    min-width: 23px !important;
+    width: 23px !important;
+    margin-right: 10px;
+    .v-btn__content {
+        border: 2px solid #707070;
+        border-radius: 10px;
+        width: 10px !important;
+        height: 35px;
+        padding-top: 1px;
+        font-size: 15px;
+        .v-icon {
+            height: 18px !important;
+            font-size: 18px !important;
+            font-weight: bold;
+        }
+    }
+}
+
+.pill-button.horizontal {
+    min-height:  23px !important;
+    height: 23px !important;
+    min-width: 35px !important;
+    border-radius: 10px;
+    padding-left: 1px;
+    .v-btn__content {
+        height: 22px !important;
+        width: 35px !important;
+    }
+}
+
+.pill-button.horizontal.add-step {
+    .v-btn__content {
+        border: 2px solid #893d05;
+        .v-icon {
+            color: #893d05;
+        }
+    }
+}
+
+.pill-button.horizontal.chapter-indicator {
+    .v-btn__content {
+        border: none;
+        color: white;
+        padding-bottom: 2px;
+        font-weight: bolder;
+        cursor: default;
+    }
+}
+
+.pill-button.step-indicator {
+    .v-btn__content {
+        border: 2px solid;
+        background-color: white;
+        padding-bottom: 2px;
+        font-weight: bolder;
+        cursor: default;
+    }
+}
+
+.pill-button.step-indicator-big {
+     width: 26px !important;
+    .v-btn__content {
+        height: 45px;
+        border-radius: 20px;
+    }
+}
+
 </style>

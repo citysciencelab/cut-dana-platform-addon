@@ -9,18 +9,21 @@ import mutations from "../../store/mutationsDataNarrator";
 
 import errorHandling from "../../utils/errorHandling";
 import ShareSettings from "./inputs/ShareSettings.vue";
+import CoverSelector from "./inputs/CoverSelector.vue";
 
 import {
     mdiCancel,
     mdiCheck,
-    mdiEyeOutline,
-    mdiCamera
+    mdiEyeOutline
 } from "@mdi/js";
+import TableOfContentsDnD from "../storyPlayer/TableOfContentsDnD.vue";
 
 export default {
     name: "StoryForm",
     components: {
-        ShareSettings
+        TableOfContentsDnD,
+        ShareSettings,
+        CoverSelector
     },
     props: {
         uid: {
@@ -30,67 +33,42 @@ export default {
     },
     data () {
         return {
-            rules: [
-                value => Boolean(value) || this.$t("additional:modules.tools.dataNarrator.warning.requiredFields"),
-                value => (value && value.length >= 5) || this.$t("additional:modules.tools.dataNarrator.warning.requiredFieldMinCharacters")
-            ],
             ruleInterval: [
                 value => Boolean(value) || this.$t("additional:modules.tools.dataNarrator.warning.requiredNumeric"),
                 value => (value && value >= 0 && value <= 20) || this.$t("additional:modules.tools.dataNarrator.warning.requiredNumericMinMax")
             ],
             constants,
-            hasCover: false,
             minInterval: 0,
             maxInterval: 59,
             notSaving: true,
+            objectFile: null,
             icons: {
                 mdiCancel,
                 mdiCheck,
-                mdiEyeOutline,
-                mdiCamera
-            }
+                mdiEyeOutline
+            },
+            rerenderKeyTOC: 0
         };
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters(["mobile"])
+        ...mapGetters(["mobile"]),
+
+        storyIntervalInSeconds: {
+            get () {
+                return this.currentStory.storyInterval / 1000;
+            },
+            set (newValue) {
+                this.currentStory.storyInterval = newValue * 1000;
+            }
+        }
     },
     mounted () {
-        if (Object.hasOwn(this.currentStory, "titleImage") && this.currentStory.titleImage !== "") {
-            if (this.currentStory.titleImage instanceof File) {
-                this.$refs.preview_image.src = URL.createObjectURL(this.currentStory.titleImage);
-            }
-            else {
-                this.$refs.preview_image.src = this.currentStory.titleImage;
-            }
-            this.hasCover = true;
-        }
         this.loadStoryWms();
     },
     methods: {
         ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
         ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-
-        /**
-         * Handle the cover image change
-         * @param {Event} event - The file input change event
-         * @returns {void}
-         */
-        onCoverChange (event) {
-            const file = event;
-
-            if (!file) {
-                this.$refs.preview_image.src = "";
-                this.currentStory.titleImage = "";
-                this.hasCover = false;
-            }
-            else {
-                this.$refs.preview_image.src = URL.createObjectURL(file);
-                this.currentStory.titleImage = file;
-                this.hasCover = true;
-            }
-        },
-
 
         /**
          * Save created or edited story to backend
@@ -123,15 +101,6 @@ export default {
          */
         getStoryInterval () {
             return this.currentStory.storyInterval / 1000;
-        },
-
-        /**
-         * Sets the story interval for scrolling stories and converts it to milliseconds
-         * @param {Event} event - The change event
-         * @returns {void}
-         */
-        setStoryInterval (event) {
-            this.currentStory.storyInterval = event * 1000;
         },
 
         /**
@@ -256,6 +225,9 @@ export default {
                 });
 
             }
+        },
+        updateTOC () {
+            this.rerenderKeyTOC++;
         }
     }
 };
@@ -263,200 +235,135 @@ export default {
 
 <template lang="html">
     <div id="tool-dataNarrator-creator-storyForm">
-        <h4>
-            {{ $t("additional:modules.tools.dataNarrator.createStory") }}
-        </h4>
-
         <form
             id="story-form"
             @submit.prevent="saveStoryToBackend"
         >
-            <div class="form-group">
-                <v-text-field
-                    id="title"
-                    v-model="currentStory.title"
-                    :label="$t(
-                        'additional:modules.tools.dataNarrator.label.storyName'
-                    )"
-                    :rules="rules"
-                    hide-details="auto"
-                />
-            </div>
+            <CoverSelector
+                :back-button-msg="$t('additional:modules.tools.dataNarrator.button.cancel')"
+                @click="$emit('reset-tool')"
+            />
 
-            <div class="form-group">
+            <div class="form-group form-input-holder">
                 <v-textarea
                     id="description"
                     v-model="currentStory.description"
                     solo
                     hide-details="true"
-                    rows="3"
+                    rows="4"
                     :label="$t(
                         'additional:modules.tools.dataNarrator.label.storyDescription'
                     )"
                 />
+
+                <ShareSettings
+                    v-if="uid"
+                    :private-story="currentStory.private"
+                    :shared-with="currentStory.sharedWith"
+                    @update:private-story="newValue => currentStory.private = newValue"
+                    @update:shared-with="newValue => currentStory.sharedWith = newValue"
+                />
+
+                <v-expansion-panels id="advanced-options">
+                    <v-expansion-panel>
+                        <v-expansion-panel-header>
+                            {{
+                                $t("additional:modules.tools.dataNarrator.label.advancedOptions")
+                            }}
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <div>
+                                <v-checkbox
+                                    id="story-scrolly"
+                                    :value="currentStory?.displayType === 'scrolly'"
+                                    :label="$t('additional:modules.tools.dataNarrator.label.scrolly')"
+                                    @change="changeScrollyMode"
+                                />
+                            </div>
+                            <div
+                                v-if="currentStory?.displayType !== 'scrolly'"
+                            >
+                                <div class="vue-label-style">
+                                    {{ $t('additional:modules.tools.dataNarrator.label.interval') }}
+                                </div>
+                                <v-slider
+                                    id="story-interval"
+                                    v-model="storyIntervalInSeconds"
+                                    step="1"
+                                    max="40"
+                                    min="0"
+                                    thumb-label
+                                    hide-details="true"
+                                />
+
+                                <!--
+                                TODO: Unsure if the combination of both (scroll and interval) is a necessity
+                                <v-alert
+                                    v-show="storyConf.displayType === 'scrolly' && storyConf.storyInterval > 0"
+                                    type="info"
+                                >
+                                    {{
+                                        $t("additional:modules.tools.dataNarrator.warning.noIntervalOnScrolly")
+                                    }}
+                                </v-alert>-->
+                            </div>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </div>
 
-            <div class="form-group">
-                <v-row>
-                    <v-col
-                        cols="10"
-                    >
-                        <v-file-input
-                            id="cover"
-                            ref="image_input"
-                            :prepend-icon="icons.mdiCamera"
-                            name="cover"
-                            :label="$t(
-                                'additional:modules.tools.dataNarrator.label.cover'
-                            )"
-                            accept="image/png, image/jpeg"
-                            @change="onCoverChange"
-                        />
-                    </v-col>
-                    <v-col cols2>
-                        <img
-                            id="preview"
-                            ref="preview_image"
-                            :style=" hasCover ? '' : 'display: none;' "
-                            src="#"
-                            alt="your uploaded image"
-                        >
-                    </v-col>
-                </v-row>
-            </div>
-
-
-            <ShareSettings
-                v-if="uid"
-                :private-story="currentStory.private"
-                :shared-with="currentStory.sharedWith"
-                @update:private-story="newValue => currentStory.private = newValue"
-                @update:shared-with="newValue => currentStory.sharedWith = newValue"
+            <TableOfContentsDnD
+                :rerender-key="rerenderKeyTOC"
+                @openView="(newView, stepChapterIndex) =>
+                    $emit(
+                        'openView', newView, stepChapterIndex
+                    )
+                "
+                @editStep="step => $emit('editStep', step)"
+                @deleteStep="(step, associatedChapter, stepNumber) =>
+                    $emit('deleteStep', step, associatedChapter, stepNumber)"
             />
 
-
-            <v-expansion-panels id="advanced-options">
-                <v-expansion-panel>
-                    <v-expansion-panel-header>
-                        {{
-                            $t("additional:modules.tools.dataNarrator.label.advancedOptions")
-                        }}
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        <div class="form-group">
-                            <v-switch
-                                id="story-scrolly"
-                                :value="currentStory?.displayType === 'scrolly'"
-                                :label="$t('additional:modules.tools.dataNarrator.label.scrolly')"
-                                @change="changeScrollyMode"
-                            />
-                        </div>
-                        <div
-                            v-if="currentStory?.displayType !== 'scrolly'"
-                            class="form-group"
-                        >
-                            <div class="vue-label-style">
-                                {{ $t('additional:modules.tools.dataNarrator.label.interval') }}
-                            </div>
-                            <v-slider
-                                id="story-interval"
-                                v-model="currentStory.storyInterval"
-                                step="1"
-                                max="40"
-                                min="0"
-                                thumb-label
-                                @change="setStoryInterval"
-                            />
-
-                            <!--
-                            TODO: Unsure if the combination of both (scroll and interval) is a necessity
-                            <v-alert
-                                v-show="storyConf.displayType === 'scrolly' && storyConf.storyInterval > 0"
-                                type="info"
-                            >
-                                {{
-                                    $t("additional:modules.tools.dataNarrator.warning.noIntervalOnScrolly")
-                                }}
-                            </v-alert>-->
-                        </div>
-                    </v-expansion-panel-content>
-                </v-expansion-panel>
-            </v-expansion-panels>
-
-            <v-divider />
-
-            <div class="form-group">
-                <v-slide-group
-                    id="slide-navigation"
-                    show-arrows
-                    center-active
-                    @change="
-                        stepIndex =>
-                            $emit('editStep', currentStory.steps[stepIndex])
-                    "
-                >
-                    <v-slide-item
-                        v-for="step in currentStory.steps"
-                        :key="
-                            getStepReference(
-                                step.associatedChapter,
-                                step.stepNumber
+            <v-row class="mb-2">
+                <v-col class="d-flex justify-center align-center">
+                    <v-btn
+                        class="story-step-button pill-button"
+                        icon
+                        :title="
+                            $t(
+                                'additional:modules.tools.dataNarrator.button.addChapter'
                             )
                         "
-                        v-slot="{ toggle }"
+                        @click="
+                            $emit(
+                                'openView',
+                                constants.storyCreationViews.STEP_CREATION, 0
+                            )
+                        "
                     >
-                        <v-btn
-                            class="story-step-button"
-                            depressed
-                            rounded
-                            :title="step.title"
-                            @click="toggle"
-                        >
-                            {{
-                                getStepReference(
-                                    step.associatedChapter,
-                                    step.stepNumber
-                                )
-                            }}
-                        </v-btn>
-                    </v-slide-item>
-
-                    <v-slide-item>
-                        <v-row>
-                            <v-col class="d-flex justify-center align-center">
-                                <v-btn
-                                    class="story-step-button story-step-button-add"
-                                    icon
-                                    :title="
-                                        $t(
-                                            'additional:modules.tools.dataNarrator.button.addStep'
-                                        )
-                                    "
-                                    @click="
-                                        $emit(
-                                            'openView',
-                                            constants.storyCreationViews.STEP_CREATION
-                                        )
-                                    "
-                                >
-                                    <v-icon>add</v-icon>
-                                </v-btn>
-                                <div
-                                    class="vue-label-style add-step-label"
-                                    @click="
-                                        $emit(
-                                            'openView',
-                                            constants.storyCreationViews.STEP_CREATION
-                                        )
-                                    "
-                                >
-                                    {{ $t("additional:modules.tools.dataNarrator.label.steps") }}
-                                </div>
-                            </v-col>
-                        </v-row>
-                    </v-slide-item>
-                </v-slide-group>
-            </div>
+                        <v-icon>add</v-icon>
+                    </v-btn>
+                    <div
+                        class="vue-label-style add-step-label"
+                        role="button"
+                        tabindex="0"
+                        @click="
+                            $emit(
+                                'openView',
+                                constants.storyCreationViews.STEP_CREATION, 0
+                            )
+                        "
+                        @keydown="
+                            $emit(
+                                'openView',
+                                constants.storyCreationViews.STEP_CREATION, 0
+                            )
+                        "
+                    >
+                        {{ $t("additional:modules.tools.dataNarrator.label.addChapter") }}
+                    </div>
+                </v-col>
+            </v-row>
 
             <v-progress-linear
                 v-if="!notSaving"
@@ -517,7 +424,6 @@ export default {
                                     >
                                         <v-icon size="24px">{{ icons.mdiEyeOutline }}</v-icon>
                                     </v-btn>
-
                                 </span>
                             </template>
                             <span>
@@ -526,8 +432,6 @@ export default {
                                 }}
                             </span>
                         </v-tooltip>
-
-
                         <v-tooltip top>
                             <template #activator="{ on }">
                                 <span
@@ -541,11 +445,8 @@ export default {
                                         :disabled="!currentStory.steps || !currentStory.steps.length"
                                         @click="saveStoryToBackend"
                                     >
-
                                         <v-icon size="24px">{{ icons.mdiCheck }}</v-icon>
                                     </v-btn>
-
-
                                 </span>
                             </template>
                             <span>
@@ -556,8 +457,6 @@ export default {
                         </v-tooltip>
                     </v-card-text>
                 </v-card>
-
-
                 <v-container
                     v-else
                     fluid
@@ -631,16 +530,43 @@ export default {
     </div>
 </template>
 
+<style scoped lang="scss">
+    #description {
+        line-height: 20px;
+        font-size: 13px;
+        padding-bottom: 5px;
+        margin-top: 5px;
+    }
+    #advanced-options::v-deep {
+        .v-expansion-panel-header {
+            padding-left: 10px;
+            min-height: 45px;
+        }
+
+        .v-expansion-panel-content__wrap {
+            padding: 0 10px 10px 10px;
+        }
+
+        .v-input--checkbox {
+            margin-top: 0px;
+        }
+    }
+</style>
+
 <style lang="scss">
 #tool-dataNarrator-creator-storyForm {
-    max-width: 460px;
+    max-width: 470px;
     position: relative;
 
     #tool-dataNarrator-creator-noSteps {
         margin-top: 10px;
+        margin-bottom: 0;
     }
 
-    label.required:after { content: '*';color:red; }
+    label.required:after {
+        content: '*';
+        color: red;
+    }
 
     .story-step-button {
         min-width: 46px;
@@ -648,25 +574,8 @@ export default {
         padding: 0;
     }
 
-    .story-step-button-add {
-        min-width: 23px !important;
-        width: 23px;
-        margin-right: 10px;
-        .v-btn__content {
-            border: 2px solid rgba(0,0,0,.3);
-            border-radius: 10px;
-            width: 10px !important;
-            height: 35px;
-        }
-    }
-
     .add-step-label {
         cursor: pointer;
-    }
-
-    .tool-dataNarrator-creator-actions {
-        position: sticky;
-        margin-top: 20px;
     }
 
     #save-alert {
@@ -674,17 +583,6 @@ export default {
         left: 40%;
         top: 20%;
         background-color: white !important;
-    }
-
-    #preview {
-        padding-left: 5px;
-        max-height: 30px;
-        max-width: 70px;
-    }
-
-    .vue-label-style {
-        font-size: 16px;
-        color: rgba(0,0,0,.6);
     }
 
     .b-form-tags {

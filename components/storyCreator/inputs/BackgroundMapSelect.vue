@@ -1,5 +1,4 @@
 <script>
-import {get} from "@masterportal/masterportalapi/src/layer/terrain";
 
 export default {
     name: "BackgroundMapSelect",
@@ -67,24 +66,16 @@ export default {
 </script>
 
 <template>
-    <div class="form-group">
-        <label
-            class="form-label"
-            for="background-map"
-        >
-            {{ $t( "additional:modules.tools.dataNarrator.label.backgroundMap" ) }}
-        </label>
-        <v-select
-            id="background-map"
-            v-model="selected"
-            :items="backgroundMapsOptions"
-            dense
-            solo
-            hide-details
-            clearable
-            item-text="name"
-            item-value="id"
-            @change="onChange"
-        />
-    </div>
+    <v-select
+        id="background-map"
+        v-model="selected"
+        :items="backgroundMapsOptions"
+        :label="$t( 'additional:modules.tools.dataNarrator.label.backgroundMap' )"
+        dense
+        solo
+        hide-details
+        item-text="name"
+        item-value="id"
+        @change="onChange"
+    />
 </template>

@@ -16,19 +16,23 @@ export default {
 
 <template>
     <div>
-        <v-row>
+        <v-row class="mt-5">
             <v-col
                 cols="1"
                 class="chip-column"
             >
-                <v-chip
-                    class="vertical-chip"
-                    :color="colorFor(step.associatedChapter).main"
-                    outlined
-                    pill
+                <v-btn
+                    class="story-step-button pill-button step-indicator step-indicator-big"
+                    :style="{color: colorFor(step.associatedChapter).main}"
+                    icon
+                    :title="
+                        $t(
+                            'additional:modules.tools.dataNarrator.label.stepNumber'
+                        )
+                    "
                 >
                     {{ step.stepNumber }}
-                </v-chip>
+                </v-btn>
             </v-col>
 
             <v-col
@@ -41,18 +45,13 @@ export default {
 
 
         <div
-            class="step-body"
+            class="step-body mt-4 mb-5"
             v-html="step.html"
         />
     </div>
 </template>
 
 <style scoped lang="scss">
-.vertical-chip {
-  padding: 0 6px;
-  font-weight: bold;
-  margin-right: 6px;
-}
 
 .chip-column {
   display: flex;
@@ -63,7 +62,7 @@ export default {
 
 .step-title {
   font-weight: bold;
-  font-size: 1.2em;
+  font-size: 1.3em;
   align-content: center;
   justify-content: start;
   display: inline-flex;

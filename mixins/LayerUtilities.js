@@ -1,4 +1,6 @@
 import {defaultMap} from "../store/constantsDataNarrator";
+import sortBy from "../../../../src/utils/sortBy";
+import ThreeDUtilities from "./ThreeDUtilities.js";
 
 export default {
     data () {
@@ -33,6 +35,8 @@ export default {
         }
     },
     methods: {
+        ...ThreeDUtilities.methods,
+
         disableLayers (layers) {
             layers.forEach(layer => this.disableLayer(layer));
         },
@@ -98,13 +102,13 @@ export default {
 
         /**
        * Disables a layer on the map
+       * Disables a layer on the map
        * @param {Object} layer the layer to disable
        * @returns {void}
        */
         disableLayer (layer) {
             if (layer) {
                 // hide 3D layers in 3D mode
-
 
                 this.toggleLayer(layer, false);
                 if (this.layerTypes3DSpecific.includes(layer.attributes.typ)) {
@@ -118,6 +122,21 @@ export default {
             }
         },
 
+        watchStepLayers3D (step, newSelectedLayerIds) {
+            if (!step.is3D && newSelectedLayerIds.length !== 0) {
+                this.activate3DMap(true);
+            }
+            else if (step.is3D && newSelectedLayerIds.length === 0) {
+                this.activate3DMap(false);
+            }
+
+            this.rebuildLayers(newSelectedLayerIds, "layers3D");
+        },
+
+        watchStepLayers (step, newSelectedLayerIds) {
+            this.rebuildLayers(newSelectedLayerIds, "plainLayers");
+        },
+
         /**
          * Getting the layer name from the file name without the postfix as file format
          * @param {String} fileName name of the file
@@ -127,8 +146,25 @@ export default {
             return fileName.split(".")[0];
         },
 
+        getSelectedLayers (selected, items) {
+            const layers = [];
+
+            for (const layer of selected) {
+                let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
+                const exists = items.filter(item => item.id === layer.id).length > 0 && layerModel;
+
+                if (exists) {
+                    if (!layerModel) {
+                        Radio.trigger("ModelList", "addModelsByAttributes", layer);
+                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
+                    }
+                    layers.push(layerModel);
+                }
+            }
+            return sortBy(layers, (model) => model.get("selectionIDX"), this).reverse();
+        },
+
         enabledLayers () {
-            // console.log("enabled layers", Radio.request("ModelList", "getModelsByAttributes", {type: "layer", isVisibleInMap: true}));
             return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
         },
 
@@ -151,7 +187,7 @@ export default {
         rebuildLayers (selectedLayers, mode = "allLayers") {
             const layerList = this.allLayerOptions[mode];
 
-
+            // TODO: check if we need to disable all layers
             this.disableLayers(this.enabledLayersWithMode(mode));
 
             for (const layer of selectedLayers) {
@@ -185,7 +221,6 @@ export default {
         },
 
         disableStepLayers (step, layers = null, skipReRender = false) {
-            // console.log(this.enabledLayers());
             const layerList = layers || this.enabledLayers();
 
             step?.layers?.forEach(layer => {
@@ -207,6 +242,7 @@ export default {
             this.disableLayers(this.enabledBackgroundLayers());
 
             const defaultBackgroundMap = Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: defaultMap});
+
             this.enableLayer(defaultBackgroundMap);
         },
 
