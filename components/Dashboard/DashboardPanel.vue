@@ -35,7 +35,8 @@ export default {
             storyList: [],
             storyListMode: "all",
             storyListPage: 1,
-            masonry: null
+            masonry: null,
+            isLoading: true
         };
     },
     computed: {
@@ -90,10 +91,12 @@ export default {
          * Refreshes the list of stories
          * @param {String} mode Story filter
          * @param {Number} page Page number
-         * @returns {void}
+         * @returns {Number} The length of the response data
          */
         refreshStoryList (mode = "all", page = 1) {
             const newMode = mode || this.storyListMode;
+
+            this.isLoading = true;
 
             if (newMode !== this.storyListMode) {
                 this.storyListPage = 1;
@@ -108,6 +111,7 @@ export default {
                 .then((response) => {
                     this.storyListMode = newMode;
                     this.storyList.push(...response.data);
+                    this.isLoading = false;
                     return response.data.length;
                 });
         },
@@ -160,7 +164,20 @@ export default {
                         id="tool-dataNarrator-modeSelection"
                     >
                         <template
-                            v-if="storyList.length > 0"
+                            v-if="isLoading"
+                        >
+                            <StoryCardSkeleton
+                                v-for="n in 8"
+                                :key="n"
+                                :is-admin="isAdmin"
+                                :uid="uid"
+                                :grid="true"
+                                @refreshStoryList="refreshStoryList"
+                                v-on="$listeners"
+                            />
+                        </template>
+                        <template
+                            v-else-if="storyList.length > 0"
                         >
                             <StoryCard
                                 v-for="(story) in storyList"
@@ -177,15 +194,9 @@ export default {
                         <template
                             v-else
                         >
-                            <StoryCardSkeleton
-                                v-for="n in 10"
-                                :key="n"
-                                :is-admin="isAdmin"
-                                :uid="uid"
-                                :grid="true"
-                                @refreshStoryList="refreshStoryList"
-                                v-on="$listeners"
-                            />
+                            <div slot="no-results">
+                                {{ $t("additional:modules.tools.dataNarrator.dashboardView.noResults") }}
+                            </div>
                         </template>
                     </div>
                 </div>
@@ -194,10 +205,6 @@ export default {
         <InfiniteLoading
             ref="infiniteLoading"
             @infinite="infiniteHandler"
-        >
-            <div slot="no-results">
-                {{ $t("additional:modules.tools.dataNarrator.dashboardView.noResults") }}
-            </div>
-        </InfiniteLoading>
+        />
     </div>
 </template>
