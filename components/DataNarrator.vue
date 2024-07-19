@@ -107,6 +107,7 @@ export default {
         document.getElementById("main-nav").style.display = "none";
 
         if (this.$store.state.Tools.DataNarrator.backendURL) {
+            console.log(this.$store.state.Tools.DataNarrator.backendURL);
             this.setBackendConfig({url: this.$store.state.Tools.DataNarrator.backendURL});
         }
 

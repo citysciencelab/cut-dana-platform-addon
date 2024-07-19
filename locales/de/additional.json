@@ -83,7 +83,7 @@
         },
         "dashboardView": {
           "title": "Data Narrator",
-          "subtitle": "Finde und erstelle Datastories für Hamburg!",
+          "subtitle": "FFinde und erstelle Datastories für Hamburg!",
           "description": "Mit dem Urban Data Narrator (DaNa) können auf Grundlage des Hamburger Geoportals Datastories gelesen, erstellt und geteilt werden. Die Datastories erzählen von ganz verschiedenen Themen und Orten in Hamburg. Dabei werden ausgewählte Daten des Hamburger Geoportals mit Texten, Fotos und Abbildungen kombiniert. So könnt ihr euren Blick auf Themen der Stadtentwicklung datengestützt mitteilen. DaNa ist ein Projekt des City Science Labs an der HafenCity Universität Hamburg und wird im Rahmen des Projekts Connected Urban Twins umgesetzt.",
           "noResults": "Keine weiteren Stories gefunden."
         },
