@@ -9,7 +9,7 @@ export default {
         },
         backgroundMaps: {
             type: Array,
-            default: () => Radio.request("ModelList", "getModelsByAttributes", {backgroundMap: true})
+            default: () => this.layerConfigsByAttributes({backgroundMap: true})
         }
     },
     data () {

@@ -5,7 +5,7 @@ import mutations from "../../store/mutationsDataNarrator";
 import getters from "../../store/gettersDataNarrator";
 import ChapterTitle from "../shared/ChapterTitle.vue";
 import draggable from "vuedraggable"; // Import the Vue.Draggable library
-import {mdiDragHorizontalVariant, mdiDeleteOutline, mdiNoteEditOutline} from "@mdi/js";
+import {mdiDeleteOutline, mdiDragHorizontalVariant, mdiNoteEditOutline} from "@mdi/js";
 import CoverSelector from "../storyCreator/inputs/CoverSelector.vue";
 import * as constants from "../../store/constantsDataNarrator";
 
@@ -265,43 +265,43 @@ export default {
                     >
                         <v-row>
                             <v-col
-                                cols="1"
                                 class="d-flex justify-end align-center"
+                                cols="1"
                             >
                                 <v-icon
-                                    small
                                     class="drag-icon"
+                                    small
                                 >
                                     {{ icons.mdiDragHorizontalVariant }}
                                 </v-icon>
                             </v-col>
                             <v-col
-                                cols="11"
                                 class="step-item"
-                                @mouseover="hoveredStepId = step._id"
-                                @mouseleave="hoveredStepId = null"
+                                cols="11"
                                 @focusin="hoveredStepId = step._id"
                                 @focusout="hoveredStepId = null"
+                                @mouseleave="hoveredStepId = null"
+                                @mouseover="hoveredStepId = step._id"
                             >
                                 {{ step.title }}
                                 <v-icon
                                     v-show="hoveredStepId === step._id"
-                                    class="step-icon edit-icon"
-                                    small
                                     :title="$t(
                                         'additional:modules.tools.dataNarrator.creator.deleteStep'
                                     )"
+                                    class="step-icon edit-icon"
+                                    small
                                     @click="$emit('editStep', step)"
                                 >
                                     {{ icons.mdiNoteEditOutline }}
                                 </v-icon>
                                 <v-icon
                                     v-show="hoveredStepId === step._id"
-                                    class="step-icon delete-icon"
-                                    small
                                     :title="$t(
                                         'additional:modules.tools.dataNarrator.creator.editStep'
                                     )"
+                                    class="step-icon delete-icon"
+                                    small
                                     @click="onDeleteStep(step)"
                                 >
                                     {{ icons.mdiDeleteOutline }}
@@ -317,12 +317,12 @@ export default {
             class="ma-0 pa-0"
         >
             <v-col
-                cols="12"
                 class="d-flex justify-center align-self-center"
+                cols="12"
             >
                 <p class="text-warning">
                     <small>
-                        {{ $t( "additional:modules.tools.dataNarrator.warning.noStepInChapter" ) }}
+                        {{ $t("additional:modules.tools.dataNarrator.warning.noStepInChapter") }}
                     </small>
                 </p>
             </v-col>
@@ -367,10 +367,8 @@ export default {
     }
 
     &:hover {
-        box-shadow: 0px 1px 3px 0px
-        rgba(0, 0, 0, 0.20),
-        0px 4px 15px 3px
-        rgba(0, 0, 0, 0.15);
+        box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.20),
+        0px 4px 15px 3px rgba(0, 0, 0, 0.15);
     }
 
     .menu-button {
@@ -384,16 +382,17 @@ export default {
 .v-list-item {
     min-height: 35px;
 }
+
 .v-list-item:hover, .v-list-item--link:before, .v-list-item:hover:before {
     background-color: transparent !important;
 }
 
-::v-deep .theme--light.v-list-item:hover:before {
+:deep .theme--light.v-list-item:hover:before {
     opacity: 0 !important;
     background-color: transparent !important;
 }
 
-::v-deep .theme--light.v-list-item:focus:before {
+:deep .theme--light.v-list-item:focus:before {
     opacity: 0 !important;
     background-color: transparent !important;
 }

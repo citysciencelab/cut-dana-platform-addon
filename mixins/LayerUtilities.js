@@ -1,5 +1,5 @@
 import {defaultMap} from "../store/constantsDataNarrator";
-import sortBy from "../../../../src/utils/sortBy";
+import sortBy from "../../../../src/shared/js/utils/sortBy";
 import ThreeDUtilities from "./ThreeDUtilities.js";
 
 export default {
@@ -14,7 +14,7 @@ export default {
          * @returns {Object[]} layers to select
          */
         allLayerOptions () {
-            const allLayers = Radio.request("Parser", "getItemsByAttributes", {type: "layer"}),
+            const allLayers = this.layerConfigsByAttributes({type: "layer"}),
                 layers3D = [],
                 plainLayers = [],
                 backgroundLayers = [];
@@ -70,11 +70,11 @@ export default {
         getLayerById (layer) {
             const layerId = typeof layer === "string" ? layer : layer.id;
 
-            return Radio.request("ModelList", "getModelByAttributes", {id: layerId});
+            return this.layerConfigsByAttributes({id: layerId});
         },
 
         getLayerModelByName (name) {
-            return Radio.request("ModelList", "getModelByAttributes", {name: this.getLayerNameFromFile(name)});
+            return this.layerConfigsByAttributes({name: this.getLayerNameFromFile(name)});
         },
 
 
@@ -92,20 +92,20 @@ export default {
         },
 
         /**
-       * Enables a layer on the map
-       * @param {Object} layer the layer to enable
-       * @returns {void}
-       */
+         * Enables a layer on the map
+         * @param {Object} layer the layer to enable
+         * @returns {void}
+         */
         enableLayer (layer) {
             this.toggleLayer(layer, true);
         },
 
         /**
-       * Disables a layer on the map
-       * Disables a layer on the map
-       * @param {Object} layer the layer to disable
-       * @returns {void}
-       */
+         * Disables a layer on the map
+         * Disables a layer on the map
+         * @param {Object} layer the layer to disable
+         * @returns {void}
+         */
         disableLayer (layer) {
             if (layer) {
                 // hide 3D layers in 3D mode
@@ -150,13 +150,13 @@ export default {
             const layers = [];
 
             for (const layer of selected) {
-                let layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
+                let layerModel = this.layerConfigsByAttributes({id: layer.id});
                 const exists = items.filter(item => item.id === layer.id).length > 0 && layerModel;
 
                 if (exists) {
                     if (!layerModel) {
-                        Radio.trigger("ModelList", "addModelsByAttributes", layer);
-                        layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layer.id});
+                        layerModel = this.layerConfigsByAttributes({id: layer.id});
+                        this.addLayer(layerModel);
                     }
                     layers.push(layerModel);
                 }
@@ -165,15 +165,15 @@ export default {
         },
 
         enabledLayers () {
-            return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: false});
+            return this.layerConfigsByAttributes({isVisibleInMap: true, isBaseLayer: false});
         },
 
         enabled3DLayers () {
-            return Radio.request("ModelList", "getModelsByAttributes", {parentId: "3d_daten"});
+            return this.layerConfigsByAttributes({parentId: "3d_daten"});
         },
 
         enabledBackgroundLayers () {
-            return Radio.request("ModelList", "getModelsByAttributes", {isVisibleInMap: true, isBaseLayer: true});
+            return this.layerConfigsByAttributes({isVisibleInMap: true, isBaseLayer: true});
         },
 
         enabledLayersWithMode (mode) {
@@ -205,7 +205,7 @@ export default {
                         foundLayer.selectionIDX = layer.selectionIDX;
                         foundLayer.transparency = layer.transparency;
                     }
-
+                    this.addLayer(foundBgMap);
                     Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
                     layerModel = this.getLayerById(foundLayer);
                 }
@@ -217,7 +217,7 @@ export default {
             const layerList = this.enabledLayers();
 
             story?.steps?.forEach(step => this.disableStepLayers(step, layerList, true));
-            Radio.trigger("Menu", "rerender");
+            // Radio.trigger("Menu", "rerender");
         },
 
         disableStepLayers (step, layers = null, skipReRender = false) {
@@ -234,14 +234,14 @@ export default {
                 this.disableLayer(layerList.find(l => l.attributes.id === layerId));
             });
             if (!skipReRender) {
-                Radio.trigger("Menu", "rerender");
+                // Radio.trigger("Menu", "rerender");
             }
         },
 
         setDefaultBackgroundLayer () {
             this.disableLayers(this.enabledBackgroundLayers());
 
-            const defaultBackgroundMap = Radio.request("ModelList", "getModelByAttributes", {isBaseLayer: true, id: defaultMap});
+            const defaultBackgroundMap = this.layerConfigsByAttributes({isBaseLayer: true, id: defaultMap});
 
             this.enableLayer(defaultBackgroundMap);
         },

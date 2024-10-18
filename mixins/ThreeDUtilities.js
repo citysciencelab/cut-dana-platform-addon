@@ -1,13 +1,15 @@
-import Radio from "backbone.radio/build/backbone.radio";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
 import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader.js";
 import {ColladaLoader} from "three/examples/jsm/loaders/ColladaLoader.js";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter.js";
 import crs from "@masterportal/masterportalapi/src/crs";
 import * as cesiumUtils from "../utils/cesium.js";
+import {mapGetters} from "vuex";
 
 export default {
-
+    computed: {
+        ...mapGetters("Maps", ["mode", "changeMapMode"])
+    },
     methods: {
         ...cesiumUtils,
 
@@ -35,10 +37,7 @@ export default {
          * @returns {void}
          */
         async enable3D () {
-
-            // Ensure the current mode is set to 2D before switching to 3D.
-            this.$store.commit("Maps/setMode", "2D");
-            Radio.trigger("Map", "mapChangeTo3d");
+            this.changeMapMode("3D");
 
             /**
              * Get the 3d map
@@ -46,7 +45,7 @@ export default {
              * @returns {Object} the 3dmap object
              */
             function getMap3D () {
-                return Radio.request("Map", "getMap3d");
+                return mapCollection.getMap("3D");
             }
 
 
@@ -69,9 +68,7 @@ export default {
          * @returns {void}
          */
         async disable3D () {
-            // makes sure the current mode is in 3D so that it properly and reliably changes to 2d
-            await this.$store.commit("Maps/setMode", "3D");
-            await Radio.trigger("Map", "mapChangeTo3d");
+            this.changeMapMode("2D");
         },
 
 

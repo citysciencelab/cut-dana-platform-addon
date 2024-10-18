@@ -64,36 +64,33 @@ export default {
             </v-col>
         </v-row>
         <v-list-item-group class="chapters-list">
-            <template v-for="(chapter) in currentStory.chapters">
-                <ChapterTitle
-                    :key="`chapter_${chapter.chapterNumber}`"
-                    :chapter="chapter"
-                    @click="toChapter(chapter)"
-                />
-                <v-list-item-group
-                    :key="`chapter_steps_${chapter.chapterNumber}`"
+            <ChapterTitle
+                v-for="(chapter) in currentStory.chapters"
+                :key="`chapter_${chapter.chapterNumber}`"
+                :chapter="
+                    chapter"
+                @click="toChapter(chapter)"
+            />
+            <v-list-item-group
+                :key="`chapter_steps_${chapter.chapterNumber}`"
+            >
+                <v-list-item
+                    v-for="(step) in currentStory.steps.filter(
+                        ({associatedChapter}) => associatedChapter === chapter.chapterNumber
+                    )"
+                    :key="`step_${step.stepNumber}`"
+                    class="step-item"
+                    :style="{border: `2px solid ${colorFor(chapter.chapterNumber).main} !important`}"
+                    :class="{'step-item-active': step._id === currentStepId}"
+                    @click="toStep(step)"
+                    @keydown="toStep(step)"
                 >
-                    <template
-                        v-for="(step) in currentStory.steps.filter(
-                            ({associatedChapter}) => associatedChapter === chapter.chapterNumber
-                        )"
-                    >
-                        <v-list-item
-                            :key="`step_${step.stepNumber}`"
-                            class="step-item"
-                            :style="{border: `2px solid ${colorFor(chapter.chapterNumber).main} !important`}"
-                            :class="{'step-item-active': step._id === currentStepId}"
-                            @click="toStep(step)"
-                            @keydown="toStep(step)"
-                        >
-                            <v-list-item-title class="step-title">
-                                {{ step.stepNumber }}.
-                                {{ step.title }}
-                            </v-list-item-title>
-                        </v-list-item>
-                    </template>
-                </v-list-item-group>
-            </template>
+                    <v-list-item-title class="step-title">
+                        {{ step.stepNumber }}.
+                        {{ step.title }}
+                    </v-list-item-title>
+                </v-list-item>
+            </v-list-item-group>
         </v-list-item-group>
     </div>
 </template>

@@ -1,5 +1,4 @@
-import Radio from "backbone.radio/build/backbone.radio";
-
+import {mapGetters} from "vuex";
 
 /**
  * Function to get the Cesium map
@@ -7,7 +6,11 @@ import Radio from "backbone.radio/build/backbone.radio";
  * @returns {boolean} - Returns true if the map is 3D, false otherwise
  */
 export function isMap3D () {
-    return Radio.request("Map", "isMap3d");
+    // TODO: Is map 3D getter?
+    // import {mapActions, mapGetters, mapMutations} from "vuex";
+    // ...mapGetters("Maps", ["mode"]),
+    // this.mode === "2D"
+    // return Radio.request("Map", "isMap3d");
 }
 
 
@@ -17,7 +20,7 @@ export function isMap3D () {
  * @returns {Object} - Returns the 3D map
  */
 export function cesiumMap () {
-    return Radio.request("Map", "getMap3d");
+    return mapCollection.getMap("3D");
 }
 
 /**
@@ -26,7 +29,7 @@ export function cesiumMap () {
  * @returns {Object} - Returns the Cesium scene
  */
 export function cesiumScene () {
-    return Radio.request("Map", "getMap3d").getCesiumScene();
+    return mapCollection.getMap("3D").getCesiumScene();
 }
 
 /**
@@ -35,5 +38,5 @@ export function cesiumScene () {
  * @returns {Object} - Returns the Cesium camera
  */
 export function cesiumCamera () {
-    return Radio.request("Map", "getMap3d").getCesiumScene().camera;
+    return mapCollection.getMap("3D").getCesiumScene().camera;
 }

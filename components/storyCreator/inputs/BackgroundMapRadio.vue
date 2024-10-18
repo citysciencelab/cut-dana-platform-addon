@@ -1,4 +1,6 @@
 <script>
+import {mapGetters} from "vuex";
+
 export default {
     name: "BackgroundMapRadio",
     props: {
@@ -8,7 +10,7 @@ export default {
         },
         backgroundMaps: {
             type: Array,
-            default: () => Radio.request("ModelList", "getModelsByAttributes", {backgroundMap: true})
+            default: () => this.layerConfigsByAttributes({backgroundMap: true})
         }
     },
     data () {
@@ -16,6 +18,10 @@ export default {
             backgroundMapsOptions: [],
             selected: this.selectedId
         };
+    },
+    computed: {
+        ...mapGetters(["layerConfigsByAttributes"])
+
     },
     mounted () {
         this.backgroundMapsOptions = this.backgroundMaps.map(model => {
@@ -57,7 +63,7 @@ export default {
             class="form-label"
             for="background-map"
         >
-            {{ $t( "additional:modules.tools.dataNarrator.label.backgroundMap" ) }}
+            {{ $t("additional:modules.tools.dataNarrator.label.backgroundMap") }}
         </label>
         <v-container
             id="background-map"
@@ -65,8 +71,8 @@ export default {
         >
             <v-radio-group
                 v-model="selected"
-                dense
                 column
+                dense
                 @change="onChange"
             >
                 <v-radio
@@ -84,7 +90,7 @@ export default {
 
 <style lang="scss">
 
-.background-map-radio  {
+.background-map-radio {
     .v-label {
         font-size: 12px !important;
     }

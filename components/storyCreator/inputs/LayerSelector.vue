@@ -1,6 +1,7 @@
 <script>
 import LayerSelectedPreview from "./LayerSelectedPreview.vue";
 import LayerUtilities from "../../../mixins/LayerUtilities";
+
 export default {
     name: "LayerSelector",
     components: {LayerSelectedPreview},
@@ -26,8 +27,8 @@ export default {
             },
             set (value) {
                 const
-                // Filter the original items based on the selected IDs
-                    selectedItems = value.map(layer => Radio.request("Parser", "getItemByAttributes", {id: layer}));
+                    // Filter the original items based on the selected IDs
+                    selectedItems = value.map(layer => this.layerConfigById(layer));
 
                 this.$emit("update:selected", selectedItems.map((layer, index) => ({
                     id: layer.id,
@@ -225,8 +226,8 @@ export default {
 <template>
     <div id="LayerSelector">
         <LayerSelectedPreview
-            :selected-layers="getSelectedLayers(selected, items)"
             :selected="selected"
+            :selected-layers="getSelectedLayers(selected, items)"
             @update:selected="forwardUpdateSelected"
         />
         <div class="form-group">
@@ -244,16 +245,16 @@ export default {
                     <v-col>
                         <v-treeview
                             v-model="propModel"
-                            class="custom-treeview"
-                            :items="transformedItems"
-                            item-key="id"
-                            item-children="children"
-                            selection-type="leaf"
                             :disable-per-node="true"
+                            :items="transformedItems"
+                            class="custom-treeview"
+                            dense
+                            item-children="children"
+                            item-key="id"
                             open-on-click
                             search
                             selectable
-                            dense
+                            selection-type="leaf"
                             @input="updateSelectedItems"
                         />
                     </v-col>
@@ -269,18 +270,18 @@ export default {
     padding-top: 10px;
 }
 
-.custom-row  {
+.custom-row {
     padding: 0;
     max-height: 300px;
     overflow-y: scroll;
 }
 
-.custom-treeview::v-deep .v-icon--disabled {
+.custom-treeview:deep .v-icon--disabled {
     display: none !important;
 }
 
-.custom-treeview::v-deep .v-treeview-node--disabled .v-treeview-node__label {
-    color: rgba(0,0,0,.87) !important;
+.custom-treeview:deep .v-treeview-node--disabled .v-treeview-node__label {
+    color: rgba(0, 0, 0, .87) !important;
 }
 
 

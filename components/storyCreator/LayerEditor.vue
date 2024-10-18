@@ -31,7 +31,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["mobile"])
+        ...mapGetters(["isMobile"])
     },
     watch: {
         /**
@@ -132,7 +132,7 @@ export default {
             rounded
         >
             <v-card
-                v-if="!mobile"
+                v-if="!isMobile"
                 flat
                 tile
                 width="100%"

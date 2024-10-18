@@ -740,7 +740,7 @@ function capabilityOptions ({state}, layerUrl) {
 async function hideWmsLayer (context, layerUrl) {
     const capabilites = await capabilityOptions({}, layerUrl),
         allCapabilitiesModels = capabilites.map(capability => {
-            return Radio.request("ModelList", "getModelByAttributes", {id: getParsedTitle({}, capability.Title)});
+            return this.layerConfigsByAttributes({id: getParsedTitle({}, capability.Title)});
         });
 
     allCapabilitiesModels.forEach(model => {

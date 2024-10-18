@@ -37,7 +37,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["mobile"]),
+        ...mapGetters(["isMobile"]),
         ...mapGetters("Legend", Object.keys(getters))
     },
     mounted () {
@@ -115,7 +115,7 @@ export default {
 
         <v-row
             class="with-fancy-background"
-            :style="`background-image: url(${require(mobile ? '../../img/cutcsl_depiction.png' : '../../img/cutcsl_depiction.png')})`"
+            :style="`background-image: url(${require(isMobile() ? '../../img/cutcsl_depiction.png' : '../../img/cutcsl_depiction.png')})`"
         >
             <v-col
                 cols="12"

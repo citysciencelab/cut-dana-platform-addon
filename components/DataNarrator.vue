@@ -1,9 +1,9 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
-import ToolTemplate from "../../../../src/modules/tools/ToolTemplate.vue";
+// import ToolTemplate from "../../../../src/modules/tools/ToolTemplate.vue";
 // login module
-import OIDC from "../../../../src/modules/tools/login/utils/utilsOIDC";
+import OIDC from "../../../../src/modules/login/js/utilsOIDC.js";
 
 import * as constants from "../store/constantsDataNarrator";
 import actions from "../store/actionsDataNarrator";
@@ -24,7 +24,7 @@ export default {
     components: {
         DashboardPanel,
         SnackBar,
-        ToolTemplate,
+        // ToolTemplate,
         StoryCreator,
         StoryPlayer
     },
@@ -296,6 +296,7 @@ export default {
 </script>
 
 <template>
+    <!--
     <ToolTemplate
         :title="$t(name)"
         :icon="glyphicon"
@@ -305,45 +306,46 @@ export default {
         :deactivate-gfi="deactivateGFI"
         :initial-width="initialWidth"
     >
-        <template #toolBody>
-            <v-app
-                v-if="active"
-                id="tool-dataNarrator"
-                :class="mode"
-            >
-                <StoryPlayer
-                    v-if="mode === constants.storyTellingModes.PLAY"
-                    ref="player"
-                    :step-index="stepIndex"
-                    @share-story="shareStory"
-                    @reset="reset"
-                />
+    -->
+    <template #toolBody>
+        <v-app
+            v-if="active"
+            id="tool-dataNarrator"
+            :class="mode"
+        >
+            <StoryPlayer
+                v-if="mode === constants.storyTellingModes.PLAY"
+                ref="player"
+                :step-index="stepIndex"
+                @reset="reset"
+                @share-story="shareStory"
+            />
 
-                <StoryCreator
-                    v-else-if="mode === constants.storyTellingModes.CREATE"
-                    :uid="uid"
-                    @confirm="confirmDialog"
-                    @reset-tool="reset"
-                />
+            <StoryCreator
+                v-else-if="mode === constants.storyTellingModes.CREATE"
+                :uid="uid"
+                @confirm="confirmDialog"
+                @reset-tool="reset"
+            />
 
-                <DashboardPanel
-                    v-else
-                    :is-admin="isAdmin"
-                    :uid="uid"
-                    @confirm="confirmDialog"
-                    @share-story="shareStory"
-                    @reset-step-index="stepIndex = 0"
-                    @resizeHandler="resizeHandler"
-                />
+            <DashboardPanel
+                v-else
+                :is-admin="isAdmin"
+                :uid="uid"
+                @confirm="confirmDialog"
+                @resizeHandler="resizeHandler"
+                @share-story="shareStory"
+                @reset-step-index="stepIndex = 0"
+            />
 
-                <SnackBar ref="snackB" />
-            </v-app>
-        </template>
-    </ToolTemplate>
+            <SnackBar ref="snackB" />
+        </v-app>
+    </template>
+    <!--</ToolTemplate>-->
 </template>
 
 <style lang="scss" scoped>
-#tool-dataNarrator::v-deep {
+#tool-dataNarrator:deep {
     .title-holder, .chapter-title-holder, .step-title-holder {
         .v-text-field .v-label--active {
             display: none;
@@ -358,9 +360,11 @@ export default {
         .v-input__slot fieldset {
             height: 40px;
         }
+
         .v-label {
             top: 5px;
         }
+
         .v-label--active {
             top: 10px;
         }
@@ -385,7 +389,7 @@ export default {
         max-height: calc(72vh - 40px);
     }
 
-    &::v-deep {
+    &:deep {
         .v-application--wrap {
             min-height: 0;
 
@@ -474,6 +478,7 @@ export default {
     min-width: 23px !important;
     width: 23px !important;
     margin-right: 10px;
+
     .v-btn__content {
         border: 2px solid #707070;
         border-radius: 10px;
@@ -481,6 +486,7 @@ export default {
         height: 35px;
         padding-top: 1px;
         font-size: 15px;
+
         .v-icon {
             height: 18px !important;
             font-size: 18px !important;
@@ -490,11 +496,12 @@ export default {
 }
 
 .pill-button.horizontal {
-    min-height:  23px !important;
+    min-height: 23px !important;
     height: 23px !important;
     min-width: 35px !important;
     border-radius: 10px;
     padding-left: 1px;
+
     .v-btn__content {
         height: 22px !important;
         width: 35px !important;
@@ -504,6 +511,7 @@ export default {
 .pill-button.horizontal.add-step {
     .v-btn__content {
         border: 2px solid #893d05;
+
         .v-icon {
             color: #893d05;
         }
@@ -531,7 +539,8 @@ export default {
 }
 
 .pill-button.step-indicator-big {
-     width: 26px !important;
+    width: 26px !important;
+
     .v-btn__content {
         height: 45px;
         border-radius: 20px;

@@ -1,6 +1,8 @@
 <script>
 import {mdiChevronDown, mdiChevronUp, mdiTrashCanOutline} from "@mdi/js";
-import sortBy from "../../../../../../src/utils/sortBy";
+import sortBy from "../../../../../../src/shared/js/utils/sortBy";
+import {mapGetters} from "vuex";
+
 export default {
     name: "LayerSelectedPreview",
     props: {
@@ -22,6 +24,12 @@ export default {
             }
         };
     },
+    computed: {
+        ...mapGetters([
+            "isMobile",
+            "layerConfigsByAttributes"
+        ])
+    },
     methods: {
         deleteLayer (layer) {
             const tmpSelected = this.selected.filter(item => item.id !== layer.id);
@@ -36,7 +44,8 @@ export default {
             if (!direction && index > 0) {
                 // Move layer up
                 const targetId = index - 1,
-                    targetModel = Radio.request("ModelList", "getModelByAttributes", {id: sortedLayers[targetId].id}),
+                    targetModel = this.layerConfigsByAttributes({id: sortedLayers[targetId].id}),
+
 
                     prevLayerSelectionIDX = layer.get("selectionIDX");
 
@@ -48,7 +57,7 @@ export default {
             else if (direction && index < sortedLayers.length - 1) {
                 // Move layer down
                 const targetId = index + 1,
-                    targetModel = Radio.request("ModelList", "getModelByAttributes", {id: sortedLayers[targetId].id}),
+                    targetModel = this.layerConfigsByAttributes({id: sortedLayers[targetId].id}),
 
                     prevLayerSelectionIDX = layer.get("selectionIDX");
 
@@ -95,56 +104,56 @@ export default {
                 {{ item.attributes.name }}
             </v-col>
             <v-col
-                cols="4"
                 class="justify-end"
+                cols="4"
             >
                 <v-row
                     class="align-items-center"
                 >
                     <v-col
+                        class="justify-end"
                         cols="3"
                         offset="3"
-                        class="justify-end"
                     >
                         <v-icon
-                            small
                             color="grey lighten-1"
+                            small
                             @click="moveLayer(item, true)"
                         >
                             {{ icons.chevronUp }}
                         </v-icon>
                         <v-icon
-                            small
                             color="grey lighten-1"
+                            small
                             @click="moveLayer(item, false)"
                         >
                             {{ icons.chevronDown }}
                         </v-icon>
                     </v-col>
                     <v-col
-                        cols="4"
-                        class="justify-end"
                         align="right"
+                        class="justify-end"
+                        cols="4"
                     >
                         <v-text-field
                             v-model="item.attributes.transparency"
-                            type="number"
-                            min="0"
-                            max="90"
                             class="transparency-input"
-                            suffix="%"
                             hide-details
+                            max="90"
+                            min="0"
+                            suffix="%"
+                            type="number"
                             @change="changeTransparency(item, $event)"
                         />
                     </v-col>
 
                     <v-col
-                        cols="2"
                         align="right"
+                        cols="2"
                     >
                         <v-icon
-                            small
                             color="grey lighten-1"
+                            small
                             @click="deleteLayer(item)"
                         >
                             {{ icons.trash }}
@@ -156,7 +165,7 @@ export default {
     </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
 .layer-box {
     width: 100%;
@@ -165,12 +174,13 @@ export default {
     margin: 10px 0;
     border-radius: 6px;
 
-    button::v-deep {
+    button:deep {
         .v-icon__svg {
-            color: rgba(0,0,0,.87) !important;
+            color: rgba(0, 0, 0, .87) !important;
         }
     }
 }
+
 .layer-row {
     border: 0;
     height: 25px !important;
@@ -178,7 +188,7 @@ export default {
     padding: 0;
 }
 
-.transparency-input::v-deep input[type="number"] {
+.transparency-input:deep input[type="number"] {
     padding: 0;
     height: 20px;
 }
@@ -188,11 +198,12 @@ export default {
     padding-top: 0;
     margin-top: 0;
     font-size: 10px;
-    color: rgba(0,0,0,.57);
+    color: rgba(0, 0, 0, .57);
     width: 40px;
 
     .v-input__slot {
         height: 20px;
+
         .v-text-field__slot {
             height: 20px;
         }

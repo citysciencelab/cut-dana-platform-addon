@@ -11,11 +11,7 @@ import errorHandling from "../../utils/errorHandling";
 import ShareSettings from "./inputs/ShareSettings.vue";
 import CoverSelector from "./inputs/CoverSelector.vue";
 
-import {
-    mdiCancel,
-    mdiCheck,
-    mdiEyeOutline
-} from "@mdi/js";
+import {mdiCancel, mdiCheck, mdiEyeOutline} from "@mdi/js";
 import TableOfContentsDnD from "../storyPlayer/TableOfContentsDnD.vue";
 
 export default {
@@ -52,7 +48,7 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters(["mobile"]),
+        ...mapGetters(["isMobile"]),
 
         storyIntervalInSeconds: {
             get () {
@@ -248,12 +244,12 @@ export default {
                 <v-textarea
                     id="description"
                     v-model="currentStory.description"
-                    solo
-                    hide-details="true"
-                    rows="4"
                     :label="$t(
                         'additional:modules.tools.dataNarrator.label.storyDescription'
                     )"
+                    hide-details="true"
+                    rows="4"
+                    solo
                 />
 
                 <ShareSettings
@@ -275,8 +271,8 @@ export default {
                             <div>
                                 <v-checkbox
                                     id="story-scrolly"
-                                    :value="currentStory?.displayType === 'scrolly'"
                                     :label="$t('additional:modules.tools.dataNarrator.label.scrolly')"
+                                    :value="currentStory?.displayType === 'scrolly'"
                                     @change="changeScrollyMode"
                                 />
                             </div>
@@ -289,11 +285,11 @@ export default {
                                 <v-slider
                                     id="story-interval"
                                     v-model="storyIntervalInSeconds"
-                                    step="1"
+                                    hide-details="true"
                                     max="40"
                                     min="0"
+                                    step="1"
                                     thumb-label
-                                    hide-details="true"
                                 />
 
                                 <!--
@@ -314,26 +310,26 @@ export default {
 
             <TableOfContentsDnD
                 :rerender-key="rerenderKeyTOC"
+                @deleteStep="(step, associatedChapter, stepNumber) =>
+                    $emit('deleteStep', step, associatedChapter, stepNumber)"
+                @editStep="step => $emit('editStep', step)"
                 @openView="(newView, stepChapterIndex) =>
                     $emit(
                         'openView', newView, stepChapterIndex
                     )
                 "
-                @editStep="step => $emit('editStep', step)"
-                @deleteStep="(step, associatedChapter, stepNumber) =>
-                    $emit('deleteStep', step, associatedChapter, stepNumber)"
             />
 
             <v-row class="mb-2">
                 <v-col class="d-flex justify-center align-center">
                     <v-btn
-                        class="story-step-button pill-button"
-                        icon
                         :title="
                             $t(
                                 'additional:modules.tools.dataNarrator.button.addChapter'
                             )
                         "
+                        class="story-step-button pill-button"
+                        icon
                         @click="
                             $emit(
                                 'openView',
@@ -367,11 +363,11 @@ export default {
 
             <v-progress-linear
                 v-if="!notSaving"
-                indeterminate
-                height="10"
-                striped
-                rounded
                 color="lime"
+                height="10"
+                indeterminate
+                rounded
+                striped
             />
 
             <v-footer
@@ -382,10 +378,10 @@ export default {
             >
                 <v-card
                     v-if="!mobile"
+                    class="lighten-1 text-center"
                     flat
                     tile
                     width="100%"
-                    class="lighten-1 text-center"
                 >
                     <v-card-text>
                         <v-tooltip top>
@@ -417,9 +413,9 @@ export default {
                                     v-on="on"
                                 >
                                     <v-btn
+                                        :disabled="!currentStory.steps || !currentStory.steps.length"
                                         class=""
                                         icon
-                                        :disabled="!currentStory.steps || !currentStory.steps.length"
                                         @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
                                     >
                                         <v-icon size="24px">{{ icons.mdiEyeOutline }}</v-icon>
@@ -440,9 +436,9 @@ export default {
                                     v-on="on"
                                 >
                                     <v-btn
+                                        :disabled="!currentStory.steps || !currentStory.steps.length"
                                         class=""
                                         icon
-                                        :disabled="!currentStory.steps || !currentStory.steps.length"
                                         @click="saveStoryToBackend"
                                     >
                                         <v-icon size="24px">{{ icons.mdiCheck }}</v-icon>
@@ -459,8 +455,8 @@ export default {
                 </v-card>
                 <v-container
                     v-else
-                    fluid
                     class="white"
+                    fluid
                 >
                     <v-row
                         class="mb-2"
@@ -469,9 +465,9 @@ export default {
                         <v-col>
                             <v-btn
                                 class=""
-                                small
                                 color="red"
                                 min-width="100%"
+                                small
                                 @click="$emit('reset-tool')"
                             >
                                 <span>
@@ -483,11 +479,11 @@ export default {
                         </v-col>
                         <v-col>
                             <v-btn
-                                class=""
-                                small
                                 :disabled="!currentStory.steps || !currentStory.steps.length"
+                                class=""
                                 color="green"
                                 min-width="100%"
+                                small
                                 @click="$emit('openView', constants.storyCreationViews.PREVIEW)"
                             >
                                 <span>
@@ -500,10 +496,10 @@ export default {
                     </v-row>
                     <v-row>
                         <v-btn
-                            class=""
-                            small
                             :disabled="!currentStory.steps || !currentStory.steps.length"
+                            class=""
                             color="green"
+                            small
                             @click="saveStoryToBackend"
                         >
                             <span>
@@ -519,8 +515,8 @@ export default {
             <v-alert
                 v-show="!currentStory.steps || !currentStory.steps.length"
                 id="tool-dataNarrator-creator-noSteps"
-                type="info"
                 class="white"
+                type="info"
             >
                 {{
                     $t("additional:modules.tools.dataNarrator.warning.sendNoSteps")
@@ -530,27 +526,28 @@ export default {
     </div>
 </template>
 
-<style scoped lang="scss">
-    #description {
-        line-height: 20px;
-        font-size: 13px;
-        padding-bottom: 5px;
-        margin-top: 5px;
-    }
-    #advanced-options::v-deep {
-        .v-expansion-panel-header {
-            padding-left: 10px;
-            min-height: 45px;
-        }
+<style lang="scss" scoped>
+#description {
+    line-height: 20px;
+    font-size: 13px;
+    padding-bottom: 5px;
+    margin-top: 5px;
+}
 
-        .v-expansion-panel-content__wrap {
-            padding: 0 10px 10px 10px;
-        }
-
-        .v-input--checkbox {
-            margin-top: 0px;
-        }
+#advanced-options:deep {
+    .v-expansion-panel-header {
+        padding-left: 10px;
+        min-height: 45px;
     }
+
+    .v-expansion-panel-content__wrap {
+        padding: 0 10px 10px 10px;
+    }
+
+    .v-input--checkbox {
+        margin-top: 0px;
+    }
+}
 </style>
 
 <style lang="scss">

@@ -1,8 +1,14 @@
 <script>
 import {
-    mdiCancel, mdiCheck, mdiClose, mdiPinOutline,
-    mdiTrashCanOutline, mdiHelpCircleOutline, mdiPencilOutline,
-    mdiMapMarkerPlusOutline, mdiHomePlusOutline
+    mdiCancel,
+    mdiCheck,
+    mdiClose,
+    mdiHelpCircleOutline,
+    mdiHomePlusOutline,
+    mdiMapMarkerPlusOutline,
+    mdiPencilOutline,
+    mdiPinOutline,
+    mdiTrashCanOutline
 } from "@mdi/js";
 import * as uuid from "uuid";
 import {VueEditor} from "vue2-editor";
@@ -19,7 +25,7 @@ import getDataUrlFromFile from "../../utils/getDataUrlFromFile";
 import getFileExtension from "../../utils/getFileExtension";
 
 import axios from "axios";
-import modelerGetters from "../../../../../src/modules/tools/modeler3D/store/gettersModeler3D";
+import modelerGetters from "../../../../../src/modules/modeler3D/store/gettersModeler3D.js";
 import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 
 import BackgroundMap from "./inputs/BackgroundMapSelect.vue";
@@ -29,7 +35,6 @@ import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 
 import RenderUtilities from "../../mixins/RenderUtilities";
 import * as cesiumUtils from "../../utils/cesium";
-import {isMap3D} from "../../utils/cesium";
 import LayerSelectedPreview from "./inputs/LayerSelectedPreview.vue";
 
 
@@ -107,7 +112,9 @@ export default {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
         ...mapGetters("Tools/FileImportAddon", Object.keys(fileImportGetters)),
         ...mapGetters("Tools/Modeler3D", Object.keys(modelerGetters)),
-        ...mapGetters(["mobile"]),
+        ...mapGetters(["isMobile",
+            "layerConfigsByAttributes"]),
+        ...mapActions("Maps", ["addLayer"]),
 
 
         /**
@@ -167,15 +174,17 @@ export default {
         },
 
         backgroundMaps () {
-            const bgMaps = Radio.request("Parser", "getItemsByAttributes", {backgroundMap: true}),
+            const bgMaps = this.layerConfigsByAttributes({
+                    baselayer: true,
+                    showInLayerTree: true
+                }),
                 newBgMaps = [];
 
             for (const bgMap of bgMaps) {
-                let foundBgMap = Radio.request("ModelList", "getModelByAttributes", {id: bgMap.id});
+                const foundBgMap = this.layerConfigsByAttributes({id: bgMap.id});
 
                 if (!foundBgMap) {
-                    Radio.trigger("ModelList", "addModelsByAttributes", bgMap);
-                    foundBgMap = Radio.request("ModelList", "getModelByAttributes", {id: bgMap.id});
+                    this.addLayer(foundBgMap);
                 }
                 newBgMaps.push(foundBgMap);
             }
@@ -389,7 +398,15 @@ export default {
                             return this.getLayerNameFromFile(file.name) === this.getLayerNameFromFile(importedFileName);
                         });
 
-                    this.importKML({raw: f.target.result, checkSameLayer: checkSameLayer, layerName: layerName, filename: file.name, pointImages: this.pointImages, textColors: this.textColors, textSizes: this.textSizes});
+                    this.importKML({
+                        raw: f.target.result,
+                        checkSameLayer: checkSameLayer,
+                        layerName: layerName,
+                        filename: file.name,
+                        pointImages: this.pointImages,
+                        textColors: this.textColors,
+                        textSizes: this.textSizes
+                    });
                 };
 
                 reader.readAsText(file);
@@ -442,7 +459,7 @@ export default {
                     return models;
                 }),
                 allCapabilitiesModels = allCapabilities.map(capability => {
-                    return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+                    return this.layerConfigsByAttributes({id: capability.Title});
                 });
 
             this.disableLayers(allCapabilitiesModels);
@@ -727,7 +744,12 @@ export default {
                 newDatasources.push(raw);
             }
 
-            this.saveStoryStep({step: this.step, images: this.images, datasources: newDatasources, wmsLayers: this.wmsLayers});
+            this.saveStoryStep({
+                step: this.step,
+                images: this.images,
+                datasources: newDatasources,
+                wmsLayers: this.wmsLayers
+            });
 
             for (const layer of this.wmsLayers) {
                 this.hideWmsLayer(layer.url);
@@ -952,7 +974,7 @@ export default {
                 });
             }
 
-            Radio.trigger("Menu", "rerender");
+            // Radio.trigger("Menu", "rerender");
         }
 
     }
@@ -971,36 +993,36 @@ export default {
                     class="form-input-holder xs pr-4"
                 >
                     <v-col
-                        cols="1"
                         class="d-flex align-self-center"
+                        cols="1"
                     >
                         <v-btn
                             :key="step.associatedChapter"
-                            class="story-step-button pill-button horizontal chapter-indicator"
                             :style="{backgroundColor: colorFor(step.associatedChapter).main}"
-                            icon
                             :title="
                                 $t(
                                     'additional:modules.tools.dataNarrator.label.chapter'
                                 )
                             "
+                            class="story-step-button pill-button horizontal chapter-indicator"
+                            icon
                         >
-                            {{ chapterLetter(step.associatedChapter ) }}
+                            {{ chapterLetter(step.associatedChapter) }}
                         </v-btn>
                     </v-col>
 
                     <v-col
-                        cols="11"
                         class="text-center chapter-title-holder"
+                        cols="11"
                     >
                         <v-text-field
                             id="chapter-title"
                             v-model="step.chapterTitle"
-                            class="vue-text-all-top"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.chapterTitle'
                             )"
                             :rules="stepNameRules"
+                            class="vue-text-all-top"
                             hide-details="auto"
                         />
                     </v-col>
@@ -1010,50 +1032,50 @@ export default {
             <div class="form-group form-input-holder lg">
                 <v-row class="pr-3">
                     <v-col
-                        cols="1"
                         class="d-flex align-self-center "
+                        cols="1"
                     >
                         <v-btn
                             v-if="step.associatedChapter"
-                            class="story-step-button pill-button step-indicator"
                             :style="{color: colorFor(step.associatedChapter).main}"
-                            icon
                             :title="
                                 $t(
                                     'additional:modules.tools.dataNarrator.label.stepNumber'
                                 )
                             "
+                            class="story-step-button pill-button step-indicator"
+                            icon
                         >
                             {{ step.stepNumber }}
                         </v-btn>
                     </v-col>
                     <v-col
-                        cols="11"
                         class="d-flex align-self-center step-title-holder"
+                        cols="11"
                     >
                         <v-text-field
                             id="step-title"
                             v-model="step.title"
-                            class="vue-text-all-top"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.stepTitle'
                             )"
                             :rules="stepNameRules"
+                            class="vue-text-all-top"
                             hide-details="auto"
                         />
                     </v-col>
                 </v-row>
                 <v-row class="mb-2">
                     <v-col
-                        cols="12"
                         class="d-flex align-self-center "
+                        cols="12"
                     >
                         <div class="stepForm-inputs-htmlEditor">
                             <VueEditor
                                 id="step-vue-editor"
                                 v-model="step.html"
-                                :placeholder="$t('additional:modules.tools.dataNarrator.label.htmlContent')"
                                 :editor-toolbar="constants.htmlEditorToolbar"
+                                :placeholder="$t('additional:modules.tools.dataNarrator.label.htmlContent')"
                                 use-custom-image-handler
                                 @image-added="onAddImage"
                                 @image-removed="onRemoveImage"
@@ -1063,11 +1085,11 @@ export default {
                 </v-row>
                 <v-row>
                     <v-col
-                        cols="12"
                         class="d-flex align-self-center"
+                        cols="12"
                     >
                         <div class="vue-label-style">
-                            {{ $t( "additional:modules.tools.dataNarrator.label.mapDisplay" ) }}
+                            {{ $t("additional:modules.tools.dataNarrator.label.mapDisplay") }}
                         </div>
                     </v-col>
                 </v-row>
@@ -1077,16 +1099,11 @@ export default {
                     class="mb-2"
                 >
                     <v-col
-                        cols="3"
                         class="d-flex align-self-center mr-2"
+                        cols="3"
                     >
                         <v-text-field
                             id="step-center-3d-0"
-                            :value="step.navigation3D.heading"
-                            disabled
-                            outlined
-                            dense
-                            class="vue-text-all-top small-fieldset"
                             :class="{'positon_change': mapMovedPosition.heading && step.navigation3D.heading && step.navigation3D.heading !== mapMovedPosition.heading}"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.heading'
@@ -1094,36 +1111,36 @@ export default {
                             :title="$t(
                                 'additional:modules.tools.dataNarrator.label.heading'
                             )"
+                            :value="step.navigation3D.heading"
+                            class="vue-text-all-top small-fieldset"
+                            dense
+                            disabled
                             hide-details
+                            outlined
                         />
                     </v-col>
                     <v-col
-                        cols="1"
                         class="d-flex align-self-center mr-2"
+                        cols="1"
                     >
                         <v-btn
-                            icon
                             :title="
                                 $t(
                                     'additional:modules.tools.dataNarrator.label.heading'
                                 )
                             "
+                            icon
                             @click="step.navigation3D.heading = get3DMapCenter()['heading']"
                         >
                             <v-icon>{{ icons.mdiPinOutline }}</v-icon>
                         </v-btn>
                     </v-col>
                     <v-col
-                        cols="3"
                         class="d-flex align-self-center"
+                        cols="3"
                     >
                         <v-text-field
                             id="step-center-3d-0"
-                            :value="step.navigation3D.pitch"
-                            disabled
-                            outlined
-                            dense
-                            class="vue-text-all-top small-fieldset"
                             :class="{'positon_change': mapMovedPosition.pitch && step.navigation3D.pitch && step.navigation3D.pitch !== mapMovedPosition.pitch}"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.pitch'
@@ -1131,20 +1148,25 @@ export default {
                             :title="$t(
                                 'additional:modules.tools.dataNarrator.label.pitch'
                             )"
+                            :value="step.navigation3D.pitch"
+                            class="vue-text-all-top small-fieldset"
+                            dense
+                            disabled
                             hide-details
+                            outlined
                         />
                     </v-col>
                     <v-col
-                        cols="1"
                         class="d-flex align-self-center"
+                        cols="1"
                     >
                         <v-btn
-                            icon
                             :title="
                                 $t(
                                     'additional:modules.tools.dataNarrator.label.pitch'
                                 )
                             "
+                            icon
 
                             @click="step.navigation3D.pitch = get3DMapCenter()['pitch']"
                         >
@@ -1158,16 +1180,11 @@ export default {
                     class="mb-2"
                 >
                     <v-col
-                        cols="3"
                         class="d-flex align-self-center mr-2"
+                        cols="3"
                     >
                         <v-text-field
                             id="step-center-3d-0"
-                            :value="step.navigation3D.cameraPosition[0] || cesiumScene.camera.position[0]"
-                            disabled
-                            outlined
-                            dense
-                            class="vue-text-all-top small-fieldset"
                             :class="{'positon_change': step.is3D && cesiumEnabled && isCameraPositionDifferent()}"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.longitude'
@@ -1175,20 +1192,20 @@ export default {
                             :title="$t(
                                 'additional:modules.tools.dataNarrator.label.longitude'
                             )"
+                            :value="step.navigation3D.cameraPosition[0] || cesiumScene.camera.position[0]"
+                            class="vue-text-all-top small-fieldset"
+                            dense
+                            disabled
                             hide-details
+                            outlined
                         />
                     </v-col>
                     <v-col
-                        cols="3"
                         class="d-flex align-self-center mr-2"
+                        cols="3"
                     >
                         <v-text-field
                             id="step-center-3d-1"
-                            :value="step.navigation3D.cameraPosition[1] || cesiumScene.camera.position[1]"
-                            disabled
-                            outlined
-                            dense
-                            class="vue-text-all-top small-fieldset"
                             :class="{'positon_change': step.is3D && cesiumEnabled && isCameraPositionDifferent()}"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.latitude'
@@ -1196,42 +1213,47 @@ export default {
                             :title="$t(
                                 'additional:modules.tools.dataNarrator.label.latitude'
                             )"
+                            :value="step.navigation3D.cameraPosition[1] || cesiumScene.camera.position[1]"
+                            class="vue-text-all-top small-fieldset"
+                            dense
+                            disabled
                             hide-details
+                            outlined
                         />
                     </v-col>
                     <v-col
-                        cols="3"
                         class="d-flex align-self-center"
+                        cols="3"
                     >
                         <v-text-field
                             id="step-center-3d-2"
-                            :value="step.navigation3D.cameraPosition[2] || cesiumScene.camera.position[2]"
                             :class="{'positon_change': step.is3D && cesiumEnabled && isCameraPositionDifferent()}"
-                            disabled
-                            outlined
-                            dense
-                            class="vue-text-all-top small-fieldset"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.height'
                             )"
                             :title="$t(
                                 'additional:modules.tools.dataNarrator.label.height'
                             )"
+                            :value="step.navigation3D.cameraPosition[2] || cesiumScene.camera.position[2]"
+                            class="vue-text-all-top small-fieldset"
+                            dense
+                            disabled
                             hide-details
+                            outlined
                         />
                     </v-col>
 
                     <v-col
-                        cols="1"
                         class="d-flex justify-center align-self-start"
+                        cols="1"
                     >
                         <v-btn
-                            icon
                             :title="
                                 $t(
                                     'additional:modules.tools.dataNarrator.label.centerCoordinate'
                                 )
                             "
+                            icon
 
                             @click="step.navigation3D.cameraPosition = get3DMapCenter()['cameraPosition']"
                         >
@@ -1245,17 +1267,13 @@ export default {
                     class="mb-2"
                 >
                     <v-col
-                        cols="3"
                         class="d-flex align-self-center pr-1"
+                        cols="3"
                     >
                         <v-text-field
                             id="step-center-lng"
                             :key="`centerCoordinatex${key}`"
                             v-model="step.centerCoordinate && step.centerCoordinate[0]"
-                            disabled
-                            outlined
-                            dense
-                            class="vue-text-all-top small-fieldset"
                             :class="{'positon_change': step.centerCoordinate && step.centerCoordinate !== center()}"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.longitude'
@@ -1263,21 +1281,21 @@ export default {
                             :title="$t(
                                 'additional:modules.tools.dataNarrator.label.longitude'
                             )"
+                            class="vue-text-all-top small-fieldset"
+                            dense
+                            disabled
                             hide-details
+                            outlined
                         />
                     </v-col>
                     <v-col
-                        cols="3"
                         class="d-flex align-self-center"
+                        cols="3"
                     >
                         <v-text-field
                             id="step-center-lat"
                             :key="`centerCoordinatex${key}`"
                             v-model="step.centerCoordinate && step.centerCoordinate[1]"
-                            disabled
-                            outlined
-                            dense
-                            class="vue-text-all-top small-fieldset"
                             :class="{'positon_change': step.centerCoordinate && step.centerCoordinate !== center()}"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.latitude'
@@ -1285,20 +1303,24 @@ export default {
                             :title="$t(
                                 'additional:modules.tools.dataNarrator.label.latitude'
                             )"
+                            class="vue-text-all-top small-fieldset"
+                            dense
+                            disabled
                             hide-details
+                            outlined
                         />
                     </v-col>
                     <v-col
-                        cols="1"
                         class="d-flex justify-center align-self-start"
+                        cols="1"
                     >
                         <v-btn
-                            icon
                             :title="
                                 $t(
                                     'additional:modules.tools.dataNarrator.label.centerCoordinate'
                                 )
                             "
+                            icon
                             @click="() => {
                                 key++;
                                 step.centerCoordinate = center()
@@ -1308,35 +1330,35 @@ export default {
                         </v-btn>
                     </v-col>
                     <v-col
+                        class="d-flex align-self-center"
                         cols="3"
                         offset="1"
-                        class="d-flex align-self-center"
                     >
                         <v-text-field
                             id="step-zoomlevel"
                             v-model="step.zoomLevel"
-                            disabled
-                            outlined
-                            dense
-                            class="vue-text-all-top small-fieldset"
                             :class="{'positon_change': step.zoomLevel && step.zoomLevel !== zoom()}"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.zoomLevel'
                             )"
+                            class="vue-text-all-top small-fieldset"
+                            dense
+                            disabled
                             hide-details
+                            outlined
                         />
                     </v-col>
                     <v-col
-                        cols="1"
                         class="d-flex justify-center align-self-start"
+                        cols="1"
                     >
                         <v-btn
-                            icon
                             :title="
                                 $t(
                                     'additional:modules.tools.dataNarrator.label.setZoomLevel'
                                 )
                             "
+                            icon
                             @click="() => {
                                 key++;
                                 step.zoomLevel = zoom()
@@ -1355,34 +1377,34 @@ export default {
                     class="ma-0 pa-0 mb-2"
                 >
                     <v-col
-                        cols="12"
                         class="d-flex justify-center align-self-center"
+                        cols="12"
                     >
                         <p
                             class="text-warning"
                         >
                             <small>
-                                {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }} {{ step.is3D }}
+                                {{ $t("additional:modules.tools.dataNarrator.warning.mapMoved") }} {{ step.is3D }}
                             </small>
                         </p>
                     </v-col>
                 </v-row>
                 <v-row class="mb-2">
                     <v-col
-                        cols="12"
                         class="d-flex justify-center align-self-center"
+                        cols="12"
                     >
                         <BackgroundMap
-                            :selected-id="backgroundMapId"
                             :background-maps="backgroundMaps"
+                            :selected-id="backgroundMapId"
                             @update:background-map-id="setBackgroundMap"
                         />
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col
-                        cols="12"
                         class="d-flex justify-center align-self-center"
+                        cols="12"
                     >
                         <LayerSelectedPreview
                             :selected-layers="getSelectedLayers(step.layers, allLayerOptions.plainLayers)"
@@ -1392,8 +1414,8 @@ export default {
                 </v-row>
                 <v-row class="mb-2">
                     <v-col
-                        cols="12"
                         class="d-flex justify-center align-self-center"
+                        cols="12"
                     >
                         <LayerSelectedPreview
                             :selected-layers="getSelectedLayers(step.layers3D, allLayerOptions.layers3D)"
@@ -1412,7 +1434,7 @@ export default {
                     class="form-label"
                     for="step-is3d"
                 >
-                    {{ $t( "additional:modules.tools.dataNarrator.label.is3D" ) }}
+                    {{ $t("additional:modules.tools.dataNarrator.label.is3D") }}
                 </label>
                 <input
                     id="step-is3d"
@@ -1424,8 +1446,8 @@ export default {
 
             <v-row class="mb-3">
                 <v-col
-                    cols="12"
                     class="d-flex justify-center align-self-center"
+                    cols="12"
                 >
                     <v-btn
                         class="add-btn add-layer-btn"
@@ -1435,7 +1457,7 @@ export default {
                         <v-icon left>
                             {{ icons.mdiMapMarkerPlusOutline }}
                         </v-icon>
-                        {{ $t( "additional:modules.tools.dataNarrator.label.dataLayer" ) }}
+                        {{ $t("additional:modules.tools.dataNarrator.label.dataLayer") }}
                     </v-btn>
                 </v-col>
             </v-row>
@@ -1457,8 +1479,8 @@ export default {
                                 id="step-layer"
                                 class="expansion-panels"
                                 dense
-                                nav
                                 elevation="1"
+                                nav
                             >
                                 <v-expansion-panel
                                     v-for="(item) in rawDatasources"
@@ -1486,21 +1508,21 @@ export default {
                                     <v-file-input
                                         id="own_dataSource"
                                         ref="own_dataSource_input"
-                                        multiple
                                         :label="$t(
                                             'additional:modules.tools.dataNarrator.label.ownDatasource'
                                         )"
-                                        name="ownDataSource"
                                         accept=".kml, .geojson, .json, .gpx"
+                                        multiple
+                                        name="ownDataSource"
                                         @change="onCustomDataUpload"
                                     />
                                 </v-col>
                             </v-row>
                             <v-row class="mb-2">
                                 <v-col
+                                    class="d-flex justify-center align-self-center"
                                     cols="6"
                                     offset="3"
-                                    class="d-flex justify-center align-self-center"
                                 >
                                     <v-btn
                                         class="add-btn add-data-btn"
@@ -1510,13 +1532,13 @@ export default {
                                         <v-icon left>
                                             {{ icons.mdiPencilOutline }}
                                         </v-icon>
-                                        {{ $t( "additional:modules.tools.dataNarrator.label.openDrawTool" ) }}
+                                        {{ $t("additional:modules.tools.dataNarrator.label.openDrawTool") }}
                                     </v-btn>
                                 </v-col>
                                 <v-col
-                                    offset="2"
-                                    cols="1"
                                     class="d-flex justify-center align-self-center"
+                                    cols="1"
+                                    offset="2"
                                 >
                                     <v-tooltip top>
                                         <template #activator="{ on }">
@@ -1529,7 +1551,9 @@ export default {
                                             </v-icon>
                                         </template>
                                         <span>
-                                            {{ $t("additional:modules.tools.dataNarrator.dashboardView.drawToolDescription") }}
+                                            {{
+                                                $t("additional:modules.tools.dataNarrator.dashboardView.drawToolDescription")
+                                            }}
                                         </span>
                                     </v-tooltip>
                                 </v-col>
@@ -1539,8 +1563,8 @@ export default {
                                 id="step-layer"
                                 class="expansion-panels"
                                 dense
-                                nav
                                 elevation="1"
+                                nav
                             >
                                 <v-expansion-panel
                                     v-for="(item, index) in allWmsLayers"
@@ -1553,11 +1577,11 @@ export default {
                                     <v-expansion-panel-content>
                                         <v-treeview
                                             :key="`wmsLayers${index}${key}`"
-                                            :selected="wmsLayers.map(({url, selectedLayers}) => url === item.url ? selectedLayers : [])"
-                                            selectable
                                             :items="item.selectedLayers"
+                                            :selected="wmsLayers.map(({url, selectedLayers}) => url === item.url ? selectedLayers : [])"
                                             item-key="Name"
                                             item-text="Title"
+                                            selectable
 
                                             @input="updateSelectedCapabilities($event, item.url, item.selectedLayers)"
                                         />
@@ -1579,17 +1603,17 @@ export default {
                                     <v-text-field
                                         id="own_wmsLayers"
                                         ref="own_wmsLayers_input"
-                                        name="ownWms"
-                                        outlined
-                                        dense
-                                        class="vue-text-all-top small-fieldset"
                                         :label="$t(
                                             'additional:modules.tools.dataNarrator.label.ownWmsLayers'
                                         )"
                                         :title="$t(
                                             'additional:modules.tools.dataNarrator.label.ownWmsLayers'
                                         )"
+                                        class="vue-text-all-top small-fieldset"
+                                        dense
                                         hide-details
+                                        name="ownWms"
+                                        outlined
                                         @change="onWmsLayersAdd"
                                     />
                                 </v-col>
@@ -1597,8 +1621,8 @@ export default {
 
                             <v-row class="mb-2">
                                 <v-col
-                                    cols="12"
                                     class="d-flex justify-center align-self-center"
+                                    cols="12"
                                 >
                                     <v-btn
                                         class="add-btn add-data-tool-btn"
@@ -1608,7 +1632,7 @@ export default {
                                         <v-icon left>
                                             {{ icons.mdiHomePlusOutline }}
                                         </v-icon>
-                                        {{ $t( "additional:modules.tools.dataNarrator.label.threeDFiles" ) }}
+                                        {{ $t("additional:modules.tools.dataNarrator.label.threeDFiles") }}
                                     </v-btn>
                                 </v-col>
                             </v-row>
@@ -1638,12 +1662,12 @@ export default {
 
                             <input
                                 id="step-width"
-                                class="form-control"
-                                type="number"
-                                :value="step.stepWidth"
-                                :min="minStepWidth"
                                 :max="maxStepWidth"
+                                :min="minStepWidth"
+                                :value="step.stepWidth"
+                                class="form-control"
                                 step="10"
+                                type="number"
                                 @change="onChangeStepWidth"
                             >
                         </div>
@@ -1652,16 +1676,16 @@ export default {
                                 class="form-label"
                                 for="step-addons"
                             >
-                                {{ $t( "additional:modules.tools.dataNarrator.label.interactionAddons" ) }}
+                                {{ $t("additional:modules.tools.dataNarrator.label.interactionAddons") }}
                             </label>
                             <v-select
                                 id="step-addons"
                                 v-model="step.interactionAddons"
                                 :items="addonOptions"
-                                multiple
                                 dense
-                                solo
                                 hide-details
+                                multiple
+                                solo
                             />
                         </div>
                     </v-expansion-panel-content>
@@ -1675,10 +1699,10 @@ export default {
             >
                 <v-card
                     v-if="!mobile"
+                    class="lighten-1 text-center"
                     flat
                     tile
                     width="100%"
-                    class="lighten-1 text-center"
                 >
                     <v-card-text>
                         <v-tooltip top>
@@ -1729,9 +1753,9 @@ export default {
                                     v-on="on"
                                 >
                                     <v-btn
+                                        :disabled="!isValid"
                                         class=""
                                         icon
-                                        :disabled="!isValid"
                                         @click="onSubmit"
                                     >
 
@@ -1751,8 +1775,8 @@ export default {
                 </v-card>
                 <v-container
                     v-else
-                    fluid
                     class="white"
+                    fluid
                 >
                     <v-row
                         class="mb-2"
@@ -1761,9 +1785,9 @@ export default {
                         <v-col>
                             <v-btn
                                 class=""
-                                small
                                 color="red"
                                 min-width="100%"
+                                small
                                 @click="$emit('return')"
                             >
                                 <span>
@@ -1774,9 +1798,9 @@ export default {
                         <v-col>
                             <v-btn
                                 class=""
-                                small
                                 color="red"
                                 min-width="100%"
+                                small
                                 @click="onDeleteStep"
                             >
                                 <span>{{ $t("additional:modules.tools.dataNarrator.button.deleteStep") }}</span>
@@ -1788,10 +1812,10 @@ export default {
                         no-gutters
                     >
                         <v-btn
-                            class=""
-                            small
-                            color="green"
                             :disabled="!isValid"
+                            class=""
+                            color="green"
+                            small
                             @click="onSubmit"
                         >
                             <span>
@@ -1860,7 +1884,7 @@ export default {
         margin-bottom: 10px;
     }
 
-    &::v-deep {
+    &:deep {
         .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
         > .v-input__control
         > .v-input__slot {
@@ -1889,7 +1913,10 @@ export default {
         }
     }
 
-    label.required:after { content: '*';color:red; }
+    label.required:after {
+        content: '*';
+        color: red;
+    }
 
     .stepForm-inputs-centerCoordinate {
         display: grid;
@@ -1913,37 +1940,45 @@ export default {
         align-items: end;
     }
 
-    .stepForm-inputs-htmlEditor::v-deep {
+    .stepForm-inputs-htmlEditor:deep {
         background: "#fff";
         padding: 0;
         width: 100%;
+
         .ql-snow.ql-toolbar {
             border-bottom: 0;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
+
         .ql-container.ql-snow {
             border-top: 0;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
         }
+
         .ql-snow.ql-toolbar button {
             width: 18px;
         }
+
         .ql-snow.ql-toolbar button svg {
             width: 14px !important;
             height: 14px !important;
         }
+
         .ql-picker.ql-color-picker svg {
-            width: 14px!important;
-            height: 14px!important;
+            width: 14px !important;
+            height: 14px !important;
         }
+
         .quillWrapper .ql-picker-label {
             font-size: 12px !important;
         }
+
         .ql-toolbar.ql-snow .ql-formats {
             margin-right: 3px !important;
         }
+
         .ql-snow .ql-color-picker, .ql-snow .ql-icon-picker {
             width: 14px !important;
         }

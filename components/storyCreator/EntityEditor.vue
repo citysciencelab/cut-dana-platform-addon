@@ -9,9 +9,9 @@ import mutations from "../../store/mutationsDataNarrator";
 import BackButton from "../shared/BackButton.vue";
 import {getItemRecursive, replaceFileItem} from "../../utils/threeDFiles";
 import getEntityValues from "../../utils/getEntityValues";
-import getGfiFeatures from "../../../../../src/api/gfi/getGfiFeaturesByTileFeature";
+import getGfiFeatures from "../../../../../src/shared/js/utils/getGfiFeaturesByTileFeature.js";
 
-import {mdiChevronUp, mdiChevronDown} from "@mdi/js";
+import {mdiChevronDown, mdiChevronUp} from "@mdi/js";
 import proj4 from "proj4";
 import ThreeDUtilities from "../../mixins/ThreeDUtilities";
 
@@ -52,7 +52,8 @@ export default {
     },
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters(["namedProjections"])
+        ...mapGetters(["namedProjections"]),
+        ...mapGetters(["layerConfigsByAttributes"])
         // ...mapGetters("Maps", ["clickCoordinate", "mouseCoordinate"]),
 
     },
@@ -107,7 +108,7 @@ export default {
 
 
         this.threeDFiles = newItems;
-        this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
+        this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) => ({
             modelId,
             ...getEntityValues(modelId)
         }));
@@ -136,7 +137,7 @@ export default {
 
             // console.log(this.threeDFiles, this.selectedEntityId);
 
-            this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
+            this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) => ({
                 modelId,
                 ...getEntityValues(modelId)
             }));
@@ -190,7 +191,7 @@ export default {
 
             this.position = position;
 
-            this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
+            this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) => ({
                 modelId,
                 ...getEntityValues(modelId),
                 orientation: {
@@ -211,11 +212,11 @@ export default {
          */
         updateOrientation (heading, pitch, roll) {
 
-            // eslint-disable-next-line radix
+
             const h = heading !== undefined ? Cesium.Math.toRadians(parseFloat(heading)) : Cesium.Math.toRadians(parseFloat(this.heading) * 1.0),
-                // eslint-disable-next-line radix
+
                 p = pitch !== undefined ? Cesium.Math.toRadians(parseFloat(pitch)) : Cesium.Math.toRadians(parseFloat(this.pitch) * 1.0),
-                // eslint-disable-next-line radix
+
                 r = roll !== undefined ? Cesium.Math.toRadians(parseFloat(roll)) : Cesium.Math.toRadians(parseFloat(this.roll) * 1.0),
                 hpr = new Cesium.HeadingPitchRoll(h, p, r);
 
@@ -235,7 +236,7 @@ export default {
 
             this.orientation = orientation;
 
-            this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) =>({
+            this.step.selectedModelIds = this.step.selectedModelIds.map(({modelId}) => ({
                 modelId,
                 ...getEntityValues(modelId),
                 orientation: {
@@ -317,8 +318,8 @@ export default {
                     const features = getGfiFeatures.getGfiFeaturesByTileFeature(picked),
                         gmlId = features[0]?.getProperties()[this.gmlIdPath],
                         tileSetModels = this.updateAllLayers ?
-                            Radio.request("ModelList", "getModelsByAttributes", {typ: "TileSet3D"}) :
-                            Radio.request("ModelList", "getModelsByAttributes", {typ: "TileSet3D", id: picked.tileset.layerReferenceId});
+                            this.layerConfigsByAttributes({typ: "TileSet3D"}) :
+                            this.layerConfigsByAttributes({typ: "TileSet3D", id: picked.tileset.layerReferenceId});
 
                     tileSetModels.forEach(model => model.hideObjects([gmlId], this.updateAllLayers));
 
@@ -368,7 +369,7 @@ export default {
                         class="form-label"
                         for="northing"
                     >
-                        {{ $t( "additional:modules.tools.dataNarrator.label.threeDNorthing" ) }}
+                        {{ $t("additional:modules.tools.dataNarrator.label.threeDNorthing") }}
                     </label>
                     <v-row>
                         <v-col cols="10">
@@ -377,8 +378,8 @@ export default {
                                 v-model="northing"
                                 class="form-control"
                                 label="Northing"
-                                type="number"
                                 outlined
+                                type="number"
                                 @change="(value) => updatePosition()"
                             >
                         </v-col>
@@ -388,8 +389,8 @@ export default {
                                     <template #activator="{ on }">
                                         <v-icon
                                             class="ml-2 mr-1"
-                                            v-on="on"
                                             @click="incrementNorhting"
+                                            v-on="on"
                                         >
                                             {{ icons.mdiChevronUp }}
                                         </v-icon>
@@ -402,8 +403,8 @@ export default {
                                     <template #activator="{ on }">
                                         <v-icon
                                             class="ml-2 mr-1"
-                                            v-on="on"
                                             @click="decrementNorhting"
+                                            v-on="on"
                                         >
                                             {{ icons.mdiChevronDown }}
                                         </v-icon>
@@ -421,7 +422,7 @@ export default {
                         class="form-label"
                         for="easting"
                     >
-                        {{ $t( "additional:modules.tools.dataNarrator.label.threeDEasting" ) }}
+                        {{ $t("additional:modules.tools.dataNarrator.label.threeDEasting") }}
                     </label>
                     <v-row>
                         <v-col cols="10">
@@ -430,8 +431,8 @@ export default {
                                 v-model="easting"
                                 class="form-control"
                                 label="Easting"
-                                type="number"
                                 outlined
+                                type="number"
                                 @change="(value) => updatePosition()"
                             >
                         </v-col>
@@ -441,8 +442,8 @@ export default {
                                     <template #activator="{ on }">
                                         <v-icon
                                             class="ml-2 mr-1"
-                                            v-on="on"
                                             @click="incrementEasting"
+                                            v-on="on"
                                         >
                                             {{ icons.mdiChevronUp }}
                                         </v-icon>
@@ -455,8 +456,8 @@ export default {
                                     <template #activator="{ on }">
                                         <v-icon
                                             class="ml-2 mr-1"
-                                            v-on="on"
                                             @click="decrementEasting"
+                                            v-on="on"
                                         >
                                             {{ icons.mdiChevronDown }}
                                         </v-icon>
@@ -474,7 +475,7 @@ export default {
                         class="form-label"
                         for="rotation"
                     >
-                        {{ $t( "additional:modules.tools.dataNarrator.label.threeDRotation" ) }}
+                        {{ $t("additional:modules.tools.dataNarrator.label.threeDRotation") }}
                     </label>
                     <v-row>
                         <v-col cols="10">
@@ -483,8 +484,8 @@ export default {
                                 v-model="heading"
                                 class="form-control"
                                 label="Heading"
-                                type="number"
                                 outlined
+                                type="number"
                                 @change="(value) => updateOrientation()"
                             >
                         </v-col>
@@ -494,8 +495,8 @@ export default {
                                     <template #activator="{ on }">
                                         <v-icon
                                             class="ml-2 mr-1"
-                                            v-on="on"
                                             @click="incrementHeading"
+                                            v-on="on"
                                         >
                                             {{ icons.mdiChevronUp }}
                                         </v-icon>
@@ -508,8 +509,8 @@ export default {
                                     <template #activator="{ on }">
                                         <v-icon
                                             class="ml-2 mr-1"
-                                            v-on="on"
                                             @click="decrementHeading"
+                                            v-on="on"
                                         >
                                             {{ icons.mdiChevronDown }}
                                         </v-icon>

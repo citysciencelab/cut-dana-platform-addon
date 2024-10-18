@@ -112,8 +112,8 @@ export default {
         <div
             v-for="(step, index) in steps"
             :key="index + step.title"
-            class="stepper"
             :class="{ active: index === currentStepIndex}"
+            class="stepper"
         >
             <PlayerHeader
                 :chapter="chapterFor(step)"
@@ -142,7 +142,7 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "../../../../../css/mixins.scss";
+@import "src/assets/css/mixins.scss";
 
 #scrollyteller {
 

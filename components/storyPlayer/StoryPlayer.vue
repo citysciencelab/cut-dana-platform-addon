@@ -10,8 +10,7 @@ import {getMimeTypeFromExtension} from "../../utils/fileDataType";
 import ClassicPlayer from "./ClassicPlayer.vue";
 import ScrollyTeller from "./ScrollyTeller.vue";
 import TableOfContents from "./TableOfContents.vue";
-import TableOfContentsDnD from "./TableOfContentsDnD.vue";
-
+// import TableOfContentsDnD from "./TableOfContentsDnD.vue";
 import LayerUtilities from "../../mixins/LayerUtilities";
 import RenderUtilities from "../../mixins/RenderUtilities";
 import ThreeDUtilities from "../../mixins/ThreeDUtilities";
@@ -22,7 +21,7 @@ export default {
     components: {
         ClassicPlayer,
         ScrollyTeller,
-        TableOfContentsDnD,
+        // TableOfContentsDnD,
         TableOfContents
     },
     mixins: [LayerUtilities, RenderUtilities, ThreeDUtilities],
@@ -51,6 +50,8 @@ export default {
     computed: {
         ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
         ...mapGetters("Tools/FileImportAddon", Object.keys(fileImportGetters)),
+        ...mapGetters("Maps", ["mode"]),
+        ...mapGetters(["layerConfigsByAttributes"]),
 
         /**
          * The current selected step of the story.
@@ -77,7 +78,7 @@ export default {
         },
 
         backgroundMaps () {
-            return Radio.request("ModelList", "getModelsByAttributes", {isBaseLayer: true});
+            return this.layerConfigsByAttributes({isBaseLayer: true});
         }
     },
     watch: {
@@ -146,7 +147,7 @@ export default {
 
         this.switchBackgroundMap(this.visibleBackgroundMap);
 
-        if (Radio.request("Map", "isMap3d")) {
+        if (this.mode === "3D") {
             this.disableAllEntities();
             // disable all 3d layers
             this.disable3D();
@@ -186,17 +187,18 @@ export default {
             if (this.currentStep && this.currentStep.wmsLayers) {
                 const layer = this.currentStep.wmsLayers.find(url => url.url === layerUrl),
                     layerModels = selectedCapabilities.map(capability => {
-                        const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
+                        const parsedModel = this.layerConfigsByAttributes({layers: capability});
 
                         let models = [];
 
+                        this.addLayer(foundBgMap);
                         Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
-                        models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
+                        models = this.layerConfigsByAttributes({id: parsedModel.id});
 
                         return models;
                     }),
                     allCapabilitiesModels = allCapabilities.map(capability => {
-                        return Radio.request("ModelList", "getModelByAttributes", {id: capability.Title});
+                        return this.layerConfigsByAttributes({id: capability.Title});
                     });
 
                 allCapabilitiesModels.forEach(model => {
@@ -378,7 +380,7 @@ export default {
             if (this.currentStep && this.currentStep.wmsLayers) {
                 this.currentStep.wmsLayers.forEach(async layer => {
                     // console.log(layer.url);
-                    const allCapabilitiesModels = Radio.request("ModelList", "getModelsByAttributes", {url: layer.url});
+                    const allCapabilitiesModels = this.layerConfigsByAttributes({url: layer.url});
 
                     // console.log("capabilities", allCapabilitiesModels);
 
@@ -502,7 +504,7 @@ export default {
                     console.warn("Dont use centerCoordinate for 3D navigation.");
                 }
                 else {
-                    const map = Radio.request("Map", "getMap"),
+                    const map = mapCollection.getMap("2D"),
                         mapView = typeof map?.getView === "function" ? map.getView() : undefined;
 
                     setTimeout(() => {
@@ -553,7 +555,7 @@ export default {
 
 
             setTimeout(() => {
-                Radio.trigger("Menu", "rerender");
+                // Radio.trigger("Menu", "rerender");
             }, 500);
 
             if (!this.currentStep.is3D) {
@@ -584,23 +586,23 @@ export default {
         >
             <ClassicPlayer
                 v-if="showMode === 'classic'"
-                :current-step-index="currentStepIndex"
                 :current-chapter="currentChapter"
                 :current-step="currentStep"
+                :current-step-index="currentStepIndex"
+                @reset="resetStoryPlayer"
                 @setCurrentStepIndex="(index) => currentStepIndex = index"
                 @toggleAutoPlay="toggleAutoPlay"
                 @toggleScrollytelling="toggleScrollytelling"
-                @reset="resetStoryPlayer"
                 v-on="$listeners"
             />
             <ScrollyTeller
                 v-else
-                :current-step-index="currentStepIndex"
                 :chapters="chapters"
+                :current-step-index="currentStepIndex"
                 :steps="currentStory.steps"
+                @reset="resetStoryPlayer"
                 @setCurrentStepIndex="(index) => currentStepIndex = index"
                 @toggleScrollytelling="toggleScrollytelling"
-                @reset="resetStoryPlayer"
                 v-on="$listeners"
             />
         </div>
@@ -668,7 +670,7 @@ export default {
         overflow: auto;
         overflow-x: hidden;
 
-        &::v-deep {
+        &:deep {
             img {
                 max-width: 100%;
             }
