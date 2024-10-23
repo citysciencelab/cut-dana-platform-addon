@@ -7,7 +7,7 @@ import {emptyStory} from "../../../../store/constantsDataNarrator";
 import {wrapperOptions, testStore} from "../../vue_helpers";
 
 describe("ClassicPlayer", () => {
-    testStore.commit("Tools/DataNarrator/setCurrentStory", emptyStory);
+    testStore.commit("Modules/DataNarrator/setCurrentStory", emptyStory);
 
     it("renders the correct chapter title", () => {
         const currentChapter = {chapterTitle: "Chapter 1"},

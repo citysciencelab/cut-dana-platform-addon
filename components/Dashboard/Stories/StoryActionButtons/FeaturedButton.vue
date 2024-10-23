@@ -28,7 +28,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", ["backendConfig"])
+        ...mapGetters("Modules/DataNarrator", ["backendConfig"])
     },
     methods: {
         makeItFeatured () {

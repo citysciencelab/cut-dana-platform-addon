@@ -153,7 +153,7 @@ export default {
                     proj.title = proj.name;
                 }
                 if (proj.id === this.$store.state.currentProjection.id) {
-                    this.$store.commit("Tools/DataNarrator/setCurrentProjection", {projection: proj});
+                    this.$store.commit("Modules/DataNarrator/setCurrentProjection", {projection: proj});
                 }
             });
             if (wgs84Proj.length > 0) {
@@ -166,7 +166,7 @@ export default {
                 }
                 return false;
             });
-            this.$store.commit("Tools/DataNarrator/setProjections", {projections: pr});
+            this.$store.commit("Modules/DataNarrator/setProjections", {projections: pr});
         },
 
         /**
@@ -198,7 +198,7 @@ export default {
                 return;
             }
 
-            this.$store.commit("Tools/DataNarrator/setLoadingState", {loading: true});
+            this.$store.commit("Modules/DataNarrator/setLoadingState", {loading: true});
 
             reader.onload = (event) => {
                 if (fileExtension === "obj") {
@@ -207,7 +207,7 @@ export default {
                 else if (fileExtension === "dae") {
                     this.handleDaeFile(event.target.result, fileName, fileId);
                 }
-                this.$store.commit("Tools/DataNarrator/setLoadingState", {loading: false});
+                this.$store.commit("Modules/DataNarrator/setLoadingState", {loading: false});
                 // else if (fileExtension === "geojson") {
                 //     this.handleGeoJsonFile(event.target.result, fileId);
                 // }
@@ -220,7 +220,7 @@ export default {
 
             reader.onerror = (e) => {
                 console.error("Error reading the file:", e.target.error);
-                this.$store.commit("Tools/DataNarrator/setLoadingState", {loading: false});
+                this.$store.commit("Modules/DataNarrator/setLoadingState", {loading: false});
             };
 
             if (fileExtension === "dae") {
@@ -264,7 +264,7 @@ export default {
                     position: currentLocation
                 });
 
-            this.$store.commit("Tools/DataNarrator/setSelectedEntityId", {selectedEntityId: entity.id});
+            this.$store.commit("Modules/DataNarrator/setSelectedEntityId", {selectedEntityId: entity.id});
             // this.moveEntity(undefined, fileId);
             // this.writeEntityDataToItems(entity, fileId);
 
@@ -280,7 +280,7 @@ export default {
 
 
             // state.importedEntities = models;
-            this.$store.commit("Tools/DataNarrator/setLoadingState", {loading: false});
+            this.$store.commit("Modules/DataNarrator/setLoadingState", {loading: false});
         },
 
         /**
@@ -539,7 +539,7 @@ export default {
             // entities.add(entity);
 
             // Add the entity to the state
-            this.$store.commit("Tools/DataNarrator/appendImportedEntities", {entity});
+            this.$store.commit("Modules/DataNarrator/appendImportedEntities", {entity});
             return entity;
         },
 

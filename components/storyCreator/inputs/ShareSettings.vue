@@ -1,10 +1,8 @@
 <script>
-import {BFormTags} from "bootstrap-vue";
 
 export default {
     name: "ShareSettings",
     components: {
-        BFormTags
     },
     props: {
         privateStory: {
@@ -38,6 +36,8 @@ export default {
             <label for="sharedWith">
                 {{ $t( "additional:modules.tools.dataNarrator.label.sharedWith" ) }}
             </label>
+            <!--
+            TODO: Replace with <v-chip
             <BFormTags
                 :value="sharedWith"
                 class="form-control"
@@ -50,6 +50,7 @@ export default {
                 :duplicate-tag-text="$t('additional:modules.tools.dataNarrator.label.sharedWithDuplicate')"
                 @input="value => $emit('update:shared-with', value)"
             />
+            -->
         </div>
     </div>
 </template>

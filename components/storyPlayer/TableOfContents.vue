@@ -20,7 +20,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
         currentStepId () {
             return this.currentStory.steps[this.previousStepIndex]._id;
         }
@@ -30,7 +30,7 @@ export default {
         this.setName("additional:modules.tools.dataNarrator.tableOfContents");
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
         toStepIndex (stepIndex) {
             this.$emit("setCurrentStepIndex", stepIndex);
         },

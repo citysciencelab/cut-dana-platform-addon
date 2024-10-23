@@ -44,7 +44,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
         isChapterWithoutStep () {
             return this.chaptersWithSteps.some(chapterWithSteps => chapterWithSteps.steps.length === 0);
         }
@@ -70,7 +70,7 @@ export default {
         this.saveOrder();
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
 
         /**
          * This method is used to set the current step index.

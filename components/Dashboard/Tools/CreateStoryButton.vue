@@ -16,8 +16,8 @@ export default {
         };
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
         /**
          * Creates a new story, switch mode
          * @returns {void}

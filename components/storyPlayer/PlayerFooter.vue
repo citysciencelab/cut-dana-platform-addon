@@ -26,7 +26,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
         stepLength () {
             return this.currentStory.steps.length;
         }

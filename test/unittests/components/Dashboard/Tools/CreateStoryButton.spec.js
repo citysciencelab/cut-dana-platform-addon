@@ -9,9 +9,9 @@ import {wrapperOptions, testStore} from "../../../vue_helpers";
 
 describe("CreateStoryButton.vue", () => {
     it("should create a new story when clicked", async () => {
-        testStore.commit("Tools/Login/setScreenName", "John Doe");
+        testStore.commit("Modules/Login/setScreenName", "John Doe");
 
-        /* eslint-disable-next-line one-var */
+
         const wrapper = shallowMount(CreateStoryButton, wrapperOptions),
 
             setCurrentStory = sinon.stub(wrapper.vm, "setCurrentStory"),

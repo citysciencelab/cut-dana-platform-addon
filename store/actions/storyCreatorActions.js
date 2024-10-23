@@ -8,6 +8,7 @@ import dataURLtoFile from "../../utils/dataURLtoFile.js";
 import getDataUrlFromFile from "../../utils/getDataUrlFromFile.js";
 import printFormDataAsTable from "../../utils/printFormData.js";
 import store from "../../../../../src/app-store";
+import stateStore from "../../../../../src/app-store/state";
 
 /**
  * Adds a chapter to the story
@@ -460,7 +461,7 @@ function uploadStoryFiles ({state}) {
  * @fires Core.ConfigLoader#RadioTriggerParserAddFolder
  * @returns {void}
  */
-async function importWMSLayers ({state, dispatch}, layerUrl, capabilities) {
+async function importWMSLayers ({dispatch}, layerUrl, capabilities) {
     const url = layerUrl;
 
     this.invalidUrl = false;
@@ -474,7 +475,7 @@ async function importWMSLayers ({state, dispatch}, layerUrl, capabilities) {
     }
 
     // if the wms layer is already imported, it will not be imported again
-    if (Radio.request("Parser", "getItemByAttributes", {url: url})) {
+    if (store.getters.layerConfigsByAttributes({url: url})) {
         // dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.errorHttpsMessage"), {root: true});
         return;
     }
@@ -493,19 +494,19 @@ async function importWMSLayers ({state, dispatch}, layerUrl, capabilities) {
                     uniqId = getAddWmsUniqueId(),
                     capability = parser.read(data),
                     version = capability?.version,
-                    checkVersion = isVersionEnabled({}, version),
-                    currentExtent = Radio.request("Parser", "getPortalConfig")?.mapView?.extent,
+                    checkVersion = isVersionEnabled(version),
+                    currentExtent = stateStore.portalConfig?.mapView?.extent,
                     projection = store.getters["Maps/projection"].code_;
 
 
-                let checkExtent = getIfInExtent({}, capability, currentExtent, projection),
+                let checkExtent = getIfInExtent(capability, currentExtent, projection),
                     finalCapability = capability;
 
                 if (!checkVersion) {
-                    const reversedData = getReversedData({}, data);
+                    const reversedData = getReversedData(data);
 
                     finalCapability = parser.read(reversedData);
-                    checkExtent = getIfInExtent({}, finalCapability, currentExtent, projection);
+                    checkExtent = getIfInExtent(finalCapability, currentExtent, projection);
                 }
 
 
@@ -514,17 +515,22 @@ async function importWMSLayers ({state, dispatch}, layerUrl, capabilities) {
                     return;
                 }
 
+                // TODO: Wahrscheinlich vorher einen Folder für die externals anlegen der leer ist und dann addLayerToLayerConfig mit parentID; alternativ eine addGroup?
+                if (store.getters.layerConfigsByAttributes({id: "ExternalLayer"}) === undefined) {
+                    // Radio.trigger("Parser", "addFolder", "Externe Fachdaten", "ExternalLayer", "tree", 0);
+                    // TODO: CHECK Probably not used anymore!?
+                    // Radio.trigger("ModelList", "renderTree");
+                    // $("#Overlayer").parent().after($("#ExternalLayer").parent());
+                    const overlayerParent = document.getElementById("Overlayer").parentNode,
+                        externalLayerParent = document.getElementById("ExternalLayer").parentNode;
 
-                if (Radio.request("Parser", "getItemByAttributes", {id: "ExternalLayer"}) === undefined) {
-                    Radio.trigger("Parser", "addFolder", "Externe Fachdaten", "ExternalLayer", "tree", 0);
-                    Radio.trigger("ModelList", "renderTree");
-                    $("#Overlayer").parent().after($("#ExternalLayer").parent());
+                    overlayerParent.parentNode.insertBefore(externalLayerParent, overlayerParent.nextSibling);
                 }
-                Radio.trigger("Parser", "addFolder", finalCapability.Service.Title, uniqId, "ExternalLayer", 0);
+                // Radio.trigger("Parser", "addFolder", finalCapability.Service.Title, uniqId, "ExternalLayer", 0);
                 finalCapability.Capability.Layer.Layer.forEach(layer => {
                     parseLayer({}, layer, uniqId, 1, capabilities, url, version);
                 });
-                Radio.trigger("ModelList", "closeAllExpandedFolder");
+                // Radio.trigger("ModelList", "closeAllExpandedFolder");
 
                 // this.$store.dispatch("Alerting/addSingleAlert", i18next.t("common:modules.tools.addWMS.completeMessage"));
 
@@ -545,7 +551,7 @@ async function importWMSLayers ({state, dispatch}, layerUrl, capabilities) {
  * @param {String} title - the title of current layer
  * @returns {String} parsedTitle - The parsed title
  */
-function getParsedTitle ({state}, title) {
+function getParsedTitle (title) {
     return String(title).replace(/\s+/g, "-").replace(/\//g, "-");
 }
 
@@ -563,12 +569,13 @@ function getParsedTitle ({state}, title) {
  * @fires Core.ConfigLoader#RadioTriggerParserAddLayer
  * @return {void}
  */
-function parseLayer ({state}, object, parentId, level, capabilities, wmsUrl, version) {
+async function parseLayer ({state}, object, parentId, level, capabilities, wmsUrl, version) {
     if (Object.prototype.hasOwnProperty.call(object, "Layer")) {
         object.Layer.forEach(layer => {
-            parseLayer({state}, layer, getParsedTitle({state}, object.Title), level + 1, capabilities);
+            parseLayer({state}, layer, getParsedTitle(object.Title), level + 1, capabilities);
         });
-        Radio.trigger("Parser", "addFolder", object.Title, getParsedTitle({state}, object.Title), parentId, level, false, false, object.invertLayerOrder);
+        // TODO: cannot add folder? cannot find function so far. how to work around?
+        // Radio.trigger("Parser", "addFolder", object.Title, getParsedTitle(object.Title), parentId, level, false, false, object.invertLayerOrder);
     }
     else {
         const datasets = [];
@@ -580,12 +587,27 @@ function parseLayer ({state}, object, parentId, level, capabilities, wmsUrl, ver
                 attributes: {}
             });
         }
-        Radio.trigger("Parser", "addLayer", object.Title, getParsedTitle({state}, object.Title), parentId, level, object.Name, wmsUrl, version, {
+        // eslint-disable-next-line one-var
+        const layerObject = {
+            id: getParsedTitle(object.Title),
+            name: object.Title,
+            parentId: parentId,
+            level: level,
+            typ: "WMS",
+            layers: [object.Name],
+            url: wmsUrl,
+            version: version,
+            visibility: true,
+            type: "layer",
+            showInLayerTree: false,
             maxScale: object?.MaxScaleDenominator?.toString(),
             minScale: object?.MinScaleDenominator?.toString(),
             legendURL: object?.Style?.[0].LegendURL?.[0].OnlineResource?.toString(),
             datasets
-        });
+        };
+
+        // TODO: eigentlich add mit  parentKey: treeSubjectsKey
+        await store.dispatch("addLayerToLayerConfig", await store.dispatch("addLayerToLayerConfig", {layerConfig: layerObject}, {root: true}));
     }
 }
 
@@ -626,7 +648,7 @@ function getAddWmsUniqueId () {
  * @param {String} version the version of current external wms layer
  * @returns {Boolean} true or false
  */
-function isVersionEnabled ({state}, version) {
+function isVersionEnabled (version) {
     if (typeof version !== "string") {
         return false;
     }
@@ -649,7 +671,7 @@ function isVersionEnabled ({state}, version) {
  * @param {Object} data the response of the imported wms layer
  * @returns {xml} reversedData - The reversed data of the response of the imported wms layer
 */
-function getReversedData ({state}, data) {
+function getReversedData (data) {
     let reversedData = new XMLSerializer().serializeToString(data);
 
     reversedData = reversedData.replace(/<SRS>/g, "<CRS>").replace(/<\/SRS>/g, "</CRS>").replace(/SRS=/g, "CRS=");
@@ -666,7 +688,7 @@ function getReversedData ({state}, data) {
  * @param {String} projection the projection of the map
  * @returns {Boolean} true or false
  */
-function getIfInExtent ({state}, capability, currentExtent, projection) {
+function getIfInExtent (capability, currentExtent, projection) {
     const layer = capability?.Capability?.Layer?.BoundingBox?.filter(bbox => {
         return bbox?.crs && bbox?.crs.includes("EPSG") && crs.getProjection(bbox?.crs) !== undefined && Array.isArray(bbox?.extent) && bbox?.extent.length === 4;
     });
@@ -707,8 +729,7 @@ function getIfInExtent ({state}, capability, currentExtent, projection) {
  * @param {String} layerUrl the url of the layer
  * @returns {Promise<Object[]>} available background maps to select
  */
-function capabilityOptions ({state}, layerUrl) {
-
+function capabilityOptions (layerUrl) {
     return axios({
         url: layerUrl + "?request=GetCapabilities&service=WMS"
     })
@@ -728,7 +749,6 @@ function capabilityOptions ({state}, layerUrl) {
             }
             return [];
         });
-
 }
 
 /**
@@ -738,9 +758,9 @@ function capabilityOptions ({state}, layerUrl) {
  * @returns {Promise} return nothing
  */
 async function hideWmsLayer (context, layerUrl) {
-    const capabilites = await capabilityOptions({}, layerUrl),
+    const capabilites = await capabilityOptions(layerUrl),
         allCapabilitiesModels = capabilites.map(capability => {
-            return this.layerConfigsByAttributes({id: getParsedTitle({}, capability.Title)});
+            return store.getters.layerConfigsByAttributes({id: getParsedTitle(capability.Title)});
         });
 
     allCapabilitiesModels.forEach(model => {

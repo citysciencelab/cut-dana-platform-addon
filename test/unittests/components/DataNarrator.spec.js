@@ -11,7 +11,7 @@ describe("addons/DatNarrator/components/DataNarrator.vue", () => {
     let wrapper;
 
     beforeEach(async () => {
-        testStore.commit("Tools/DataNarrator/setActive", true);
+        testStore.commit("Modules/DataNarrator/setActive", true);
         wrapper = await shallowMount(DataNarrator, wrapperOptions);
     });
 
@@ -24,13 +24,13 @@ describe("addons/DatNarrator/components/DataNarrator.vue", () => {
     });
 
     it("do not render the DataNarrator tool if not active", async () => {
-        await testStore.commit("Tools/DataNarrator/setActive", false);
+        await testStore.commit("Modules/DataNarrator/setActive", false);
 
         expect(wrapper.find("#tool-dataNarrator").exists()).to.be.false;
     });
 
     it("renders the UI of the story creator when selected", async () => {
-        await testStore.commit("Tools/DataNarrator/setMode", storyTellingModes.CREATE);
+        await testStore.commit("Modules/DataNarrator/setMode", storyTellingModes.CREATE);
 
         expect(wrapper.find("#tool-dataNarrator").exists()).to.be.true;
         expect(wrapper.find("dashboardpanel-stub").exists()).to.be.false;
@@ -39,7 +39,7 @@ describe("addons/DatNarrator/components/DataNarrator.vue", () => {
     });
 
     it("renders the UI of the story player when selected", async () => {
-        await testStore.commit("Tools/DataNarrator/setMode", storyTellingModes.PLAY);
+        await testStore.commit("Modules/DataNarrator/setMode", storyTellingModes.PLAY);
 
         expect(wrapper.find("#tool-dataNarrator").exists()).to.be.true;
         expect(wrapper.find("dashboardpanel-stub").exists()).to.be.false;

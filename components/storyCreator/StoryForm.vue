@@ -47,7 +47,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
         ...mapGetters(["isMobile"]),
 
         storyIntervalInSeconds: {
@@ -63,8 +63,8 @@ export default {
         this.loadStoryWms();
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
 
         /**
          * Save created or edited story to backend

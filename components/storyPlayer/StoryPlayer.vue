@@ -48,10 +48,11 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters("Tools/FileImportAddon", Object.keys(fileImportGetters)),
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/FileImport", Object.keys(fileImportGetters)),
         ...mapGetters("Maps", ["mode"]),
-        ...mapGetters(["layerConfigsByAttributes"]),
+        ...mapGetters(["layerConfigsByAttributes", "addLayerToLayerConfig"]),
+        ...mapActions("Alerting", ["addSingleAlert"]),
 
         /**
          * The current selected step of the story.
@@ -78,7 +79,7 @@ export default {
         },
 
         backgroundMaps () {
-            return this.layerConfigsByAttributes({isBaseLayer: true});
+            return this.layerConfigsByAttributes({baselayer: true});
         }
     },
     watch: {
@@ -139,7 +140,7 @@ export default {
         if (this.currentStory) {
             if (Object.hasOwn(this.currentStory, "displayType") && this.currentStory.displayType.toUpperCase() === "DIPAS") {
                 this.$store.commit(
-                    "Tools/DipasStorySelector/setActive",
+                    "Modules/DipasStorySelector/setActive",
                     true
                 );
             }
@@ -160,12 +161,12 @@ export default {
         this.disableStepLayers({...this.currentStep}, null, true);
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
         // These application wide getters and setters can be found in 'src/modules/map/store'
         ...mapMutations("Map", ["setCenter", "setLayerVisibility"]),
         ...mapGetters("Map", ["layerList", "visibleLayerList", "map"]),
-        ...mapActions("Tools/FileImportAddon", [
+        ...mapActions("Modules/FileImport", [
             "importKML",
             "setSelectedFiletype"
         ]),
@@ -187,13 +188,26 @@ export default {
             if (this.currentStep && this.currentStep.wmsLayers) {
                 const layer = this.currentStep.wmsLayers.find(url => url.url === layerUrl),
                     layerModels = selectedCapabilities.map(capability => {
-                        const parsedModel = this.layerConfigsByAttributes({layers: capability});
+                        const parsedModel = this.layerConfigsByAttributes({layers: capability}),
+                            models = [];
 
-                        let models = [];
-
-                        this.addLayer(foundBgMap);
-                        Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
-                        models = this.layerConfigsByAttributes({id: parsedModel.id});
+                        this.addLayerToLayerConfig({layerConfig: parsedModel}).then((addedLayer) => {
+                            if (addedLayer) {
+                                this.addSingleAlert({
+                                    content: this.$t("common:modules.addWMS.completeMessage"),
+                                    category: "success",
+                                    title: this.$t("common:modules.addWMS.alertTitleSuccess")});
+                                this.$refs.wmsUrl.value = "";
+                                models.push(addedLayer);
+                            }
+                            else {
+                                this.addSingleAlert({
+                                    content: this.$t("common:modules.addWMS.alreadyAdded"),
+                                    category: "warning",
+                                    title: this.$t("common:modules.addWMS.errorTitle")});
+                                this.$refs.wmsUrl.value = "";
+                            }
+                        });
 
                         return models;
                     }),
@@ -258,7 +272,7 @@ export default {
                 const toolKey = tool.key.charAt(0).toUpperCase() + tool.key.slice(1);
 
                 this.$store.commit(
-                    `Tools/${toolKey}/setActive`,
+                    `Modules/${toolKey}/setActive`,
                     true
                 );
             }
@@ -285,7 +299,7 @@ export default {
             toolsToRemove.forEach(tool => {
                 if (tool) {
                     this.$store.commit(
-                        `Tools/${tool.charAt(0).toUpperCase() + tool.slice(1)}/setActive`,
+                        `Modules/${tool.charAt(0).toUpperCase() + tool.slice(1)}/setActive`,
                         false
                     );
                 }

@@ -10,7 +10,7 @@ describe("StoryForm", () => {
     let wrapper;
 
     beforeEach(() => {
-        testStore.commit("Tools/DataNarrator/setCurrentStory", emptyStory);
+        testStore.commit("Modules/DataNarrator/setCurrentStory", emptyStory);
         wrapper = shallowMount(StoryForm, {
             ...wrapperOptions,
             computed: {

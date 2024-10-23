@@ -38,9 +38,9 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters("Tools/Login", ["accessToken"]),
-        ...mapGetters(["uiStyle"])
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/Login", ["accessToken"]),
+        ...mapGetters(["uiStyle", "layerConfigsByAttributes"])
     },
     watch: {
         "accessToken": {
@@ -77,7 +77,7 @@ export default {
 
     },
     created () {
-        this.$on("close", this.close);
+        this.$root.$emit("close", this.close);
         window.addEventListener("resize", this.resizeHandler);
         this.resizeHandler();
     },
@@ -95,19 +95,19 @@ export default {
         // this.createModeOptions();
 
         // Apply layout hacks to the tool window
-        this.toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0];
-        this.toolWindow.style.borderRadius = "15px";
-        document.getElementById("vue-tool-content-body").style.borderRadius = "15px";
-        document.getElementById("vue-tool-content-body").style.padding = "15px";
-        this.heading = this.toolWindow.getElementsByClassName("win-heading")[0];
-        this.heading.style.border = "none";
-        this.heading.style.height = "0";
-        this.heading.innerHTML = "";
-        // Hide the main menu
-        document.getElementById("main-nav").style.display = "none";
+        // this.toolWindow = document.querySelectorAll(".tool-window-vue, .table-tool-win-all-vue")[0];
+        // this.toolWindow.style.borderRadius = "15px";
+        // document.getElementById("vue-tool-content-body").style.borderRadius = "15px";
+        // document.getElementById("vue-tool-content-body").style.padding = "15px";
+        // this.heading = this.toolWindow.getElementsByClassName("win-heading")[0];
+        // this.heading.style.border = "none";
+        // this.heading.style.height = "0";
+        // this.heading.innerHTML = "";
+        // // Hide the main menu
+        // document.getElementById("main-nav").style.display = "none";
 
-        if (this.$store.state.Tools.DataNarrator.backendURL) {
-            console.log(this.$store.state.Tools.DataNarrator.backendURL);
+        // if (this.$store.state.Tools.DataNarrator.backendURL) {
+        if (this.$store.state.Modules.DataNarrator.backendConfig.url) {
             this.setBackendConfig({url: this.$store.state.Tools.DataNarrator.backendURL});
         }
 
@@ -140,8 +140,8 @@ export default {
         this.activateTool();
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
 
         resizeHandler () {
             const doResize = this.mode === constants.storyTellingModes.DASHBOARD && this.currentStory === null;
@@ -247,14 +247,7 @@ export default {
             const closeDataNarrator = () => {
                 this.setActive(false);
                 this.resetDataNarrator();
-
-                const model = Radio.request(
-                    "ModelList",
-                    "getModelByAttributes",
-                    {
-                        id: this.$store.state.Tools.DataNarrator.id
-                    }
-                );
+                const model = this.layerConfigsByAttributes({id: this.$store.state.Tools.DataNarrator.id});
 
                 if (model) {
                     model.set("isActive", false);
@@ -307,40 +300,39 @@ export default {
         :initial-width="initialWidth"
     >
     -->
-    <template #toolBody>
-        <v-app
-            v-if="active"
-            id="tool-dataNarrator"
-            :class="mode"
-        >
-            <StoryPlayer
-                v-if="mode === constants.storyTellingModes.PLAY"
-                ref="player"
-                :step-index="stepIndex"
-                @reset="reset"
-                @share-story="shareStory"
-            />
+    <v-app
+        v-if="active"
+        id="tool-dataNarrator"
+        :class="mode"
+    >
+        <StoryPlayer
+            v-if="mode === constants.storyTellingModes.PLAY"
+            ref="player"
+            :step-index="stepIndex"
+            @reset="reset"
+            @share-story="shareStory"
+        />
 
-            <StoryCreator
-                v-else-if="mode === constants.storyTellingModes.CREATE"
-                :uid="uid"
-                @confirm="confirmDialog"
-                @reset-tool="reset"
-            />
+        <StoryCreator
+            v-else-if="mode === constants.storyTellingModes.CREATE"
+            :uid="uid"
+            @confirm="confirmDialog"
+            @reset-tool="reset"
+        />
 
-            <DashboardPanel
-                v-else
-                :is-admin="isAdmin"
-                :uid="uid"
-                @confirm="confirmDialog"
-                @resizeHandler="resizeHandler"
-                @share-story="shareStory"
-                @reset-step-index="stepIndex = 0"
-            />
+        <DashboardPanel
+            v-else
+            :is-admin="isAdmin"
+            :uid="uid"
+            @confirm="confirmDialog"
+            @resizeHandler="resizeHandler"
+            @share-story="shareStory"
+            @reset-step-index="stepIndex = 0"
+        />
 
-            <SnackBar ref="snackB" />
-        </v-app>
-    </template>
+        <SnackBar ref="snackB" />
+    </v-app>
+
     <!--</ToolTemplate>-->
 </template>
 

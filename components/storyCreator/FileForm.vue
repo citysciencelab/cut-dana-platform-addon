@@ -69,7 +69,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
         ...mapGetters(["namedProjections"])
         // ...mapGetters("Maps", ["altitude", "longitude", "latitude", "clickCoordinate", "mouseCoordinate"])
 
@@ -115,8 +115,8 @@ export default {
         // console.log("beforeDestroy");
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
         ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
 
         /**

@@ -42,14 +42,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters))
     },
     mounted () {
         document.getElementById("vue-tool-content-body").style.backgroundColor = "#F6f6f6";
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
         ...cesiumUtils,
         /**
          * Handle editing a step

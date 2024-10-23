@@ -1,6 +1,8 @@
 import {defaultMap} from "../store/constantsDataNarrator";
 import sortBy from "../../../../src/shared/js/utils/sortBy";
 import ThreeDUtilities from "./ThreeDUtilities.js";
+import appStore from "../../../../src/app-store";
+import {mapActions} from "vuex";
 
 export default {
     data () {
@@ -9,12 +11,15 @@ export default {
         };
     },
     computed: {
+        ...mapActions(["addLayerToLayerConfig", "layerConfigsByAttributes"]),
+        ...mapActions("Alerting", ["addSingleAlert"]),
+
         /**
          * All layer options
          * @returns {Object[]} layers to select
          */
         allLayerOptions () {
-            const allLayers = this.layerConfigsByAttributes({type: "layer"}),
+            const allLayers = appStore.getters.layerConfigsByAttributes({type: "layer"}),
                 layers3D = [],
                 plainLayers = [],
                 backgroundLayers = [];
@@ -26,7 +31,7 @@ export default {
                 else {
                     plainLayers.push(layer);
                 }
-                if (layer.isBaseLayer) {
+                if (layer.baselayer) {
                     backgroundLayers.push(layer);
                 }
             });
@@ -70,11 +75,11 @@ export default {
         getLayerById (layer) {
             const layerId = typeof layer === "string" ? layer : layer.id;
 
-            return this.layerConfigsByAttributes({id: layerId});
+            return appStore.getters.layerConfigById(layerId);
         },
 
         getLayerModelByName (name) {
-            return this.layerConfigsByAttributes({name: this.getLayerNameFromFile(name)});
+            return appStore.getters.layerConfigsByAttributes({name: this.getLayerNameFromFile(name)});
         },
 
 
@@ -86,8 +91,8 @@ export default {
          */
         toggleLayer (layer, enabled) {
             if (layer) {
-                layer.setIsVisibleInMap(enabled);
-                layer.setIsSelected(enabled);
+                layer.visibility = enabled;
+                // layer.setIsSelected(enabled);
             }
         },
 
@@ -110,7 +115,7 @@ export default {
             if (layer) {
                 // hide 3D layers in 3D mode
 
-                this.toggleLayer(layer, false);
+                layer.visibility = false;
                 if (this.layerTypes3DSpecific.includes(layer.attributes.typ)) {
                     // It doesn't work for 3D layers 🤷🏼
                     // const map = Radio.request("Map", "getMap3d");
@@ -150,12 +155,12 @@ export default {
             const layers = [];
 
             for (const layer of selected) {
-                let layerModel = this.layerConfigsByAttributes({id: layer.id});
+                let layerModel = appStore.getters.layerConfigById(layer.id);
                 const exists = items.filter(item => item.id === layer.id).length > 0 && layerModel;
 
                 if (exists) {
                     if (!layerModel) {
-                        layerModel = this.layerConfigsByAttributes({id: layer.id});
+                        layerModel = appStore.getters.layerConfigById(layer.id);
                         this.addLayer(layerModel);
                     }
                     layers.push(layerModel);
@@ -165,15 +170,15 @@ export default {
         },
 
         enabledLayers () {
-            return this.layerConfigsByAttributes({isVisibleInMap: true, isBaseLayer: false});
+            return appStore.getters.layerConfigsByAttributes({isVisibleInMap: true, baselayer: false});
         },
 
         enabled3DLayers () {
-            return this.layerConfigsByAttributes({parentId: "3d_daten"});
+            return appStore.getters.layerConfigsByAttributes({parentId: "3d_daten"});
         },
 
         enabledBackgroundLayers () {
-            return this.layerConfigsByAttributes({isVisibleInMap: true, isBaseLayer: true});
+            return appStore.getters.layerConfigsByAttributes({isVisibleInMap: true, baselayer: true});
         },
 
         enabledLayersWithMode (mode) {
@@ -195,9 +200,7 @@ export default {
                 const layerId = typeof layer === "string" ? layer : layer.id;
 
                 // check if model is already in modelList
-                layerModel = this.getLayerById(layerId);
-
-                if (!layerModel) {
+                if (!this.getLayerById(layerId)) {
                     const foundLayer = layerList.find(l => l.id === layerId);
 
                     // Somtimes, we don't have entire model, only ID
@@ -205,11 +208,26 @@ export default {
                         foundLayer.selectionIDX = layer.selectionIDX;
                         foundLayer.transparency = layer.transparency;
                     }
-                    this.addLayer(foundBgMap);
-                    Radio.trigger("ModelList", "addModelsByAttributes", foundLayer);
-                    layerModel = this.getLayerById(foundLayer);
+
+                    // TODO: eigentlich mit "treeSubjectsKey" this.addLayerToLayerConfig({layerConfig: foundLayer, parentKey: treeSubjectsKey})
+                    this.addLayerToLayerConfig({layerConfig: foundLayer}).then((addedLayer) => {
+                        if (addedLayer) {
+                            this.addSingleAlert({
+                                content: this.$t("common:modules.addWMS.completeMessage"),
+                                category: "success",
+                                title: this.$t("common:modules.addWMS.alertTitleSuccess")});
+                            this.$refs.wmsUrl.value = "";
+                            this.enableLayer(layerModel);
+                        }
+                        else {
+                            this.addSingleAlert({
+                                content: this.$t("common:modules.addWMS.alreadyAdded"),
+                                category: "warning",
+                                title: this.$t("common:modules.addWMS.errorTitle")});
+                            this.$refs.wmsUrl.value = "";
+                        }
+                    });
                 }
-                this.enableLayer(layerModel);
             }
         },
 
@@ -241,9 +259,9 @@ export default {
         setDefaultBackgroundLayer () {
             this.disableLayers(this.enabledBackgroundLayers());
 
-            const defaultBackgroundMap = this.layerConfigsByAttributes({isBaseLayer: true, id: defaultMap});
+            const defaultBackgroundMap = this.layerConfigsByAttributes({baselayer: true});
 
-            this.enableLayer(defaultBackgroundMap);
+            this.enableLayer(defaultBackgroundMap[0]);
         },
 
         disableBackgroundLayers () {

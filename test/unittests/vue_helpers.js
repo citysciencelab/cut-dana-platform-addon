@@ -2,8 +2,8 @@ import Vue from "vue";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 import DataNarrator from "../../store/DataNarrator";
-import Login from "../../../../../src/modules/tools/login/store/indexLogin";
-import Draw from "../../../../../src/modules/tools/draw/store/indexDraw";
+import Login from "../../../../../src/modules/login/store/indexLogin";
+import Draw from "../../../../../src/modules/draw/store/indexDraw";
 import {config, createLocalVue} from "@vue/test-utils";
 
 Vue.use(Vuetify);
@@ -54,4 +54,4 @@ export const wrapperOptions = {
     vuetify: new Vuetify()
 };
 
-testStore.commit("Tools/DataNarrator/setActive", true);
+testStore.commit("Modules/DataNarrator/setActive", true);

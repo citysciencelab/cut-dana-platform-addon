@@ -57,8 +57,8 @@ export default {
         this.initialLayerSelection = [...this.step.layers];
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
 
         /**
          * Handle return back to the stepForm

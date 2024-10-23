@@ -40,7 +40,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters))
     },
     mounted () {
         if (Object.hasOwn(this.currentStory, "titleImage") && this.currentStory.titleImage !== "") {
@@ -54,8 +54,8 @@ export default {
         }
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
         /**
          * Handle the cover image change
          * @param {Event} event - The file input change event

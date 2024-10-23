@@ -3,7 +3,8 @@
 import axios from "axios";
 import Masonry from "masonry-layout";
 import {mapGetters, mapMutations} from "vuex";
-import InfiniteLoading from "vue-infinite-loading";
+import InfiniteLoading from "v3-infinite-loading";
+import "v3-infinite-loading/lib/style.css";
 
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
@@ -40,12 +41,12 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters))
     },
     watch: {
         "backendConfig": { // Can be unavailable when the component is mounted
             handler (conf) {
-                if (conf.url) { // check if it is available
+                if (conf && conf.url) { // check if it is available
                     this.refreshStoryList();
                 }
             },
@@ -77,7 +78,7 @@ export default {
         }, 100);
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
 
         /**
          * Refresh masonry layout after image is loaded

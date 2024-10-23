@@ -11,7 +11,7 @@ import {
     mdiTrashCanOutline
 } from "@mdi/js";
 import * as uuid from "uuid";
-import {VueEditor} from "vue2-editor";
+import {VueEditor} from "vue3-editor";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
 
@@ -109,12 +109,12 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
-        ...mapGetters("Tools/FileImportAddon", Object.keys(fileImportGetters)),
-        ...mapGetters("Tools/Modeler3D", Object.keys(modelerGetters)),
-        ...mapGetters(["isMobile",
-            "layerConfigsByAttributes"]),
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/FileImport", Object.keys(fileImportGetters)),
+        ...mapGetters("Modules/Modeler3D", Object.keys(modelerGetters)),
+        ...mapGetters(["isMobile", "layerConfigsByAttributes", "addLayerToLayerConfig"]),
         ...mapActions("Maps", ["addLayer"]),
+        ...mapActions("Alerting", ["addSingleAlert"]),
 
 
         /**
@@ -190,9 +190,29 @@ export default {
             }
 
             return newBgMaps;
+        },
+
+        centerCoordinateLat: {
+            get () {
+                return this.step.centerCoordinate ? this.step.centerCoordinate[1] : null;
+            },
+            set (value) {
+                if (this.step.centerCoordinate) {
+                    this.$set(this.step.centerCoordinate, 1, value);
+                }
+            }
+        },
+
+        centerCoordinateLng: {
+            get () {
+                return this.step.centerCoordinate ? this.step.centerCoordinate[0] : null;
+            },
+            set (value) {
+                if (this.step.centerCoordinate) {
+                    this.step.centerCoordinate[0] = value;
+                }
+            }
         }
-
-
     },
     watch: {
         /**
@@ -261,7 +281,7 @@ export default {
                     const toolKey = addon.key.charAt(0).toUpperCase() + addon.key.slice(1);
 
                     this.$store.commit(
-                        `Tools/${toolKey}/setActive`,
+                        `Modules/${toolKey}/setActive`,
                         false
                     );
                 }
@@ -277,7 +297,7 @@ export default {
                     const toolKey = addon.key.charAt(0).toUpperCase() + addon.key.slice(1);
 
                     this.$store.commit(
-                        `Tools/${toolKey}/setActive`,
+                        `Modules/${toolKey}/setActive`,
                         true
                     );
                 }
@@ -295,14 +315,14 @@ export default {
 
 
             this.$store.commit("Maps/setMode", "2D");
-            this.$store.commit("Tools/Draw/setActive", false);
+            this.$store.commit("Modules/Draw/setActive", false);
             this.switchBackgroundMap(this.visibleBackgroundMap);
         }
     },
     methods: {
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/FileImportAddon", [
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/FileImport", [
             "importKML",
             "setSelectedFiletype"
         ]),
@@ -448,13 +468,28 @@ export default {
         updateSelectedCapabilities (selectedCapabilities, layerUrl, allCapabilities) {
             const layer = this.wmsLayers.find(url => url.url === layerUrl),
                 layerModels = selectedCapabilities.map(capability => {
-                    const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
-                    let models = [];
+                    const parsedModel = this.layerConfigsByAttributes({layers: capability}),
+                        models = [];
+                    // const parsedModel = Radio.request("Parser", "getItemByAttributes", {layers: capability});
 
                     if (parsedModel) {
-
-                        Radio.trigger("ModelList", "addModelsByAttributes", parsedModel);
-                        models = Radio.request("ModelList", "getModelByAttributes", {id: parsedModel.id});
+                        this.addLayerToLayerConfig({layerConfig: parsedModel}).then((addedLayer) => {
+                            if (addedLayer) {
+                                this.addSingleAlert({
+                                    content: this.$t("common:modules.addWMS.completeMessage"),
+                                    category: "success",
+                                    title: this.$t("common:modules.addWMS.alertTitleSuccess")});
+                                this.$refs.wmsUrl.value = "";
+                                models.push(addedLayer);
+                            }
+                            else {
+                                this.addSingleAlert({
+                                    content: this.$t("common:modules.addWMS.alreadyAdded"),
+                                    category: "warning",
+                                    title: this.$t("common:modules.addWMS.errorTitle")});
+                                this.$refs.wmsUrl.value = "";
+                            }
+                        });
                     }
                     return models;
                 }),
@@ -684,12 +719,11 @@ export default {
                 resetUploader();
             }).catch((error) => {
                 console.error(error);
-                Radio.trigger("Alert", "alert", {
-                    text: i18next.t(
+                this.addSingleAlert({
+                    category: "error",
+                    content: `<strong>${i18next.t(
                         "additional:modules.tools.dataNarrator.error.errorAddingImage"
-                    ),
-                    category: "Error",
-                    kategorie: "alert-danger"
+                    )}</strong>`
                 });
             });
         },
@@ -873,7 +907,7 @@ export default {
 
         toggleDrawTool () {
             this.drawToolOpen = !this.drawToolOpen;
-            this.$store.commit("Tools/Draw/setActive", this.drawToolOpen);
+            this.$store.commit("Modules/Draw/setActive", this.drawToolOpen);
         },
 
         /**
@@ -1273,7 +1307,7 @@ export default {
                         <v-text-field
                             id="step-center-lng"
                             :key="`centerCoordinatex${key}`"
-                            v-model="step.centerCoordinate && step.centerCoordinate[0]"
+                            v-model="centerCoordinateLng"
                             :class="{'positon_change': step.centerCoordinate && step.centerCoordinate !== center()}"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.longitude'
@@ -1295,7 +1329,7 @@ export default {
                         <v-text-field
                             id="step-center-lat"
                             :key="`centerCoordinatex${key}`"
-                            v-model="step.centerCoordinate && step.centerCoordinate[1]"
+                            v-model="centerCoordinateLat"
                             :class="{'positon_change': step.centerCoordinate && step.centerCoordinate !== center()}"
                             :label="$t(
                                 'additional:modules.tools.dataNarrator.label.latitude'

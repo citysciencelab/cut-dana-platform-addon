@@ -25,7 +25,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters))
     },
     methods: {
         activateScrollyTelling (step) {

@@ -1,6 +1,8 @@
 <script>
 import LayerSelectedPreview from "./LayerSelectedPreview.vue";
 import LayerUtilities from "../../../mixins/LayerUtilities";
+import appStore from "../../../../../../src/app-store";
+import {mapGetters} from "vuex";
 
 export default {
     name: "LayerSelector",
@@ -21,6 +23,8 @@ export default {
         }
     },
     computed: {
+        ...mapGetters(["layerConfigById"]),
+
         propModel: {
             get () {
                 return this.selected.map(item => item.id);
@@ -37,7 +41,7 @@ export default {
                 })));
             }
         },
-        // ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        // ...mapGetters("Modules/DataNarrator", Object.keys(getters))
         transformedItems () {
             let id = 0;
             const categories = {};
@@ -203,9 +207,10 @@ export default {
             this.$emit("update:selected", selected);
         },
         updateSelectedItems (selectedIds) {
+
             const
                 // Filter the original items based on the selected IDs
-                selectedItems = selectedIds.map(layer => Radio.request("Parser", "getItemByAttributes", {id: layer}));
+                selectedItems = selectedIds.map(layer => this.layerConfigById(layer));
 
             this.$emit("update:selected", selectedItems.map((layer, index) => ({
                 id: layer.id,

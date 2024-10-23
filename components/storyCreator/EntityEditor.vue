@@ -51,7 +51,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
         ...mapGetters(["namedProjections"]),
         ...mapGetters(["layerConfigsByAttributes"])
         // ...mapGetters("Maps", ["clickCoordinate", "mouseCoordinate"]),
@@ -114,9 +114,9 @@ export default {
         }));
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-        ...mapMutations("Tools/Gfi", {setGfiActive: "setActive"}),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/GetFeatureInfo", {setGfiActive: "setActive"}),
 
         selectedEntity () {
             const map = this.cesiumMap(),
@@ -129,7 +129,7 @@ export default {
 
         /**
          * Updates the scale of the selected entity.
-         * Partially based on code from src/modules/tools/modeler3d
+         * Partially based on code from src/modules/Modules/modeler3d
          * @returns {void}
          */
         updateScale () {

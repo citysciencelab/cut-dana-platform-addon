@@ -17,15 +17,15 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Tools/Login", ["loggedIn"])
+        ...mapGetters("Modules/Login", ["loggedIn"])
     },
     methods: {
         openLoginWindow () {
             if (!this.loggedIn) {
-                this.$store.commit("Tools/Login/setActive", true);
+                this.$store.commit("Modules/Login/setActive", true);
             }
             else {
-                this.$store.dispatch("Tools/Login/logout");
+                this.$store.dispatch("Modules/Login/logout");
                 // this.refreshStoryList("all");
                 this.$root.snackB.show({
                     message: this.$t(

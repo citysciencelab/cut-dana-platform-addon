@@ -11,7 +11,7 @@ describe("StoryPlayer", () => {
     const newStory = {...emptyStory, chapters: [], steps: [emptyStep, emptyStep, emptyStep]};
 
     it("renders a ClassicPlayer component when showMode is 'classic'", async () => {
-        testStore.commit("Tools/DataNarrator/setCurrentStory", {...newStory, displayType: "classic"});
+        testStore.commit("Modules/DataNarrator/setCurrentStory", {...newStory, displayType: "classic"});
         const wrapper = await shallowMount(StoryPlayer, {
             ...wrapperOptions,
             propsData: {
@@ -30,7 +30,7 @@ describe("StoryPlayer", () => {
     });
 
     it("renders a ScrollyTeller component when showMode is 'scrolly'", async () => {
-        testStore.commit("Tools/DataNarrator/setCurrentStory", {...newStory, displayType: "scrolly"});
+        testStore.commit("Modules/DataNarrator/setCurrentStory", {...newStory, displayType: "scrolly"});
         const wrapper = await shallowMount(StoryPlayer, {
             ...wrapperOptions,
             propsData: {
@@ -49,7 +49,7 @@ describe("StoryPlayer", () => {
     });
 
     it("sets the currentStepIndex to the value of the stepIndex prop", () => {
-        testStore.commit("Tools/DataNarrator/setCurrentStory", newStory);
+        testStore.commit("Modules/DataNarrator/setCurrentStory", newStory);
         const wrapper = shallowMount(StoryPlayer, {
             ...wrapperOptions,
             propsData: {

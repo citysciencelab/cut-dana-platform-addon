@@ -32,7 +32,7 @@ describe("DashboardPanel.vue", () => {
     });
 
     it("displays the only one story card when currentStory is not null", async () => {
-        store.commit("Tools/DataNarrator/setCurrentStory", {_id: 1, title: "Story 1", updatedAt: "2020"});
+        store.commit("Modules/DataNarrator/setCurrentStory", {_id: 1, title: "Story 1", updatedAt: "2020"});
         const wrapper = shallowMount(DashboardPanel, wrapperOptions);
 
         expect(wrapper.findAllComponents({name: "StoryCard"}).length).to.equal(1);

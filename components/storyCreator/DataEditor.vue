@@ -36,9 +36,9 @@ export default {
         // Your mounted lifecycle hook logic goes here
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
-        ...mapActions("Tools/FileImportAddon", [
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
+        ...mapActions("Modules/FileImport", [
             "importKML",
             "setSelectedFiletype"
         ]),
@@ -66,7 +66,7 @@ export default {
 
         toggleDrawTool () {
             this.drawToolOpen = !this.drawToolOpen;
-            this.$store.commit("Tools/Draw/setActive", this.drawToolOpen);
+            this.$store.commit("Modules/Draw/setActive", this.drawToolOpen);
         },
 
 

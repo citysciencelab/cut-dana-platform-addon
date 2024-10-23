@@ -41,7 +41,7 @@ export default {
         ...mapGetters("Legend", Object.keys(getters))
     },
     mounted () {
-        this.getLegendConfig();
+        // this.getLegendConfig();
 
         // Add the legend button to the top right corner
         const parentElement = document.getElementById("top-right-fallback"),
@@ -58,9 +58,9 @@ export default {
             this.legendAdded = true;
         }
 
-        document.getElementById("button3D").style.backgroundColor = "white";
-        document.getElementById("button3D").style.color = "black";
-        document.getElementById("button3D").style.borderRadius = "0.25rem";
+        // document.getElementById("button3D").style.backgroundColor = "white";
+        // document.getElementById("button3D").style.color = "black";
+        // document.getElementById("button3D").style.borderRadius = "0.25rem";
     },
     methods: {
         ...mapActions("Legend", Object.keys(actions)),
@@ -115,7 +115,7 @@ export default {
 
         <v-row
             class="with-fancy-background"
-            :style="`background-image: url(${require(isMobile() ? '../../img/cutcsl_depiction.png' : '../../img/cutcsl_depiction.png')})`"
+            :style="`background-image: url(${require(isMobile ? '../../img/cutcsl_depiction.png' : '../../img/cutcsl_depiction.png')})`"
         >
             <v-col
                 cols="12"

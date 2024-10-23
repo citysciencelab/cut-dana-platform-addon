@@ -12,7 +12,7 @@ describe("StepForm", () => {
     let wrapper;
 
     beforeEach(() => {
-        testStore.commit("Tools/DataNarrator/setCurrentStory", emptyStory);
+        testStore.commit("Modules/DataNarrator/setCurrentStory", emptyStory);
         wrapper = shallowMount(StepForm, {
             ...wrapperOptions,
             computed: {

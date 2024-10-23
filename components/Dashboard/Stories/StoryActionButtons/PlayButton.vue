@@ -22,8 +22,8 @@ export default {
         };
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Tools/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
+        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
         /**
          * Changes the story that is selected and fetches the corresponding Story json from the API
          * @returns {void}
