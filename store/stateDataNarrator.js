@@ -22,7 +22,7 @@ const state = {
         animationChecked: false,
         direction: "out"
     },
-    mode: dataNarratorModes.DASHBOARD
+    mode: dataNarratorModes.LOGIN_TEST
 };
 
 export default state;

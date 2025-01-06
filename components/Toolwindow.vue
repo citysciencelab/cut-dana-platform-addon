@@ -30,6 +30,7 @@ export default {
     }
 
     .toolwindow {
+        pointer-events: auto;
         background-color: white;
         border-radius: 4px;
         box-shadow: 0 13px 33px -8px rgba(0,0,0,0.57);

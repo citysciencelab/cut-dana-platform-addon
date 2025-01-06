@@ -3,7 +3,6 @@
     LOGIN_TEST: "login"
 }
 
-
 export {
     dataNarratorModes,
 }

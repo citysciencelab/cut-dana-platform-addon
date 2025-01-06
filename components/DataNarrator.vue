@@ -13,23 +13,40 @@ export default {
     mixins: [DataNarratorWindowMixins],
     components: {DataNarratorDashboard, TestingLogin, Toolwindow},
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
+        ...mapGetters("Modules/Login", ["accessToken"]),
+        constants() {
+            return constants;
+        }
+    },
+    watch: {
+      "mode": {
+          handler() {
+          }
+      }
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations))
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations))
     },
     mounted() {
-
+    },
+    data() {
+        return {
+            // mode: null
+        }
     }
 };
 </script>
 
 <template lang="html">
-    <Teleport to="#datanarrator-root">
+    <div>
         test
-        <TestingLogin v-if="mode === constants.dataNarratorModes.LOGIN_TEST"/>
-        <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD"/>
-    </Teleport>
+        <Teleport to="#datanarrator-root">
+            <TestingLogin v-if="mode === constants.dataNarratorModes.LOGIN_TEST"/>
+            <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD"/>
+        </Teleport>
+    </div>
+
 </template>
 
 <style lang="scss">
@@ -42,7 +59,7 @@ export default {
     top: 0;
 
     display: grid;
-    grid-template-columns: 100px auto 100px;
+    grid-template-columns: 600px auto 100px;
     gap: 10px;
 }
 

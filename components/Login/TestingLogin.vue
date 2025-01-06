@@ -6,22 +6,21 @@ import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import LoginMixin from "../../mixins/LoginMixin";
 import Toolwindow from "../Toolwindow.vue";
+import LoginButton from "./LoginButton.vue";
 
 export default {
     name: "TestingLogin",
     mixins: [LoginMixin],
-    components: {Toolwindow},
+    components: {LoginButton, Toolwindow},
     computed: {
-        ...mapGetters("Tools/DataNarrator", Object.keys(getters))
     },
     methods: {
-        ...mapMutations("Tools/DataNarrator", Object.keys(mutations))
     }
 };
 </script>
 
 <template lang="html">
     <Toolwindow>
-        <div>login</div>
+        <LoginButton />
     </Toolwindow>
 </template>

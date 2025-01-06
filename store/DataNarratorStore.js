@@ -4,7 +4,7 @@ import getters from "./gettersDataNarrator";
 
 export default {
     namespaced: true,
-    state: {...state},
+    state,
     mutations,
     getters
 };
