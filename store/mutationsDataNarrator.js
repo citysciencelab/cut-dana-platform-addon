@@ -20,6 +20,10 @@ const mutations = {
         if (payload && payload.indexOf("translate#") > -1) {
             state.name = payload.substr("translate#".length);
         }
+    },
+
+    setActive: (state, payload) => {
+        state.active = payload;
     }
 };
 

@@ -2,7 +2,7 @@ import {dataNarratorModes} from "./contantsDataNarrator";
 
 const state = {
     description: "additional:modules.DataNarrator.description",
-    active: true,
+    active: false,
     id: "DataNarrator",
     name: "additional:modules.DataNarrator.title",
     icon: "bi-book",

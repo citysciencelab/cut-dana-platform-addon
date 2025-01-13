@@ -29,6 +29,8 @@ export default {
         ...mapMutations("Modules/DataNarrator", Object.keys(mutations))
     },
     mounted() {
+        this.disableMainMenu();
+        this.disableSecondaryMenu();
     },
     data() {
         return {
@@ -59,7 +61,7 @@ export default {
     top: 0;
 
     display: grid;
-    grid-template-columns: 600px auto 100px;
+    grid-template-columns: 100px auto 100px;
     gap: 10px;
 }
 
