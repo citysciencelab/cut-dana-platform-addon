@@ -5,7 +5,7 @@ import {mapGetters, mapMutations} from "vuex";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import LoginMixin from "../../mixins/LoginMixin";
-import Toolwindow from "../Toolwindow.vue";
+import Toolwindow from "../ToolWindow/Toolwindow.vue";
 import LoginButton from "./LoginButton.vue";
 
 export default {

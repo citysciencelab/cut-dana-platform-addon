@@ -3,7 +3,7 @@ import {mapGetters, mapMutations} from "vuex";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 import DataNarratorWindowMixins from "../mixins/DataNarratorWindowMixins";
-import Toolwindow from "./Toolwindow.vue";
+import Toolwindow from "./ToolWindow/Toolwindow.vue";
 import TestingLogin from "./Login/TestingLogin.vue";
 import * as constants from "../store/contantsDataNarrator";
 import DataNarratorDashboard from "./Dashboard.vue";
@@ -31,6 +31,7 @@ export default {
     mounted() {
         this.disableMainMenu();
         this.disableSecondaryMenu();
+        this.disableFooter();
     },
     data() {
         return {
@@ -41,28 +42,38 @@ export default {
 </script>
 
 <template lang="html">
-    <div>
-        test
-        <Teleport to="#datanarrator-root">
+    <Teleport to="#datanarrator-root" >
+        <div id="datanarrator-container" :class="{mobile: isMobile}">
             <TestingLogin v-if="mode === constants.dataNarratorModes.LOGIN_TEST"/>
             <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD"/>
-        </Teleport>
-    </div>
-
+        </div>
+    </Teleport>
 </template>
 
 <style lang="scss">
 #datanarrator-root {
     pointer-events: none;
     position: absolute;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+
     top: 0;
 
-    display: grid;
-    grid-template-columns: 100px auto 100px;
-    gap: 10px;
+    #datanarrator-container {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+
+        display: grid;
+        grid-template-columns: 12rem auto 12rem;
+        gap: 10px;
+
+        &.mobile {
+            grid-template-columns: 0 auto 0 !important;
+        }
+    }
+
+
 }
+
+
 
 </style>
