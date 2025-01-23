@@ -1,0 +1,42 @@
+﻿<script>
+import {mapGetters, mapMutations} from "vuex";
+import getters from "../../store/gettersDataNarrator";
+import mutations from "../../store/mutationsDataNarrator";
+import DataNarratorWindowMixins from "../../mixins/DataNarratorWindowMixins";
+import Toolwindow from "../ToolWindow/Toolwindow.vue";
+import DashboardHeader from "./DashboardHeader.vue";
+import DashboardContent from "./DashboardContent.vue";
+
+export default {
+    name: "DataNarratorDashboard",
+    mixins: [DataNarratorWindowMixins],
+    components: {DashboardHeader, Toolwindow, DashboardContent},
+    computed: {
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters))
+    },
+    methods: {
+        ...mapMutations("Modules/DataNarrator", Object.keys(mutations))
+    },
+    watch: {
+        "mode": function() {
+            console.log("test");
+        }
+    }
+};
+</script>
+
+<template>
+    <Toolwindow>
+        <template v-slot:header>
+            <DashboardHeader />
+        </template>
+        <DashboardContent />
+        <template v-slot:footer>
+            Footer
+        </template>
+    </Toolwindow>
+</template>
+
+<style scoped lang="scss">
+
+</style>

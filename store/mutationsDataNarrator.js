@@ -24,6 +24,10 @@ const mutations = {
 
     setActive: (state, payload) => {
         state.active = payload;
+    },
+
+    setIsLoginOpen: (state, payload) => {
+        state.isLoginOpen = payload;
     }
 };
 

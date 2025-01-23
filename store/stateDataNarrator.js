@@ -1,4 +1,4 @@
-import {dataNarratorModes} from "./contantsDataNarrator";
+import {dataNarratorModes, ToolwindowModes} from "./contantsDataNarrator";
 
 const state = {
     description: "additional:modules.DataNarrator.description",
@@ -22,7 +22,9 @@ const state = {
         animationChecked: false,
         direction: "out"
     },
-    mode: dataNarratorModes.LOGIN_TEST
+    mode: dataNarratorModes.DASHBOARD,
+    toolwindowMode: ToolwindowModes.DASHBOARD,
+    isLoginOpen: true,
 };
 
 export default state;

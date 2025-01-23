@@ -1,6 +1,10 @@
 ﻿import {nextTick} from "vue";
 import * as constants from "../store/contantsDataNarrator";
 import isMobile from "../../../src/shared/js/utils/isMobile";
+import {dataNarratorModes, ToolwindowModes} from "../store/contantsDataNarrator";
+import {mapGetters, mapMutations} from "vuex";
+import getters from "../store/gettersDataNarrator";
+import mutations from "../store/mutationsDataNarrator";
 
 export default {
     mixins: [],
@@ -11,18 +15,29 @@ export default {
             checkMobileTimeout: 200,
             isPreviousMobile: false,
 
+            isOpen: true,
+
             footerHeight: 0
         };
     },
-    mounted () {
+
+    mounted() {
         this.checkMobileInterval = setInterval(() => this.updateIsMobile(), this.checkMobileTimeout);
     },
     beforeDestroy() {
         clearInterval(this.checkMobileInterval);
     },
+
     methods: {
+        ...mapMutations("Modules/DataNarrator", ["setToolwindowMode"]),
+
+        setToolIsOpen () {
+          this.isOpen = !this.isOpen;
+          this.moveTool();
+        },
+
         updateIsMobile () {
-          this.isMobile = isMobile();
+            this.isMobile = isMobile();
         },
 
         disableMainMenu () {
@@ -48,18 +63,29 @@ export default {
         },
 
         async moveTool () {
-            const toolWindow = document.querySelectorAll("#datanarrator-root .toolwindow-container .toolwindow")[0];
+            const toolWindows = document.querySelectorAll("#datanarrator-root .toolwindow-container .toolwindow");
 
-            await nextTick();
-            if (this.isMobile) {
-                toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset - constants.dataNarratorToolSettings.toolWindowPadding}px`;
-            } else {
-                toolWindow.style.top = `0px`;
+            for (const toolWindow of toolWindows) {
+                console.log(toolWindow);
+                await nextTick();
+
+                if (isMobile()) {
+                    toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset}px`;
+                    this.setToolwindowMode(ToolwindowModes.MOBILE);
+                } else {
+                    toolWindow.style.top = `0px`;
+
+                    if (this.mode === dataNarratorModes.DASHBOARD) {
+                        this.setToolwindowMode(ToolwindowModes.DASHBOARD);
+                    } else {
+                        this.setToolwindowMode(ToolwindowModes.DESKTOP);
+                    }
+                }
             }
         }
     },
     computed: {
-
+        ...mapGetters("Modules/DataNarrator", Object.keys(getters))
     },
     watch: {
         isMobile () {

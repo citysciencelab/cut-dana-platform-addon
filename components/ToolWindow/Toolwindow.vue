@@ -3,6 +3,8 @@
 import DataNarratorWindowMixins from "../../mixins/DataNarratorWindowMixins";
 import DragHandle from "./components/DragHandle.vue";
 import * as constants from "../../store/contantsDataNarrator";
+import {mapGetters} from "vuex";
+import getters from "../../store/gettersDataNarrator";
 
 export default {
     name: "Toolwindow",
@@ -11,17 +13,28 @@ export default {
     data () {
         return {
             toolWindowPadding: constants.dataNarratorToolSettings.toolWindowPadding,
+            toolwindowModes: constants.ToolwindowModes
         };
     },
+    mounted () {
+
+    },
+    computed: {
+        ...mapGetters("Modules/DataNarrator", ["toolwindowMode"])
+    }
 };
 </script>
 
 <template lang="html">
-    <div class="toolwindow-container">
-        <div class="toolwindow-between">
-            <div :class="['toolwindow', isMobile ? 'mobile' : '']" :style="{padding: `${toolWindowPadding}px`}">
-                <DragHandle />
-                <slot></slot>
+    <div :class="['toolwindow-container', toolwindowMode]">
+        <div :class="['toolwindow-between', toolwindowMode]">
+            <div :class="['toolwindow', toolwindowMode === toolwindowModes.MOBILE ?? 'with-top-border-radius']" :style="{padding: `${toolWindowPadding}px`}">
+                <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setToolIsOpen" />
+                <slot name="header"></slot>
+                <div :class="['slot', isOpen ? '' : 'removed']">
+                    <slot></slot>
+                </div>
+                <slot name="footer"></slot>
             </div>
         </div>
     </div>
@@ -29,23 +42,56 @@ export default {
 
 <style lang="scss" scoped>
 .toolwindow-container {
-    grid-column: 2;
+    grid-column: 2 / 3;
+    width: 100%;
+    height: 100%;
+
     padding-top: 20px;
+    position: absolute;
+
+    &.desktop {
+        grid-column: 1 / 2;
+    }
 
     .toolwindow-between {
         width: 100%;
         height: 100%;
-        position: relative;
+
+        &.desktop {
+            display: flex;
+        }
+
+        &.dashboard {
+            display: flex;
+        }
+
+        &.mobile {
+
+        }
 
         .toolwindow {
             pointer-events: auto;
             background-color: white;
-            border-radius: .2rem;
+            border-radius: .8rem;
             box-shadow: 0 12px 30px -8px rgba(0,0,0,0.30);
             position: absolute;
             width: 100%;
+            margin-top: 2rem;
 
-            &.mobile {
+            transition: height 1s ease-in;
+
+            .slot {
+
+                &.removed {
+                    opacity: 0;
+                    height: 0;
+                    padding: 0; /* Ensure padding collapse for height reduction */
+                    margin: 0;
+                    //transition: opacity 0.3s ease-in, height 0.1s ease, padding 0.1s ease, margin 0.1s ease;
+                }
+            }
+
+            &.with-top-border-radius  {
                 border-top-left-radius: 1rem;
                 border-top-right-radius: 1rem;
             }
