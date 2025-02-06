@@ -34,7 +34,9 @@ export default {
                 <div :class="['slot', isOpen ? '' : 'removed']">
                     <slot></slot>
                 </div>
-                <slot name="footer"></slot>
+                <div class="footer">
+                    <slot name="footer" ></slot>
+                </div>
             </div>
         </div>
     </div>
@@ -104,6 +106,10 @@ export default {
 
     &.right {
         grid-column: 3;
+    }
+
+    .footer {
+        padding: 1rem;
     }
 }
 </style>

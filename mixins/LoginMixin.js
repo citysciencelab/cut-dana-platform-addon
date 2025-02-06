@@ -1,4 +1,4 @@
-﻿import {mapActions, mapGetters, mapMutations} from "vuex";
+﻿import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 import {getRedirectUrl} from "../services/loginService";
@@ -8,15 +8,20 @@ export default {
     mixins: [DataNarratorWindowMixins],
     data () {
         return {
-            timer: null
+            timer: null, mappedAccessToken: undefined
         };
     },
     computed: {
         ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
-        ...mapGetters("Modules/Login", ["loggedIn", "screenName", "email", "iconLogin", "iconLogged"])
+        ...mapGetters("Modules/Login", ["loggedIn", "screenName", "email", "iconLogin", "iconLogged"]),
+        ...mapState("Modules/Login", ["accessToken"])
+    },
+    watch: {
+
     },
     mounted() {
         this.checkLoggedIn();
+        console.log("mounted login mixins", this.accessToken);
     },
     methods: {
         ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
@@ -62,6 +67,7 @@ export default {
 
                 this.timer = setInterval(() => {
                     if (this.isLoggedIn()) {
+                        console.log("loggedin");
                         loginPopup.close();
                         clearInterval(this.timer);
                         this.moveTool();

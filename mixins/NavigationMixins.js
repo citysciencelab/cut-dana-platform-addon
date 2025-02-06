@@ -5,10 +5,6 @@ import DataNarratorWindowMixins from "./DataNarratorWindowMixins";
 export default {
     mixins: [DataNarratorWindowMixins],
 
-    computed: {
-        ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
-    },
-
     methods: {
         ...mapMutations("Modules/DataNarrator", ["setMode"]),
         gotoPage(page) {

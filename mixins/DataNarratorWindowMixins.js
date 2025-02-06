@@ -66,7 +66,6 @@ export default {
             const toolWindows = document.querySelectorAll("#datanarrator-root .toolwindow-container .toolwindow");
 
             for (const toolWindow of toolWindows) {
-                console.log(toolWindow);
                 await nextTick();
 
                 if (isMobile()) {

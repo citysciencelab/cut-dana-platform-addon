@@ -1,10 +1,11 @@
 <script>
 import NavigationMixins from "../../mixins/NavigationMixins";
 import {dataNarratorModes} from "../../store/contantsDataNarrator";
+import CreateStoryMixins from "../../mixins/CreateStoryMixins";
 
 export default {
     name: "CreateStoryHeader",
-    mixins: [NavigationMixins],
+    mixins: [NavigationMixins, CreateStoryMixins],
     computed: {
         dataNarratorModes() {
             return dataNarratorModes
