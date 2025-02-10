@@ -1,8 +1,159 @@
 ﻿{
   "modules": {
-    "DataNarrator": {
+    "dataNarrator": {
       "title": "Data Narrator",
-      "description": "TEST"
+      "create": "Story erstellen",
+      "play": "Story starten",
+      "dashboard": "Story Dashboard",
+      "tableOfContents": "Inhaltsverzeichnis",
+      "createStory": "Story erstellen",
+      "3dForm": "3D Ansicht",
+      "label": {
+        "storyName": "Storyname",
+        "storyUnnamed": "Story Titel",
+        "storyDescription": "Beschreibung",
+        "author": "Autor",
+        "scrolly": "Scrollbare Story",
+        "interval": "Autoplay Intervall in Sekunden",
+        "steps": "Schritte",
+        "addChapter": "Kapitel hinzufügen",
+        "chapter": "Kapitel",
+        "newChapterNumber": "Nummer des neuen Kapitels",
+        "newChapterTitle": "Titel des neuen Kapitels",
+        "stepNumber": "Schritt Nummer",
+        "stepTitle": "Schritt Titel",
+        "chapterTitle": "Kapitel Titel",
+        "stepWidth": "Fensterbreite",
+        "visible": "Sichtbarkeit",
+        "htmlContent": "Inhalt",
+        "mapDisplay": "Kartendarstellung",
+        "centerCoordinate": "Position der Karte übernehmen",
+        "longitude": "Längengrad",
+        "latitude": "Breitengrad",
+        "height": "Höhe",
+        "zoomLevel": "Zoomstufe",
+        "setZoomLevel": "Zoomstufe der Karte übernehmen",
+        "layers": "Layer",
+        "selectLayers": "Ebenen auswählen",
+        "selectLayers3D": "3D Ebenen auswählen",
+        "layers3D": "3D Layer",
+        "availableLayers": "Verfügbare Layer",
+        "interactionAddons": "Erweiterungen",
+        "is3D": "Karte in 3D anzeigen",
+        "heading": "Heading",
+        "pitch": "Pitch",
+        "autoPLay": "Autoplay",
+        "scrollMode": "Scrollmodus",
+        "on": "an",
+        "off": "aus",
+        "private": "Privat",
+        "sharedWith": "Geben Sie eine neue E-Mail ein und drücken Sie die Eingabetaste",
+        "sharedWithPlaceholder": "E-Mail hinzufügen",
+        "sharedWithDuplicate": "Diese E-Mail wurde bereits hinzugefügt.",
+        "backgroundMap": "Hintergrundkarte",
+        "dataLayer": "Datenlayer hinzufügen",
+        "ownData": "Eigene Daten hinzufügen",
+        "advancedOptions": "Erweiterte Optionen",
+        "ownDatasource": "Eigene Daten hinzufügen",
+        "ownWmsLayers": "WMS URL hinzufügen",
+        "threeDFiles": "3D Dateien hinzufügen",
+        "openDrawTool": "Daten einzeichnen",
+        "drawToolDescription": "Zeichnen Sie auf der Karte, laden Sie die gezeichneten Daten als Datei herunter und importieren Sie sie dann in Ihre Story.",
+        "scale": "Skalierung",
+        "threeDNorthing": "Nordwert",
+        "threeDEasting": "Ostwert",
+        "threeDRotation": "Rotation",
+        "increase": "Erhöhen",
+        "decrease": "Verringern",
+        "addCover": "Cover Bild hinzufügen",
+        "removeCover": "Cover Bild entfernen"
+      },
+      "storyList": {
+        "all": "Alle Stories",
+        "my": "Meine Stories",
+        "featured": "Vorgestellt",
+        "popular": "Beliebt"
+      },
+      "creator": {
+        "edit": "Bearbeiten",
+        "delete": "Löschen",
+        "editStep": "Schritt Bearbeiten",
+        "deleteStep": "Schritt Löschen"
+      },
+      "dashboardView": {
+        "title": "Data Narrator",
+        "subtitle": "Finde und erstelle Datastories für Hamburg!",
+        "description": "Mit dem Urban Data Narrator (DaNa) können auf Grundlage des Hamburger Geoportals Datastories gelesen, erstellt und geteilt werden. Die Datastories erzählen von ganz verschiedenen Themen und Orten in Hamburg. Dabei werden ausgewählte Daten des Hamburger Geoportals mit Texten, Fotos und Abbildungen kombiniert. So könnt ihr euren Blick auf Themen der Stadtentwicklung datengestützt mitteilen. DaNa ist ein Projekt des City Science Labs an der HafenCity Universität Hamburg und wird im Rahmen des Projekts Connected Urban Twins umgesetzt.",
+        "noResults": "Keine weiteren Stories gefunden."
+      },
+      "success": {
+        "storyCreated": "Story erfolgreich erstellt.",
+        "storyDeleted": " Story gelöscht.",
+        "storyShared": "Die Story-URL wurde in den Puffer kopiert.",
+        "loggedOut": "Sie wurden abgemeldet"
+      },
+      "warning": {
+        "requiredFields": "Erforderlich.",
+        "requiredFieldMinCharacters": "Mindestens 5 Zeichen.",
+        "requiredNumeric": "Bitte geben Sie eine Zahl ein.",
+        "requiredNumericMinMax": "Ggeben Sie eine Zahl zwischen 0 und 20 ein.",
+        "mapMoved": "Einige Werte entsprechen nicht der aktuellen Ansicht der Karte.",
+        "sendNoSteps": "Story abschicken ist erst möglich wenn ein Schritt / Kapitel hinzugefügt wurde.",
+        "sendNoHTML": "Das Absenden eines Unterkapitels ist erst möglich sobald Inhalt hinzugefügt wurde.",
+        "storyNotSaved": "Ihre Story konnte nicht gespeichert werden.",
+        "noIntervalOnScrolly": "Scrollbare Stories können kein Autoplay Intervall haben.",
+        "noStepInChapter": "Kapitel müssen mindestens einen Schritt enthalten."
+      },
+      "error": {
+        "chapterNumberAlreadyExists": "Ein Kapitel mit dieser Nummer existiert bereits. Bitte wählen Sie eine andere Nummer.",
+        "stepNumberAlreadyExists": "Ein Schritt mit dieser Nummer existiert bereits. Bitte wählen Sie eine andere Nummer.",
+        "errorAddingImage": "Das Bild konnte nicht geladen werden. Bitte versuchen Sie es mit einer anderen Datei.",
+        "storyDeleted": "Story konnte nicht gelöscht werden."
+      },
+      "confirm": {
+        "closeStoryCreation": {
+          "title": "Tool schließen",
+          "description": "Sind Sie sicher, dass Sie das Tool schließen möchten? Eingetragene Daten werden nicht gespeichert.",
+          "confirmButton": "Schließen",
+          "denyButton": "Abbrechen"
+        },
+        "deleteStep": {
+          "title": "Schritt löschen",
+          "description": "Sind Sie sicher, dass Sie diesen Schritt löschen möchten? Dies kann nicht rückgängig gemacht werden.",
+          "confirmButton": "Löschen",
+          "denyButton": "Abbrechen"
+        },
+        "deleteStory": {
+          "title": "Story löschen",
+          "description": "Sind Sie sicher, dass Sie diese Story löschen möchten? Dies kann nicht rückgängig gemacht werden.",
+          "confirmButton": "Löschen",
+          "denyButton": "Abbrechen"
+        },
+        "createStoryDataProtectionNotice": {
+          "title": "Datenschutzerklärung Akzeptieren",
+          "description": "Indem Sie fortfahren, stimmen Sie unserer Datenschutzerklärung zu. Bitte lesen Sie diese sorgfältig, um zu verstehen, wie wir Ihre Daten verwenden und schützen.",
+          "confirmButton": "Akzeptieren",
+          "denyButton": "Nicht akzeptieren"
+        }
+      },
+      "button": {
+        "cancel": "Abbrechen",
+        "addStep": "Schritt hinzufügen",
+        "deleteStep": "Löschen",
+        "submitAddStep": "Schritt zur Story hinzufügen",
+        "submitEditStep": "Speichern",
+        "previewStory": "Vorschau",
+        "uploadStory": "Abschicken",
+        "share": "Teilen",
+        "shareSettings": "Einstellungen",
+        "addSharedWith": "Hinzufügen",
+        "featured": "Vorgestellt",
+        "backToStory": "Zurück zu Story",
+        "backToStep": "Zurück zum Schritt",
+        "previous": "Zurück",
+        "next": "Weiter"
+      },
+      "newChapter": "Neues Kapitel"
     }
   }
 }
