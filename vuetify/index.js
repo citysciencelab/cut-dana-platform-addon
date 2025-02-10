@@ -1,7 +1,7 @@
 import {createVuetify} from "vuetify";
 import "vuetify/dist/vuetify.min.css";
-import * as components from "vuetify/lib/components/index.mjs";
-import * as directives from "vuetify/lib/directives/index.mjs";
+import * as components from "vuetify/lib/components";
+import * as directives from "vuetify/lib/directives";
 
 const vuetify = createVuetify({
     components,
