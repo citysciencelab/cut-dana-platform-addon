@@ -1,5 +1,4 @@
-
-import {generateSimpleGetters} from "../../../src/shared/js/utils/generators";
+import {generateSimpleGetters} from "../../../../src/shared/js/utils/generators";
 import commuterDataNarrator from "./stateDataNarrator";
 
 const getters = {

@@ -1,4 +1,4 @@
-import {generateSimpleGetters, generateSimpleMutations} from "../../../../src/shared/js/utils/generators";
+import {generateSimpleGetters, generateSimpleMutations} from "../../../../../src/shared/js/utils/generators";
 
 
 export const state = {

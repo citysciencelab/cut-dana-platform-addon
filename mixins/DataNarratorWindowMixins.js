@@ -1,6 +1,6 @@
 ﻿import {nextTick} from "vue";
 import * as constants from "../store/contantsDataNarrator";
-import isMobile from "../../../src/shared/js/utils/isMobile";
+import isMobile from "../../../../src/shared/js/utils/isMobile";
 import {dataNarratorModes, ToolwindowModes} from "../store/contantsDataNarrator";
 import {mapGetters, mapMutations} from "vuex";
 import getters from "../store/gettersDataNarrator";

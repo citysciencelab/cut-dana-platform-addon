@@ -1,5 +1,4 @@
-import OIDC from "../../../src/modules/login/js/utilsOIDC";
-import Cookie from "../../../src/modules/login/js/utilsCookies";
+import OIDC from "../../../../src/modules/login/js/utilsOIDC";
 import * as constants from "../store/contantsDataNarrator";
 
 export const getRedirectUrl = async () => {
