@@ -16,7 +16,6 @@ export default {
 
 <template lang="html">
     <div class="createStory-header">
-        <button @click="() => gotoPage(dataNarratorModes.DASHBOARD)" class="button">Home</button>
     </div>
 </template>
 

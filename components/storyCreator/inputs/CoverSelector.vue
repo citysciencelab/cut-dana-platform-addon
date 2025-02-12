@@ -8,6 +8,8 @@ import {
 } from "@mdi/js";
 import BackButton from "../../shared/BackButton.vue";
 import CreateStoryMixins from "../../../mixins/CreateStoryMixins";
+import {mapGetters} from "vuex";
+import {state as editStoryState} from "../../../store/FormStores/EditStoryForm";
 
 export default {
     name: "CoverSelector",
@@ -38,6 +40,18 @@ export default {
     },
     methods: {
 
+    },
+    computed: {
+        ...mapGetters("Modules/DataNarrator/EditFormStore", Object.keys(editStoryState)),
+
+        storyTitle: {
+            get () {
+                return this.$store.state.Modules.DataNarrator.EditFormStore.storyTitle;
+            },
+            set (value) {
+                this.$store.commit("Modules/DataNarrator/EditFormStore/setStoryTitle", value);
+            }
+        },
     }
 };
 </script>
@@ -96,7 +110,7 @@ export default {
                 >
                     <v-text-field
                         id="title"
-                        v-model="title"
+                        :v-model="storyTitle"
                         class="vue-text-all-top"
                         :label="$t(
                             'additional:modules.tools.dataNarrator.label.storyUnnamed'

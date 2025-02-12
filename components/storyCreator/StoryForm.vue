@@ -1,11 +1,35 @@
 <script>
 import CreateStoryMixins from "../../mixins/CreateStoryMixins";
 import CoverSelector from "./inputs/CoverSelector.vue";
+import NavigationMixins from "../../mixins/NavigationMixins";
+import {dataNarratorModes} from "../../store/contantsDataNarrator";
+import {mapGetters, mapMutations} from "vuex";
+import {state as editStoryState} from "../../store/FormStores/EditStoryForm";
+import {mutations as editStoryMutations} from "../../store/FormStores/EditStoryForm";
 
 export default {
     name: 'StoryForm',
+    computed: {
+        ...mapGetters("Modules/DataNarrator/EditFormStore", Object.keys(editStoryState)),
+
+        dataNarratorModes() {
+            return dataNarratorModes
+        },
+
+        storyDescription: {
+            get () {
+                return this.$store.state.Modules.DataNarrator.EditFormStore.storyDescription;
+            },
+            set (value) {
+                this.$store.commit("Modules/DataNarrator/EditFormStore/setStoryDescription", value);
+            }
+        }
+    },
+    methods: {
+        ...mapMutations("Modules/DataNarrator/EditFormStore", Object.keys(editStoryMutations)),
+    },
     components: {CoverSelector},
-    mixins: [CreateStoryMixins],
+    mixins: [CreateStoryMixins, NavigationMixins],
 };
 </script>
 
@@ -14,8 +38,6 @@ export default {
       id="story-form"
       @submit.prevent="saveStory"
   >
-    <input name="title" placeholder="title" v-model="title"/>
-    <textarea name="description" placeholder="Description" v-model="description"/>
   </form>
 
     <div id="tool-dataNarrator-creator-storyForm">
@@ -24,13 +46,13 @@ export default {
         >
             <CoverSelector
                 :back-button-msg="$t('additional:modules.dataNarrator.button.cancel')"
-                @click=""
+                @click="() => gotoPage(dataNarratorModes.DASHBOARD)"
             />
 
             <div class="form-group form-input-holder">
                 <v-textarea
                     id="description"
-                    v-model="description"
+                    v-model="storyDescription"
                     solo
                     hide-details="true"
                     rows="4"
@@ -38,14 +60,6 @@ export default {
                         'additional:modules.dataNarrator.label.storyDescription'
                     )"
                 />
-
-<!--                <ShareSettings-->
-<!--                    v-if="uid"-->
-<!--                    :private-story="currentStory.private"-->
-<!--                    :shared-with="currentStory.sharedWith"-->
-<!--                    @update:private-story="newValue => currentStory.private = newValue"-->
-<!--                    @update:shared-with="newValue => currentStory.sharedWith = newValue"-->
-<!--                />-->
 
                 <v-expansion-panels id="advanced-options">
                     <v-expansion-panel>
@@ -92,18 +106,6 @@ export default {
                     </v-expansion-panel>
                 </v-expansion-panels>
             </div>
-
-<!--            <TableOfContentsDnD-->
-<!--                :rerender-key="rerenderKeyTOC"-->
-<!--                @openView="(newView, stepChapterIndex) =>-->
-<!--                    $emit(-->
-<!--                        'openView', newView, stepChapterIndex-->
-<!--                    )-->
-<!--                "-->
-<!--                @editStep="step => $emit('editStep', step)"-->
-<!--                @deleteStep="(step, associatedChapter, stepNumber) =>-->
-<!--                    $emit('deleteStep', step, associatedChapter, stepNumber)"-->
-<!--            />-->
 
             <v-row class="mb-2">
                 <v-col class="d-flex justify-center align-center">
@@ -162,7 +164,6 @@ export default {
                 rounded
             >
                 <v-card
-                    v-if="!mobile"
                     flat
                     tile
                     width="100%"
@@ -178,7 +179,6 @@ export default {
                                 >
                                     <v-btn
                                         class=""
-                                        icon
                                         @click="$emit('reset-tool')"
                                     >
                                         <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
@@ -199,8 +199,6 @@ export default {
                                 >
                                     <v-btn
                                         class=""
-                                        icon
-
                                     >
                                         <v-icon size="24px">{{ icons.mdiEyeOutline }}</v-icon>
                                     </v-btn>
@@ -237,66 +235,6 @@ export default {
                         </v-tooltip>
                     </v-card-text>
                 </v-card>
-                <v-container
-                    v-else
-                    fluid
-                    class="white"
-                >
-                    <v-row
-                        class="mb-2"
-                        no-gutters
-                    >
-                        <v-col>
-                            <v-btn
-                                class=""
-                                small
-                                color="red"
-                                min-width="100%"
-                                @click="$emit('reset-tool')"
-                            >
-                                <span>
-                                    {{
-                                        $t("additional:modules.dataNarrator.button.cancel")
-                                    }}
-                                </span>
-                            </v-btn>
-                        </v-col>
-                        <v-col>
-                            <v-btn
-                                class=""
-                                small
-                                color="green"
-                                min-width="100%"
-                            >
-<!--                                :disabled="!currentStory.steps || !currentStory.steps.length"-->
-
-<!--                                @click="$emit('openView', constants.storyCreationViews.PREVIEW)"-->
-                                <span>
-                                    {{
-                                        $t("additional:modules.dataNarrator.button.previewStory")
-                                    }}
-                                </span>
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-btn
-                            class=""
-                            small
-
-                            color="green"
-
-                        >
-<!--                            @click="confirmBeforeSaving"-->
-<!--                            :disabled="!currentStory.steps || !currentStory.steps.length"-->
-                            <span>
-                                {{
-                                    $t("additional:modules.dataNarrator.button.uploadStory")
-                                }}
-                            </span>
-                        </v-btn>
-                    </v-row>
-                </v-container>
             </v-footer>
 
             <v-alert

@@ -32,7 +32,7 @@ export default {
         }
     },
     async mounted() {
-        await this.getStories();
+        await this.getAllStories();
     }
 };
 </script>
@@ -46,7 +46,7 @@ export default {
             <p>{{story.description}}</p>
 
             <div class="card-footer">
-              <button @click="gotoSelectedStory(story.id)">Edit</button>
+              <v-btn class="pill-button" @click="gotoSelectedStory(story.id)">Edit</v-btn>
             </div>
         </div>
     </div>

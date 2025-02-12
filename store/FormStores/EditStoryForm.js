@@ -4,8 +4,8 @@ import {generateSimpleGetters, generateSimpleMutations} from "../../../../../src
 export const state = {
     isLoading: false,
     selectedStoryId: null,
-    title: 'TESTING TITLE',
-    description: '',
+    storyTitle: '',
+    storyDescription: '',
 };
 
 export const mutations = {
@@ -17,14 +17,14 @@ export const mutations = {
     },
 
     setStoryData(state, storyData) {
-        state.title = storyData.title;
-        state.description = storyData.description;
+        state.storyTitle = storyData.title;
+        state.storyDescription = storyData.description;
     },
 
     resetStoryForm(state) {
         console.log("reset story form")
-        state.title = '';
-        state.description = '';
+        state.storyTitle = '';
+        state.storyDescription = '';
         state.isLoading = false;
         state.selectedStoryId = null;
     }

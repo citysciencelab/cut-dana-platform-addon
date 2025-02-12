@@ -67,7 +67,6 @@ export default {
 
                 this.timer = setInterval(() => {
                     if (this.isLoggedIn()) {
-                        console.log("loggedin");
                         loginPopup.close();
                         clearInterval(this.timer);
                         this.moveTool();

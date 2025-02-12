@@ -1,7 +1,4 @@
-import {mapGetters, mapMutations} from "vuex";
-import getters from "../store/gettersDataNarrator";
-import DataNarratorWindowMixins from "./DataNarratorWindowMixins";
-import LoginMixin from "./LoginMixin";
+import {getStories} from "../features/stories/getStories";
 
 export default {
 
@@ -17,17 +14,14 @@ export default {
     },
 
     methods: {
-        async getStories(succesCallback, errorCallback) {
+        async getAllStories() {
             this.isLoading = true;
-            const response = await fetch("http://localhost:8000/stories");
+            const response = await getStories();
             if (response.ok) {
                 this.isLoading = false;
-                const data = await response.json();
-                this.stories = data;
-                succesCallback && succesCallback(data);
+                this.stories = await response.json();
             } else {
                 this.isLoading = false;
-                errorCallback && errorCallback(response);
             }
         }
     }

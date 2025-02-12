@@ -14,7 +14,7 @@ const ToolwindowModes = {
     DESKTOP: "desktop" // for the desktop tool window on the left
 }
 
-const backendUrl = "https://new-dana-backend.elie.de"
+const backendUrl = "http://localhost:8000";
 
 export {
     dataNarratorModes,

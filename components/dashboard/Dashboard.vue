@@ -31,9 +31,6 @@ export default {
             <DashboardHeader />
         </template>
         <DashboardContent />
-        <template v-slot:footer>
-            Footer
-        </template>
     </Toolwindow>
 </template>
 

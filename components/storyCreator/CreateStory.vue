@@ -49,11 +49,10 @@ export default {
 <template>
     <Toolwindow>
         <template v-slot:header>
-            <CreateStoryHeader/>
+            <CreateStoryHeader />
         </template>
         <template v-slot:default>
             <div id="tool-dataNarrator-creator-storyForm">
-                <div v-if="isLoading">Loading...</div>
                 <StoryForm />
             </div>
         </template>
@@ -62,7 +61,6 @@ export default {
                 <button @click="gotoPage(contantsDataNarrator.dataNarratorModes.DASHBOARD)">Cancel</button>
                 <button @click="saveStory">Save</button>
             </div>
-
         </template>
     </Toolwindow>
 </template>
