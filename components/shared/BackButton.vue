@@ -29,6 +29,10 @@ export default {
     },
     computed: {
         ...mapGetters("Modules/DataNarrator", Object.keys(getters))
+    },
+    mounted() {
+        console.log("BackButton mounted");
+        console.log(this.icons.mdiArrowLeft)
     }
 };
 </script>
@@ -46,7 +50,9 @@ export default {
                         v-on="on"
                         @click="$emit('click')"
                         @keydown="$emit('click')"
-                    >{{ icons.mdiArrowLeft }}</v-icon>
+                    >
+                        {{ icons.mdiArrowLeft }}
+                    ></v-icon>
                 </template>
                 <span>{{ $t(tooltip) }}</span>
             </v-tooltip>

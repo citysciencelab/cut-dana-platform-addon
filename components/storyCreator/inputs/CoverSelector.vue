@@ -101,7 +101,7 @@ export default {
                     <BackButton
                         :tooltip="backButtonMsg"
                         :show-story-title="false"
-                        @click="$emit('click')"
+                        @click="$emit('back-click')"
                     />
                 </v-col>
                 <v-col
@@ -110,10 +110,10 @@ export default {
                 >
                     <v-text-field
                         id="title"
-                        :v-model="storyTitle"
+                        v-model="storyTitle"
                         class="vue-text-all-top"
                         :label="$t(
-                            'additional:modules.tools.dataNarrator.label.storyUnnamed'
+                            'additional:modules.dataNarrator.label.storyUnnamed'
                         )"
                         :rules="storyNameRules"
                         hide-details="auto"

@@ -15,20 +15,20 @@ export default {
 
         async updateStory() {
             const token = this.accessToken;
-            const response = await fetch("http://localhost:8000/stories", {
+            const response = await fetch(`http://localhost:8000/stories/${this.selectedStoryId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    title: this.title,
-                    description: this.description
+                    title: this.storyTitle,
+                    description: this.storyDescription
                 })
             })
         },
 
-        async createStory(succesCallback, errorCallback) {
+        async createStory() {
             const token = this.accessToken;
             const response = await fetch("http://localhost:8000/stories", {
                 method: "POST",
@@ -37,8 +37,8 @@ export default {
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    title: this.title,
-                    description: this.description
+                    title: this.storyTitle,
+                    description: this.storyDescription
                 })
             })
             let data = null;

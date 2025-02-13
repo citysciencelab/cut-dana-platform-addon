@@ -6,9 +6,17 @@ import {dataNarratorModes} from "../../store/contantsDataNarrator";
 import {mapGetters, mapMutations} from "vuex";
 import {state as editStoryState} from "../../store/FormStores/EditStoryForm";
 import {mutations as editStoryMutations} from "../../store/FormStores/EditStoryForm";
+import {mdiPlus} from "@mdi/js";
 
 export default {
     name: 'StoryForm',
+    data() {
+        return {
+            icons: {
+                mdiPlus
+            }
+        }
+    },
     computed: {
         ...mapGetters("Modules/DataNarrator/EditFormStore", Object.keys(editStoryState)),
 
@@ -34,19 +42,14 @@ export default {
 </script>
 
 <template>
-  <form
-      id="story-form"
-      @submit.prevent="saveStory"
-  >
-  </form>
-
     <div id="tool-dataNarrator-creator-storyForm">
         <form
             id="story-form"
+            @submit.prevent="saveStory"
         >
             <CoverSelector
                 :back-button-msg="$t('additional:modules.dataNarrator.button.cancel')"
-                @click="() => gotoPage(dataNarratorModes.DASHBOARD)"
+                back-click="() => gotoPage(dataNarratorModes.DASHBOARD)"
             />
 
             <div class="form-group form-input-holder">
@@ -111,7 +114,6 @@ export default {
                 <v-col class="d-flex justify-center align-center">
                     <v-btn
                         class="story-step-button pill-button"
-                        icon
                         :title="
                             $t(
                                 'additional:modules.dataNarrator.button.addChapter'
@@ -124,7 +126,7 @@ export default {
                             )
                         "
                     >
-                        <v-icon>add</v-icon>
+                        <v-icon>{{ icons.mdiPlus }}</v-icon>
                     </v-btn>
                     <div
                         class="vue-label-style add-step-label"
@@ -148,14 +150,14 @@ export default {
                 </v-col>
             </v-row>
 
-            <v-progress-linear
-                v-if="!notSaving"
-                indeterminate
-                height="10"
-                striped
-                rounded
-                color="lime"
-            />
+<!--            <v-progress-linear-->
+<!--                v-if="!notSaving"-->
+<!--                indeterminate-->
+<!--                height="10"-->
+<!--                striped-->
+<!--                rounded-->
+<!--                color="lime"-->
+<!--            />-->
 
             <v-footer
                 v-if="notSaving"
@@ -252,9 +254,59 @@ export default {
 </template>
 
 <style scoped lang="scss">
-#story-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+#tool-dataNarrator-creator-storyForm {
+    max-width: 470px;
+    position: relative;
+
+    #tool-dataNarrator-creator-noSteps {
+        margin-top: 10px;
+        margin-bottom: 0;
+    }
+
+    label.required:after {
+        content: '*';
+        color: red;
+    }
+
+    .story-step-button {
+        min-width: 46px;
+        height: 46px;
+        padding: 0;
+    }
+
+    .add-step-label {
+        cursor: pointer;
+    }
+
+    #save-alert {
+        position: fixed;
+        left: 40%;
+        top: 20%;
+        background-color: white !important;
+    }
+
+    .b-form-tags {
+
+        .sr-only {
+            display: none !important;
+        }
+
+        .b-form-tags-list {
+            display: inline-block !important;
+            padding-left: 0;
+
+            .badge {
+                // color: black !important;
+                background-color: #2196f3 !important;
+                font-size: 1em !important;
+                border-radius: 1em;
+                margin-right: 0.25em;
+
+                .b-form-tag-remove {
+                    padding-left: 0.5em !important;
+                }
+            }
+        }
+    }
 }
 </style>

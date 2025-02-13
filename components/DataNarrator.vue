@@ -142,6 +142,7 @@ export default {
     min-width: 23px !important;
     width: 23px !important;
     margin-right: 10px;
+    padding: 0;
 
     .v-btn__content {
         border: 2px solid #707070;
