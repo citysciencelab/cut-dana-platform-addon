@@ -10,6 +10,7 @@ import {mdiCancel, mdiCheck, mdiEyeOutline} from "@mdi/js";
 import CreateStoryMixins from "../../mixins/CreateStoryMixins";
 import NavigationMixins from "../../mixins/NavigationMixins";
 import StoryForm from "./StoryForm.vue";
+import * as contantsDataNarrator from "../../store/contantsDataNarrator";
 
 export default {
     name: "CreateStory",
@@ -19,6 +20,9 @@ export default {
         CreateStoryHeader, Toolwindow
     },
     computed: {
+        contantsDataNarrator() {
+            return contantsDataNarrator
+        }
     },
 
     data() {

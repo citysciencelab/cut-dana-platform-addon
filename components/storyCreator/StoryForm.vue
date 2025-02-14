@@ -49,7 +49,7 @@ export default {
         >
             <CoverSelector
                 :back-button-msg="$t('additional:modules.dataNarrator.button.cancel')"
-                back-click="() => gotoPage(dataNarratorModes.DASHBOARD)"
+                @back-click="() => gotoPage(dataNarratorModes.DASHBOARD)"
             />
 
             <div class="form-group form-input-holder">
