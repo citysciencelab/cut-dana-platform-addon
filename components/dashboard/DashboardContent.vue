@@ -8,14 +8,15 @@ import DashboardHeader from "../dashboard/DashboardHeader.vue";
 import NavigationMixins from "../../mixins/NavigationMixins";
 import {dataNarratorModes} from "../../store/contantsDataNarrator";
 import DashboardMixins from "../../mixins/DashboardMixins";
-import CreateStoryMixins from "../../mixins/CreateStoryMixins";
+import CreateStoryMixins from "../../features/stories/mixins/CreateStoryMixins";
 
-import {mutations as editStoryMutations} from "../../store/FormStores/EditStoryForm";
+import {mutations as editStoryMutations} from "../../features/stories/store/EditStoryForm";
+import StoryCard from "./Stories/StoryCard.vue";
 
 export default {
     name: "DashboardContent",
     mixins: [DataNarratorWindowMixins, NavigationMixins, DashboardMixins, CreateStoryMixins],
-    components: {DashboardHeader, Toolwindow},
+    components: {StoryCard, DashboardHeader, Toolwindow},
     computed: {
         ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
         dataNarratorModes() {
@@ -24,7 +25,7 @@ export default {
     },
     methods: {
         ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
-        ...mapMutations("Modules/DataNarrator/EditFormStore", Object.keys(editStoryMutations)),
+        ...mapMutations("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryMutations)),
 
         gotoSelectedStory(storyId) {
             this.setSelectedStoryId(storyId);
@@ -38,17 +39,16 @@ export default {
 </script>
 
 <template>
-    <button @click="() => gotoPage(dataNarratorModes.CREATE_STORY)">Create story</button>
     <div class="stories-card-container">
-        <div v-for="story in stories" :key="story.id" class="card">
-            <img />
-            <h4>{{story.title}}</h4>
-            <p>{{story.description}}</p>
-
-            <div class="card-footer">
-              <v-btn class="pill-button" @click="gotoSelectedStory(story.id)">Edit</v-btn>
-            </div>
-        </div>
+        <StoryCard
+            v-for="(story) in storyList"
+            :key="story.id + story.updatedAt"
+            :story="story"
+            :grid="true"
+            @refreshStoryList="getAllStories"
+            @imageLoaded="() => {console.log('imageLoaded')}"
+            v-on="$listeners"
+        />
     </div>
 </template>
 

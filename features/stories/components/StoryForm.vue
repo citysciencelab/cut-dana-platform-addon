@@ -1,11 +1,10 @@
 <script>
-import CreateStoryMixins from "../../mixins/CreateStoryMixins";
+import CreateStoryMixins from "../mixins/CreateStoryMixins";
 import CoverSelector from "./inputs/CoverSelector.vue";
-import NavigationMixins from "../../mixins/NavigationMixins";
-import {dataNarratorModes} from "../../store/contantsDataNarrator";
+import NavigationMixins from "../../../mixins/NavigationMixins";
+import {dataNarratorModes} from "../../../store/contantsDataNarrator";
 import {mapGetters, mapMutations} from "vuex";
-import {state as editStoryState} from "../../store/FormStores/EditStoryForm";
-import {mutations as editStoryMutations} from "../../store/FormStores/EditStoryForm";
+import {state as editStoryState, mutations as editStoryMutations} from "../store/EditStoryForm";
 import {mdiPlus} from "@mdi/js";
 
 export default {
@@ -18,7 +17,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Modules/DataNarrator/EditFormStore", Object.keys(editStoryState)),
+        ...mapGetters("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryState)),
 
         dataNarratorModes() {
             return dataNarratorModes
@@ -26,15 +25,15 @@ export default {
 
         storyDescription: {
             get () {
-                return this.$store.state.Modules.DataNarrator.EditFormStore.storyDescription;
+                return this.$store.state.Modules.DataNarrator.EditStoryForm.storyDescription;
             },
             set (value) {
-                this.$store.commit("Modules/DataNarrator/EditFormStore/setStoryDescription", value);
+                this.$store.commit("Modules/DataNarrator/EditStoryForm/setStoryDescription", value);
             }
         }
     },
     methods: {
-        ...mapMutations("Modules/DataNarrator/EditFormStore", Object.keys(editStoryMutations)),
+        ...mapMutations("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryMutations)),
     },
     components: {CoverSelector},
     mixins: [CreateStoryMixins, NavigationMixins],

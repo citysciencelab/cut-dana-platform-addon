@@ -6,10 +6,10 @@ import {
     mdiImageRemoveOutline,
     mdiAlphaXCircle
 } from "@mdi/js";
-import BackButton from "../../shared/BackButton.vue";
-import CreateStoryMixins from "../../../mixins/CreateStoryMixins";
+import BackButton from "../../../..//components/shared/BackButton.vue";
+import CreateStoryMixins from "../../mixins/CreateStoryMixins";
 import {mapGetters} from "vuex";
-import {state as editStoryState} from "../../../store/FormStores/EditStoryForm";
+import {state as editStoryState} from "../../store/EditStoryForm";
 
 export default {
     name: "CoverSelector",
@@ -42,14 +42,14 @@ export default {
 
     },
     computed: {
-        ...mapGetters("Modules/DataNarrator/EditFormStore", Object.keys(editStoryState)),
+        ...mapGetters("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryState)),
 
         storyTitle: {
             get () {
-                return this.$store.state.Modules.DataNarrator.EditFormStore.storyTitle;
+                return this.$store.state.Modules.DataNarrator.EditStoryForm.storyTitle;
             },
             set (value) {
-                this.$store.commit("Modules/DataNarrator/EditFormStore/setStoryTitle", value);
+                this.$store.commit("Modules/DataNarrator/EditStoryForm/setStoryTitle", value);
             }
         },
     }

@@ -1,21 +1,22 @@
-import * as dataNarratorConstants from "../store/contantsDataNarrator";
-import LoginMixin from "./LoginMixin";
+
+import LoginMixin from "../../../mixins/LoginMixin";
 import {mapGetters, mapMutations,} from "vuex";
-import {mutations as editStoryMutations, state as editStoryState} from "../store/FormStores/EditStoryForm";
+import {mutations as editStoryMutations, state as editStoryState} from "../store/EditStoryForm";
+import {backendUrl} from "../../../store/contantsDataNarrator";
 
 export default {
     mixins: [LoginMixin],
 
     computed: {
-        ...mapGetters("Modules/DataNarrator/EditFormStore", Object.keys(editStoryState)),
+        ...mapGetters("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryState)),
     },
 
     methods: {
-        ...mapMutations("Modules/DataNarrator/EditFormStore", Object.keys(editStoryMutations)),
+        ...mapMutations("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryMutations)),
 
         async updateStory() {
             const token = this.accessToken;
-            const response = await fetch(`http://localhost:8000/stories/${this.selectedStoryId}`, {
+            const response = await fetch(`${backendUrl}/stories/${this.selectedStoryId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -30,7 +31,7 @@ export default {
 
         async createStory() {
             const token = this.accessToken;
-            const response = await fetch("http://localhost:8000/stories", {
+            const response = await fetch(`${backendUrl}/stories`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -57,7 +58,7 @@ export default {
         },
 
         async getStory(storyId) {
-            const response = await fetch(`http://localhost:8000/stories/${storyId}`)
+            const response = await fetch(`${backendUrl}/stories/${storyId}`)
 
             return await response.json();
         }

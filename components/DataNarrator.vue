@@ -1,13 +1,12 @@
 ﻿<script>
 import {mapGetters, mapMutations} from "vuex";
-import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
 import DataNarratorWindowMixins from "../mixins/DataNarratorWindowMixins";
 import Toolwindow from "./ToolWindow/Toolwindow.vue";
 import * as constants from "../store/contantsDataNarrator";
 import DataNarratorDashboard from "./dashboard/Dashboard.vue";
 import LoginMixin from "../mixins/LoginMixin";
-import CreateStory from "./storyCreator/CreateStory.vue";
+import CreateStory from "../features/stories/components/CreateStory.vue";
 
 export default {
     name: "DataNarrator",

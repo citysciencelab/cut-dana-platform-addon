@@ -1,16 +1,16 @@
 <script>
 import {mapMutations} from "vuex";
-import mutations from "../../store/mutationsDataNarrator";
-import DataNarratorWindowMixins from "../../mixins/DataNarratorWindowMixins";
-import Toolwindow from "../ToolWindow/Toolwindow.vue";
+import mutations from "../../../store/mutationsDataNarrator";
+import DataNarratorWindowMixins from "../../../mixins/DataNarratorWindowMixins";
+import Toolwindow from "../../../components/ToolWindow/Toolwindow.vue";
 import CreateStoryHeader from "./CreateStoryHeader.vue";
-import LoginMixin from "../../mixins/LoginMixin";
+import LoginMixin from "../../../mixins/LoginMixin";
 
 import {mdiCancel, mdiCheck, mdiEyeOutline} from "@mdi/js";
-import CreateStoryMixins from "../../mixins/CreateStoryMixins";
-import NavigationMixins from "../../mixins/NavigationMixins";
+import CreateStoryMixins from "../mixins/CreateStoryMixins";
+import NavigationMixins from "../../../mixins/NavigationMixins";
 import StoryForm from "./StoryForm.vue";
-import * as contantsDataNarrator from "../../store/contantsDataNarrator";
+import * as contantsDataNarrator from "../../../store/contantsDataNarrator";
 
 export default {
     name: "CreateStory",
@@ -62,8 +62,8 @@ export default {
         </template>
         <template v-slot:footer>
             <div class="actions-container">
-                <button @click="gotoPage(contantsDataNarrator.dataNarratorModes.DASHBOARD)">Cancel</button>
-                <button @click="saveStory">Save</button>
+                <v-btn @click="gotoPage(contantsDataNarrator.dataNarratorModes.DASHBOARD)">Cancel</v-btn>
+                <v-btn @click="saveStory">Save</v-btn>
             </div>
         </template>
     </Toolwindow>
