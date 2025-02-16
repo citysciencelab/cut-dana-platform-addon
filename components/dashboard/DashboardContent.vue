@@ -27,10 +27,7 @@ export default {
         ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
         ...mapMutations("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryMutations)),
 
-        gotoSelectedStory(storyId) {
-            this.setSelectedStoryId(storyId);
-            this.gotoPage(dataNarratorModes.CREATE_STORY);
-        }
+
     },
     async mounted() {
         await this.getAllStories();
@@ -41,7 +38,7 @@ export default {
 <template>
     <div class="stories-card-container">
         <StoryCard
-            v-for="(story) in storyList"
+            v-for="story in stories"
             :key="story.id + story.updatedAt"
             :story="story"
             :grid="true"

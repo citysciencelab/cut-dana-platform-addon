@@ -3,6 +3,7 @@ import LoginMixin from "../../../mixins/LoginMixin";
 import {mapGetters, mapMutations,} from "vuex";
 import {mutations as editStoryMutations, state as editStoryState} from "../store/EditStoryForm";
 import {backendUrl} from "../../../store/contantsDataNarrator";
+import {uploadCoverImage} from "../services/addCoverImage";
 
 export default {
     mixins: [LoginMixin],
@@ -13,6 +14,12 @@ export default {
 
     methods: {
         ...mapMutations("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryMutations)),
+
+        async uploadCoverImage(storyId) {
+            console.log("uploadCoverImage", storyId, this.coverImage);
+            const token = this.accessToken;
+            return await uploadCoverImage(storyId, token, this.coverImage);
+        },
 
         async updateStory() {
             const token = this.accessToken;
@@ -26,7 +33,11 @@ export default {
                     title: this.storyTitle,
                     description: this.storyDescription
                 })
-            })
+            });
+
+            if (response.ok) {
+                let coverImageData = await this.uploadCoverImage(this.selectedStoryId);
+            }
         },
 
         async createStory() {
@@ -43,10 +54,11 @@ export default {
                 })
             })
             let data = null;
-            try {
+            console.log(response);
+
+            if (response.ok) {
                 data = await response.json();
-            } catch (e) {
-                console.error(e);
+                let coverImageData = await this.uploadCoverImage(data.id);
             }
         },
 

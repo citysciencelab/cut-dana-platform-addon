@@ -19,7 +19,6 @@ export default {
     },
     watch: {
         "mode": function() {
-            console.log("test");
         }
     }
 };

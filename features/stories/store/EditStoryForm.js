@@ -4,6 +4,7 @@ import {generateSimpleGetters, generateSimpleMutations} from "../../../../../../
 export const state = {
     isLoading: false,
     selectedStoryId: null,
+    coverImage: null,
     storyTitle: '',
     storyDescription: '',
 };
@@ -12,7 +13,6 @@ export const mutations = {
     ...generateSimpleMutations(state),
 
     setSelectedStoryId(state, selectedStoryId) {
-        console.log('selectedStoryId', selectedStoryId);
         state.selectedStoryId = selectedStoryId;
     },
 
@@ -22,7 +22,6 @@ export const mutations = {
     },
 
     resetStoryForm(state) {
-        console.log("reset story form")
         state.storyTitle = '';
         state.storyDescription = '';
         state.isLoading = false;

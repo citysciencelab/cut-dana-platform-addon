@@ -6,11 +6,14 @@ import DeleteButton from "./StoryActionButtons/DeleteButton.vue";
 import FeaturedButton from "./StoryActionButtons/FeaturedButton.vue";
 import ShareSettingsButton from "./StoryActionButtons/ShareSettingsButton.vue";
 import ShareSettingsForm from "./ShareSettingsForm.vue";
+import AuthorDisplay from "./Author.vue";
 
 import {mdiAccountOutline} from "@mdi/js";
+import FileMixin from "../../../mixins/FileMixin";
 
 export default {
     name: "StoryCard",
+    mixins: [FileMixin],
     components: {
         PlayButton,
         ShareButton,
@@ -18,7 +21,8 @@ export default {
         DeleteButton,
         FeaturedButton,
         ShareSettingsButton,
-        ShareSettingsForm
+        ShareSettingsForm,
+        AuthorDisplay
     },
     props: {
         story: {
@@ -39,6 +43,7 @@ export default {
         }
     },
   mounted() {
+        console.log(this.story);
   },
     data () {
         return {
@@ -50,7 +55,8 @@ export default {
     },
     methods: {
         editable () {
-            return this.isAdmin || this.story.owner === this.uid;
+            // TODO:Jonas implement this
+            return true;
         },
         reloadMasonry () {
             this.$emit("imageLoaded");
@@ -67,7 +73,7 @@ export default {
     >
         <v-img
             v-if="story.titleImage"
-            :src="story.titleImage"
+            :src="getFileUrl(story.titleImage)"
             :alt="story.title"
             eager
             height="95px"
@@ -79,22 +85,17 @@ export default {
                 <v-card-title class="card-title">
                     {{ story.title }}
                 </v-card-title>
-                <v-card-subtitle class="card-subtitle">
-                    <v-icon small>
-                        {{ icons.mdiAccountOutline }}
-                    </v-icon>
-                    {{ story.author }}
-                </v-card-subtitle>
+                <AuthorDisplay :authorId="story.author" />
             </v-col>
 
             <v-col cols="1">
                 <FeaturedButton
-                    :story-id="story._id"
+                    :story-id="story.id"
                     :is-featured="story.featured"
                     :is-admin="isAdmin"
                 />
                 <ShareButton
-                    :story-id="story._id"
+                    :story-id="story.id"
                     v-on="$listeners"
                 />
             </v-col>
@@ -109,11 +110,11 @@ export default {
                 <v-col>
                     <EditButton
                         v-if="editable()"
-                        :story-id="story._id"
+                        :story-id="story.id"
                     />
                     <DeleteButton
                         v-if="editable()"
-                        :story-id="story._id"
+                        :story-id="story.id"
                         v-on="$listeners"
                     />
                     <ShareSettingsButton

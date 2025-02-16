@@ -28,7 +28,7 @@ export default {
             objectFile: null,
             storyNameRules: [
                 value => Boolean(value) || this.$t("additional:modules.tools.dataNarrator.warning.requiredFields"),
-                value => (value && value.length >= 5) || this.$t("additional:modules.tools.dataNarrator.warning.requiredFieldMinCharacters")
+                value => (value && value.length >= 5) || this.$t("additional:modules.dataNarrator.warning.requiredFieldMinCharacters")
             ],
             icons: {
                 mdiArrowLeft,
@@ -50,6 +50,15 @@ export default {
             },
             set (value) {
                 this.$store.commit("Modules/DataNarrator/EditStoryForm/setStoryTitle", value);
+            }
+        },
+
+        storyCover: {
+            get () {
+                return this.$store.state.Modules.DataNarrator.EditStoryForm.coverImage;
+            },
+            set (value) {
+                this.$store.commit("Modules/DataNarrator/EditStoryForm/setCoverImage", value);
             }
         },
     }
@@ -81,7 +90,7 @@ export default {
                     id="hover-icon"
                     size="24px"
                     :title="$t(
-                        'additional:modules.tools.dataNarrator.label.removeCover'
+                        'additional:modules.dataNarrator.label.removeCover'
                     )"
                 >
                     {{ icons.mdiAlphaXCircle }}
@@ -124,7 +133,7 @@ export default {
                     cols="1"
                     class="d-flex justify-center align-self-center"
                     :title="$t(
-                        'additional:modules.tools.dataNarrator.label.addCover'
+                        'additional:modules.dataNarrator.label.addCover'
                     )"
                 >
                     <v-file-input
@@ -135,6 +144,7 @@ export default {
                         hide-input
                         name="cover"
                         accept="image/png, image/jpeg"
+                        v-model="storyCover"
                         @change="onCoverChange"
                     />
                 </v-col>
@@ -142,7 +152,7 @@ export default {
                     cols="1"
                     class="d-flex justify-center align-self-center"
                     :title="$t(
-                        'additional:modules.tools.dataNarrator.label.removeCover'
+                        'additional:modules.dataNarrator.label.removeCover'
                     )"
                 >
                     <v-icon size="24px">

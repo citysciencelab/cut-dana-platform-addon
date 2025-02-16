@@ -42,7 +42,6 @@ export default {
         ...mapGetters("Legend", Object.keys(getters))
     },
     mounted () {
-        console.log("isMobile", this.isMobile)
     },
     methods: {
         ...mapActions("Legend", Object.keys(actions)),
@@ -119,8 +118,8 @@ export default {
                         >
                     </v-col>
                     <v-col
-                        lg="9"
-                        md="9"
+                        lg="4"
+                        md="5"
                         sm="9"
                         cols="9"
                         class="justify-start align-start"

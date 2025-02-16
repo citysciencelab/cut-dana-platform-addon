@@ -25,7 +25,7 @@ export default {
             <v-checkbox
                 id="story-private"
                 :value="privateStory"
-                :label="$t('additional:modules.tools.dataNarrator.label.private')"
+                :label="$t('additional:modules.dataNarrator.label.private')"
                 hide-details="auto"
                 @change="$emit('update:private-story', $event)"
             />
@@ -36,7 +36,7 @@ export default {
             class="form-group"
         >
             <label for="sharedWith">
-                {{ $t( "additional:modules.tools.dataNarrator.label.sharedWith" ) }}
+                {{ $t( "additional:modules.dataNarrator.label.sharedWith" ) }}
             </label>
             <BFormTags
                 :value="sharedWith"
@@ -45,9 +45,9 @@ export default {
                 input-id="sharedWith"
                 tag-variant="primary"
                 tag-pills
-                :placeholder="$t('additional:modules.tools.dataNarrator.label.sharedWithPlaceholder')"
-                :add-button-text="$t('additional:modules.tools.dataNarrator.button.addSharedWith')"
-                :duplicate-tag-text="$t('additional:modules.tools.dataNarrator.label.sharedWithDuplicate')"
+                :placeholder="$t('additional:modules.dataNarrator.label.sharedWithPlaceholder')"
+                :add-button-text="$t('additional:modules.dataNarrator.button.addSharedWith')"
+                :duplicate-tag-text="$t('additional:modules.dataNarrator.label.sharedWithDuplicate')"
                 @input="value => $emit('update:shared-with', value)"
             />
         </div>

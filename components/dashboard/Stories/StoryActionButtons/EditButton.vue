@@ -2,9 +2,9 @@
 import {mapActions, mapMutations} from "vuex";
 import {mdiPencil} from "@mdi/js";
 
-import * as constants from "../../../../store/contantsDataNarrator";
-import mutations from "../../../../store/mutationsDataNarrator";
-import actions from "../../../../store/actionsDataNarrator";
+import {mutations} from "../../../../features/stories/store/EditStoryForm";
+import {dataNarratorModes} from "../../../../store/contantsDataNarrator";
+import NavigationMixins from "../../../../mixins/NavigationMixins";
 
 export default {
     name: "EditButton",
@@ -14,6 +14,7 @@ export default {
             default: null
         }
     },
+    mixins: [NavigationMixins],
     data () {
         return {
             icons: {
@@ -22,15 +23,14 @@ export default {
         };
     },
     methods: {
-        ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),
-        ...mapActions("Modules/DataNarrator", Object.keys(actions)),
+        ...mapMutations("Modules/DataNarrator/EditStoryForm", Object.keys(mutations)),
         /**
          * Edit the story that is selected and fetches the corresponding Story json from the API
          * @returns {void}
          */
-        edit () {
-            this.setCurrentStoryId(this.storyId);
-            this.loadCurrentStory({mode: constants.storyTellingModes.CREATE});
+        gotoSelectedStory() {
+            this.setSelectedStoryId(this.storyId);
+            this.gotoPage(dataNarratorModes.CREATE_STORY);
         }
     }
 };
@@ -42,14 +42,14 @@ export default {
             <v-icon
                 id="edit-button"
                 v-on="on"
-                @click="edit()"
+                @click="gotoSelectedStory()"
             >
                 {{ icons.mdiPencil }}
             </v-icon>
         </template>
         <span>
             {{
-                $t("additional:modules.tools.dataNarrator.creator.edit")
+                $t("additional:modules.dataNarrator.creator.edit")
             }}
         </span>
     </v-tooltip>

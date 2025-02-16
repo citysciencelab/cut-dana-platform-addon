@@ -47,8 +47,6 @@ export default {
     grid-column: 2 / 3;
     width: 100%;
     height: 100%;
-
-    padding-top: 20px;
     position: absolute;
 
     &.desktop {
@@ -65,6 +63,11 @@ export default {
 
         &.dashboard {
             display: flex;
+
+            .toolwindow {
+                height: 100%;
+                overflow-y: scroll;
+            }
         }
 
         &.mobile {
@@ -83,6 +86,7 @@ export default {
             transition: height 1s ease-in;
 
             .slot {
+                overflow-y: scroll;
 
                 &.removed {
                     opacity: 0;

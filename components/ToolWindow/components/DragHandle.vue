@@ -42,7 +42,6 @@ export default {
 
     methods: {
         enableEventListeners () {
-            console.log("enabling events");
             this.$refs["header-draggable-container"].addEventListener("touchstart", this.touchStart);
             document.addEventListener("touchmove", this.touchMove);
             document.addEventListener("touchend", this.touchEnd);
@@ -55,7 +54,6 @@ export default {
         },
 
         touchStart (e) {
-            console.log("here");
             this.isDragging = true;
             const touch = e.touches[0];
 

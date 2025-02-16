@@ -21,7 +21,6 @@ export default {
     },
     mounted() {
         this.checkLoggedIn();
-        console.log("mounted login mixins", this.accessToken);
     },
     methods: {
         ...mapMutations("Modules/DataNarrator", Object.keys(mutations)),

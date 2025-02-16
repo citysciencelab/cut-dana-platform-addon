@@ -31,8 +31,6 @@ export default {
         ...mapGetters("Modules/DataNarrator", Object.keys(getters))
     },
     mounted() {
-        console.log("BackButton mounted");
-        console.log(this.icons.mdiArrowLeft)
     }
 };
 </script>
