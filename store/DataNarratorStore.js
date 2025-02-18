@@ -2,6 +2,7 @@
 import mutations from "./mutationsDataNarrator";
 import getters from "./gettersDataNarrator";
 import EditStoryForm from "../features/stories/store/EditStoryForm";
+import EditStepForm from "../features/steps/store/EditStepForm";
 
 export default {
     namespaced: true,
@@ -9,6 +10,7 @@ export default {
     mutations,
     getters,
     modules: {
-        EditStoryForm
+        EditStoryForm,
+        EditStepForm
     }
 };

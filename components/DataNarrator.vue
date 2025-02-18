@@ -7,11 +7,12 @@ import * as constants from "../store/contantsDataNarrator";
 import DataNarratorDashboard from "./dashboard/Dashboard.vue";
 import LoginMixin from "../mixins/LoginMixin";
 import CreateStory from "../features/stories/components/CreateStory.vue";
+import CreateStep from "../features/steps/components/CreateStep.vue";
 
 export default {
     name: "DataNarrator",
     mixins: [DataNarratorWindowMixins, LoginMixin],
-    components: {CreateStory, DataNarratorDashboard, Toolwindow},
+    components: {CreateStep, CreateStory, DataNarratorDashboard, Toolwindow},
     computed: {
         ...mapGetters("Modules/DataNarrator", ["mode", "toolwindowMode"]),
         ...mapGetters("Modules/Login", ["accessToken"]),
@@ -37,6 +38,7 @@ export default {
         <div id="datanarrator-container" :class="[toolwindowMode]">
             <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD"/>
             <CreateStory v-if="mode === constants.dataNarratorModes.CREATE_STORY"/>
+            <CreateStep v-if="mode === constants.dataNarratorModes.CREATE_STEP"/>
         </div>
     </Teleport>
 </template>
