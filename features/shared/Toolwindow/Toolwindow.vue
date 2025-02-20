@@ -1,35 +1,20 @@
-﻿<script>
+﻿
 
-import DataNarratorWindowMixins from "../../mixins/DataNarratorWindowMixins";
-import DragHandle from "./components/DragHandle.vue";
-import * as constants from "../../store/contantsDataNarrator";
-import {mapGetters} from "vuex";
-import getters from "../../store/gettersDataNarrator";
+<script setup>
 
-export default {
-    name: "Toolwindow",
-    components: {DragHandle},
-    mixins: [DataNarratorWindowMixins],
-    data () {
-        return {
-            toolWindowPadding: constants.dataNarratorToolSettings.toolWindowPadding,
-            toolwindowModes: constants.ToolwindowModes
-        };
-    },
-    mounted () {
+import {useDataNarrator} from "../../dashboard/hooks/useDashboard";
+import {ToolwindowModes as toolwindowModes} from "../../../store/contantsDataNarrator";
+import DragHandle from "./DragHandle.vue";
 
-    },
-    computed: {
-        ...mapGetters("Modules/DataNarrator", ["toolwindowMode"])
-    }
-};
+const {toolwindowMode, toolWindowPadding, moveTool, setIsOpen, isOpen} = useDataNarrator();
+
 </script>
 
 <template lang="html">
     <div :class="['toolwindow-container', toolwindowMode]">
         <div :class="['toolwindow-between', toolwindowMode]">
             <div :class="['toolwindow', toolwindowMode === toolwindowModes.MOBILE ?? 'with-top-border-radius']" :style="{padding: `${toolWindowPadding}px`}">
-                <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setToolIsOpen" />
+                <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setIsOpen" />
                 <slot name="header"></slot>
                 <div :class="['slot', isOpen ? '' : 'removed']">
                     <slot></slot>

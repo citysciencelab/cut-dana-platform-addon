@@ -1,44 +1,28 @@
-﻿<script>
-import {mapGetters, mapMutations} from "vuex";
-import mutations from "../store/mutationsDataNarrator";
-import DataNarratorWindowMixins from "../mixins/DataNarratorWindowMixins";
-import Toolwindow from "./ToolWindow/Toolwindow.vue";
-import * as constants from "../store/contantsDataNarrator";
-import DataNarratorDashboard from "./dashboard/Dashboard.vue";
-import LoginMixin from "../mixins/LoginMixin";
-import CreateStory from "../features/stories/components/CreateStory.vue";
-import CreateStep from "../features/steps/components/CreateStep.vue";
+﻿
 
-export default {
-    name: "DataNarrator",
-    mixins: [DataNarratorWindowMixins, LoginMixin],
-    components: {CreateStep, CreateStory, DataNarratorDashboard, Toolwindow},
-    computed: {
-        ...mapGetters("Modules/DataNarrator", ["mode", "toolwindowMode"]),
-        ...mapGetters("Modules/Login", ["accessToken"]),
-        constants() {
-            return constants;
-        }
-    },
+<script setup>
+import { useDataNarrator } from './features/dashboard/hooks/useDashboard';
+import DataNarratorDashboard from "./features/dashboard/components/Dashboard.vue";
+import * as constants from "./store/contantsDataNarrator";
 
-    methods: {
-        ...mapMutations("Modules/DataNarrator", Object.keys(mutations))
-    },
+defineOptions({
+    name: 'DataNarrator'
+});
 
-    mounted() {
-        this.disableMainMenu();
-        this.disableSecondaryMenu();
-        this.disableFooter();
-    },
-};
+const { disableMainMenu, disableSecondaryMenu, disableFooter, mode, toolwindowMode } = useDataNarrator();
+
+disableFooter();
+disableMainMenu();
+disableSecondaryMenu();
+
+
 </script>
+
 
 <template lang="html">
     <Teleport to="#datanarrator-root" >
         <div id="datanarrator-container" :class="[toolwindowMode]">
             <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD"/>
-            <CreateStory v-if="mode === constants.dataNarratorModes.CREATE_STORY"/>
-            <CreateStep v-if="mode === constants.dataNarratorModes.CREATE_STEP"/>
         </div>
     </Teleport>
 </template>
@@ -212,6 +196,4 @@ export default {
         border-radius: 20px;
     }
 }
-
-
 </style>
