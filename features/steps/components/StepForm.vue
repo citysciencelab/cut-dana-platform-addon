@@ -6,7 +6,6 @@ export default {
 
 <template>
     <div class="step-form">
-
     </div>
 </template>
 

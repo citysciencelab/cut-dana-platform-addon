@@ -1,90 +1,78 @@
-<script>
+<script setup>
+import {useIsMobile} from "../../../hooks/useIsMobile";
+import {onMounted, onUnmounted, ref, watch} from "vue";
+import {useDataNarrator} from "../../dashboard/hooks/useDashboard";
 import * as constants from "../../../store/contantsDataNarrator";
-import DataNarratorWindowMixins from "../../../mixins/DataNarratorWindowMixins";
 
+const {} = useDataNarrator();
 
-export default {
-    name: "DragHandle",
-    mixins: [DataNarratorWindowMixins],
-    props: {
+let toolWindow = ref(document.querySelectorAll(".toolwindow-container .toolwindow")[0])
+let draggable = ref(null);
+let isDragging = ref(false);
+let initialOffset = ref(0);
+let bottomOffset = ref(constants.dataNarratorToolSettings.bottomOffset);
+let offsetX = ref(0);
+let offsetY = ref(0);
 
-    },
+const {isMobile} = useIsMobile();
 
-    data () {
-        return {
-            toolWindow: null,
-            draggable: null,
-            isDragging: false,
-            initialOffset: 0,
-            bottomOffset: constants.dataNarratorToolSettings.bottomOffset
-        };
-    },
+function touchStart (e) {
+    isDragging = true;
+    const touch = e.touches[0];
 
-    watch: {
-        isMobile () {
-            if (this.isMobile) {
-                this.enableEventListeners();
+    offsetX = touch.clientX - toolWindow.offsetLeft;
+    offsetY = touch.clientY - toolWindow.offsetTop;
+}
+
+function touchEnd () {
+    this.isDragging = false;
+}
+
+function touchMove (e) {
+    if (isDragging) {
+        const currentToolTop = toolWindow.offsetTop,
+            currentToolBottom = toolWindow.offsetTop + toolWindow.offsetHeight,
+            targetLocation = e.touches[0].clientY - 30,
+            isDirectionDown = currentToolTop <= targetLocation;
+
+        // check if the window is inside bounds
+        if (targetLocation > 0 && targetLocation < window.innerHeight) {
+            if (isDirectionDown && currentToolBottom > window.innerHeight - this.bottomOffset) {
+                return;
             }
-            else {
-                this.disableEventListeners();
-            }
-        }
-    },
-
-    beforeDestroy () {
-        this.disableEventListeners();
-    },
-
-    mounted () {
-        this.toolWindow = document.querySelectorAll(".toolwindow-container .toolwindow")[0];
-        this.enableEventListeners();
-        this.moveTool();
-    },
-
-    methods: {
-        enableEventListeners () {
-            this.$refs["header-draggable-container"].addEventListener("touchstart", this.touchStart);
-            document.addEventListener("touchmove", this.touchMove);
-            document.addEventListener("touchend", this.touchEnd);
-        },
-
-        disableEventListeners () {
-            this.$refs["header-draggable-container"].removeEventListener("touchstart", this.touchStart);
-            document.removeEventListener("touchend", this.touchEnd);
-            document.removeEventListener("touchmove", this.touchMove);
-        },
-
-        touchStart (e) {
-            this.isDragging = true;
-            const touch = e.touches[0];
-
-            this.offsetX = touch.clientX - this.toolWindow.offsetLeft;
-            this.offsetY = touch.clientY - this.toolWindow.offsetTop;
-        },
-
-        touchEnd () {
-            this.isDragging = false;
-        },
-
-        touchMove (e) {
-            if (this.isDragging) {
-                const currentToolTop = this.toolWindow.offsetTop,
-                    currentToolBottom = this.toolWindow.offsetTop + this.toolWindow.offsetHeight,
-                    targetLocation = e.touches[0].clientY - 30,
-                    isDirectionDown = currentToolTop <= targetLocation;
-
-                // check if the window is inside bounds
-                if (targetLocation > 0 && targetLocation < window.innerHeight) {
-                    if (isDirectionDown && currentToolBottom > window.innerHeight - this.bottomOffset) {
-                        return;
-                    }
-                    this.toolWindow.style.top = `${targetLocation}px`;
-                }
-            }
+            toolWindow.style.top = `${targetLocation}px`;
         }
     }
+}
 
-};
+watch(isMobile, (newVal) => {
+    if (newVal) {
+        enableEventListeners();
+    } else {
+        disableEventListeners();
+    }
+});
+
+onMounted(() => {
+    enableEventListeners();
+});
+
+onUnmounted(() => {
+    disableEventListeners();
+});
+
+
+function enableEventListeners () {
+    this.$refs["header-draggable-container"].addEventListener("touchstart", this.touchStart);
+    document.addEventListener("touchmove", touchMove);
+    document.addEventListener("touchend", touchEnd);
+}
+
+function disableEventListeners () {
+    this.$refs["header-draggable-container"].removeEventListener("touchstart", this.touchStart);
+    document.removeEventListener("touchend", touchEnd);
+    document.removeEventListener("touchmove", touchMove);
+}
 </script>
 
 <template>
