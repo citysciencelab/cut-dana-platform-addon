@@ -1,28 +1,30 @@
-﻿
-
-<script setup>
-import { useDataNarrator } from './features/dashboard/hooks/useDashboard';
+﻿<script setup>
+import {useDataNarrator} from "./features/dashboard/hooks/useDashboard";
 import DataNarratorDashboard from "./features/dashboard/components/Dashboard.vue";
 import * as constants from "./store/contantsDataNarrator";
+import CreateStory from "./features/stories/components/CreateStory.vue";
+import CreateStep from "./features/steps/components/CreateStep.vue";
 
 defineOptions({
-    name: 'DataNarrator'
+    name: "DataNarrator"
 });
 
-const { disableMainMenu, disableSecondaryMenu, disableFooter, mode, toolwindowMode } = useDataNarrator();
+const {disableMainMenu, disableSecondaryMenu, disableFooter, mode, toolwindowMode} = useDataNarrator();
 
 disableFooter();
 disableMainMenu();
 disableSecondaryMenu();
-
-
 </script>
 
-
 <template lang="html">
-    <Teleport to="#datanarrator-root" >
-        <div id="datanarrator-container" :class="[toolwindowMode]">
-            <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD"/>
+    <Teleport to="#datanarrator-root">
+        <div
+            id="datanarrator-container"
+            :class="[toolwindowMode]"
+        >
+            <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD" />
+            <CreateStory v-if="mode === constants.dataNarratorModes.CREATE_STORY" />
+            <CreateStep v-if="mode === constants.dataNarratorModes.CREATE_STEP" />
         </div>
     </Teleport>
 </template>
@@ -56,8 +58,6 @@ disableSecondaryMenu();
             padding-left: 1rem !important;
         }
     }
-
-
 }
 </style>
 

@@ -5,25 +5,29 @@ export const state = {
     isLoading: false,
     selectedStoryId: null,
     coverImage: null,
-    storyTitle: '',
-    storyDescription: '',
+    storyTitle: "",
+    storyDescription: ""
 };
 
+// eslint-disable-next-line one-var
 export const mutations = {
     ...generateSimpleMutations(state),
 
-    setSelectedStoryId(state, selectedStoryId) {
+    // eslint-disable-next-line no-shadow
+    setSelectedStoryId (state, selectedStoryId) {
         state.selectedStoryId = selectedStoryId;
     },
 
-    setStoryData(state, storyData) {
+    // eslint-disable-next-line no-shadow
+    setStoryData (state, storyData) {
         state.storyTitle = storyData.title;
         state.storyDescription = storyData.description;
     },
 
-    resetStoryForm(state) {
-        state.storyTitle = '';
-        state.storyDescription = '';
+    // eslint-disable-next-line no-shadow
+    resetStoryForm (state) {
+        state.storyTitle = "";
+        state.storyDescription = "";
         state.isLoading = false;
         state.selectedStoryId = null;
     }
@@ -31,7 +35,7 @@ export const mutations = {
 
 export const getters = {
     ...generateSimpleGetters(state)
-}
+};
 
 export default {
     namespaced: true,

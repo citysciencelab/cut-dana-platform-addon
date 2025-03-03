@@ -1,12 +1,10 @@
-﻿
-
-<script setup>
+﻿<script setup>
 
 import {useDataNarrator} from "../../dashboard/hooks/useDashboard";
 import {ToolwindowModes as toolwindowModes} from "../../../store/contantsDataNarrator";
 import DragHandle from "./DragHandle.vue";
 
-const {toolwindowMode, toolWindowPadding, moveTool, setIsOpen, isOpen} = useDataNarrator();
+const {toolwindowMode, toolWindowPadding, setIsOpen, isOpen} = useDataNarrator();
 
 </script>
 

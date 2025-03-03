@@ -22,9 +22,9 @@ const state = {
         animationChecked: false,
         direction: "out"
     },
-    mode: dataNarratorModes.DASHBOARD,
-    toolwindowMode: ToolwindowModes.DASHBOARD,
-    isLoginOpen: true,
+    mode: dataNarratorModes.CREATE_STEP,
+    toolwindowMode: ToolwindowModes.DESKTOP,
+    isLoginOpen: true
 };
 
 export default state;

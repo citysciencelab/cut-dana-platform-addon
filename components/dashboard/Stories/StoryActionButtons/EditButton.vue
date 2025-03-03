@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapMutations} from "vuex";
+import {mapMutations} from "vuex";
 import {mdiPencil} from "@mdi/js";
 
 import {mutations} from "../../../../features/stories/store/EditStoryForm";

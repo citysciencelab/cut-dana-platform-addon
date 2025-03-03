@@ -1,7 +1,7 @@
 import {generateSimpleGetters, generateSimpleMutations} from "../../../../../../src/shared/js/utils/generators";
 
 export const state = {
-    isLoading: false,
+    isStepFormLoading: false,
     selectedStepId: null,
 };
 
@@ -16,18 +16,18 @@ export const mutations = {
     },
 
     resetStepForm(state) {
-        state.isLoading = false;
+        state.isStepFormLoading = false;
         state.selectedStoryId = null;
     }
 };
 
 export const getters = {
     ...generateSimpleGetters(state)
-}
+};
 
 export default {
     namespaced: true,
     state,
     mutations,
-    getters,
+    getters
 };

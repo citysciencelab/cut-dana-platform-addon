@@ -1,17 +1,17 @@
 ﻿<template>
 
-    <Toolwindow>
+    <ToolWindow>
         <div>
             Data narrator
         </div>
-    </Toolwindow>
+    </ToolWindow>
 
 </template>
 
 <script setup>
 
 
-import Toolwindow from "../../shared/Toolwindow/Toolwindow.vue";
+import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
 </script>
 
 <style scoped>

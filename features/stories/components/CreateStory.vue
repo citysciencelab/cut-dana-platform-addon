@@ -2,7 +2,7 @@
 import {mapMutations} from "vuex";
 import mutations from "../../../store/mutationsDataNarrator";
 import DataNarratorWindowMixins from "../../../mixins/DataNarratorWindowMixins";
-import Toolwindow from "../../../components/ToolWindow/Toolwindow.vue";
+import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
 import CreateStoryHeader from "./CreateStoryHeader.vue";
 import LoginMixin from "../../../mixins/LoginMixin";
 
@@ -17,7 +17,7 @@ export default {
     mixins: [DataNarratorWindowMixins, LoginMixin, CreateStoryMixins, NavigationMixins],
     components: {
         StoryForm,
-        CreateStoryHeader, Toolwindow
+        CreateStoryHeader, Toolwindow: ToolWindow
     },
     computed: {
         contantsDataNarrator() {

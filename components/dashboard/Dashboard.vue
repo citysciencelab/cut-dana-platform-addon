@@ -3,14 +3,14 @@ import {mapGetters, mapMutations} from "vuex";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import DataNarratorWindowMixins from "../../mixins/DataNarratorWindowMixins";
-import Toolwindow from "../ToolWindow/Toolwindow.vue";
+import ToolWindow from "../../features/shared/Toolwindow/ToolWindow.vue";
 import DashboardHeader from "./DashboardHeader.vue";
 import DashboardContent from "./DashboardContent.vue";
 
 export default {
     name: "DataNarratorDashboard",
     mixins: [DataNarratorWindowMixins],
-    components: {DashboardHeader, Toolwindow, DashboardContent},
+    components: {DashboardHeader, Toolwindow: ToolWindow, DashboardContent},
     computed: {
         ...mapGetters("Modules/DataNarrator", Object.keys(getters))
     },

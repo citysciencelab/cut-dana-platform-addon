@@ -3,7 +3,7 @@ import {mapGetters, mapMutations} from "vuex";
 import getters from "../../store/gettersDataNarrator";
 import mutations from "../../store/mutationsDataNarrator";
 import DataNarratorWindowMixins from "../../mixins/DataNarratorWindowMixins";
-import Toolwindow from "../ToolWindow/Toolwindow.vue";
+import ToolWindow from "../../features/shared/Toolwindow/ToolWindow.vue";
 import DashboardHeader from "../dashboard/DashboardHeader.vue";
 import NavigationMixins from "../../mixins/NavigationMixins";
 import {dataNarratorModes} from "../../store/contantsDataNarrator";
@@ -16,7 +16,7 @@ import StoryCard from "./Stories/StoryCard.vue";
 export default {
     name: "DashboardContent",
     mixins: [DataNarratorWindowMixins, NavigationMixins, DashboardMixins, CreateStoryMixins],
-    components: {StoryCard, DashboardHeader, Toolwindow},
+    components: {StoryCard, DashboardHeader, Toolwindow: ToolWindow},
     computed: {
         ...mapGetters("Modules/DataNarrator", Object.keys(getters)),
         dataNarratorModes() {
