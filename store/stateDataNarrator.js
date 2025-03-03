@@ -22,8 +22,8 @@ const state = {
         animationChecked: false,
         direction: "out"
     },
-    mode: dataNarratorModes.CREATE_STEP,
-    toolwindowMode: ToolwindowModes.DESKTOP,
+    mode: dataNarratorModes.DASHBOARD,
+    toolwindowMode: ToolwindowModes.DASHBOARD,
     isLoginOpen: true
 };
 
