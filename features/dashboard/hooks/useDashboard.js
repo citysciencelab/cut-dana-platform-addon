@@ -6,74 +6,82 @@ import isMobile from "../../../../../../src/shared/js/utils/isMobile";
 import * as constants from "../../../store/contantsDataNarrator";
 import {dataNarratorModes, ToolwindowModes} from "../../../store/contantsDataNarrator";
 
-export function useDataNarrator() {
+/**
+ *
+ */
+export function useDataNarrator () {
 
-    const isOpen = ref(true);
+    const isOpen = ref(true),
+        stories = ref([]),
 
-    const setIsOpen = () => {
-        isOpen.value = !isOpen.value;
-        moveTool();
-    };
+        setIsOpen = () => {
+            isOpen.value = !isOpen.value;
+            moveTool();
+        },
 
-    const store = useStore();
+        store = useStore(),
 
-    const setToolWindowMode = () => store.commit("Modules/DataNarrator/setToolwindowMode");
+        setToolWindowMode = () => store.commit("Modules/DataNarrator/setToolwindowMode"),
 
-    const disableMainMenu = () => {
-        const mainMenu = document.querySelector('#mp-menu-mainMenu');
-        const mainMenuToggleButton = document.querySelector('#mainMenu-toggle-button');
+        disableMainMenu = () => {
+            const mainMenu = document.querySelector("#mp-menu-mainMenu"),
+                mainMenuToggleButton = document.querySelector("#mainMenu-toggle-button");
 
-        mainMenu.style.cssText = 'display: none !important;';
-        mainMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
-    }
+            mainMenu.style.cssText = "display: none !important;";
+            mainMenuToggleButton.style.cssText = "opacity: 0 !important;pointer-events: none;";
+        },
 
-    const disableSecondaryMenu = () => {
-        const secondaryMenu = document.querySelector('#mp-menu-secondaryMenu');
-        const secondaryMenuToggleButton = document.querySelector('#secondaryMenu-toggle-button');
+        disableSecondaryMenu = () => {
+            const secondaryMenu = document.querySelector("#mp-menu-secondaryMenu"),
+                secondaryMenuToggleButton = document.querySelector("#secondaryMenu-toggle-button");
 
-        secondaryMenu.style.cssText = 'display: none !important;';
-        secondaryMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
-    }
+            secondaryMenu.style.cssText = "display: none !important;";
+            secondaryMenuToggleButton.style.cssText = "opacity: 0 !important;pointer-events: none;";
+        },
 
-    const disableFooter = () => {
-        const footer = document.querySelector('#module-portal-footer');
+        disableFooter = () => {
+            const footer = document.querySelector("#module-portal-footer");
 
-        footer.style.cssText = 'display: none !important;';
-    }
+            footer.style.cssText = "display: none !important;";
+        },
 
-    const moveTool = async ()=> {
-        const toolWindows = document.querySelectorAll("#datanarrator-root .toolwindow-container .toolwindow");
+        getAllStories = () => {},
 
-        for (const toolWindow of toolWindows) {
-            await nextTick();
+        moveTool = async ()=> {
+            const toolWindows = document.querySelectorAll("#datanarrator-root .toolwindow-container .toolwindow");
 
-            if (isMobile()) {
-                toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset}px`;
-                setToolWindowMode(ToolwindowModes.MOBILE);
-            } else {
-                toolWindow.style.top = `0px`;
+            for (const toolWindow of toolWindows) {
+                await nextTick();
 
-                if (this.mode === dataNarratorModes.DASHBOARD) {
-                    setToolWindowMode(ToolwindowModes.DASHBOARD);
-                } else {
-                    setToolWindowMode(ToolwindowModes.DESKTOP);
+                if (isMobile()) {
+                    toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset}px`;
+                    setToolWindowMode(ToolwindowModes.MOBILE);
+                }
+                else {
+                    toolWindow.style.top = "0px";
+
+                    if (this.mode === dataNarratorModes.DASHBOARD) {
+                        setToolWindowMode(ToolwindowModes.DASHBOARD);
+                    }
+                    else {
+                        setToolWindowMode(ToolwindowModes.DESKTOP);
+                    }
                 }
             }
-        }
-    }
+        };
 
     return {
-
-
         mode: computed(() => store.state.Modules.DataNarrator.mode),
         toolwindowMode: computed(() => store.state.Modules.DataNarrator.toolwindowMode),
         toolWindowPadding: computed(() => store.state.Modules.DataNarrator.toolWindowPadding),
         isOpen,
+        stories,
 
         moveTool,
         setIsOpen,
         disableFooter,
         disableMainMenu,
         disableSecondaryMenu,
+        getAllStories
     };
 }

@@ -1,0 +1,46 @@
+<script setup>
+
+import {useStories} from "../../../stories/hooks/useStories";
+import {mdiPencil} from "@mdi/js";
+
+const {currentStoryId} = useStories(),
+    {storyId} = defineProps({
+        storyId: {
+            type: String,
+            required: true
+        }
+    });
+
+/**
+ *
+ */
+function gotoSelectedStory () {
+    currentStoryId.value = storyId;
+}
+</script>
+
+<template>
+    <v-tooltip top>
+        <template #activator="{ on }">
+            <v-icon
+                id="edit-button"
+                v-on="on"
+                @click="gotoSelectedStory()"
+            >
+                {{ mdiPencil }}
+            </v-icon>
+        </template>
+        <span>
+            {{
+                $t("additional:modules.dataNarrator.creator.edit")
+            }}
+        </span>
+    </v-tooltip>
+</template>
+
+<style scoped lang="scss">
+#play-button {
+    float:right;
+    color: #413FAB;
+}
+</style>

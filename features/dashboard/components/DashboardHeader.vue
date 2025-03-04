@@ -1,5 +1,4 @@
 <script setup>
-
 import LoginButton from "../../../components/dashboard/Tools/LoginButton.vue";
 import LanguageSwitchButton from "../../../components/dashboard/Tools/LanguageSwitchButton.vue";
 import CreateStoryButton from "../../../components/dashboard/Tools/CreateStoryButton.vue";

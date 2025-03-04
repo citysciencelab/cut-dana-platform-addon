@@ -28,7 +28,7 @@ export default {
          * Edit the story that is selected and fetches the corresponding Story json from the API
          * @returns {void}
          */
-        gotoSelectedStory() {
+        gotoSelectedStory () {
             this.setSelectedStoryId(this.storyId);
             this.gotoPage(dataNarratorModes.CREATE_STORY);
         }
