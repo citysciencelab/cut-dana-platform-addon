@@ -1,22 +1,17 @@
-<script>
-import {BFormTags} from "bootstrap-vue";
+<script setup>
+import { useTranslation } from "i18next-vue";
 
-export default {
-    name: "ShareSettings",
-    components: {
-        BFormTags
+const {t} = useTranslation();
+const props = defineProps({
+    privateStory: {
+        type: Boolean,
+        default: false
     },
-    props: {
-        privateStory: {
-            type: Boolean,
-            default: false
-        },
-        sharedWith: {
-            type: Array,
-            default: () => []
-        }
+    sharedWith: {
+        type: Array,
+        default: () => []
     }
-};
+})
 </script>
 
 <template>
@@ -25,7 +20,7 @@ export default {
             <v-checkbox
                 id="story-private"
                 :value="privateStory"
-                :label="$t('additional:modules.dataNarrator.label.private')"
+                :label="t('additional:modules.dataNarrator.label.private')"
                 hide-details="auto"
                 @change="$emit('update:private-story', $event)"
             />
@@ -36,7 +31,7 @@ export default {
             class="form-group"
         >
             <label for="sharedWith">
-                {{ $t( "additional:modules.dataNarrator.label.sharedWith" ) }}
+                {{ t( "additional:modules.dataNarrator.label.sharedWith" ) }}
             </label>
             <BFormTags
                 :value="sharedWith"
@@ -45,9 +40,9 @@ export default {
                 input-id="sharedWith"
                 tag-variant="primary"
                 tag-pills
-                :placeholder="$t('additional:modules.dataNarrator.label.sharedWithPlaceholder')"
-                :add-button-text="$t('additional:modules.dataNarrator.button.addSharedWith')"
-                :duplicate-tag-text="$t('additional:modules.dataNarrator.label.sharedWithDuplicate')"
+                :placeholder="t('additional:modules.dataNarrator.label.sharedWithPlaceholder')"
+                :add-button-text="t('additional:modules.dataNarrator.button.addSharedWith')"
+                :duplicate-tag-text="t('additional:modules.dataNarrator.label.sharedWithDuplicate')"
                 @input="value => $emit('update:shared-with', value)"
             />
         </div>

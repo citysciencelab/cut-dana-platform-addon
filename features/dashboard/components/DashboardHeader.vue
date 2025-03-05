@@ -1,15 +1,22 @@
 <script setup>
-import LoginButton from "../../../components/dashboard/Tools/LoginButton.vue";
-import LanguageSwitchButton from "../../../components/dashboard/Tools/LanguageSwitchButton.vue";
-import CreateStoryButton from "../../../components/dashboard/Tools/CreateStoryButton.vue";
-import ListButton from "../../../components/dashboard/Tools/ListButton.vue";
+import LoginButton from "./Tools/LoginButton.vue";
+import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
+import CreateStoryButton from "./Tools/CreateStoryButton.vue";
+import ListButton from "./Tools/ListButton.vue";
+import {mdiMapLegend} from "@mdi/js";
+import {useTranslation} from "i18next-vue";
+import {ref} from "vue";
 
+
+const { t } = useTranslation();
 const legendAdded = true;
 const toggleLegend = () => {};
 const isMobile = false;
 function availableStoryListModes () {
     return ["all", "featured", "popular"];
-};
+}
+
+let storyListMode = ref("all");
 </script>
 
 <template>
@@ -32,7 +39,7 @@ function availableStoryListModes () {
                     class="bootstrap-icon"
                     @click="toggleLegend()"
                 >
-                    {{ icons.mdiMapLegend }}
+                    {{ mdiMapLegend }}
                 </v-icon>
             </div>
         </div>
@@ -67,11 +74,11 @@ function availableStoryListModes () {
                         cols="9"
                         class="justify-start align-start"
                     >
-                        <h1 class="header-h1">{{ $t("additional:modules.dataNarrator.dashboardView.title") }}</h1>
+                        <h1 class="header-h1">{{ t("additional:modules.dataNarrator.dashboardView.title") }}</h1>
                         <h4 class="header-h4">{{
-                                $t("additional:modules.dataNarrator.dashboardView.subtitle")
+                                t("additional:modules.dataNarrator.dashboardView.subtitle")
                             }}</h4>
-                        <p>{{ $t("additional:modules.dataNarrator.dashboardView.description") }}</p>
+                        <p>{{ t("additional:modules.dataNarrator.dashboardView.description") }}</p>
                     </v-col>
                 </v-row>
             </v-col>
@@ -79,7 +86,7 @@ function availableStoryListModes () {
                 cols="12"
                 class="d-flex justify-center align-end"
             >
-                <CreateStoryButton v-on="$listeners" />
+                <CreateStoryButton />
             </v-col>
         </v-row>
 
@@ -90,7 +97,6 @@ function availableStoryListModes () {
                     :key="mode"
                     :mode="mode"
                     :active="storyListMode === mode"
-                    v-on="$listeners"
                 />
             </v-col>
         </v-row>

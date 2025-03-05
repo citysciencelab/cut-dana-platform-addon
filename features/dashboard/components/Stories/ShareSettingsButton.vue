@@ -1,4 +1,8 @@
-<script setup lang="ts">
+<script setup>
+import { mdiEyeSettings } from "@mdi/js";
+import {useTranslation} from "i18next-vue";
+
+const {t} = useTranslation();
 
 /**
  *
@@ -10,18 +14,17 @@ function toggleSharedSettings () {
 
 <template>
     <v-tooltip top>
-        <template #activator="{ on }">
+        <template>
             <v-icon
                 id="share-button"
                 color="green"
-                v-on="on"
                 @click="toggleSharedSettings"
             >
                 {{ mdiEyeSettings }}
             </v-icon>
         </template>
         <span>
-            {{ $t("additional:modules.dataNarrator.button.shareSettings") }}
+            {{ t("additional:modules.dataNarrator.button.shareSettings") }}
         </span>
     </v-tooltip>
 </template>

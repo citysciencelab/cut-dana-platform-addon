@@ -6,6 +6,9 @@
         <template #default>
             <DashboardContent />
         </template>
+        <template #footer>
+            <div>test</div>
+        </template>
     </ToolWindow>
 </template>
 

@@ -1,68 +1,22 @@
-﻿<script>
+﻿<script setup>
 
-import {
-    mdiArrowLeft,
-    mdiPanoramaVariantOutline,
-    mdiImageRemoveOutline,
-    mdiAlphaXCircle
-} from "@mdi/js";
-import BackButton from "../../../..//components/shared/BackButton.vue";
-import CreateStoryMixins from "../../mixins/CreateStoryMixins";
-import {mapGetters} from "vuex";
-import {state as editStoryState} from "../../store/EditStoryForm";
 
-export default {
-    name: "CoverSelector",
-    components: {BackButton},
-    mixins: [CreateStoryMixins],
-    props: {
-        backButtonMsg: {
-            type: String,
-            default: "additional:modules.tools.dataNarrator.button.backToStory"
-        }
-    },
-    data () {
-        return {
-            hasCover: false,
-            showIcon: false,
-            objectFile: null,
-            storyNameRules: [
-                value => Boolean(value) || this.$t("additional:modules.tools.dataNarrator.warning.requiredFields"),
-                value => (value && value.length >= 5) || this.$t("additional:modules.dataNarrator.warning.requiredFieldMinCharacters")
-            ],
-            icons: {
-                mdiArrowLeft,
-                mdiPanoramaVariantOutline,
-                mdiAlphaXCircle,
-                mdiImageRemoveOutline
-            }
-        };
-    },
-    methods: {
+import {ref} from "vue";
+import {useTranslation} from "i18next-vue";
+import {mdiAlphaXCircle, mdiImageRemoveOutline, mdiPanoramaVariantOutline} from "@mdi/js";
+import BackButton from "./BackButton.vue";
 
-    },
-    computed: {
-        ...mapGetters("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryState)),
+const {t} = useTranslation();
 
-        storyTitle: {
-            get () {
-                return this.$store.state.Modules.DataNarrator.EditStoryForm.storyTitle;
-            },
-            set (value) {
-                this.$store.commit("Modules/DataNarrator/EditStoryForm/setStoryTitle", value);
-            }
-        },
+const hasCover = ref(false);
+const showIcon = ref(false);
+const storyTitle = ref("");
+const storyCover = ref("");
+const objectFile = ref("");
 
-        storyCover: {
-            get () {
-                return this.$store.state.Modules.DataNarrator.EditStoryForm.coverImage;
-            },
-            set (value) {
-                this.$store.commit("Modules/DataNarrator/EditStoryForm/setCoverImage", value);
-            }
-        },
-    }
-};
+const onCoverChange = () => {
+    console.log("here");
+}
 </script>
 
 <template>
@@ -89,11 +43,11 @@ export default {
                     v-show="showIcon"
                     id="hover-icon"
                     size="24px"
-                    :title="$t(
+                    :title="t(
                         'additional:modules.dataNarrator.label.removeCover'
                     )"
                 >
-                    {{ icons.mdiAlphaXCircle }}
+                    {{ mdiAlphaXCircle }}
                 </v-icon>
             </div>
         </div>
@@ -108,7 +62,7 @@ export default {
                     class="d-flex align-self-center "
                 >
                     <BackButton
-                        :tooltip="backButtonMsg"
+                        tooltip="hi"
                         :show-story-title="false"
                         @click="$emit('back-click')"
                     />
@@ -121,10 +75,10 @@ export default {
                         id="title"
                         v-model="storyTitle"
                         class="vue-text-all-top"
-                        :label="$t(
+                        :label="t(
                             'additional:modules.dataNarrator.label.storyUnnamed'
                         )"
-                        :rules="storyNameRules"
+                        :rules="''"
                         hide-details="auto"
                     />
                 </v-col>
@@ -132,7 +86,7 @@ export default {
                 <v-col
                     cols="1"
                     class="d-flex justify-center align-self-center"
-                    :title="$t(
+                    :title="t(
                         'additional:modules.dataNarrator.label.addCover'
                     )"
                 >
@@ -140,7 +94,7 @@ export default {
                         id="cover"
                         ref="image_input"
                         class="cover-input"
-                        :prepend-icon="icons.mdiPanoramaVariantOutline"
+                        :prepend-icon="mdiPanoramaVariantOutline"
                         hide-input
                         name="cover"
                         accept="image/png, image/jpeg"
@@ -151,12 +105,12 @@ export default {
                 <v-col
                     cols="1"
                     class="d-flex justify-center align-self-center"
-                    :title="$t(
+                    :title="t(
                         'additional:modules.dataNarrator.label.removeCover'
                     )"
                 >
                     <v-icon size="24px">
-                        {{ icons.mdiImageRemoveOutline }}
+                        {{ mdiImageRemoveOutline }}
                     </v-icon>
                 </v-col>
             </v-row>

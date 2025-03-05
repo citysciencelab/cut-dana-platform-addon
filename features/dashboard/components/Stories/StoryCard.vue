@@ -1,16 +1,38 @@
-<script scoped>
+<script setup>
 
 import {defineComponent} from "vue";
 import PlayButton from "./PlayButton.vue";
 import EditButton from "./EditButton.vue";
-import FeaturedButton from "./FeaturedButton.vue";
+import AuthorDisplay from "./Author.vue";
 import ShareButton from "./ShareButton.vue";
-import DeletedButton from "./DeletedButton.vue";
+import FeaturedButton from "./FeaturedButton.vue";
+import DeleteButton from "./DeleteButton.vue";
 import ShareSettingsButton from "./ShareSettingsButton.vue";
+import ShareSettingsForm from "./ShareSettingsForm.vue";
 
-export default defineComponent({
-    components: {EditButton, PlayButton}
+const props = defineProps({
+    story: {
+        type: Object,
+        required: true
+    },
+    shareSettings: {
+        type: Boolean,
+        default: false
+    },
 });
+
+function reloadMasonry () {
+
+}
+
+function getFileUrl (titleImage) {
+    return titleImage;
+}
+
+function editable () {
+    // TODO:Jonas implement this
+    return true;
+}
 </script>
 
 <template>

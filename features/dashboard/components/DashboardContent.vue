@@ -1,6 +1,6 @@
 <script setup>
 
-import StoryCard from "../../../components/dashboard/Stories/StoryCard.vue";
+import StoryCard from "./Stories/StoryCard.vue";
 import {useDataNarrator} from "../hooks/useDashboard";
 
 const {stories, getAllStories} = useDataNarrator();

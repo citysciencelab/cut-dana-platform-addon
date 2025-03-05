@@ -1,43 +1,23 @@
-<script>
-import CreateStoryMixins from "../mixins/CreateStoryMixins";
+<script setup>
+
+
+import {useTranslation} from "i18next-vue";
+import {useDataNarrator} from "../../dashboard/hooks/useDashboard";
 import CoverSelector from "./inputs/CoverSelector.vue";
-import NavigationMixins from "../../../mixins/NavigationMixins";
-import {dataNarratorModes} from "../../../store/contantsDataNarrator";
-import {mapGetters, mapMutations} from "vuex";
-import {state as editStoryState, mutations as editStoryMutations} from "../store/EditStoryForm";
-import {mdiPlus} from "@mdi/js";
+import {ref} from "vue";
+import {mdiCancel, mdiCheck, mdiEyeOutline, mdiPlus} from "@mdi/js";
+import * as constants from "../../../store/contantsDataNarrator";
 
-export default {
-    name: 'StoryForm',
-    data() {
-        return {
-            icons: {
-                mdiPlus
-            }
-        }
-    },
-    computed: {
-        ...mapGetters("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryState)),
+const {t} = useTranslation();
 
-        dataNarratorModes() {
-            return dataNarratorModes
-        },
+const {gotoPage, dataNarratorModes} = useDataNarrator();
 
-        storyDescription: {
-            get () {
-                return this.$store.state.Modules.DataNarrator.EditStoryForm.storyDescription;
-            },
-            set (value) {
-                this.$store.commit("Modules/DataNarrator/EditStoryForm/setStoryDescription", value);
-            }
-        }
-    },
-    methods: {
-        ...mapMutations("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryMutations)),
-    },
-    components: {CoverSelector},
-    mixins: [CreateStoryMixins, NavigationMixins],
+const saveStory = () => {
+    console.log("Save story");
 };
+
+const storyDescription = ref("");
+const notSaving = ref(false);
 </script>
 
 <template>
@@ -47,7 +27,7 @@ export default {
             @submit.prevent="saveStory"
         >
             <CoverSelector
-                :back-button-msg="$t('additional:modules.dataNarrator.button.cancel')"
+                :back-button-msg="t('additional:modules.dataNarrator.button.cancel')"
                 @back-click="() => gotoPage(dataNarratorModes.DASHBOARD)"
             />
 
@@ -58,7 +38,7 @@ export default {
                     solo
                     hide-details="true"
                     rows="4"
-                    :label="$t(
+                    :label="t(
                         'additional:modules.dataNarrator.label.storyDescription'
                     )"
                 />
@@ -67,7 +47,7 @@ export default {
                     <v-expansion-panel>
                         <v-expansion-panel-title>
                             {{
-                                $t("additional:modules.dataNarrator.label.advancedOptions")
+                                t("additional:modules.dataNarrator.label.advancedOptions")
                             }}
                         </v-expansion-panel-title>
                         <v-expansion-panel-text>
@@ -75,14 +55,14 @@ export default {
                                 <v-checkbox
                                     id="story-scrolly"
                                     :value="false"
-                                    :label="$t('additional:modules.dataNarrator.label.scrolly')"
+                                    :label="t('additional:modules.dataNarrator.label.scrolly')"
                                 />
                             </div>
                             <div
                                 v-if="false"
                             >
                                 <div class="vue-label-style">
-                                    {{ $t('additional:modules.dataNarrator.label.interval') }}
+                                    {{ t('additional:modules.dataNarrator.label.interval') }}
                                 </div>
                                 <v-slider
                                     id="story-interval"
@@ -114,18 +94,18 @@ export default {
                     <v-btn
                         class="story-step-button pill-button"
                         :title="
-                            $t(
+                            t(
                                 'additional:modules.dataNarrator.button.addChapter'
                             )
                         "
                         @click="
                             $emit(
                                 'openView',
-                                constants.storyCreationViews.STEP_CREATION, 0
+                                constants.dataNarratorModes.CREATE_STEP, 0
                             )
                         "
                     >
-                        <v-icon>{{ icons.mdiPlus }}</v-icon>
+                        <v-icon>{{ mdiPlus }}</v-icon>
                     </v-btn>
                     <div
                         class="vue-label-style add-step-label"
@@ -134,17 +114,17 @@ export default {
                         @click="
                             $emit(
                                 'openView',
-                                constants.storyCreationViews.STEP_CREATION, 0
+                                constants.dataNarratorModes.CREATE_STEP, 0
                             )
                         "
                         @keydown="
                             $emit(
                                 'openView',
-                                constants.storyCreationViews.STEP_CREATION, 0
+                                constants.dataNarratorModes.CREATE_STEP, 0
                             )
                         "
                     >
-                        {{ $t("additional:modules.dataNarrator.label.addChapter") }}
+                        {{ t("additional:modules.dataNarrator.label.addChapter") }}
                     </div>
                 </v-col>
             </v-row>
@@ -182,13 +162,13 @@ export default {
                                         class=""
                                         @click="$emit('reset-tool')"
                                     >
-                                        <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>
+                                        <v-icon size="24px">{{ mdiCancel }}</v-icon>
                                     </v-btn>
                                 </span>
                             </template>
                             <span>
                                 {{
-                                    $t("additional:modules.dataNarrator.button.cancel")
+                                    t("additional:modules.dataNarrator.button.cancel")
                                 }}
                             </span>
                         </v-tooltip>
@@ -201,13 +181,13 @@ export default {
                                     <v-btn
                                         class=""
                                     >
-                                        <v-icon size="24px">{{ icons.mdiEyeOutline }}</v-icon>
+                                        <v-icon size="24px">{{ mdiEyeOutline }}</v-icon>
                                     </v-btn>
                                 </span>
                             </template>
                             <span>
                                 {{
-                                    $t("additional:modules.dataNarrator.button.previewStory")
+                                    t("additional:modules.dataNarrator.button.previewStory")
                                 }}
                             </span>
                         </v-tooltip>
@@ -224,13 +204,13 @@ export default {
                                     >
 <!--                                        :disabled="!currentStory.steps || !currentStory.steps.length"-->
 <!--                                        @click="confirmBeforeSaving"-->
-                                        <v-icon size="24px">{{ icons.mdiCheck }}</v-icon>
+                                        <v-icon size="24px">{{ mdiCheck }}</v-icon>
                                     </v-btn>
                                 </span>
                             </template>
                             <span>
                                 {{
-                                    $t("additional:modules.dataNarrator.button.uploadStory")
+                                    t("additional:modules.dataNarrator.button.uploadStory")
                                 }}
                             </span>
                         </v-tooltip>
@@ -245,7 +225,7 @@ export default {
                 class="white"
             >
                 {{
-                    $t("additional:modules.dataNarrator.warning.sendNoSteps")
+                    t("additional:modules.dataNarrator.warning.sendNoSteps")
                 }}
             </v-alert>
         </form>

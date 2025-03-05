@@ -1,24 +1,19 @@
-<script>
-export default {
-    name: "StoryCardSkeleton",
-    components: {
+<script setup>
 
+const {uid, grid, isAdmin} = defineProps({
+    uid: {
+        type: String,
+        default: null
     },
-    props: {
-        uid: {
-            type: String,
-            default: null
-        },
-        isAdmin: {
-            type: Boolean,
-            default: false
-        },
-        grid: {
-            type: Boolean,
-            default: true
-        }
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
+    grid: {
+        type: Boolean,
+        default: true
     }
-};
+});
 </script>
 
 <template>

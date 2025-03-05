@@ -15,7 +15,7 @@ const {toolwindowMode, toolWindowPadding, setIsOpen, isOpen} = useDataNarrator()
                 <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setIsOpen" />
                 <slot name="header"></slot>
                 <div :class="['slot', isOpen ? '' : 'removed']">
-                    <slot></slot>
+                    <slot name="default"></slot>
                 </div>
                 <div class="footer">
                     <slot name="footer" ></slot>

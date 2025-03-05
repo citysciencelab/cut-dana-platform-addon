@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<script setup>
+import {useTranslation} from "i18next-vue";
+import { mdiLink } from "@mdi/js";
 
+const {t} = useTranslation();
 const {storyId} = defineProps({
     storyId: {
         type: String,
@@ -14,18 +17,17 @@ function shareStory () {
 
 <template>
     <v-tooltip top>
-        <template #activator="{ on }">
+        <template>
             <v-icon
                 id="share-button"
-                v-on="on"
                 @click="shareStory"
             >
-                {{ icons.mdiLink }}
+                {{ mdiLink }}
             </v-icon>
         </template>
         <span>
             {{
-                $t("additional:modules.dataNarrator.button.share")
+                t("additional:modules.dataNarrator.button.share")
             }}
         </span>
     </v-tooltip>

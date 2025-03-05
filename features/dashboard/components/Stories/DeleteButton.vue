@@ -2,8 +2,10 @@
 
 // import {useStories} from "../../../stories/hooks/useStories";
 import {mdiTrashCanOutline} from "@mdi/js";
+import {useTranslation} from "i18next-vue";
 
 // const {currentStoryId} = useStories(),
+const {t} = useTranslation();
 const {storyId} = defineProps({
     storyId: {
         type: String,
@@ -32,7 +34,7 @@ function deleteStoryWithConfirm () {
         </template>
         <span>
             {{
-                $t("additional:modules.tools.dataNarrator.creator.delete")
+                t("additional:modules.tools.dataNarrator.creator.delete")
             }}
         </span>
     </v-tooltip>

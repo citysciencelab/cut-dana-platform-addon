@@ -1,7 +1,9 @@
 
-<script setup lang="ts">
+<script setup>
 
+import {useTranslation} from "i18next-vue";
 
+const { t } = useTranslation();
 import {mdiStar} from "@mdi/js";
 
 /**
@@ -25,7 +27,7 @@ function makeItFeatured () {
         </template>
         <span>
             {{
-                $t("additional:modules.tools.dataNarrator.button.featured")
+                t("additional:modules.tools.dataNarrator.button.featured")
             }}
         </span>
     </v-tooltip>

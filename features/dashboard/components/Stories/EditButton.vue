@@ -2,6 +2,9 @@
 
 import {useStories} from "../../../stories/hooks/useStories";
 import {mdiPencil} from "@mdi/js";
+import {useTranslation} from "i18next-vue";
+
+const {t} = useTranslation();
 
 const {currentStoryId} = useStories(),
     {storyId} = defineProps({
@@ -32,7 +35,7 @@ function gotoSelectedStory () {
         </template>
         <span>
             {{
-                $t("additional:modules.dataNarrator.creator.edit")
+                t("additional:modules.dataNarrator.creator.edit")
             }}
         </span>
     </v-tooltip>

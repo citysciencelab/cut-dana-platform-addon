@@ -1,23 +1,13 @@
-<script>
-import DataNarratorWindowMixins from "../../../mixins/DataNarratorWindowMixins";
-import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
-import LoginMixin from "../../../mixins/LoginMixin";
-import NavigationMixins from "../../../mixins/NavigationMixins";
-import StepForm from "./StepForm.vue";
+<script setup>
 
-export default {
-    name: "CreateStep",
-    components: {
-        StepForm, Toolwindow: ToolWindow
-    },
-    mixins: [DataNarratorWindowMixins, LoginMixin, NavigationMixins]
-};
+import StepForm from "./StepForm.vue";
+import Toolwindow from "../../shared/Toolwindow/ToolWindow.vue";
 </script>
 
 <template>
     <Toolwindow>
         <template #header>
-
+            <div>header</div>
         </template>
         <template #default>
             <div id="tool-dataNarrator-creator-stepForm">

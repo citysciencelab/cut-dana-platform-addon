@@ -2,7 +2,10 @@
 
 import {useStories} from "../../../stories/hooks/useStories";
 import {mdiPlayOutline} from "@mdi/js";
+import {useTranslation} from "i18next-vue";
 
+
+const {t} = useTranslation();
 const {currentStoryId} = useStories(),
     {storyId} = defineProps({
         storyId: {
@@ -40,7 +43,7 @@ function playStory () {
         </template>
         <span>
             {{
-                $t("additional:modules.dataNarrator.play")
+                t("additional:modules.dataNarrator.play")
             }}
         </span>
     </v-tooltip>

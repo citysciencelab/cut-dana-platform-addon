@@ -1,38 +1,23 @@
-﻿<script>
+<script setup>
+import { mdiArrowLeft } from "@mdi/js";
+import {useTranslation} from "i18next-vue";
 
-import {mapGetters} from "vuex";
-import getters from "../../store/gettersDataNarrator";
-import {mdiArrowLeft} from "@mdi/js";
+const {t} = useTranslation();
 
-export default {
-    name: "BackButton",
-    props: {
-        tooltip: {
-            type: String,
-            default: "additional:modules.tools.dataNarrator.button.backToStory"
-        },
-        text: {
-            type: String,
-            default: "additional:modules.tools.dataNarrator.button.backToStep"
-        },
-        showStoryTitle: {
-            type: Boolean,
-            default: true
-        }
+const {tooltip, text, showStoryTitle} = defineProps({
+    tooltip: {
+        type: String,
+        default: "additional:modules.tools.dataNarrator.button.backToStory"
     },
-    data () {
-        return {
-            icons: {
-                mdiArrowLeft
-            }
-        };
+    text: {
+        type: String,
+        default: "additional:modules.tools.dataNarrator.button.backToStep"
     },
-    computed: {
-        ...mapGetters("Modules/DataNarrator", Object.keys(getters))
-    },
-    mounted() {
+    showStoryTitle: {
+        type: Boolean,
+        default: true
     }
-};
+})
 </script>
 
 <template>
@@ -49,17 +34,17 @@ export default {
                         @click="$emit('click')"
                         @keydown="$emit('click')"
                     >
-                        {{ icons.mdiArrowLeft }}
+                        {{ mdiArrowLeft }}
                     ></v-icon>
                 </template>
-                <span>{{ $t(tooltip) }}</span>
+                <span>{{ t(tooltip) }}</span>
             </v-tooltip>
         </span>
         <span
             v-if="showStoryTitle"
             class="story-title"
         >
-            {{ $t(text) }}
+            {{ t(text) }}
         </span>
     </span>
 </template>

@@ -16,10 +16,12 @@ export function useDataNarrator () {
 
         setIsOpen = () => {
             isOpen.value = !isOpen.value;
-            moveTool();
+            this.moveTool();
         },
 
         store = useStore(),
+
+        storyListMode = computed(() => store.state.Modules.DataNarrator),
 
         setToolWindowMode = () => store.commit("Modules/DataNarrator/setToolwindowMode"),
 
@@ -73,6 +75,7 @@ export function useDataNarrator () {
     return {
         mode: computed(() => store.state.Modules.DataNarrator.mode),
         toolwindowMode: computed(() => store.state.Modules.DataNarrator.toolwindowMode),
+        storyListMode: computed(() => store.state.Modules.DataNarrator.storyListMode),
         toolWindowPadding: computed(() => store.state.Modules.DataNarrator.toolWindowPadding),
         isOpen,
         stories,
