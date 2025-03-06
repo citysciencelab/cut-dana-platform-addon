@@ -21,8 +21,6 @@ export function useDataNarrator () {
 
         store = useStore(),
 
-        storyListMode = computed(() => store.state.Modules.DataNarrator),
-
         setToolWindowMode = () => store.commit("Modules/DataNarrator/setToolwindowMode"),
 
         disableMainMenu = () => {
