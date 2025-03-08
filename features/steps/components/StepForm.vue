@@ -4,6 +4,7 @@
 
 <template>
     <div class="step-form">
+        main
     </div>
 </template>
 

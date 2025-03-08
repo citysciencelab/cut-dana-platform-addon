@@ -1,32 +1,26 @@
 <script setup>
 
 import StepForm from "./StepForm.vue";
-import {ToolwindowModes as toolwindowModes} from "../../../store/contantsDataNarrator";
-import {useDataNarrator} from "../../dashboard/hooks/useDashboard";
-import DragHandle from "../../shared/Toolwindow/DragHandle.vue";
 
-const {toolwindowMode, toolWindowPadding, setIsOpen, isOpen} = useDataNarrator();
+import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
+
 </script>
 
 <template>
 
-    <div :class="['toolwindow-container', toolwindowMode]">
-        <div :class="['toolwindow-between', toolwindowMode]">
-            <div :class="['toolwindow', {'with-top-border-radius': toolwindowMode !== toolwindowModes.MOBILE}]" :style="{padding: `${toolWindowPadding}px`}">
-                <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setIsOpen" />
-                <div>header</div>
-                <div :class="['slot', isOpen ? '' : 'removed']">
-                    <div id="tool-dataNarrator-creator-stepForm">
-                        <StepForm />
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="actions-container" />
-                </div>
+    <ToolWindow>
+        <template v-slot:header>
+            <div>header</div>
+        </template>
+        <template v-slot:default>
+            <div id="tool-dataNarrator-creator-stepForm">
+                <StepForm />
             </div>
-        </div>
-    </div>
-
+        </template>
+        <template v-slot:footer>
+            <div class="actions-container" />
+        </template>
+    </ToolWindow>
 </template>
 
 <style scoped lang="scss">
