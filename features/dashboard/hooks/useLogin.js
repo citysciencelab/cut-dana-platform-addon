@@ -4,9 +4,10 @@ import {getRedirectUrl} from "../../login/services/loginService";
 import {useDashboard} from "./useDashboard";
 import Cookie from "../../../../../../src/modules/login/js/utilsCookies";
 import OIDC from "../../../../../../src/modules/login/js/utilsOIDC";
+import {useDataNarrator} from "../../../hooks/useDataNarrator";
 
 export function useLogin () {
-    const {moveTool} = useDashboard();
+    const {moveTool} = useDataNarrator();
 
     const store = useStore();
 

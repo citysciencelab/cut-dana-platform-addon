@@ -2,15 +2,15 @@
 
 
 import {useTranslation} from "i18next-vue";
-import {useDashboard} from "../../dashboard/hooks/useDashboard";
 import CoverSelector from "./inputs/CoverSelector.vue";
 import {ref} from "vue";
 import {mdiCancel, mdiCheck, mdiEyeOutline, mdiPlus} from "@mdi/js";
 import * as constants from "../../../store/contantsDataNarrator";
+import {useDataNarrator} from "../../../hooks/useDataNarrator";
 
 const {t} = useTranslation();
 
-const {gotoPage, dataNarratorModes} = useDashboard();
+const {dataNarratorModes} = useDataNarrator();
 
 const saveStory = () => {
     console.log("Save story");

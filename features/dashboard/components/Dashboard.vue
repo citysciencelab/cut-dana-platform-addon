@@ -16,9 +16,6 @@ import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
                 <DashboardContent />
             </div>
         </template>
-        <template #footer>
-            <div>test</div>
-        </template>
     </ToolWindow>
 </template>
 

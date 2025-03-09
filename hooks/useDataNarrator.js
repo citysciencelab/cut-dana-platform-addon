@@ -55,6 +55,10 @@ export const useDataNarrator = () => {
         }
     };
 
+    const gotoPage = (mode) => {
+        store.commit("Modules/DataNarrator/setMode", mode);
+    }
+
     return {
         mode: computed(() => store.state.Modules.DataNarrator.mode),
         toolwindowMode: computed(() => store.state.Modules.DataNarrator.toolwindowMode),
@@ -63,6 +67,7 @@ export const useDataNarrator = () => {
         disableMainMenu,
         disableSecondaryMenu,
         disableFooter,
-        moveTool
+        moveTool,
+        gotoPage
     }
 }

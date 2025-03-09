@@ -11,23 +11,19 @@ export function useDashboard () {
     const isOpen = ref(true),
         stories = ref([]),
 
+        store = useStore(),
+
         setIsOpen = () => {
             isOpen.value = !isOpen.value;
             this.moveTool();
         },
 
-        store = useStore(),
-
-
-
-
         getAllStories = async () => {
             const response = await getStories();
             const data = await response.json();
+            
             stories.value = data;
         };
-
-
 
     return {
 

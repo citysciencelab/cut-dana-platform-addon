@@ -20,7 +20,8 @@
 import {useDashboard} from "../../dashboard/hooks/useDashboard";
 import {ToolwindowModes as toolwindowModes} from "../../../store/contantsDataNarrator";
 import DragHandle from "./DragHandle.vue";
+import {useDataNarrator} from "../../../hooks/useDataNarrator";
 
 const {setIsOpen, isOpen} = useDashboard();
-const {toolwindowMode, toolWindowPadding} = useDashboard();
+const {toolwindowMode, toolWindowPadding} = useDataNarrator();
 </script>

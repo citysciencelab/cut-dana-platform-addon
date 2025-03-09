@@ -8,15 +8,16 @@ import {useTranslation} from "i18next-vue";
 import {ref} from "vue";
 
 
-const { t } = useTranslation();
+const {t} = useTranslation();
 const legendAdded = true;
 const toggleLegend = () => {};
 const isMobile = false;
+
 function availableStoryListModes () {
     return ["all", "featured", "popular"];
 }
 
-let storyListMode = ref("all");
+const storyListMode = ref("all");
 </script>
 
 <template>
