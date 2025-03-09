@@ -1,12 +1,12 @@
 import {computed} from "vue";
 import {useStore} from "vuex";
 import {getRedirectUrl} from "../../login/services/loginService";
-import {useDataNarrator} from "./useDashboard";
+import {useDashboard} from "./useDashboard";
 import Cookie from "../../../../../../src/modules/login/js/utilsCookies";
 import OIDC from "../../../../../../src/modules/login/js/utilsOIDC";
 
 export function useLogin () {
-    const {moveTool} = useDataNarrator();
+    const {moveTool} = useDashboard();
 
     const store = useStore();
 

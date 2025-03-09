@@ -2,7 +2,7 @@
 
 
 import {useTranslation} from "i18next-vue";
-import {useDataNarrator} from "../../dashboard/hooks/useDashboard";
+import {useDashboard} from "../../dashboard/hooks/useDashboard";
 import CoverSelector from "./inputs/CoverSelector.vue";
 import {ref} from "vue";
 import {mdiCancel, mdiCheck, mdiEyeOutline, mdiPlus} from "@mdi/js";
@@ -10,7 +10,7 @@ import * as constants from "../../../store/contantsDataNarrator";
 
 const {t} = useTranslation();
 
-const {gotoPage, dataNarratorModes} = useDataNarrator();
+const {gotoPage, dataNarratorModes} = useDashboard();
 
 const saveStory = () => {
     console.log("Save story");

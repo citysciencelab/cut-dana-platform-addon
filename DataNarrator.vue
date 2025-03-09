@@ -1,15 +1,17 @@
 ﻿<script setup>
-import {useDataNarrator} from "./features/dashboard/hooks/useDashboard";
+import {useDashboard} from "./features/dashboard/hooks/useDashboard";
 import DataNarratorDashboard from "./features/dashboard/components/Dashboard.vue";
 import * as constants from "./store/contantsDataNarrator";
 import CreateStory from "./features/stories/components/CreateStory.vue";
 import CreateStep from "./features/steps/components/CreateStep.vue";
+import {useDataNarrator} from "./hooks/useDataNarrator";
 
 defineOptions({
     name: "DataNarrator"
 });
 
-const {disableMainMenu, disableSecondaryMenu, disableFooter, mode, toolwindowMode} = useDataNarrator();
+const {disableFooter, disableMainMenu, disableSecondaryMenu} = useDataNarrator();
+const {mode, toolwindowMode} = useDashboard();
 
 disableFooter();
 disableMainMenu();

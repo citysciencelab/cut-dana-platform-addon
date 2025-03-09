@@ -3,11 +3,11 @@
 import CreateStoryHeader from "./CreateStoryHeader.vue";
 import StoryForm from "./StoryForm.vue";
 import * as contantsDataNarrator from "../../../store/contantsDataNarrator";
-import {useDataNarrator} from "../../dashboard/hooks/useDashboard";
+import {useDashboard} from "../../dashboard/hooks/useDashboard";
 import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
 
 
-const {gotoPage} = useDataNarrator();
+const {gotoPage} = useDashboard();
 
 function saveStory() {
     console.log("Save story");

@@ -1,9 +1,11 @@
 <script setup>
 
 import StoryCard from "./Stories/StoryCard.vue";
-import {useDataNarrator} from "../hooks/useDashboard";
+import {useDashboard} from "../hooks/useDashboard";
 
-const {stories, getAllStories} = useDataNarrator();
+const {stories, getAllStories} = useDashboard();
+
+getAllStories();
 </script>
 
 <template>

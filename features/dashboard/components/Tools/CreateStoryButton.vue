@@ -19,11 +19,11 @@
 import {mdiPlus} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
 import {useLogin} from "../../hooks/useLogin";
-import {useDataNarrator} from "../../hooks/useDashboard";
+import {useDashboard} from "../../hooks/useDashboard";
 
 const {t} = useTranslation();
 const {loggedIn} = useLogin();
-const {gotoPage, dataNarratorModes} = useDataNarrator();
+const {gotoPage, dataNarratorModes} = useDashboard();
 
 
 </script>

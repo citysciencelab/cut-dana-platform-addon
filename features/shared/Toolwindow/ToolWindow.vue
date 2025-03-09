@@ -17,11 +17,10 @@
     </div>
 </template>
 <script setup>
-import {useDataNarrator} from "../../dashboard/hooks/useDashboard";
+import {useDashboard} from "../../dashboard/hooks/useDashboard";
 import {ToolwindowModes as toolwindowModes} from "../../../store/contantsDataNarrator";
 import DragHandle from "./DragHandle.vue";
-import {useToolWindow} from "./hooks/useToolWindow";
 
-const {toolwindowMode, toolWindowPadding, setIsOpen, isOpen} = useDataNarrator();
-const {setToolWindowMode} = useToolWindow();
+const {setIsOpen, isOpen} = useDashboard();
+const {toolwindowMode, toolWindowPadding} = useDashboard();
 </script>
