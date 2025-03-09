@@ -4,15 +4,27 @@ import {useLogin} from "../../hooks/useLogin";
 import {mdiLogin, mdiLogout} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
 
-const {loggedIn, openLoginWindow} = useLogin();
+const {loggedIn, openLoginWindow, checkLoggedIn, logout} = useLogin();
 const {t} = useTranslation();
+
+checkLoggedIn();
+
+const loginLogoutAction = () => {
+    console.log("logging in or out", loggedIn.value);
+    if (loggedIn.value) {
+        logout();
+        return;
+    }
+
+    openLoginWindow();
+}
 </script>
 
 <template>
     <v-btn
         rounded
         small
-        @click="openLoginWindow()"
+        @click="loginLogoutAction()"
     >
         <v-icon small>
             {{ loggedIn ? mdiLogout : mdiLogin }}

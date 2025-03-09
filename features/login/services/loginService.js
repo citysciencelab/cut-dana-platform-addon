@@ -17,11 +17,7 @@ export const getRedirectUrl = async () => {
         oidcAuthorizationEndpoint = config.oidcAuthorizationEndpoint || "oidcAuthorizationEndpoint_not_defined_in_config.js",
         oidcClientId = config.oidcClientId || "oidcClientId_not_defined_in_config.js",
         oidcRedirectUri = config.oidcRedirectUri || "oidcRedirectUri_not_defined_in_config.js",
-        oidcScope = config.oidcScope || "oidcScope_not_defined_in_config.js",
+        oidcScope = config.oidcScope || "oidcScope_not_defined_in_config.js";
 
-        url = await OIDC.getAuthCodeUrl(oidcAuthorizationEndpoint, oidcClientId, oidcRedirectUri, oidcScope);
-
-    return url;
-
-    // return "http://localhost:8000/auth/login"
+    return OIDC.getAuthCodeUrl(oidcAuthorizationEndpoint, oidcClientId, oidcRedirectUri, oidcScope);
 }

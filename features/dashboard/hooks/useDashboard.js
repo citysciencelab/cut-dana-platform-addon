@@ -2,14 +2,16 @@
 import {computed, ref, nextTick} from "vue";
 
 import {useStore} from "vuex";
-import isMobile from "../../../../../../src/shared/js/utils/isMobile";
 import * as constants from "../../../store/contantsDataNarrator";
 import {dataNarratorModes, ToolwindowModes} from "../../../store/contantsDataNarrator";
+import {useToolWindow} from "../../shared/Toolwindow/hooks/useToolWindow";
 
 /**
  *
  */
 export function useDataNarrator () {
+
+    const {setToolWindowMode, isMobile} = useToolWindow();
 
     const isOpen = ref(true),
         stories = ref([]),
@@ -21,7 +23,6 @@ export function useDataNarrator () {
 
         store = useStore(),
 
-        setToolWindowMode = () => store.commit("Modules/DataNarrator/setToolwindowMode"),
 
         disableMainMenu = () => {
             const mainMenu = document.querySelector("#mp-menu-mainMenu"),
@@ -53,7 +54,8 @@ export function useDataNarrator () {
             for (const toolWindow of toolWindows) {
                 await nextTick();
 
-                if (isMobile()) {
+                if (isMobile) {
+                    console.log("isMobile", isMobile);
                     toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset}px`;
                     setToolWindowMode(ToolwindowModes.MOBILE);
                 }
