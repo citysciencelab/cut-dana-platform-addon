@@ -1,25 +1,34 @@
 import {useStore} from "vuex";
-import {computed} from "vue";
+import {computed, customRef} from "vue";
 
 
 export function useStoryForm () {
     const store = useStore();
-    const title = computed({
-        get () {
-            store.state.Modules.DataNarrator.EditStoryForm.storyTitle
-        },
-        set (value) {
-            store.commit("Modules/DataNarrator/EditStoryForm/setStoryTitle", value);
+
+    const title = customRef((track, trigger) => {
+        return {
+            get() {
+                track()
+                return store.state.Modules.DataNarrator.EditStoryForm.storyTitle
+            },
+            set(newValue) {
+                store.commit('Modules/DataNarrator/EditStoryForm/setStoryTitle', newValue)
+                trigger()
+            }
         }
-    });
-    const description = computed({
-        get () {
-            store.state.Modules.DataNarrator.EditStoryForm.storyDescription
-        },
-        set (value) {
-            store.commit("Modules/DataNarrator/EditStoryForm/setStoryDescription", value);
+    })
+    const description = customRef((track, trigger) => {
+        return {
+            get() {
+                track()
+                return store.state.Modules.DataNarrator.EditStoryForm.storyDescription
+            },
+            set(newValue) {
+                store.commit('Modules/DataNarrator/EditStoryForm/setStoryDescription', newValue)
+                trigger()
+            }
         }
-    });
+    })
 
     return {
         title,

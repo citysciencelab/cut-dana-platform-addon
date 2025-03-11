@@ -13,12 +13,12 @@ import {useStoryForm} from "../hooks/useStoryForm";
 const {t} = useTranslation();
 
 const {gotoPage} = useDataNarrator();
+const {description} = useStoryForm();
 
 const saveStory = () => {
     console.log("Save story");
 };
 
-const storyDescription = ref("");
 const notSaving = ref(false);
 </script>
 
@@ -37,7 +37,7 @@ const notSaving = ref(false);
             <div class="form-group form-input-holder">
                 <v-textarea
                     id="description"
-                    v-model="storyDescription"
+                    v-model="description"
                     solo
                     hide-details="true"
                     rows="4"

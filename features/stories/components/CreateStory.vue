@@ -6,11 +6,8 @@ import * as contantsDataNarrator from "../../../store/contantsDataNarrator";
 import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
 import {useDataNarrator} from "../../../hooks/useDataNarrator";
 import {useStories} from "../hooks/useStories";
-
-
 const {gotoPage} = useDataNarrator();
 const {createStory} = useStories();
-
 </script>
 
 <template>
