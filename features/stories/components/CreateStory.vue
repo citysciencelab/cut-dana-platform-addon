@@ -3,15 +3,14 @@
 import CreateStoryHeader from "./CreateStoryHeader.vue";
 import StoryForm from "./StoryForm.vue";
 import * as contantsDataNarrator from "../../../store/contantsDataNarrator";
-import {useDashboard} from "../../dashboard/hooks/useDashboard";
 import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
+import {useDataNarrator} from "../../../hooks/useDataNarrator";
+import {useStories} from "../hooks/useStories";
 
 
-const {gotoPage} = useDashboard();
+const {gotoPage} = useDataNarrator();
+const {createStory} = useStories();
 
-function saveStory() {
-    console.log("Save story");
-}
 </script>
 
 <template>
@@ -28,7 +27,7 @@ function saveStory() {
         <template #footer>
             <div class="actions-container">
                 <v-btn @click="gotoPage(contantsDataNarrator.dataNarratorModes.DASHBOARD)">Cancel</v-btn>
-                <v-btn @click="saveStory">Save</v-btn>
+                <v-btn @click="createStory">Save</v-btn>
             </div>
         </template>
     </ToolWindow>

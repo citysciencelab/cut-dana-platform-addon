@@ -5,18 +5,17 @@ import {ref} from "vue";
 import {useTranslation} from "i18next-vue";
 import {mdiAlphaXCircle, mdiImageRemoveOutline, mdiPanoramaVariantOutline} from "@mdi/js";
 import BackButton from "./BackButton.vue";
+import {useStoryForm} from "../../hooks/useStoryForm";
 
 const {t} = useTranslation();
 
 const hasCover = ref(false);
 const showIcon = ref(false);
-const storyTitle = ref("");
 const storyCover = ref("");
 const objectFile = ref("");
 
-const onCoverChange = () => {
-    console.log("here");
-}
+
+const {title} = useStoryForm();
 </script>
 
 <template>
@@ -73,7 +72,7 @@ const onCoverChange = () => {
                 >
                     <v-text-field
                         id="title"
-                        v-model="storyTitle"
+                        v-model="title"
                         class="vue-text-all-top"
                         :label="t(
                             'additional:modules.dataNarrator.label.storyUnnamed'

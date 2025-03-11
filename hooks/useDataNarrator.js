@@ -57,6 +57,7 @@ export const useDataNarrator = () => {
 
     const gotoPage = (mode) => {
         store.commit("Modules/DataNarrator/setMode", mode);
+        moveTool();
     }
 
     return {

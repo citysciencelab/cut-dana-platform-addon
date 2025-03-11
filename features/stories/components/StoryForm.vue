@@ -7,10 +7,12 @@ import {ref} from "vue";
 import {mdiCancel, mdiCheck, mdiEyeOutline, mdiPlus} from "@mdi/js";
 import * as constants from "../../../store/contantsDataNarrator";
 import {useDataNarrator} from "../../../hooks/useDataNarrator";
+import {dataNarratorModes} from "../../../store/contantsDataNarrator";
+import {useStoryForm} from "../hooks/useStoryForm";
 
 const {t} = useTranslation();
 
-const {dataNarratorModes} = useDataNarrator();
+const {gotoPage} = useDataNarrator();
 
 const saveStory = () => {
     console.log("Save story");
@@ -30,6 +32,7 @@ const notSaving = ref(false);
                 :back-button-msg="t('additional:modules.dataNarrator.button.cancel')"
                 @back-click="() => gotoPage(dataNarratorModes.DASHBOARD)"
             />
+
 
             <div class="form-group form-input-holder">
                 <v-textarea
@@ -128,15 +131,6 @@ const notSaving = ref(false);
                     </div>
                 </v-col>
             </v-row>
-
-<!--            <v-progress-linear-->
-<!--                v-if="!notSaving"-->
-<!--                indeterminate-->
-<!--                height="10"-->
-<!--                striped-->
-<!--                rounded-->
-<!--                color="lime"-->
-<!--            />-->
 
             <v-footer
                 v-if="notSaving"

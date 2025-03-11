@@ -1,5 +1,9 @@
 <script setup>
 
+
+import {useStories} from "../hooks/useStories";
+
+const {createStory, currentStoryId} = useStories();
 </script>
 
 <template lang="html">
