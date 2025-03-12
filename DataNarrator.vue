@@ -4,6 +4,7 @@ import * as constants from "./store/contantsDataNarrator";
 import CreateStory from "./features/stories/components/CreateStory.vue";
 import CreateStep from "./features/steps/components/CreateStep.vue";
 import {useDataNarrator} from "./hooks/useDataNarrator";
+import CreateChapter from "./features/chapters/components/CreateChapter.vue";
 
 defineOptions({
     name: "DataNarrator"
@@ -24,6 +25,7 @@ disableSecondaryMenu();
         >
             <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD" />
             <CreateStory v-if="mode === constants.dataNarratorModes.CREATE_STORY" />
+            <CreateChapter v-if="mode === constants.dataNarratorModes.CREATE_CHAPTER" />
             <CreateStep v-if="mode === constants.dataNarratorModes.CREATE_STEP" />
         </div>
     </Teleport>

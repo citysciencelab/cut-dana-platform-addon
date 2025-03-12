@@ -1,13 +1,13 @@
 <script setup>
-
-
 import {useStories} from "../hooks/useStories";
-
+import {useTranslation} from "i18next-vue";
+const {t} = useTranslation();
 const {createStory, currentStoryId} = useStories();
 </script>
 
 <template lang="html">
     <div class="createStory-header">
+<!--        {{t("additional:modules.dataNarrator.createStory")}}-->
     </div>
 </template>
 

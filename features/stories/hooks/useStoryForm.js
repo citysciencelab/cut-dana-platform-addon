@@ -1,9 +1,42 @@
 import {useStore} from "vuex";
-import {computed, customRef} from "vue";
+import {customRef} from "vue";
+import {backendUrl} from "../../../store/contantsDataNarrator";
+import {isNullOrWhitespace} from "../../../utils/stringUtils";
+import {useLogin} from "../../dashboard/hooks/useLogin";
 
 
 export function useStoryForm () {
     const store = useStore();
+    const {accessToken} = useLogin();
+
+    const createStory = async () => {
+        // TODO: create valid story object and send to backend using service (or just move service method here?)
+        const storyState = store.state.Modules.DataNarrator.EditStoryForm;
+
+        const story = {
+            title: storyState.storyTitle,
+            description: storyState.storyDescription,
+        }
+
+        console.log(story);
+
+        if (isValidStory(story)){
+            await fetch(`${backendUrl}/stories`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken.value}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    ...story
+                })
+            });
+        }
+    }
+
+    const isValidStory = (story) => {
+        return !isNullOrWhitespace(story.title) && !isNullOrWhitespace(story.description)
+    }
 
     const title = customRef((track, trigger) => {
         return {
@@ -32,6 +65,7 @@ export function useStoryForm () {
 
     return {
         title,
-        description
+        description,
+        createStory
     }
 }

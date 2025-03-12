@@ -2,7 +2,8 @@
   "modules": {
     "DataNarrator": {
       "title": "DataNarraotr EN",
-      "description": "TEST"
+      "description": "TEST",
+      "createStory": "Create story"
     }
   }
 }

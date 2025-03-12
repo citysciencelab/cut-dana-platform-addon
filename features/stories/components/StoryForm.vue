@@ -1,11 +1,8 @@
 <script setup>
-
-
 import {useTranslation} from "i18next-vue";
 import CoverSelector from "./inputs/CoverSelector.vue";
 import {ref} from "vue";
 import {mdiCancel, mdiCheck, mdiEyeOutline, mdiPlus} from "@mdi/js";
-import * as constants from "../../../store/contantsDataNarrator";
 import {useDataNarrator} from "../../../hooks/useDataNarrator";
 import {dataNarratorModes} from "../../../store/contantsDataNarrator";
 import {useStoryForm} from "../hooks/useStoryForm";
@@ -32,7 +29,6 @@ const notSaving = ref(false);
                 :back-button-msg="t('additional:modules.dataNarrator.button.cancel')"
                 @back-click="() => gotoPage(dataNarratorModes.DASHBOARD)"
             />
-
 
             <div class="form-group form-input-holder">
                 <v-textarea
@@ -93,39 +89,24 @@ const notSaving = ref(false);
             </div>
 
             <v-row class="mb-2">
-                <v-col class="d-flex justify-center align-center">
+                <v-col class="d-flex justify-center align-center gap-2">
                     <v-btn
-                        class="story-step-button pill-button"
+                        class="story-chapter-button"
                         :title="
                             t(
                                 'additional:modules.dataNarrator.button.addChapter'
                             )
                         "
-                        @click="
-                            $emit(
-                                'openView',
-                                constants.dataNarratorModes.CREATE_STEP, 0
-                            )
-                        "
+                        @click="() => gotoPage(dataNarratorModes.CREATE_CHAPTER)"
                     >
                         <v-icon>{{ mdiPlus }}</v-icon>
                     </v-btn>
                     <div
-                        class="vue-label-style add-step-label"
+                        class="vue-label-style add-chapter-label"
                         role="button"
                         tabindex="0"
-                        @click="
-                            $emit(
-                                'openView',
-                                constants.dataNarratorModes.CREATE_STEP, 0
-                            )
-                        "
-                        @keydown="
-                            $emit(
-                                'openView',
-                                constants.dataNarratorModes.CREATE_STEP, 0
-                            )
-                        "
+                        @click="() => gotoPage(dataNarratorModes.CREATE_CHAPTER)"
+                        @keydown="() => gotoPage(dataNarratorModes.CREATE_CHAPTER)"
                     >
                         {{ t("additional:modules.dataNarrator.label.addChapter") }}
                     </div>
@@ -241,13 +222,13 @@ const notSaving = ref(false);
         color: red;
     }
 
-    .story-step-button {
-        min-width: 46px;
-        height: 46px;
+    .story-chapter-button {
+        min-width: 32px;
+        height: 36px;
         padding: 0;
     }
 
-    .add-step-label {
+    .add-chapter-label {
         cursor: pointer;
     }
 

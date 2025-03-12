@@ -1,6 +1,7 @@
 ﻿const dataNarratorModes = {
     DASHBOARD: "dashboard",
     CREATE_STORY: "create-story",
+    CREATE_CHAPTER: "create-chapter",
     CREATE_STEP: "create-step",
 }
 
