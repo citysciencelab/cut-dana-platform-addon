@@ -23,10 +23,6 @@ export function useStoryForm () {
         if (isValidStory(story)){
             await fetch(`${backendUrl}/stories`, {
                 method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${accessToken.value}`,
-                    "Content-Type": "application/json",
-                },
                 body: JSON.stringify({
                     ...story
                 })

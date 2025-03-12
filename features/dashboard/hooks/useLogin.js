@@ -5,6 +5,7 @@ import {useDashboard} from "./useDashboard";
 import Cookie from "../../../../../../src/modules/login/js/utilsCookies";
 import OIDC from "../../../../../../src/modules/login/js/utilsOIDC";
 import {useDataNarrator} from "../../../hooks/useDataNarrator";
+import {FetchInterceptor} from "../../../api/FetchInterceptor";
 
 export function useLogin () {
     const {moveTool} = useDataNarrator();
@@ -53,6 +54,11 @@ export function useLogin () {
         let localLoggedIn = false;
 
         store.commit("Modules/Login/setAccessToken", token);
+
+        FetchInterceptor.setHeader(
+            "Authorization",
+            `Bearer ${token}`
+        );
         store.commit("Modules/Login/setRefreshToken", refreshToken);
 
         if (OIDC.getTokenExpiry(token) < 1) {
