@@ -23,21 +23,13 @@ function gotoSelectedStory () {
 </script>
 
 <template>
-    <v-tooltip top>
-        <template #activator="{ on }">
-            <v-icon
-                id="edit-button"
-                v-on="on"
-                class="pill-button"
-                @click="gotoSelectedStory()"
-            >
-                {{ mdiPencil }}
-            </v-icon>
-        </template>
-        <span>
-            {{
-                t("additional:modules.dataNarrator.creator.edit")
-            }}
-        </span>
-    </v-tooltip>
+    <v-icon
+        id="edit-button"
+        @click="gotoSelectedStory()"
+    >
+        {{ mdiPencil }}
+        <v-tooltip activator="parent" location="top">
+            {{ t("additional:modules.dataNarrator.creator.edit") }}
+        </v-tooltip>
+    </v-icon>
 </template>

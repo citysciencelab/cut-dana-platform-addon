@@ -23,30 +23,24 @@ function playStory () {
 </script>
 
 <template>
-    <v-tooltip top>
-        <template #activator="{ on }">
-            <v-btn
-                dark
-                rounded
-                x-small
-                @click="playStory()"
-            >
-                <v-icon
-                    id="play-button"
-                    color="white"
-                    small
-                    v-on="on"
-                >
-                    {{ mdiPlayOutline }}
-                </v-icon>
-            </v-btn>
-        </template>
-        <span>
-            {{
-                t("additional:modules.dataNarrator.play")
-            }}
-        </span>
-    </v-tooltip>
+    <v-btn
+        color="black"
+        rounded
+        size="small"
+        variant="flat"
+        @click="playStory()"
+    >
+        <v-icon
+            id="play-button"
+            color="white"
+        >
+            {{ mdiPlayOutline }}
+            <v-tooltip activator="parent" location="top">
+                {{ t("additional:modules.dataNarrator.play") }}
+            </v-tooltip>
+        </v-icon>
+    </v-btn>
+
 </template>
 
 <style scoped lang="scss">

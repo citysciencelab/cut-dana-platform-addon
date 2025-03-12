@@ -34,7 +34,8 @@ const notSaving = ref(false);
                 <v-textarea
                     id="description"
                     v-model="description"
-                    solo
+
+                    variant="outlined"
                     hide-details="true"
                     rows="4"
                     :label="t(
@@ -91,7 +92,8 @@ const notSaving = ref(false);
             <v-row class="mb-2">
                 <v-col class="d-flex justify-center align-center gap-2">
                     <v-btn
-                        class="story-chapter-button"
+                        variant="plain"
+                        class="pill-button story-chapter-button"
                         :title="
                             t(
                                 'additional:modules.dataNarrator.button.addChapter'

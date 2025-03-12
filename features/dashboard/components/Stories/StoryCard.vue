@@ -38,8 +38,8 @@ function editable () {
 <template>
     <v-card
         class="mb-5"
-        flat
-        :class="{'grid-item': grid, 'topper': shareSettings}"
+        variant="flat"
+        :class="{'grid-item': true, 'topper': shareSettings}"
     >
         <v-img
             v-if="story.titleImage"
@@ -62,7 +62,7 @@ function editable () {
                 <FeaturedButton
                     :story-id="story.id"
                     :is-featured="story.featured"
-                    :is-admin="isAdmin"
+                    :is-admin="false"
                 />
                 <ShareButton
                     :story-id="story.id"
@@ -96,7 +96,6 @@ function editable () {
                 </v-col>
             </v-row>
         </v-card-actions>
-
 
         <ShareSettingsForm
             v-if="shareSettings"
