@@ -1,9 +1,9 @@
 <template>
     <v-btn
         rounded
-        small
+        size="small"
+        elevation="0"
         @click="changeToNextLanguage()"
-        @keypress="changeToNextLanguage()"
     >
         <v-icon small>
             {{ mdiWeb }}

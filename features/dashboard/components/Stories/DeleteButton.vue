@@ -27,6 +27,7 @@ function deleteStoryWithConfirm () {
             <v-icon
                 id="delete-button"
                 v-on="on"
+                class="pill-button"
                 @click="deleteStoryWithConfirm()"
             >
                 {{ mdiTrashCanOutline }}

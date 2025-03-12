@@ -14,7 +14,6 @@ const showIcon = ref(false);
 const storyCover = ref("");
 const objectFile = ref("");
 
-
 const {title} = useStoryForm();
 </script>
 
@@ -74,6 +73,7 @@ const {title} = useStoryForm();
                         id="title"
                         v-model="title"
                         class="vue-text-all-top"
+                        variant="underlined"
                         :label="t(
                             'additional:modules.dataNarrator.label.storyUnnamed'
                         )"

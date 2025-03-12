@@ -1,6 +1,9 @@
 <template>
     <v-btn
         rounded
+        size="x-small"
+        elevation="0"
+        variant="text"
         :color="active ? 'info' : ''"
         @click="$emit('refreshStoryList', mode)"
     >

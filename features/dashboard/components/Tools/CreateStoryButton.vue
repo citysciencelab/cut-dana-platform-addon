@@ -1,9 +1,9 @@
 <template>
     <v-btn
         v-if="loggedIn"
-        outlined
+        variant="outlined"
         rounded
-        small
+        size="small"
         @click="() => gotoPage(dataNarratorModes.CREATE_STORY)"
     >
         <v-icon small>

@@ -13,10 +13,10 @@ const {setToolWindowMode} = useToolWindow();
 <template>
     <div :class="['toolwindow-container', toolwindowMode]">
         <div :class="['toolwindow-between', toolwindowMode]">
-            <div :class="['toolwindow', {'with-top-border-radius': toolwindowMode !== toolwindowModes.MOBILE}]" :style="{padding: `${toolWindowPadding}px`}">
+            <div :class="['toolwindow', {'with-top-border-radius': toolwindowMode !== toolwindowModes.MOBILE}]">
                 <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setIsOpen" />
                 <header>
-                    <slot v-if="$slots.header" name="header"/>
+                    <slot v-if="$slots.header" name="header" />
                 </header>
                 <main :class="['slot', isOpen ? '' : 'removed']">
                     <slot />

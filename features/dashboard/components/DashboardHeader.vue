@@ -107,12 +107,12 @@ const storyListMode = ref("all");
 
 <style lang="scss" scoped>
 .login-row {
-    position: sticky;
     top: 0;
+    position: sticky;
+    padding: 0 !important;
 }
 
 .dashboard-header {
-
     z-index: 112 !important;
 }
 

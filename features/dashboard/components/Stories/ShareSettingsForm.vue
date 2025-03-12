@@ -30,7 +30,7 @@ function saveStorySettings() {
                         v-on="on"
                     >
                         <v-btn
-                            class=""
+                            class="pill-button"
                             icon
                             @click="$emit('close:shared-settings')"
                         >

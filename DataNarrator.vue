@@ -37,11 +37,13 @@ disableSecondaryMenu();
 #datanarrator-root {
     pointer-events: none;
     position: absolute;
+    width: 100dvw;
+    height: 100dvh;
     top: 0;
 
     #datanarrator-container {
-        width: 100vw;
-        height: 100vh;
+        height: 100%;
+        width: 100%;
         overflow: hidden;
 
         display: grid;

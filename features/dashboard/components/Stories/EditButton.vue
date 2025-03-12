@@ -28,6 +28,7 @@ function gotoSelectedStory () {
             <v-icon
                 id="edit-button"
                 v-on="on"
+                class="pill-button"
                 @click="gotoSelectedStory()"
             >
                 {{ mdiPencil }}
@@ -40,10 +41,3 @@ function gotoSelectedStory () {
         </span>
     </v-tooltip>
 </template>
-
-<style scoped lang="scss">
-#play-button {
-    float:right;
-    color: #413FAB;
-}
-</style>
