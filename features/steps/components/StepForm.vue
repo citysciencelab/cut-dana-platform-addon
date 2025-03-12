@@ -1,41 +1,47 @@
 <script setup>
 import {useTranslation} from "i18next-vue";
+import {useStepForm} from "../hooks/useStepForm";
+import StepTitle from "./inputs/StepTitle.vue";
+import StepDescription from "./StepDescription.vue";
+import TwoDNavigation from "./TwoDNavigation.vue";
+import {mdiCancel, mdiCheck, mdiMapMarkerPlusOutline, mdiTrashCanOutline} from "@mdi/js";
+import {useDataNarrator} from "../../../hooks/useDataNarrator";
 
-const saveStep = () => {
-    console.log("Save step");
-};
+const {t} = useTranslation();
 
+const {openLayerEditor} = useDataNarrator();
+const {chapterId, stepNumber, is3d, onSubmit, onDeleteStep, isValid} = useStepForm();
+const {isMobile} = useDataNarrator();
 </script>
 
 <template>
-    <div id="tool-dataNarrator-creator-stepForm">
-<!--        <form-->
-<!--            id="step-form"-->
-<!--            @submit.prevent="saveStep"-->
-<!--        >-->
-<!--            <div class="form-group">-->
-<!--                <v-row-->
-<!--                    v-if="step.associatedChapter"-->
-<!--                    class="form-input-holder xs pr-4"-->
-<!--                >-->
-<!--                    <v-col-->
-<!--                        cols="1"-->
-<!--                        class="d-flex align-self-center"-->
-<!--                    >-->
-<!--                        <v-btn-->
-<!--                            :key="step.associatedChapter"-->
-<!--                            class="story-step-button pill-button horizontal chapter-indicator"-->
-<!--                            :style="{backgroundColor: colorFor(step.associatedChapter).main}"-->
-<!--                            icon-->
-<!--                            :title="-->
-<!--                                $t(-->
-<!--                                    'additional:modules.tools.dataNarrator.label.chapter'-->
-<!--                                )-->
-<!--                            "-->
-<!--                        >-->
+    <div
+        id="tool-dataNarrator-creator-stepForm"
+        class="mb-1"
+    >
+        <form @submit.prevent="onSubmit">
+            <div class="form-group">
+                <v-row
+                    v-if="chapterId"
+                    class="form-input-holder xs pr-4"
+                >
+                    <v-col
+                        cols="1"
+                        class="d-flex align-self-center"
+                    >
+                        <v-btn
+                            :key="chapterId"
+                            class="story-step-button pill-button horizontal chapter-indicator"
+                            icon
+                            :title="
+                                t(
+                                    'additional:modules.dataNarrator.label.chapter'
+                                )
+                            "
+                        >
 <!--                            {{ chapterLetter(step.associatedChapter ) }}-->
-<!--                        </v-btn>-->
-<!--                    </v-col>-->
+                        </v-btn>
+                    </v-col>
 
 <!--                    <v-col-->
 <!--                        cols="11"-->
@@ -45,161 +51,61 @@ const saveStep = () => {
 <!--                            id="chapter-title"-->
 <!--                            v-model="step.chapterTitle"-->
 <!--                            class="vue-text-all-top"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.chapterTitle'-->
+<!--                            :label="t(-->
+<!--                                'additional:modules.dataNarrator.label.chapterTitle'-->
 <!--                            )"-->
-<!--                            :rules="stepNameRules"-->
 <!--                            hide-details="auto"-->
 <!--                        />-->
 <!--                    </v-col>-->
-<!--                </v-row>-->
-<!--            </div>-->
+                </v-row>
+            </div>
 
-<!--            <div class="form-group form-input-holder lg">-->
-<!--                <v-row class="pr-3">-->
-<!--                    <v-col-->
-<!--                        cols="1"-->
-<!--                        class="d-flex align-self-center "-->
-<!--                    >-->
-<!--                        <v-btn-->
-<!--                            v-if="step.associatedChapter"-->
-<!--                            class="story-step-button pill-button step-indicator"-->
-<!--                            :style="{color: colorFor(step.associatedChapter).main}"-->
-<!--                            icon-->
-<!--                            :title="-->
-<!--                                $t(-->
-<!--                                    'additional:modules.tools.dataNarrator.label.stepNumber'-->
-<!--                                )-->
-<!--                            "-->
-<!--                        >-->
-<!--                            {{ step.stepNumber }}-->
-<!--                        </v-btn>-->
-<!--                    </v-col>-->
-<!--                    <v-col-->
-<!--                        cols="11"-->
-<!--                        class="d-flex align-self-center step-title-holder"-->
-<!--                    >-->
-<!--                        <v-text-field-->
-<!--                            id="step-title"-->
-<!--                            v-model="step.title"-->
-<!--                            class="vue-text-all-top"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.stepTitle'-->
-<!--                            )"-->
-<!--                            :rules="stepNameRules"-->
-<!--                            hide-details="auto"-->
-<!--                        />-->
-<!--                    </v-col>-->
-<!--                </v-row>-->
-<!--                <v-row class="mb-2">-->
-<!--                    <v-col-->
-<!--                        cols="12"-->
-<!--                        class="d-flex align-self-center "-->
-<!--                    >-->
-<!--                        <div class="stepForm-inputs-htmlEditor">-->
-<!--                            <VueEditor-->
-<!--                                id="step-vue-editor"-->
-<!--                                v-model="step.html"-->
-<!--                                :placeholder="$t('additional:modules.tools.dataNarrator.label.htmlContent')"-->
-<!--                                :editor-toolbar="constants.htmlEditorToolbar"-->
-<!--                                use-custom-image-handler-->
-<!--                                @image-added="onAddImage"-->
-<!--                                @image-removed="onRemoveImage"-->
-<!--                            />-->
-<!--                        </div>-->
-<!--                    </v-col>-->
-<!--                </v-row>-->
-<!--                <v-row>-->
-<!--                    <v-col-->
-<!--                        cols="12"-->
-<!--                        class="d-flex align-self-center"-->
-<!--                    >-->
-<!--                        <div class="vue-label-style">-->
-<!--                            {{ $t( "additional:modules.tools.dataNarrator.label.mapDisplay" ) }}-->
-<!--                        </div>-->
-<!--                    </v-col>-->
-<!--                </v-row>-->
-<!--                &lt;!&ndash;                TODO: Hier kam vom Remote <div v-if="temp.is3D"> ist das wichtig? Löst das etwas&ndash;&gt;-->
-<!--                <v-row-->
-<!--                    v-if="step.is3D && cesiumEnabled"-->
-<!--                    class="mb-2"-->
-<!--                >-->
-<!--                    <v-col-->
-<!--                        cols="3"-->
-<!--                        class="d-flex align-self-center mr-2"-->
-<!--                    >-->
-<!--                        <v-text-field-->
-<!--                            id="step-center-3d-0"-->
-<!--                            :value="step.navigation3D.heading"-->
-<!--                            disabled-->
-<!--                            outlined-->
-<!--                            dense-->
-<!--                            class="vue-text-all-top small-fieldset"-->
-<!--                            :class="{'positon_change': mapMovedPosition.heading && step.navigation3D.heading && step.navigation3D.heading !== mapMovedPosition.heading}"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.heading'-->
-<!--                            )"-->
-<!--                            :title="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.heading'-->
-<!--                            )"-->
-<!--                            hide-details-->
-<!--                        />-->
-<!--                    </v-col>-->
-<!--                    <v-col-->
-<!--                        cols="1"-->
-<!--                        class="d-flex align-self-center mr-2"-->
-<!--                    >-->
-<!--                        <v-btn-->
-<!--                            icon-->
-<!--                            :title="-->
-<!--                                $t(-->
-<!--                                    'additional:modules.tools.dataNarrator.label.heading'-->
-<!--                                )-->
-<!--                            "-->
-<!--                            @click="step.navigation3D.heading = get3DMapCenter()['heading']"-->
-<!--                        >-->
-<!--                            <v-icon>{{ icons.mdiPinOutline }}</v-icon>-->
-<!--                        </v-btn>-->
-<!--                    </v-col>-->
-<!--                    <v-col-->
-<!--                        cols="3"-->
-<!--                        class="d-flex align-self-center"-->
-<!--                    >-->
-<!--                        <v-text-field-->
-<!--                            id="step-center-3d-0"-->
-<!--                            :value="step.navigation3D.pitch"-->
-<!--                            disabled-->
-<!--                            outlined-->
-<!--                            dense-->
-<!--                            class="vue-text-all-top small-fieldset"-->
-<!--                            :class="{'positon_change': mapMovedPosition.pitch && step.navigation3D.pitch && step.navigation3D.pitch !== mapMovedPosition.pitch}"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.pitch'-->
-<!--                            )"-->
-<!--                            :title="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.pitch'-->
-<!--                            )"-->
-<!--                            hide-details-->
-<!--                        />-->
-<!--                    </v-col>-->
-<!--                    <v-col-->
-<!--                        cols="1"-->
-<!--                        class="d-flex align-self-center"-->
-<!--                    >-->
-<!--                        <v-btn-->
-<!--                            icon-->
-<!--                            :title="-->
-<!--                                $t(-->
-<!--                                    'additional:modules.tools.dataNarrator.label.pitch'-->
-<!--                                )-->
-<!--                            "-->
-
-<!--                            @click="step.navigation3D.pitch = get3DMapCenter()['pitch']"-->
-<!--                        >-->
-<!--                            <v-icon>{{ icons.mdiPinOutline }}</v-icon>-->
-<!--                        </v-btn>-->
-<!--                    </v-col>-->
-<!--                </v-row>-->
+            <div class="form-group form-input-holder lg">
+                <v-row class="pr-3">
+                    <v-col
+                        cols="1"
+                        class="d-flex align-self-center "
+                    >
+                        <v-btn
+                            v-if="chapterId"
+                            class="story-step-button pill-button step-indicator"
+                            icon
+                            :title="
+                                t(
+                                    'additional:modules.dataNarrator.label.stepNumber'
+                                )
+                            "
+                        >
+                            {{ stepNumber }}
+                        </v-btn>
+                    </v-col>
+                    <v-col
+                        cols="11"
+                        class="d-flex align-self-center step-title-holder"
+                    >
+                        <StepTitle />
+                    </v-col>
+                </v-row>
+                <v-row class="mb-2">
+                    <v-col
+                        cols="12"
+                        class="d-flex align-self-center "
+                    >
+                        <StepDescription/>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col
+                        cols="12"
+                        class="d-flex align-self-center"
+                    >
+                        <div class="vue-label-style">
+                            {{ t( "additional:modules.dataNarrator.label.mapDisplay" ) }}
+                        </div>
+                    </v-col>
+                </v-row>
+                <!--                TODO: Hier kam vom Remote <div v-if="temp.is3D"> ist das wichtig? Löst das etwas-->
+<!--                <Three3Navigation/>-->
 
 <!--                <v-row-->
 <!--                    v-if="step.is3D && cesiumEnabled"-->
@@ -217,11 +123,11 @@ const saveStep = () => {
 <!--                            dense-->
 <!--                            class="vue-text-all-top small-fieldset"-->
 <!--                            :class="{'positon_change': step.is3D && cesiumEnabled && isCameraPositionDifferent()}"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.longitude'-->
+<!--                            :label="t(-->
+<!--                                'additional:modules.dataNarrator.label.longitude'-->
 <!--                            )"-->
-<!--                            :title="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.longitude'-->
+<!--                            :title="t(-->
+<!--                                'additional:modules.dataNarrator.label.longitude'-->
 <!--                            )"-->
 <!--                            hide-details-->
 <!--                        />-->
@@ -238,11 +144,11 @@ const saveStep = () => {
 <!--                            dense-->
 <!--                            class="vue-text-all-top small-fieldset"-->
 <!--                            :class="{'positon_change': step.is3D && cesiumEnabled && isCameraPositionDifferent()}"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.latitude'-->
+<!--                            :label="t(-->
+<!--                                'additional:modules.dataNarrator.label.latitude'-->
 <!--                            )"-->
-<!--                            :title="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.latitude'-->
+<!--                            :title="t(-->
+<!--                                'additional:modules.dataNarrator.label.latitude'-->
 <!--                            )"-->
 <!--                            hide-details-->
 <!--                        />-->
@@ -259,11 +165,11 @@ const saveStep = () => {
 <!--                            outlined-->
 <!--                            dense-->
 <!--                            class="vue-text-all-top small-fieldset"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.height'-->
+<!--                            :label="t(-->
+<!--                                'additional:modules.dataNarrator.label.height'-->
 <!--                            )"-->
-<!--                            :title="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.height'-->
+<!--                            :title="t(-->
+<!--                                'additional:modules.dataNarrator.label.height'-->
 <!--                            )"-->
 <!--                            hide-details-->
 <!--                        />-->
@@ -276,124 +182,19 @@ const saveStep = () => {
 <!--                        <v-btn-->
 <!--                            icon-->
 <!--                            :title="-->
-<!--                                $t(-->
-<!--                                    'additional:modules.tools.dataNarrator.label.centerCoordinate'-->
+<!--                                t(-->
+<!--                                    'additional:modules.dataNarrator.label.centerCoordinate'-->
 <!--                                )-->
 <!--                            "-->
 
 <!--                            @click="step.navigation3D.cameraPosition = get3DMapCenter()['cameraPosition']"-->
 <!--                        >-->
-<!--                            <v-icon>{{ icons.mdiPinOutline }}</v-icon>-->
+<!--                            <v-icon>{{ mdiPinOutline }}</v-icon>-->
 <!--                        </v-btn>-->
 <!--                    </v-col>-->
 <!--                </v-row>-->
 
-<!--                <v-row-->
-<!--                    v-if="!step.is3D"-->
-<!--                    class="mb-2"-->
-<!--                >-->
-<!--                    <v-col-->
-<!--                        cols="3"-->
-<!--                        class="d-flex align-self-center pr-1"-->
-<!--                    >-->
-<!--                        <v-text-field-->
-<!--                            id="step-center-lng"-->
-<!--                            :key="`centerCoordinatex${key}`"-->
-<!--                            v-model="step.centerCoordinate && step.centerCoordinate[0]"-->
-<!--                            disabled-->
-<!--                            outlined-->
-<!--                            dense-->
-<!--                            class="vue-text-all-top small-fieldset"-->
-<!--                            :class="{'positon_change': step.centerCoordinate && step.centerCoordinate !== center()}"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.longitude'-->
-<!--                            )"-->
-<!--                            :title="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.longitude'-->
-<!--                            )"-->
-<!--                            hide-details-->
-<!--                        />-->
-<!--                    </v-col>-->
-<!--                    <v-col-->
-<!--                        cols="3"-->
-<!--                        class="d-flex align-self-center"-->
-<!--                    >-->
-<!--                        <v-text-field-->
-<!--                            id="step-center-lat"-->
-<!--                            :key="`centerCoordinatex${key}`"-->
-<!--                            v-model="step.centerCoordinate && step.centerCoordinate[1]"-->
-<!--                            disabled-->
-<!--                            outlined-->
-<!--                            dense-->
-<!--                            class="vue-text-all-top small-fieldset"-->
-<!--                            :class="{'positon_change': step.centerCoordinate && step.centerCoordinate !== center()}"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.latitude'-->
-<!--                            )"-->
-<!--                            :title="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.latitude'-->
-<!--                            )"-->
-<!--                            hide-details-->
-<!--                        />-->
-<!--                    </v-col>-->
-<!--                    <v-col-->
-<!--                        cols="1"-->
-<!--                        class="d-flex justify-center align-self-start"-->
-<!--                    >-->
-<!--                        <v-btn-->
-<!--                            icon-->
-<!--                            :title="-->
-<!--                                $t(-->
-<!--                                    'additional:modules.tools.dataNarrator.label.centerCoordinate'-->
-<!--                                )-->
-<!--                            "-->
-<!--                            @click="() => {-->
-<!--                                key++;-->
-<!--                                step.centerCoordinate = center()-->
-<!--                            }"-->
-<!--                        >-->
-<!--                            <v-icon>{{ icons.mdiPinOutline }}</v-icon>-->
-<!--                        </v-btn>-->
-<!--                    </v-col>-->
-<!--                    <v-col-->
-<!--                        cols="3"-->
-<!--                        offset="1"-->
-<!--                        class="d-flex align-self-center"-->
-<!--                    >-->
-<!--                        <v-text-field-->
-<!--                            id="step-zoomlevel"-->
-<!--                            v-model="step.zoomLevel"-->
-<!--                            disabled-->
-<!--                            outlined-->
-<!--                            dense-->
-<!--                            class="vue-text-all-top small-fieldset"-->
-<!--                            :class="{'positon_change': step.zoomLevel && step.zoomLevel !== zoom()}"-->
-<!--                            :label="$t(-->
-<!--                                'additional:modules.tools.dataNarrator.label.zoomLevel'-->
-<!--                            )"-->
-<!--                            hide-details-->
-<!--                        />-->
-<!--                    </v-col>-->
-<!--                    <v-col-->
-<!--                        cols="1"-->
-<!--                        class="d-flex justify-center align-self-start"-->
-<!--                    >-->
-<!--                        <v-btn-->
-<!--                            icon-->
-<!--                            :title="-->
-<!--                                $t(-->
-<!--                                    'additional:modules.tools.dataNarrator.label.setZoomLevel'-->
-<!--                                )-->
-<!--                            "-->
-<!--                            @click="() => {-->
-<!--                                key++;-->
-<!--                                step.zoomLevel = zoom()-->
-<!--                            }"-->
-<!--                        >-->
-<!--                            <v-icon>{{ icons.mdiPinOutline }}</v-icon>-->
-<!--                        </v-btn>-->
-<!--                    </v-col>-->
-<!--                </v-row>-->
+                <TwoDNavigation/>
 <!--                <v-row-->
 <!--                    v-if="(!step.is3D && step.centerCoordinate && step.centerCoordinate !== center())-->
 <!--                        || (!step.is3D && step.zoomLevel && step.zoomLevel !== zoom())-->
@@ -410,7 +211,7 @@ const saveStep = () => {
 <!--                            class="text-warning"-->
 <!--                        >-->
 <!--                            <small>-->
-<!--                                {{ $t( "additional:modules.tools.dataNarrator.warning.mapMoved" ) }} {{ step.is3D }}-->
+<!--                                {{ t( "additional:modules.dataNarrator.warning.mapMoved" ) }} {{ step.is3D }}-->
 <!--                            </small>-->
 <!--                        </p>-->
 <!--                    </v-col>-->
@@ -449,44 +250,43 @@ const saveStep = () => {
 <!--                        />-->
 <!--                    </v-col>-->
 <!--                </v-row>-->
-<!--            </div>-->
+            </div>
 
-<!--            &lt;!&ndash; todo: checkbox wird nicht mehr gebraucht oder? &ndash;&gt;-->
-<!--            <div-->
-<!--                v-if="is3DLayerActive"-->
-<!--                class="form-group"-->
-<!--            >-->
-<!--                <label-->
-<!--                    class="form-label"-->
-<!--                    for="step-is3d"-->
-<!--                >-->
-<!--                    {{ $t( "additional:modules.tools.dataNarrator.label.is3D" ) }}-->
-<!--                </label>-->
-<!--                <input-->
-<!--                    id="step-is3d"-->
-<!--                    v-model="step.is3D"-->
-<!--                    class="checkbox"-->
-<!--                    type="checkbox"-->
-<!--                >-->
-<!--            </div>-->
+            <!-- todo: checkbox wird nicht mehr gebraucht oder? -->
+            <div
+                class="form-group"
+            >
+                <label
+                    class="form-label"
+                    for="step-is3d"
+                >
+                    {{ t( "additional:modules.dataNarrator.label.is3D" ) }}
+                </label>
+                <input
+                    id="step-is3d"
+                    v-model="is3d"
+                    class="checkbox"
+                    type="checkbox"
+                >
+            </div>
 
-<!--            <v-row class="mb-3">-->
-<!--                <v-col-->
-<!--                    cols="12"-->
-<!--                    class="d-flex justify-center align-self-center"-->
-<!--                >-->
-<!--                    <v-btn-->
-<!--                        class="add-btn add-layer-btn"-->
-<!--                        small-->
-<!--                        @click="openLayerEditor"-->
-<!--                    >-->
-<!--                        <v-icon left>-->
-<!--                            {{ icons.mdiMapMarkerPlusOutline }}-->
-<!--                        </v-icon>-->
-<!--                        {{ $t( "additional:modules.tools.dataNarrator.label.dataLayer" ) }}-->
-<!--                    </v-btn>-->
-<!--                </v-col>-->
-<!--            </v-row>-->
+            <v-row class="mb-3">
+                <v-col
+                    cols="12"
+                    class="d-flex justify-center align-self-center"
+                >
+                    <v-btn
+                        class="add-btn add-layer-btn"
+                        small
+                        @click="openLayerEditor"
+                    >
+                        <v-icon left>
+                            {{ mdiMapMarkerPlusOutline }}
+                        </v-icon>
+                        {{ t( "additional:modules.dataNarrator.label.dataLayer" ) }}
+                    </v-btn>
+                </v-col>
+            </v-row>
 <!--            <v-expansion-panels-->
 <!--                id="advanced-options"-->
 <!--                class="expansion-panels"-->
@@ -495,7 +295,7 @@ const saveStep = () => {
 <!--                <v-expansion-panel>-->
 <!--                    <v-expansion-panel-header>-->
 <!--                        {{-->
-<!--                            $t("additional:modules.tools.dataNarrator.label.ownDatasource")-->
+<!--                            t("additional:modules.dataNarrator.label.ownDatasource")-->
 <!--                        }}-->
 <!--                    </v-expansion-panel-header>-->
 <!--                    <v-expansion-panel-content>-->
@@ -521,7 +321,7 @@ const saveStep = () => {
 <!--                                            color="grey lighten-1"-->
 <!--                                            @click="removeDatasource(item)"-->
 <!--                                        >-->
-<!--                                            {{ icons.mdiClose }}-->
+<!--                                            {{ mdiClose }}-->
 <!--                                        </v-icon>-->
 <!--                                    </v-expansion-panel-content>-->
 <!--                                </v-expansion-panel>-->
@@ -535,8 +335,8 @@ const saveStep = () => {
 <!--                                        id="own_dataSource"-->
 <!--                                        ref="own_dataSource_input"-->
 <!--                                        multiple-->
-<!--                                        :label="$t(-->
-<!--                                            'additional:modules.tools.dataNarrator.label.ownDatasource'-->
+<!--                                        :label="t(-->
+<!--                                            'additional:modules.dataNarrator.label.ownDatasource'-->
 <!--                                        )"-->
 <!--                                        name="ownDataSource"-->
 <!--                                        accept=".kml, .geojson, .json, .gpx"-->
@@ -556,9 +356,9 @@ const saveStep = () => {
 <!--                                        @click="toggleDrawTool"-->
 <!--                                    >-->
 <!--                                        <v-icon left>-->
-<!--                                            {{ icons.mdiPencilOutline }}-->
+<!--                                            {{ mdiPencilOutline }}-->
 <!--                                        </v-icon>-->
-<!--                                        {{ $t( "additional:modules.tools.dataNarrator.label.openDrawTool" ) }}-->
+<!--                                        {{ t( "additional:modules.dataNarrator.label.openDrawTool" ) }}-->
 <!--                                    </v-btn>-->
 <!--                                </v-col>-->
 <!--                                <v-col-->
@@ -573,11 +373,11 @@ const saveStep = () => {
 <!--                                                small-->
 <!--                                                v-on="on"-->
 <!--                                            >-->
-<!--                                                {{ icons.mdiHelpCircleOutline }}-->
+<!--                                                {{ mdiHelpCircleOutline }}-->
 <!--                                            </v-icon>-->
 <!--                                        </template>-->
 <!--                                        <span>-->
-<!--                                            {{ $t("additional:modules.tools.dataNarrator.dashboardView.drawToolDescription") }}-->
+<!--                                            {{ t("additional:modules.dataNarrator.dashboardView.drawToolDescription") }}-->
 <!--                                        </span>-->
 <!--                                    </v-tooltip>-->
 <!--                                </v-col>-->
@@ -617,7 +417,7 @@ const saveStep = () => {
 <!--                                            color="grey lighten-1"-->
 <!--                                            @click="onWmsLayerRemove(item)"-->
 <!--                                        >-->
-<!--                                            {{ icons.mdiClose }}-->
+<!--                                            {{ mdiClose }}-->
 <!--                                        </v-icon>-->
 <!--                                    </v-expansion-panel-content>-->
 <!--                                </v-expansion-panel>-->
@@ -631,11 +431,11 @@ const saveStep = () => {
 <!--                                        outlined-->
 <!--                                        dense-->
 <!--                                        class="vue-text-all-top small-fieldset"-->
-<!--                                        :label="$t(-->
-<!--                                            'additional:modules.tools.dataNarrator.label.ownWmsLayers'-->
+<!--                                        :label="t(-->
+<!--                                            'additional:modules.dataNarrator.label.ownWmsLayers'-->
 <!--                                        )"-->
-<!--                                        :title="$t(-->
-<!--                                            'additional:modules.tools.dataNarrator.label.ownWmsLayers'-->
+<!--                                        :title="t(-->
+<!--                                            'additional:modules.dataNarrator.label.ownWmsLayers'-->
 <!--                                        )"-->
 <!--                                        hide-details-->
 <!--                                        @change="onWmsLayersAdd"-->
@@ -654,9 +454,9 @@ const saveStep = () => {
 <!--                                        @click="open3D"-->
 <!--                                    >-->
 <!--                                        <v-icon left>-->
-<!--                                            {{ icons.mdiHomePlusOutline }}-->
+<!--                                            {{ mdiHomePlusOutline }}-->
 <!--                                        </v-icon>-->
-<!--                                        {{ $t( "additional:modules.tools.dataNarrator.label.threeDFiles" ) }}-->
+<!--                                        {{ t( "additional:modules.dataNarrator.label.threeDFiles" ) }}-->
 <!--                                    </v-btn>-->
 <!--                                </v-col>-->
 <!--                            </v-row>-->
@@ -672,7 +472,7 @@ const saveStep = () => {
 <!--                <v-expansion-panel>-->
 <!--                    <v-expansion-panel-header>-->
 <!--                        {{-->
-<!--                            $t("additional:modules.tools.dataNarrator.label.advancedOptions")-->
+<!--                            t("additional:modules.dataNarrator.label.advancedOptions")-->
 <!--                        }}-->
 <!--                    </v-expansion-panel-header>-->
 <!--                    <v-expansion-panel-content>-->
@@ -681,7 +481,7 @@ const saveStep = () => {
 <!--                                class="form-label"-->
 <!--                                for="step-width"-->
 <!--                            >-->
-<!--                                {{ $t("additional:modules.tools.dataNarrator.label.stepWidth") }}-->
+<!--                                {{ t("additional:modules.dataNarrator.label.stepWidth") }}-->
 <!--                            </label>-->
 
 <!--                            <input-->
@@ -700,7 +500,7 @@ const saveStep = () => {
 <!--                                class="form-label"-->
 <!--                                for="step-addons"-->
 <!--                            >-->
-<!--                                {{ $t( "additional:modules.tools.dataNarrator.label.interactionAddons" ) }}-->
+<!--                                {{ t( "additional:modules.dataNarrator.label.interactionAddons" ) }}-->
 <!--                            </label>-->
 <!--                            <v-select-->
 <!--                                id="step-addons"-->
@@ -716,155 +516,250 @@ const saveStep = () => {
 <!--                </v-expansion-panel>-->
 <!--            </v-expansion-panels>-->
 
-<!--            <v-footer-->
-<!--                class="tool-dataNarrator-creator-actions white"-->
-<!--                elevation="2"-->
-<!--                rounded-->
-<!--            >-->
-<!--                <v-card-->
-<!--                    v-if="!mobile"-->
-<!--                    flat-->
-<!--                    tile-->
-<!--                    width="100%"-->
-<!--                    class="lighten-1 text-center"-->
-<!--                >-->
-<!--                    <v-card-text>-->
-<!--                        <v-tooltip top>-->
-<!--                            <template #activator="{ on }">-->
-<!--                                <span-->
-<!--                                    id="cancel-button"-->
-<!--                                    class="mr-1"-->
-<!--                                    v-on="on"-->
-<!--                                >-->
-<!--                                    <v-btn-->
-<!--                                        class=""-->
-<!--                                        icon-->
-<!--                                        @click="$emit('return')"-->
-<!--                                    >-->
-<!--                                        <v-icon size="24px">{{ icons.mdiCancel }}</v-icon>-->
-<!--                                    </v-btn>-->
-<!--                                </span>-->
-<!--                            </template>-->
-<!--                            <span>-->
-<!--                                {{ $t("additional:modules.tools.dataNarrator.button.cancel") }}-->
-<!--                            </span>-->
-<!--                        </v-tooltip>-->
-<!--                        <v-tooltip top>-->
-<!--                            <template #activator="{ on }">-->
-<!--                                <span-->
-<!--                                    id="delete-button"-->
-<!--                                    class="mr-1"-->
-<!--                                    v-on="on"-->
-<!--                                >-->
-<!--                                    <v-btn-->
-<!--                                        class=""-->
-<!--                                        icon-->
-<!--                                        @click="onDeleteStep"-->
-<!--                                    >-->
-<!--                                        <v-icon size="24px">{{ icons.mdiTrashCanOutline }}</v-icon>-->
-<!--                                    </v-btn>-->
-<!--                                </span>-->
-<!--                            </template>-->
-<!--                            <span>-->
-<!--                                {{ $t("additional:modules.tools.dataNarrator.button.deleteStep") }}-->
-<!--                            </span>-->
-<!--                        </v-tooltip>-->
-<!--                        <v-tooltip top>-->
-<!--                            <template #activator="{ on }">-->
-<!--                                <span-->
-<!--                                    id="save-button"-->
-<!--                                    class="mr-1"-->
-<!--                                    v-on="on"-->
-<!--                                >-->
-<!--                                    <v-btn-->
-<!--                                        class=""-->
-<!--                                        icon-->
-<!--                                        :disabled="!isValid"-->
-<!--                                        @click="onSubmit"-->
-<!--                                    >-->
+            <v-footer
+                class="tool-dataNarrator-creator-actions white"
+                elevation="2"
+                rounded
+            >
+                <v-card
+                    v-if="!isMobile"
+                    flat
+                    tile
+                    width="100%"
+                    class="lighten-1 text-center"
+                >
+                    <v-card-text>
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+                                <span
+                                    id="cancel-button"
+                                    class="mr-1"
+                                    v-on="on"
+                                >
+                                    <v-btn
+                                        class=""
+                                        icon
+                                        @click="$emit('return')"
+                                    >
+                                        <v-icon size="24px">{{ mdiCancel }}</v-icon>
+                                    </v-btn>
+                                </span>
+                            </template>
+                            <span>
+                                {{ t("additional:modules.dataNarrator.button.cancel") }}
+                            </span>
+                        </v-tooltip>
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+                                <span
+                                    id="delete-button"
+                                    class="mr-1"
+                                    v-on="on"
+                                >
+                                    <v-btn
+                                        class=""
+                                        icon
+                                        @click="onDeleteStep"
+                                    >
+                                        <v-icon size="24px">{{ mdiTrashCanOutline }}</v-icon>
+                                    </v-btn>
+                                </span>
+                            </template>
+                            <span>
+                                {{ t("additional:modules.dataNarrator.button.deleteStep") }}
+                            </span>
+                        </v-tooltip>
+                        <v-tooltip top>
+                            <template #activator="{ on }">
+                                <span
+                                    id="save-button"
+                                    class="mr-1"
+                                    v-on="on"
+                                >
+                                    <v-btn
+                                        class=""
+                                        icon
+                                        :disabled="!isValid"
+                                        @click="onSubmit"
+                                    >
 
-<!--                                        <v-icon size="24px">{{ icons.mdiCheck }}</v-icon>-->
-<!--                                    </v-btn>-->
-<!--                                </span>-->
-<!--                            </template>-->
+                                        <v-icon size="24px">{{ mdiCheck }}</v-icon>
+                                    </v-btn>
+                                </span>
+                            </template>
 <!--                            <span>-->
 <!--                                {{-->
-<!--                                    $t(editedStep-->
-<!--                                        ? "additional:modules.tools.dataNarrator.button.submitEditStep"-->
-<!--                                        : "additional:modules.tools.dataNarrator.button.submitAddStep")-->
+<!--                                    t(editedStep-->
+<!--                                        ? "additional:modules.dataNarrator.button.submitEditStep"-->
+<!--                                        : "additional:modules.dataNarrator.button.submitAddStep")-->
 <!--                                }}-->
 <!--                            </span>-->
-<!--                        </v-tooltip>-->
-<!--                    </v-card-text>-->
-<!--                </v-card>-->
-<!--                <v-container-->
-<!--                    v-else-->
-<!--                    fluid-->
-<!--                    class="white"-->
-<!--                >-->
-<!--                    <v-row-->
-<!--                        class="mb-2"-->
-<!--                        no-gutters-->
-<!--                    >-->
-<!--                        <v-col>-->
-<!--                            <v-btn-->
-<!--                                class=""-->
-<!--                                small-->
-<!--                                color="red"-->
-<!--                                min-width="100%"-->
-<!--                                @click="$emit('return')"-->
-<!--                            >-->
-<!--                                <span>-->
-<!--                                    {{ $t("additional:modules.tools.dataNarrator.button.cancel") }}-->
-<!--                                </span>-->
-<!--                            </v-btn>-->
-<!--                        </v-col>-->
-<!--                        <v-col>-->
-<!--                            <v-btn-->
-<!--                                class=""-->
-<!--                                small-->
-<!--                                color="red"-->
-<!--                                min-width="100%"-->
-<!--                                @click="onDeleteStep"-->
-<!--                            >-->
-<!--                                <span>{{ $t("additional:modules.tools.dataNarrator.button.deleteStep") }}</span>-->
-<!--                            </v-btn>-->
-<!--                        </v-col>-->
-<!--                    </v-row>-->
-<!--                    <v-row-->
-<!--                        class="mb-2"-->
-<!--                        no-gutters-->
-<!--                    >-->
-<!--                        <v-btn-->
-<!--                            class=""-->
-<!--                            small-->
-<!--                            color="green"-->
-<!--                            :disabled="!isValid"-->
-<!--                            @click="onSubmit"-->
-<!--                        >-->
+                        </v-tooltip>
+                    </v-card-text>
+                </v-card>
+                <v-container
+                    v-else
+                    fluid
+                    class="white"
+                >
+                    <v-row
+                        class="mb-2"
+                        no-gutters
+                    >
+                        <v-col>
+                            <v-btn
+                                class=""
+                                small
+                                color="red"
+                                min-width="100%"
+                                @click="$emit('return')"
+                            >
+                                <span>
+                                    {{ t("additional:modules.dataNarrator.button.cancel") }}
+                                </span>
+                            </v-btn>
+                        </v-col>
+                        <v-col>
+                            <v-btn
+                                class=""
+                                small
+                                color="red"
+                                min-width="100%"
+                                @click="onDeleteStep"
+                            >
+                                <span>{{ t("additional:modules.dataNarrator.button.deleteStep") }}</span>
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                    <v-row
+                        class="mb-2"
+                        no-gutters
+                    >
+                        <v-btn
+                            class=""
+                            small
+                            color="green"
+                            :disabled="!isValid"
+                            @click="onSubmit"
+                        >
 <!--                            <span>-->
 <!--                                {{-->
-<!--                                    $t(editedStep-->
-<!--                                        ? "additional:modules.tools.dataNarrator.button.submitEditStep"-->
-<!--                                        : "additional:modules.tools.dataNarrator.button.submitAddStep")-->
+<!--                                    t(editedStep-->
+<!--                                        ? "additional:modules.dataNarrator.button.submitEditStep"-->
+<!--                                        : "additional:modules.dataNarrator.button.submitAddStep")-->
 <!--                                }}-->
 <!--                            </span>-->
-<!--                        </v-btn>-->
-<!--                    </v-row>-->
-<!--                </v-container>-->
-<!--            </v-footer>-->
+                        </v-btn>
+                    </v-row>
+                </v-container>
+            </v-footer>
 
-<!--            <v-alert-->
-<!--                v-show="!isValid"-->
-<!--                id="tool-dataNarrator-creator-noHTML"-->
-<!--                type="info"-->
-<!--            >-->
-<!--                {{ $t("additional:modules.tools.dataNarrator.warning.sendNoHTML") }}-->
-<!--            </v-alert>-->
-<!--        </form>-->
+            <v-alert
+                v-show="!isValid"
+                id="tool-dataNarrator-creator-noHTML"
+                type="info"
+            >
+                {{ t("additional:modules.dataNarrator.warning.sendNoHTML") }}
+            </v-alert>
+        </form>
     </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
+#heroicon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+#tool-dataNarrator-creator-stepForm {
+    max-width: 470px;
+    position: relative;
+
+    .add-btn {
+        border-radius: 20px;
+        text-transform: none !important;
+        min-width: 195px !important;
+    }
+
+    .add-layer-btn {
+        background-color: #b8e6c2;
+    }
+
+    .add-data-btn {
+        background-color: #cee1ff;
+    }
+
+    .add-data-tool-btn {
+        background-color: #E6B8DC;
+    }
+
+    #tool-dataNarrator-creator-noHTML {
+        margin-top: 10px;
+        margin-bottom: 0;
+    }
+
+    #advanced-options {
+        margin-bottom: 10px;
+    }
+
+    .expansion-panels {
+        z-index: 1;
+        margin-bottom: 10px;
+    }
+
+    &::v-deep {
+        .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
+        > .v-input__control
+        > .v-input__slot {
+            margin: 0;
+            padding: 0 0 0 0.3125rem;
+        }
+
+        .v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)
+        > .v-input__control
+        > .v-input__slot {
+            height: 34px;
+            height: 34px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 0;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        }
+
+        .v-text-field.v-text-field--solo.v-input--is-focused:not(.v-text-field--solo-flat)
+        > .v-input__control
+        > .v-input__slot {
+            border-color: #66afe9;
+            outline: 0;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.08),
+            0 0 8px rgba(102, 175, 233, 0.6);
+        }
+    }
+
+    label.required:after { content: '*';color:red; }
+
+    .stepForm-inputs-centerCoordinate {
+        display: grid;
+        grid-template-columns: 1fr 1fr 100px;
+        grid-gap: 5px;
+        align-items: end;
+    }
+
+    .stepForm-3d-others {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .stepForm-inputs-3d-position {
+        grid-template-columns: 1fr 1fr 1fr 1fr !important;
+    }
+
+    .stepForm-inputs-zoomLevel {
+        display: grid;
+        grid-template-columns: 1fr 100px;
+        grid-gap: 5px;
+        align-items: end;
+    }
+
+}
 </style>

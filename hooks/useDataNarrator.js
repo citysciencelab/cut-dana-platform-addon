@@ -60,6 +60,10 @@ export const useDataNarrator = () => {
         moveTool();
     }
 
+    const openLayerEditor = () => {
+        gotoPage(dataNarratorModes.CREATE_STORY);
+    }
+
     return {
         mode: computed(() => store.state.Modules.DataNarrator.mode),
         toolwindowMode: computed(() => store.state.Modules.DataNarrator.toolwindowMode),
@@ -69,6 +73,7 @@ export const useDataNarrator = () => {
         disableSecondaryMenu,
         disableFooter,
         moveTool,
-        gotoPage
+        gotoPage,
+        openLayerEditor
     }
 }

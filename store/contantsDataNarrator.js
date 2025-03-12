@@ -16,6 +16,21 @@ const ToolwindowModes = {
     DESKTOP: "desktop" // for the desktop tool window on the left
 }
 
+const htmlEditorToolbar = [
+    [{header: [false, 1, 2, 3, 4, 5, 6]}],
+    ["bold", "italic", "underline", "strike"],
+    [{color: []}, {background: []}],
+    [
+        {align: ""},
+        {align: "center"},
+        {align: "right"},
+        {align: "justify"}
+    ],
+    [{list: "ordered"}, {list: "bullet"}],
+    ["blockquote", "code-block"],
+    ["link", "image"]
+];
+
 const backendUrl = "http://localhost:8000";
 
 export {
@@ -23,4 +38,5 @@ export {
     dataNarratorToolSettings,
     ToolwindowModes,
     backendUrl,
+    htmlEditorToolbar
 }

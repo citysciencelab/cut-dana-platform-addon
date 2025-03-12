@@ -16,13 +16,13 @@ const {setToolWindowMode} = useToolWindow();
             <div :class="['toolwindow', {'with-top-border-radius': toolwindowMode !== toolwindowModes.MOBILE}]" :style="{padding: `${toolWindowPadding}px`}">
                 <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setIsOpen" />
                 <header>
-                    <slot name="header"/>
+                    <slot v-if="$slots.header" name="header"/>
                 </header>
                 <main :class="['slot', isOpen ? '' : 'removed']">
                     <slot />
                 </main>
                 <footer class="footer">
-                    <slot name="footer" />
+                    <slot v-if="$slots.footer" name="footer" />
                 </footer>
             </div>
         </div>
