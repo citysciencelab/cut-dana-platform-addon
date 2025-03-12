@@ -12,6 +12,11 @@
     }
 }
 
-.row {
+.v-row {
     margin: inherit !important;
+    padding: 0 !important;
+}
+
+html {
+    overflow: hidden !important;
 }

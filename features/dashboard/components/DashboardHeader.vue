@@ -22,12 +22,12 @@ const storyListMode = ref("all");
 
 <template>
     <div class="dashboard-header">
-        <v-row class="login-row">
-            <v-col class="d-flex justify-end align-center">
+        <div class="custom-row login-row">
+            <div class="d-flex justify-end align-center">
                 <LoginButton />
                 <LanguageSwitchButton />
-            </v-col>
-        </v-row>
+            </div>
+        </div>
 
         <div
             v-if="!legendAdded"
@@ -109,7 +109,6 @@ const storyListMode = ref("all");
 .login-row {
     top: 0;
     position: sticky;
-    padding: 0 !important;
 }
 
 .dashboard-header {

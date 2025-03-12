@@ -34,16 +34,16 @@ disableSecondaryMenu();
 <style lang="scss">
 @import "./css/toolwindow.scss";
 @import "./css/vuetify_fixes.scss";
+@import "./css/fixes.scss";
+@import "./css/globals.scss";
 #datanarrator-root {
     pointer-events: none;
     position: absolute;
-    width: 100dvw;
-    height: 100dvh;
     top: 0;
 
     #datanarrator-container {
-        height: 100%;
-        width: 100%;
+        width: 100vw;
+        height: 100vh;
         overflow: hidden;
 
         display: grid;
