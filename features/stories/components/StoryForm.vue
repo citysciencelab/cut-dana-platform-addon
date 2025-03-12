@@ -1,29 +1,38 @@
 <script setup>
 import {useTranslation} from "i18next-vue";
 import CoverSelector from "./inputs/CoverSelector.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {mdiCancel, mdiCheck, mdiEyeOutline, mdiPlus} from "@mdi/js";
 import {useDataNarrator} from "../../../hooks/useDataNarrator";
 import {dataNarratorModes} from "../../../store/contantsDataNarrator";
 import {useStoryForm} from "../hooks/useStoryForm";
+import * as contantsDataNarrator from "../../../store/contantsDataNarrator";
+import {useChapter} from "../hooks/useChapter";
 
 const {t} = useTranslation();
 
 const {gotoPage} = useDataNarrator();
-const {description} = useStoryForm();
+const {description, storyId, fetchStory, updateStory} = useStoryForm();
+const {chapterName, chapters, addChapter} = useChapter();
 
-const saveStory = () => {
-    console.log("Save story");
-};
+const notSaving = ref(true);
 
-const notSaving = ref(false);
+const hasStoryThenFetch = async () => {
+    if (storyId) {
+        await fetchStory();
+    }
+}
+
+onMounted(async () => {
+    await hasStoryThenFetch();
+})
 </script>
 
 <template>
     <div id="tool-dataNarrator-creator-storyForm">
         <form
             id="story-form"
-            @submit.prevent="saveStory"
+            @submit.prevent="updateStory"
         >
             <CoverSelector
                 :back-button-msg="t('additional:modules.dataNarrator.button.cancel')"
@@ -89,6 +98,29 @@ const notSaving = ref(false);
                 </v-expansion-panels>
             </div>
 
+            <v-row>
+                <v-col>
+                    <div
+                        v-for="chapter in chapters"
+                        class="vue-label-style">
+                        {{ chapter.name }}
+                        {{ chapter.sequence }}
+                    </div>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col>
+                    <v-text-field
+                        v-model="chapterName"
+                        :label="t('additional:modules.dataNarrator.label.chapterName')"
+                        outlined
+                        dense
+                        clearable
+                    />
+                </v-col>
+            </v-row>
+
             <v-row class="mb-2">
                 <v-col class="d-flex justify-center align-center gap-2">
                     <v-btn
@@ -99,7 +131,7 @@ const notSaving = ref(false);
                                 'additional:modules.dataNarrator.button.addChapter'
                             )
                         "
-                        @click="() => gotoPage(dataNarratorModes.CREATE_CHAPTER)"
+                        @click="addChapter"
                     >
                         <v-icon>{{ mdiPlus }}</v-icon>
                     </v-btn>
@@ -107,8 +139,8 @@ const notSaving = ref(false);
                         class="vue-label-style add-chapter-label"
                         role="button"
                         tabindex="0"
-                        @click="() => gotoPage(dataNarratorModes.CREATE_CHAPTER)"
-                        @keydown="() => gotoPage(dataNarratorModes.CREATE_CHAPTER)"
+                        @click="addChapter"
+                        @keydown="addChapter"
                     >
                         {{ t("additional:modules.dataNarrator.label.addChapter") }}
                     </div>
@@ -128,69 +160,50 @@ const notSaving = ref(false);
                     class="lighten-1 text-center"
                 >
                     <v-card-text>
-                        <v-tooltip top>
-                            <template #activator="{ on }">
-                                <span
-                                    id="reset-button"
-                                    class="mr-1"
-                                    v-on="on"
-                                >
-                                    <v-btn
-                                        class=""
-                                        @click="$emit('reset-tool')"
-                                    >
-                                        <v-icon size="24px">{{ mdiCancel }}</v-icon>
-                                    </v-btn>
-                                </span>
-                            </template>
-                            <span>
+                        <v-btn
+                            variant="plain"
+                            icon
+                            class=""
+                            @click="gotoPage(contantsDataNarrator.dataNarratorModes.DASHBOARD)"
+                        >
+                            <v-icon size="24px">{{ mdiCancel }}</v-icon>
+                            <v-tooltip activator="parent" location="top">
                                 {{
                                     t("additional:modules.dataNarrator.button.cancel")
                                 }}
-                            </span>
-                        </v-tooltip>
-                        <v-tooltip top>
-                            <template #activator="{ on }">
-                                <span
-                                    id="preview-button"
-                                    v-on="on"
-                                >
-                                    <v-btn
-                                        class=""
-                                    >
-                                        <v-icon size="24px">{{ mdiEyeOutline }}</v-icon>
-                                    </v-btn>
-                                </span>
-                            </template>
-                            <span>
+                            </v-tooltip>
+                        </v-btn>
+
+                        <v-btn
+                            variant="plain"
+                            icon
+                            class=""
+                        >
+                            <v-icon size="24px">{{ mdiEyeOutline }}</v-icon>
+                            <v-tooltip activator="parent" location="top">
                                 {{
                                     t("additional:modules.dataNarrator.button.previewStory")
                                 }}
-                            </span>
-                        </v-tooltip>
-                        <v-tooltip top>
-                            <template #activator="{ on }">
-                                <span
-                                    id="save-button"
-                                    class="mr-1"
-                                    v-on="on"
-                                >
-                                    <v-btn
-                                        class=""
-                                        icon
-                                    >
-<!--                                        :disabled="!currentStory.steps || !currentStory.steps.length"-->
-<!--                                        @click="confirmBeforeSaving"-->
-                                        <v-icon size="24px">{{ mdiCheck }}</v-icon>
-                                    </v-btn>
-                                </span>
-                            </template>
-                            <span>
+                            </v-tooltip>
+                        </v-btn>
+
+                        <v-btn
+                            variant="plain"
+                            class=""
+                            icon
+                            @click="updateStory"
+                        >
+                            <!--                                        :disabled="!currentStory.steps || !currentStory.steps.length"-->
+                            <!--                                        @click="confirmBeforeSaving"-->
+                            <v-icon size="24px">{{ mdiCheck }}</v-icon>
+                            <v-tooltip activator="parent" location="top">
                                 {{
                                     t("additional:modules.dataNarrator.button.uploadStory")
                                 }}
-                            </span>
-                        </v-tooltip>
+                            </v-tooltip>
+                        </v-btn>
+
+
                     </v-card-text>
                 </v-card>
             </v-footer>

@@ -12,18 +12,9 @@ const {createStory} = useStoryForm();
 
 <template>
     <ToolWindow>
-        <template #header>
-            <CreateStoryHeader />
-        </template>
         <template #default>
             <div id="tool-dataNarrator-creator-stepForm">
                 <StoryForm />
-            </div>
-        </template>
-        <template #footer>
-            <div class="actions-container">
-                <v-btn @click="gotoPage(contantsDataNarrator.dataNarratorModes.DASHBOARD)">Cancel</v-btn>
-                <v-btn @click="createStory">Save</v-btn>
             </div>
         </template>
     </ToolWindow>

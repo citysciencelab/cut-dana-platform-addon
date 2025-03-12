@@ -1,5 +1,5 @@
 import {useStore} from "vuex";
-import {customRef} from "vue";
+import {computed, customRef} from "vue";
 import {backendUrl} from "../../../store/contantsDataNarrator";
 import {isNullOrWhitespace} from "../../../utils/stringUtils";
 import {useLogin} from "../../dashboard/hooks/useLogin";
@@ -29,7 +29,36 @@ export function useStoryForm () {
             });
         }
     }
+    const updateStory = async () => {
+        // TODO: create valid story object and send to backend using service (or just move service method here?)
+        const storyState = store.state.Modules.DataNarrator.EditStoryForm;
 
+        const story = {
+            title: storyState.storyTitle,
+            description: storyState.storyDescription,
+        }
+
+        if (isValidStory(story)){
+            await fetch(`${backendUrl}/stories/${storyState.selectedStoryId}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    ...story
+                })
+            });
+        }
+    }
+    const createDraftStory = async () => {
+        console.log("Creating draft story 2");
+        const response = await fetch(`${backendUrl}/stories/draft`, {
+            method: "POST"
+        });
+        if (response.ok) {
+            console.log("Creating draft story 3 success");
+            const storyId = await response.json();
+            console.log("Creating draft story 4", storyId);
+            store.commit('Modules/DataNarrator/EditStoryForm/setSelectedStoryId', storyId)
+        }
+    }
     const isValidStory = (story) => {
         return !isNullOrWhitespace(story.title) && !isNullOrWhitespace(story.description)
     }
@@ -58,10 +87,30 @@ export function useStoryForm () {
             }
         }
     })
+    const storyId = computed(() => store.state.Modules.DataNarrator.EditStoryForm.selectedStoryId)
+
+    const fetchStory = async () => {
+        if (storyId) {
+            console.log(storyId, storyId.value);
+            const response = await fetch(`${backendUrl}/stories/${storyId.value}`);
+            if (response.ok) {
+                const storyData = await response.json();
+                const newStory = {
+                    title: storyData.title,
+                    description: storyData.description
+                }
+                store.commit('Modules/DataNarrator/EditStoryForm/setStoryData', newStory);
+            }
+        }
+    }
 
     return {
         title,
         description,
-        createStory
+        storyId,
+        createStory,
+        updateStory,
+        createDraftStory,
+        fetchStory
     }
 }

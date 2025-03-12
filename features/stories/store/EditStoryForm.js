@@ -20,6 +20,7 @@ export const mutations = {
 
     // eslint-disable-next-line no-shadow
     setStoryData (state, storyData) {
+        console.log("here", storyData);
         state.storyTitle = storyData.title;
         state.storyDescription = storyData.description;
     },
