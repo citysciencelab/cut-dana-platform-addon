@@ -2,7 +2,6 @@ import {ref} from "vue";
 import {createChapter} from "../services/chapters";
 import {useStoryForm} from "./useStoryForm";
 
-
 export function useChapter () {
 
     const {storyId} = useStoryForm();

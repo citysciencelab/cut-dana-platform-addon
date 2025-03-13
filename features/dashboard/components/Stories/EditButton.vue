@@ -3,22 +3,27 @@
 import {useStories} from "../../../stories/hooks/useStories";
 import {mdiPencil} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
+import {useDataNarrator} from "../../../../hooks/useDataNarrator";
+import * as constants from "../../../../store/contantsDataNarrator"
+import {useStoryForm} from "../../../stories/hooks/useStoryForm";
 
 const {t} = useTranslation();
 
-const {currentStoryId} = useStories(),
-    {storyId} = defineProps({
-        storyId: {
-            type: String,
-            required: true
-        }
-    });
+const {storyId: currentStoryId} = useStoryForm();
+const {gotoPage} = useDataNarrator();
+const {storyId} = defineProps({
+    storyId: {
+        type: String,
+        required: true
+    }
+});
 
 /**
  *
  */
 function gotoSelectedStory () {
     currentStoryId.value = storyId;
+    gotoPage(constants.dataNarratorModes.CREATE_STORY);
 }
 </script>
 

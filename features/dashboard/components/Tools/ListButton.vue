@@ -5,7 +5,7 @@
         elevation="0"
         variant="text"
         :color="active ? 'info' : ''"
-        @click="$emit('refreshStoryList', mode)"
+        @click="() => refetchStories(mode)"
     >
         {{ t(`additional:modules.dataNarrator.storyList.${mode}`) }}
     </v-btn>
@@ -13,9 +13,11 @@
 <script setup>
 
 import {useTranslation} from "i18next-vue";
+import {useDashboard} from "../../hooks/useDashboard";
+
+const {refetchStories} = useDashboard();
 
 const {t} = useTranslation();
-
 
 const {mode, active} = defineProps({
     mode: {

@@ -3,8 +3,10 @@
 // import {useStories} from "../../../stories/hooks/useStories";
 import {mdiTrashCanOutline} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
+import {useStoryForm} from "../../../stories/hooks/useStoryForm";
 
 // const {currentStoryId} = useStories(),
+const {deleteStory} = useStoryForm();
 const {t} = useTranslation();
 const {storyId} = defineProps({
     storyId: {
@@ -17,7 +19,7 @@ const {storyId} = defineProps({
  *
  */
 function deleteStoryWithConfirm () {
-    console.log(storyId, "delete");
+    deleteStory(storyId);
 }
 </script>
 

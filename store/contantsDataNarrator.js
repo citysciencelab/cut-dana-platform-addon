@@ -1,7 +1,6 @@
 ﻿const dataNarratorModes = {
     DASHBOARD: "dashboard",
     CREATE_STORY: "create-story",
-    CREATE_CHAPTER: "create-chapter",
     CREATE_STEP: "create-step",
 }
 
@@ -15,6 +14,13 @@ const ToolwindowModes = {
     DASHBOARD: "dashboard", // sole purpose of showing the dashboard
     DESKTOP: "desktop" // for the desktop tool window on the left
 }
+
+const availableStoryListModes = {
+    ALL: "all",
+    FEATURED: "featured",
+    POPULAR: "popular",
+    MINE: "my",
+};
 
 const htmlEditorToolbar = [
     [{header: [false, 1, 2, 3, 4, 5, 6]}],
@@ -38,5 +44,6 @@ export {
     dataNarratorToolSettings,
     ToolwindowModes,
     backendUrl,
-    htmlEditorToolbar
+    htmlEditorToolbar,
+    availableStoryListModes
 }

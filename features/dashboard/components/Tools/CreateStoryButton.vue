@@ -28,7 +28,6 @@ const {gotoPage} = useDataNarrator();
 const {createDraftStory} = useStoryForm();
 
 const createStory = async () => {
-    console.log("Creating draft story 1");
     await createDraftStory();
     gotoPage(dataNarratorModes.CREATE_STORY);
 };

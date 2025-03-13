@@ -1,13 +1,17 @@
 import {useStore} from "vuex";
-import {computed, customRef} from "vue";
+import {computed, customRef, ref} from "vue";
 import {backendUrl} from "../../../store/contantsDataNarrator";
 import {isNullOrWhitespace} from "../../../utils/stringUtils";
-import {useLogin} from "../../dashboard/hooks/useLogin";
+import {createChapter} from "../services/chapters";
+import {useDashboard} from "../../dashboard/hooks/useDashboard";
 
 
 export function useStoryForm () {
     const store = useStore();
-    const {accessToken} = useLogin();
+    const {getAllStories} = useDashboard();
+
+
+    const chapterName = ref('');
 
     const createStory = async () => {
         // TODO: create valid story object and send to backend using service (or just move service method here?)
@@ -17,8 +21,6 @@ export function useStoryForm () {
             title: storyState.storyTitle,
             description: storyState.storyDescription,
         }
-
-        console.log(story);
 
         if (isValidStory(story)){
             await fetch(`${backendUrl}/stories`, {
@@ -48,14 +50,11 @@ export function useStoryForm () {
         }
     }
     const createDraftStory = async () => {
-        console.log("Creating draft story 2");
         const response = await fetch(`${backendUrl}/stories/draft`, {
             method: "POST"
         });
         if (response.ok) {
-            console.log("Creating draft story 3 success");
             const storyId = await response.json();
-            console.log("Creating draft story 4", storyId);
             store.commit('Modules/DataNarrator/EditStoryForm/setSelectedStoryId', storyId)
         }
     }
@@ -86,31 +85,82 @@ export function useStoryForm () {
                 trigger()
             }
         }
+    });
+    const chapters = customRef((track, trigger) => {
+        return {
+            get() {
+                track()
+                return store.state.Modules.DataNarrator.EditStoryForm.storyChapters
+            },
+            set(newValue) {
+                store.commit('Modules/DataNarrator/EditStoryForm/setStoryChapters', newValue)
+                trigger()
+            }
+        }
     })
-    const storyId = computed(() => store.state.Modules.DataNarrator.EditStoryForm.selectedStoryId)
+    const storyId = customRef((track, trigger) => {
+        return {
+            get() {
+                track()
+                return store.state.Modules.DataNarrator.EditStoryForm.selectedStoryId
+            },
+            set(newValue) {
+                store.commit('Modules/DataNarrator/EditStoryForm/setSelectedStoryId', newValue)
+                trigger()
+            }
+        }
+    })
 
     const fetchStory = async () => {
         if (storyId) {
-            console.log(storyId, storyId.value);
             const response = await fetch(`${backendUrl}/stories/${storyId.value}`);
             if (response.ok) {
                 const storyData = await response.json();
                 const newStory = {
                     title: storyData.title,
-                    description: storyData.description
+                    description: storyData.description,
+                    chapters: storyData.chapters
                 }
                 store.commit('Modules/DataNarrator/EditStoryForm/setStoryData', newStory);
             }
+        }
+    };
+
+    const addChapter = async () => {
+        const newChapter = {
+            name: chapterName.value,
+            sequence: chapters.value.length
+        }
+
+        const response = await createChapter(storyId.value, newChapter);
+
+        if (response.ok) {
+            chapters.value.push(newChapter);
+        }
+
+        // send chapter to server, if success add to chapters
+    }
+
+    const deleteStory = async (toDeleteStoryId) => {
+        const response = await fetch(`${backendUrl}/stories/${toDeleteStoryId}`, {
+            method: "DELETE"
+        });
+        if (response.ok) {
+            await getAllStories();
         }
     }
 
     return {
         title,
         description,
+        chapters,
         storyId,
+        chapterName,
         createStory,
         updateStory,
         createDraftStory,
-        fetchStory
+        fetchStory,
+        addChapter,
+        deleteStory
     }
 }

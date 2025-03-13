@@ -7,17 +7,17 @@ import {useDataNarrator} from "../../../hooks/useDataNarrator";
 import {dataNarratorModes} from "../../../store/contantsDataNarrator";
 import {useStoryForm} from "../hooks/useStoryForm";
 import * as contantsDataNarrator from "../../../store/contantsDataNarrator";
-import {useChapter} from "../hooks/useChapter";
 
 const {t} = useTranslation();
 
 const {gotoPage} = useDataNarrator();
-const {description, storyId, fetchStory, updateStory} = useStoryForm();
-const {chapterName, chapters, addChapter} = useChapter();
+const {description, storyId, fetchStory, updateStory, chapterName, chapters, addChapter} = useStoryForm();
+// const {chapterName, chapters, addChapter} = useChapter();
 
 const notSaving = ref(true);
 
 const hasStoryThenFetch = async () => {
+    console.log('storyId', storyId);
     if (storyId) {
         await fetchStory();
     }

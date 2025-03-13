@@ -15,7 +15,6 @@ getAllStories();
             :key="story.id + story.updatedAt"
             :story="story"
             :grid="true"
-            @refreshStoryList="getAllStories"
             @imageLoaded="() => {console.log('imageLoaded')}"
         />
     </div>

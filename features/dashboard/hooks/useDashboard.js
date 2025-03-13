@@ -1,37 +1,66 @@
-﻿import {computed, ref} from "vue";
+﻿import {customRef, ref} from "vue";
 import {useStore} from "vuex";
 import {getStories} from "../services/getStories";
+import {availableStoryListModes} from "../../../store/contantsDataNarrator";
 
 /**
  *
  */
 export function useDashboard () {
+    const store = useStore()
 
 
-    const isOpen = ref(true),
-        stories = ref([]),
+    const storiesDisplayMode = customRef((track, trigger) => {
+        return {
+            get() {
+                track()
+                return store.state.Modules.DataNarrator.DashboardStore.mode
+            },
+            set(newValue) {
+                store.commit('Modules/DataNarrator/DashboardStore/setMode', newValue)
+                trigger()
+            }
+        }
+    })
 
-        store = useStore(),
+    const stories = customRef((track, trigger) => {
+        return {
+            get() {
+                track()
+                return store.state.Modules.DataNarrator.DashboardStore.stories
+            },
+            set(newValue) {
+                store.commit('Modules/DataNarrator/DashboardStore/setStories', newValue)
+                trigger()
+            }
+        }
+    })
 
-        setIsOpen = () => {
-            isOpen.value = !isOpen.value;
-            this.moveTool();
-        },
+    const isOpen = ref(true);
 
-        getAllStories = async () => {
-            const response = await getStories();
-            const data = await response.json();
-            
-            stories.value = data;
-        };
+    const setIsOpen = () => {
+        isOpen.value = !isOpen.value;
+        this.moveTool();
+    };
+
+    const getAllStories = async () => {
+        const response = await getStories(storiesDisplayMode.value);
+        stories.value = await response.json();
+    };
+
+    const refetchStories = async (mode) => {
+        storiesDisplayMode.value = mode;
+        await getAllStories();
+    }
 
     return {
-
-        storyListMode: computed(() => store.state.Modules.DataNarrator.storyListMode),
         isOpen,
         stories,
+        storiesDisplayMode,
+        availableStoryListModes,
 
         setIsOpen,
-        getAllStories
+        getAllStories,
+        refetchStories
     };
 }

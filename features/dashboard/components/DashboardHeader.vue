@@ -6,18 +6,14 @@ import ListButton from "./Tools/ListButton.vue";
 import {mdiMapLegend} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
 import {ref} from "vue";
+import {useDashboard} from "../hooks/useDashboard";
 
-
+const {availableStoryListModes, storiesDisplayMode} = useDashboard();
 const {t} = useTranslation();
 const legendAdded = true;
 const toggleLegend = () => {};
 const isMobile = false;
 
-function availableStoryListModes () {
-    return ["all", "featured", "popular"];
-}
-
-const storyListMode = ref("all");
 </script>
 
 <template>
@@ -94,10 +90,10 @@ const storyListMode = ref("all");
         <v-row class="list-buttons">
             <v-col class="d-flex justify-center align-center">
                 <ListButton
-                    v-for="mode in availableStoryListModes()"
-                    :key="mode"
-                    :mode="mode"
-                    :active="storyListMode === mode"
+                    v-for="[_, value] in Object.entries(availableStoryListModes)"
+                    :key="value"
+                    :mode="value"
+                    :active="storiesDisplayMode === value"
                 />
             </v-col>
         </v-row>
