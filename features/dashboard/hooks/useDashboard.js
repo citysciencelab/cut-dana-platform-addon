@@ -1,7 +1,7 @@
 ﻿import {customRef, ref} from "vue";
 import {useStore} from "vuex";
-import {getStories} from "../services/getStories";
 import {availableStoryListModes} from "../../../store/contantsDataNarrator";
+import {useGetStories} from "../../../composables/services/stories/useGetStories";
 
 /**
  *
@@ -23,44 +23,17 @@ export function useDashboard () {
         }
     })
 
-    const stories = customRef((track, trigger) => {
-        return {
-            get() {
-                track()
-                return store.state.Modules.DataNarrator.DashboardStore.stories
-            },
-            set(newValue) {
-                store.commit('Modules/DataNarrator/DashboardStore/setStories', newValue)
-                trigger()
-            }
-        }
-    })
-
     const isOpen = ref(true);
 
-    const setIsOpen = () => {
-        isOpen.value = !isOpen.value;
-        this.moveTool();
-    };
 
-    const getAllStories = async () => {
-        const response = await getStories(storiesDisplayMode.value);
-        stories.value = await response.json();
-    };
-
-    const refetchStories = async (mode) => {
-        storiesDisplayMode.value = mode;
-        await getAllStories();
-    }
+    const {stories, error, loading} = useGetStories(storiesDisplayMode);
 
     return {
         isOpen,
         stories,
+        error,
+        loading,
         storiesDisplayMode,
         availableStoryListModes,
-
-        setIsOpen,
-        getAllStories,
-        refetchStories
     };
 }
