@@ -11,10 +11,15 @@ const {t} = useTranslation();
 
 const hasCover = ref(false);
 const showIcon = ref(false);
-const storyCover = ref("");
+const storyCover = ref();
 const objectFile = ref("");
 
-const {title} = useStoryForm();
+const {title, uploadCover} = useStoryForm();
+
+const onCoverChange = async () => {
+    console.log(storyCover.value, storyCover);
+    await uploadCover(storyCover.value);
+}
 </script>
 
 <template>

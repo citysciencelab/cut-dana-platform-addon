@@ -1,14 +1,14 @@
 ﻿import {backendUrl} from "../../../store/contantsDataNarrator";
 
 
-export function uploadCoverImage(storyId, token, coverImage) {
+export function uploadCoverImage(storyId, coverImage) {
     const formData = new FormData();
     formData.append("files", coverImage);
 
     return fetch(`${backendUrl}/stories/${storyId}/cover`, {
         method: "POST",
         headers: {
-            "Authorization": `Bearer ${token}`,
+            "Content-Type": null,
         },
         body: formData
     });

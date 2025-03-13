@@ -9,6 +9,7 @@ import FeaturedButton from "./FeaturedButton.vue";
 import DeleteButton from "./DeleteButton.vue";
 import ShareSettingsButton from "./ShareSettingsButton.vue";
 import ShareSettingsForm from "./ShareSettingsForm.vue";
+import {backendUrl} from "../../../../store/contantsDataNarrator";
 
 const props = defineProps({
     story: {
@@ -26,7 +27,7 @@ function reloadMasonry () {
 }
 
 function getFileUrl (titleImage) {
-    return titleImage;
+    return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
 }
 
 function editable () {

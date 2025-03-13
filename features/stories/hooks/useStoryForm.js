@@ -4,6 +4,7 @@ import {backendUrl} from "../../../store/contantsDataNarrator";
 import {isNullOrWhitespace} from "../../../utils/stringUtils";
 import {createChapter} from "../services/chapters";
 import {useDashboard} from "../../dashboard/hooks/useDashboard";
+import {uploadCoverImage} from "../services/addCoverImage";
 
 
 export function useStoryForm () {
@@ -140,13 +141,22 @@ export function useStoryForm () {
 
         // send chapter to server, if success add to chapters
     }
-
     const deleteStory = async (toDeleteStoryId) => {
         const response = await fetch(`${backendUrl}/stories/${toDeleteStoryId}`, {
             method: "DELETE"
         });
         if (response.ok) {
             await getAllStories();
+        }
+    }
+
+    const uploadCover = async (file) => {
+        const response = await uploadCoverImage(storyId.value, file);
+
+        if (response.ok) {
+            const coverUrl = await response.json();
+            console.log(coverUrl);
+            store.commit('Modules/DataNarrator/EditStoryForm/setCoverUrl', coverUrl);
         }
     }
 
@@ -161,6 +171,7 @@ export function useStoryForm () {
         createDraftStory,
         fetchStory,
         addChapter,
-        deleteStory
+        deleteStory,
+        uploadCover
     }
 }
