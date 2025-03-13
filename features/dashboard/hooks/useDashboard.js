@@ -44,6 +44,7 @@ export function useDashboard () {
     };
 
     const getAllStories = async () => {
+        console.elie("test");
         const response = await getStories(storiesDisplayMode.value);
         stories.value = await response.json();
     };
