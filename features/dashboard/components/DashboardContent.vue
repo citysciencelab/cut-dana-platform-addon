@@ -1,8 +1,11 @@
 <script setup>
 import StoryCard from "./Stories/StoryCard.vue";
 import {useDashboard} from "../hooks/useDashboard";
+import {useDashboardStore} from "../store/useDashboardStore";
+import {useGetStories} from "../../../composables/services/stories/useGetStories";
 
 const {stories, error, loading} = useDashboard();
+
 </script>
 
 <template>

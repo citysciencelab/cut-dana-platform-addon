@@ -7,8 +7,12 @@ import {mdiMapLegend} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
 import {ref} from "vue";
 import {useDashboard} from "../hooks/useDashboard";
+import {useDashboardStore} from "../store/useDashboardStore";
+import {storeToRefs} from "pinia";
 
-const {availableStoryListModes, storiesDisplayMode} = useDashboard();
+const {availableStoryListModes} = useDashboard();
+const dashboardStore = useDashboardStore();
+const {mode:storiesDisplayMode} = storeToRefs(dashboardStore)
 const {t} = useTranslation();
 const legendAdded = true;
 const toggleLegend = () => {};

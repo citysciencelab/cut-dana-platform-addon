@@ -1,35 +1,29 @@
-﻿import {customRef, ref} from "vue";
-import {useStore} from "vuex";
-import {availableStoryListModes} from "../../../store/contantsDataNarrator";
-import {useGetStories} from "../../../composables/services/stories/useGetStories";
+﻿import {computed, customRef, ref, toValue, watch} from "vue";
+import {availableStoryListModes, backendUrl} from "../../../store/contantsDataNarrator";
+import {useDashboardStore} from "../store/useDashboardStore";
+import {useFetch} from "../../../composables/useFetch";
+import {storeToRefs} from "pinia";
 
 /**
  *
  */
 export function useDashboard () {
-    const store = useStore()
 
+    const dashboardStore = useDashboardStore();
+    const {mode:storiesDisplayMode} = storeToRefs(dashboardStore);
 
-    const storiesDisplayMode = customRef((track, trigger) => {
-        return {
-            get() {
-                track()
-                return store.state.Modules.DataNarrator.DashboardStore.mode
-            },
-            set(newValue) {
-                store.commit('Modules/DataNarrator/DashboardStore/setMode', newValue)
-                trigger()
-            }
-        }
-    })
+    const url = ref(`${backendUrl}/stories/${storiesDisplayMode.value}`);
 
-    const isOpen = ref(true);
+    // Watch for changes to the mode ref and log them
+    watch(storiesDisplayMode, (newValue, oldValue) => {
+        console.log(`Url changed from '${oldValue}' to '${newValue}'`);
+        url.value = `${backendUrl}/stories/${newValue}`;
+    });
 
-
-    const {stories, error, loading} = useGetStories(storiesDisplayMode);
+    const {data: stories, error, loading} = useFetch(url, null, "FETCH_STORIES");
 
     return {
-        isOpen,
+        open,
         stories,
         error,
         loading,

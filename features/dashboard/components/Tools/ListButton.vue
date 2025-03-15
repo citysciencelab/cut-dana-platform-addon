@@ -2,8 +2,12 @@
 
 import {useTranslation} from "i18next-vue";
 import {useDashboard} from "../../hooks/useDashboard";
+import {useDashboardStore} from "../../store/useDashboardStore";
+import {storeToRefs} from "pinia";
 
-const {storiesDisplayMode} = useDashboard();
+const dashboardStore = useDashboardStore();
+const {mode:storiesDisplayMode} = storeToRefs(dashboardStore)
+const {refetch} = useDashboard();
 
 const {t} = useTranslation();
 
@@ -19,6 +23,7 @@ const {mode, active} = defineProps({
 });
 
 const setMode = () => {
+    console.log("setMode", mode);
     storiesDisplayMode.value = mode;
 };
 </script>
