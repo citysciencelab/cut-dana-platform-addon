@@ -1,48 +1,13 @@
-﻿import {customRef, ref} from "vue";
-import {useStore} from "vuex";
+﻿import {ref} from "vue";
 import {getStories} from "../services/getStories";
 import {availableStoryListModes} from "../../../store/contantsDataNarrator";
 import {defineStore} from "pinia";
 
-/**
- *
- */
-export function useDashboard () {
-    const store = useStore()
 
-
-    const storiesDisplayMode = customRef((track, trigger) => {
-        return {
-            get() {
-                track()
-                return store.state.Modules.DataNarrator.DashboardStore.mode
-            },
-            set(newValue) {
-                store.commit('Modules/DataNarrator/DashboardStore/setMode', newValue)
-                trigger()
-            }
-        }
-    })
-
-    const stories = customRef((track, trigger) => {
-        return {
-            get() {
-                track()
-                return store.state.Modules.DataNarrator.DashboardStore.stories
-            },
-            set(newValue) {
-                store.commit('Modules/DataNarrator/DashboardStore/setStories', newValue)
-                trigger()
-            }
-        }
-    })
-
+export const useDashboard = defineStore('dashboard',() => {
+    const storiesDisplayMode = ref('all');
+    const stories = ref([]);
     const isOpen = ref(true);
-
-    const setIsOpen = () => {
-        isOpen.value = !isOpen.value;
-        this.moveTool();
-    };
 
     const getAllStories = async () => {
         const response = await getStories(storiesDisplayMode.value);
@@ -55,22 +20,12 @@ export function useDashboard () {
     }
 
     return {
-        isOpen,
-        stories,
         storiesDisplayMode,
+        stories,
+        isOpen,
         availableStoryListModes,
 
-        setIsOpen,
         getAllStories,
         refetchStories
-    };
-}
-
-//
-// export const useDashboard = defineStore('dashboard',() => {
-//     const storyDisplayMode = ref('all');
-//     const stories = ref([]);
-//     const isOpen = ref(true);
-//
-//
-// });
+    }
+});

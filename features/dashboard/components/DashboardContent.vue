@@ -3,15 +3,15 @@
 import StoryCard from "./Stories/StoryCard.vue";
 import {useDashboard} from "../hooks/useDashboard";
 
-const {stories, getAllStories} = useDashboard();
+const store = useDashboard();
 
-getAllStories();
+store.getAllStories();
 </script>
 
 <template>
     <div class="stories-card-container">
         <StoryCard
-            v-for="story in stories"
+            v-for="story in store.stories"
             :key="story.id + story.updatedAt"
             :story="story"
             :grid="true"

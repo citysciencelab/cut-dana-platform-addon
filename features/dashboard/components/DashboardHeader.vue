@@ -5,10 +5,9 @@ import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import ListButton from "./Tools/ListButton.vue";
 import {mdiMapLegend} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
-import {ref} from "vue";
 import {useDashboard} from "../hooks/useDashboard";
 
-const {availableStoryListModes, storiesDisplayMode} = useDashboard();
+const store = useDashboard();
 const {t} = useTranslation();
 const legendAdded = true;
 const toggleLegend = () => {};
@@ -90,10 +89,10 @@ const isMobile = false;
         <v-row class="list-buttons">
             <v-col class="d-flex justify-center align-center">
                 <ListButton
-                    v-for="[_, value] in Object.entries(availableStoryListModes)"
+                    v-for="[_, value] in Object.entries(store.availableStoryListModes)"
                     :key="value"
                     :mode="value"
-                    :active="storiesDisplayMode === value"
+                    :active="store.storiesDisplayMode === value"
                 />
             </v-col>
         </v-row>
