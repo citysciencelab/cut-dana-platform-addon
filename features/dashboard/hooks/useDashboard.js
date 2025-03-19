@@ -2,6 +2,7 @@
 import {useStore} from "vuex";
 import {getStories} from "../services/getStories";
 import {availableStoryListModes} from "../../../store/contantsDataNarrator";
+import {defineStore} from "pinia";
 
 /**
  *
@@ -64,3 +65,12 @@ export function useDashboard () {
         refetchStories
     };
 }
+
+//
+// export const useDashboard = defineStore('dashboard',() => {
+//     const storyDisplayMode = ref('all');
+//     const stories = ref([]);
+//     const isOpen = ref(true);
+//
+//
+// });
