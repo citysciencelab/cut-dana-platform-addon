@@ -1,33 +1,34 @@
-﻿import {computed, customRef, ref, toValue, watch} from "vue";
-import {availableStoryListModes, backendUrl} from "../../../store/contantsDataNarrator";
+﻿import {watch} from "vue";
+import {availableStoryListModes} from "../../../store/contantsDataNarrator";
 import {useDashboardStore} from "../store/useDashboardStore";
-import {useFetch} from "../../../composables/useFetch";
 import {storeToRefs} from "pinia";
+import {useFetchStories} from "../../../composables/services/stories/useGetStories";
 
 /**
  *
  */
 export function useDashboard () {
-
     const dashboardStore = useDashboardStore();
-    const {mode:storiesDisplayMode} = storeToRefs(dashboardStore);
+    const {mode: storiesDisplayMode, open} = storeToRefs(dashboardStore);
 
-    const url = ref(`${backendUrl}/stories/${storiesDisplayMode.value}`);
+    // Initialize the fetch composable
+    const {stories, error, loading, fetchStories} = useFetchStories();
 
-    // Watch for changes to the mode ref and log them
-    watch(storiesDisplayMode, (newValue, oldValue) => {
-        console.log(`Url changed from '${oldValue}' to '${newValue}'`);
-        url.value = `${backendUrl}/stories/${newValue}`;
+    // Initial fetch on component initialization
+    fetchStories(storiesDisplayMode.value);
+
+    // Watch for mode changes and manually trigger fetch
+    watch(storiesDisplayMode, (newMode) => {
+        console.elie(`Dashboard mode changed to ${newMode}, triggering fetch`);
+        fetchStories(newMode);
     });
 
-    const {data: stories, error, loading} = useFetch(url, null, "FETCH_STORIES");
-
     return {
-        open,
         stories,
         error,
         loading,
         storiesDisplayMode,
         availableStoryListModes,
+        open
     };
 }

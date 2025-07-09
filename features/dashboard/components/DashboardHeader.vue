@@ -5,17 +5,18 @@ import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import ListButton from "./Tools/ListButton.vue";
 import {mdiMapLegend} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
-import {ref} from "vue";
 import {useDashboard} from "../hooks/useDashboard";
 import {useDashboardStore} from "../store/useDashboardStore";
 import {storeToRefs} from "pinia";
 
 const {availableStoryListModes} = useDashboard();
 const dashboardStore = useDashboardStore();
-const {mode:storiesDisplayMode} = storeToRefs(dashboardStore)
+const {mode: storiesDisplayMode} = storeToRefs(dashboardStore)
 const {t} = useTranslation();
 const legendAdded = true;
-const toggleLegend = () => {};
+const toggleLegend = () => {
+    console.log("toggleLegend");
+};
 const isMobile = false;
 
 </script>
@@ -94,7 +95,7 @@ const isMobile = false;
         <v-row class="list-buttons">
             <v-col class="d-flex justify-center align-center">
                 <ListButton
-                    v-for="[_, value] in Object.entries(availableStoryListModes)"
+                    v-for="[key, value] in Object.entries(availableStoryListModes)"
                     :key="value"
                     :mode="value"
                     :active="storiesDisplayMode === value"

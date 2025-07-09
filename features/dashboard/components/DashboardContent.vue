@@ -1,8 +1,6 @@
 <script setup>
 import StoryCard from "./Stories/StoryCard.vue";
 import {useDashboard} from "../hooks/useDashboard";
-import {useDashboardStore} from "../store/useDashboardStore";
-import {useGetStories} from "../../../composables/services/stories/useGetStories";
 
 const {stories, error, loading} = useDashboard();
 
@@ -10,11 +8,15 @@ const {stories, error, loading} = useDashboard();
 
 <template>
     <div class="stories-card-container">
-        <div v-if="loading">Loading...</div>
-        <div v-else-if="error">Error: {{ error }}</div>
+        <div v-if="loading">
+            Loading...
+        </div>
+        <div v-else-if="error">
+            Error: {{ error }}
+        </div>
         <StoryCard
-            v-else
             v-for="story in stories"
+            v-else
             :key="story.id + story.updatedAt"
             :story="story"
             :grid="true"

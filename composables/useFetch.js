@@ -1,4 +1,4 @@
-import {ref, toValue, watchEffect} from "vue";
+import {ref, toValue, watch} from "vue";
 
 
 export const useFetch = (url, options) => {
@@ -6,22 +6,19 @@ export const useFetch = (url, options) => {
     const error = ref(null);
     const loading = ref(false);
 
-    const fetchData = () => {
-        // reset state before fetching.
-        data.value = null
-        error.value = null
-        loading.value = true
+    // Use watch instead of watchEffect for more control
+    watch(() => toValue(url), (newUrl) => {
+        // reset state before fetching
+        data.value = null;
+        error.value = null;
+        loading.value = true;
 
-        fetch(toValue(url), options)
+        fetch(newUrl, options)
             .then((res) => res.json())
             .then((json) => (data.value = json))
             .catch((err) => (error.value = err))
             .finally(() => (loading.value = false));
-    }
-
-    watchEffect(() => {
-        fetchData();
-    })
+    }, { immediate: true }); // Ensure it runs immediately on mount
 
     return { data, error, loading };
 }
