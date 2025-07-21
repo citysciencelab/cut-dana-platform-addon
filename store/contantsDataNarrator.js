@@ -37,7 +37,7 @@ const htmlEditorToolbar = [
     ["link", "image"]
 ];
 
-const backendUrl = process.env.BACKEND_URI || "https://staging-dana-backend.elie.de";
+const backendUrl = "https://staging-dana-backend.elie.de";
 
 export {
     dataNarratorModes,
