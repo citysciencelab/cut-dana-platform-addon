@@ -37,7 +37,7 @@ const htmlEditorToolbar = [
     ["link", "image"]
 ];
 
-const backendUrl = "http://localhost:8000";
+const backendUrl = process.env.BACKEND_URI || "http://localhost:8000";
 
 export {
     dataNarratorModes,
