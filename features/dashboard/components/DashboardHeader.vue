@@ -8,6 +8,7 @@ import {useTranslation} from "i18next-vue";
 import {useDashboard} from "../hooks/useDashboard";
 import {useDashboardStore} from "../store/useDashboardStore";
 import {storeToRefs} from "pinia";
+import cutcslDepiction from "../../../img/cutcsl_depiction.png";
 
 const {availableStoryListModes} = useDashboard();
 const dashboardStore = useDashboardStore();
@@ -18,7 +19,9 @@ const toggleLegend = () => {
     console.log("toggleLegend");
 };
 const isMobile = false;
-
+const getBackgroundStyle = () => ({
+    backgroundImage: `url(${cutcslDepiction})`
+});
 </script>
 
 <template>
@@ -48,6 +51,7 @@ const isMobile = false;
 
         <v-row
             :class="`with-fancy-background ${isMobile && 'fancy-mobile'}`"
+            :style="getBackgroundStyle()"
         >
             <v-col
                 cols="12"
@@ -127,7 +131,6 @@ const isMobile = false;
     min-height: 220px;
     align-items: end;
     z-index: 112;
-    background-image: url("../../../img/cutcsl_depiction.png");
 
     @media (min-width: 768px) {
         background-position: right top;
