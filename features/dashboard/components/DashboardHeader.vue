@@ -1,24 +1,31 @@
 <script setup>
+import {storeToRefs} from "pinia";
+import {mdiMapLegend} from "@mdi/js";
+import {computed} from "vue";
+import {useTranslation} from "i18next-vue";
+
 import LoginButton from "./Tools/LoginButton.vue";
 import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
 import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import ListButton from "./Tools/ListButton.vue";
-import {mdiMapLegend} from "@mdi/js";
-import {useTranslation} from "i18next-vue";
 import {useDashboard} from "../hooks/useDashboard";
+import {useLogin} from "../hooks/useLogin";
 import {useDashboardStore} from "../store/useDashboardStore";
-import {storeToRefs} from "pinia";
 import cutcslDepiction from "../../../img/cutcsl_depiction.png";
 
-const {availableStoryListModes} = useDashboard();
-const dashboardStore = useDashboardStore();
-const {mode: storiesDisplayMode} = storeToRefs(dashboardStore)
 const {t} = useTranslation();
+const {storyModeLists} = useDashboard();
+const {loggedIn} = useLogin();
+const dashboardStore = useDashboardStore();
+
+const {mode: storiesDisplayMode} = storeToRefs(dashboardStore)
 const legendAdded = true;
+const isMobile = false;
+
 const toggleLegend = () => {
     console.log("toggleLegend");
 };
-const isMobile = false;
+
 const getBackgroundStyle = () => ({
     backgroundImage: `url(${cutcslDepiction})`
 });
@@ -27,7 +34,7 @@ const getBackgroundStyle = () => ({
 <template>
     <div class="dashboard-header">
         <div class="custom-row login-row">
-            <div class="d-flex justify-end align-center">
+            <div class="d-flex justify-end align-center mt-2">
                 <LoginButton />
                 <LanguageSwitchButton />
             </div>
@@ -58,7 +65,6 @@ const getBackgroundStyle = () => ({
                 class="d-flex justify-start align-center"
             >
                 <v-row>
-
                     <v-col
                         lg="1"
                         md="1"
@@ -80,10 +86,12 @@ const getBackgroundStyle = () => ({
                         cols="9"
                         class="justify-start align-start"
                     >
-                        <h1 class="header-h1">{{ t("additional:modules.dataNarrator.dashboardView.title") }}</h1>
-                        <h4 class="header-h4">{{
-                                t("additional:modules.dataNarrator.dashboardView.subtitle")
-                            }}</h4>
+                        <h1 class="header-h1">
+                            {{ t("additional:modules.dataNarrator.dashboardView.title") }}
+                        </h1>
+                        <h4 class="header-h4">
+                            {{ t("additional:modules.dataNarrator.dashboardView.subtitle") }}
+                        </h4>
                         <p>{{ t("additional:modules.dataNarrator.dashboardView.description") }}</p>
                     </v-col>
                 </v-row>
@@ -99,7 +107,7 @@ const getBackgroundStyle = () => ({
         <v-row class="list-buttons">
             <v-col class="d-flex justify-center align-center">
                 <ListButton
-                    v-for="[key, value] in Object.entries(availableStoryListModes)"
+                    v-for="value in storyModeLists"
                     :key="value"
                     :mode="value"
                     :active="storiesDisplayMode === value"
@@ -157,5 +165,4 @@ const getBackgroundStyle = () => ({
 .header-h4 {
     margin-bottom: 1rem;
 }
-
 </style>

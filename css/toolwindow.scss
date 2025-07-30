@@ -2,38 +2,14 @@
     grid-column: 2 / 3;
     width: 100%;
     height: 100%;
-    position: absolute;
+    display: flex;
+    align-items: center;
 
     &.desktop {
         grid-column: 1 / 2;
     }
 
     .toolwindow-between {
-
-        &.desktop {
-            display: flex;
-            overflow-y: auto;
-
-            .toolwindow {
-                background-color: rgb(246, 246, 246);
-            }
-        }
-
-        &.dashboard {
-            display: flex;
-
-            .toolwindow {
-                height: 100%;
-                overflow-y: auto;
-            }
-        }
-
-        &.mobile {
-            .toolwindow {
-                background-color: rgb(246, 246, 246);
-            }
-        }
-
         .toolwindow {
             pointer-events: auto;
             background-color: white;
@@ -60,6 +36,33 @@
             &.with-top-border-radius  {
                 border-top-left-radius: 1rem;
                 border-top-right-radius: 1rem;
+            }
+        }
+
+        &.desktop {
+            display: flex;
+            overflow-y: auto;
+
+            .toolwindow {
+                background-color: rgb(246, 246, 246);
+            }
+        }
+
+        &.dashboard {
+            display: flex;
+
+            .toolwindow {
+                max-height: 90vh;
+                height: 100%;
+                overflow-y: auto;
+            }
+        }
+
+        &.mobile {
+            .toolwindow {
+                background-color: rgb(246, 246, 246);
+                height: 100vh;
+                overflow-y: auto;
             }
         }
     }

@@ -1,16 +1,14 @@
 import {useStore} from "vuex";
-import {computed, customRef, ref} from "vue";
+import {customRef, ref} from "vue";
 import {backendUrl} from "../../../store/contantsDataNarrator";
 import {isNullOrWhitespace} from "../../../utils/stringUtils";
 import {createChapter} from "../services/chapters";
 import {useDashboard} from "../../dashboard/hooks/useDashboard";
 import {uploadCoverImage} from "../services/addCoverImage";
 
-
 export function useStoryForm () {
     const store = useStore();
     const {getAllStories} = useDashboard();
-
 
     const chapterName = ref('');
 
@@ -33,7 +31,8 @@ export function useStoryForm () {
         }
     }
     const updateStory = async () => {
-        // TODO: create valid story object and send to backend using service (or just move service method here?)
+        await createDraftStory();
+
         const storyState = store.state.Modules.DataNarrator.EditStoryForm;
 
         const story = {

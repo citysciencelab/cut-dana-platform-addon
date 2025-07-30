@@ -5,20 +5,19 @@ import DragHandle from "./DragHandle.vue";
 import {useDataNarrator} from "../../../hooks/useDataNarrator";
 import {useToolWindow} from "./hooks/useToolWindow";
 
-const {setIsOpen, isOpen} = useDashboard();
-const {toolwindowMode, toolWindowPadding} = useDataNarrator();
-const {setToolWindowMode} = useToolWindow();
+const {open, setOpen} = useDashboard();
+const {toolwindowMode} = useDataNarrator();
 </script>
 
 <template>
     <div :class="['toolwindow-container', toolwindowMode]">
         <div :class="['toolwindow-between', toolwindowMode]">
             <div :class="['toolwindow', {'with-top-border-radius': toolwindowMode !== toolwindowModes.MOBILE}]">
-                <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setIsOpen" />
+                <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setOpen" />
                 <header>
                     <slot v-if="$slots.header" name="header" />
                 </header>
-                <main :class="['slot', isOpen ? '' : 'removed']">
+                <main :class="['slot', open ? '' : 'removed']">
                     <slot />
                 </main>
                 <footer class="footer">
