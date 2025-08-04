@@ -17,8 +17,9 @@ const {toolwindowMode} = useDataNarrator();
                 <header>
                     <slot v-if="$slots.header" name="header" />
                 </header>
-                <main :class="['slot', open ? '' : 'removed']">
-                    <slot />
+                <main :class="[$slots.fixed ? 'slot-fixed' : 'slot', open ? '' : 'removed']">
+                    <slot name="default" />
+                    <slot name="fixed" />
                 </main>
                 <footer class="footer">
                     <slot v-if="$slots.footer" name="footer" />
