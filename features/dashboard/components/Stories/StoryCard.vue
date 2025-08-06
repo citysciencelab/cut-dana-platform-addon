@@ -1,6 +1,4 @@
 <script setup>
-
-import {defineComponent} from "vue";
 import PlayButton from "./PlayButton.vue";
 import EditButton from "./EditButton.vue";
 import AuthorDisplay from "./Author.vue";
@@ -9,7 +7,12 @@ import FeaturedButton from "./FeaturedButton.vue";
 import DeleteButton from "./DeleteButton.vue";
 import ShareSettingsButton from "./ShareSettingsButton.vue";
 import ShareSettingsForm from "./ShareSettingsForm.vue";
-import {backendUrl} from "../../../../store/contantsDataNarrator";
+import {backendUrl, dataNarratorModes} from "../../../../store/contantsDataNarrator";
+import {useDataNarrator} from "../../../../hooks/useDataNarrator";
+import {useStory} from "../../../stories/hooks/useStory";
+
+const {gotoPage} = useDataNarrator();
+const { currentStoryId } = useStory();
 
 const props = defineProps({
     story: {
@@ -22,44 +25,36 @@ const props = defineProps({
     },
 });
 
-function reloadMasonry () {
-
-}
-
 function getFileUrl (titleImage) {
     return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
 }
 
-function editable () {
-    // TODO:Jonas implement this
-    return true;
+async function playStory() {
+    currentStoryId.value = props.story.id;
+    gotoPage(dataNarratorModes.PLAY_STORY);
 }
 </script>
 
 <template>
     <v-card
-        class="mb-5"
+        class="story-card"
         variant="flat"
-        :class="{'grid-item': true, 'topper': shareSettings}"
     >
-        <v-img
+        <div
             v-if="story.titleImage"
-            :src="getFileUrl(story.titleImage)"
-            :alt="story.title"
-            eager
-            height="95px"
-            @load="reloadMasonry"
+            class="story-card-cover"
+            :style="`background-image: url(${getFileUrl(story.titleImage)});`"
         />
 
-        <v-row class="card-header">
-            <v-col cols="11">
-                <v-card-title class="card-title">
+        <div class="card-header">
+            <div class="card-header-title">
+                <div class="card-header-title-text">
                     {{ story.title }}
-                </v-card-title>
+                </div>
                 <AuthorDisplay :authorId="story.author" />
-            </v-col>
+            </div>
 
-            <v-col cols="1">
+            <div class="card-header-actions">
                 <FeaturedButton
                     :story-id="story.id"
                     :is-featured="story.featured"
@@ -68,8 +63,8 @@ function editable () {
                 <ShareButton
                     :story-id="story.id"
                 />
-            </v-col>
-        </v-row>
+            </div>
+        </div>
 
         <v-card-text class="card-text">
             {{ story.description }}
@@ -79,21 +74,21 @@ function editable () {
             <v-row>
                 <v-col>
                     <EditButton
-                        v-if="editable()"
+                        v-if="false"
                         :story-id="story.id"
                     />
                     <DeleteButton
-                        v-if="editable()"
+                        v-if="false"
                         :story-id="story.id"
                     />
                     <ShareSettingsButton
-                        v-if="editable()"
+                        v-if="false"
                         :story="story"
                         @toggle:shared-settings="shareSettings = !shareSettings"
                     />
                 </v-col>
                 <v-col class="play-button">
-                    <PlayButton :story-id="story._id" />
+                    <PlayButton :story-id="story._id" @click="playStory" />
                 </v-col>
             </v-row>
         </v-card-actions>
@@ -107,47 +102,40 @@ function editable () {
 </template>
 
 <style lang="scss" scoped>
-
-.topper {
-    z-index: 1000;
-}
-.grid-item {
-    width: 100%;
-
-    flex: 0 0 100%;
-    max-width: 100%;
-
+.story-card {
+    border:  1px solid rgba(0, 0, 0, 0.40);
     border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.40);
 
-
-    @media (min-width: 768px){
-        flex: 0 0 calc(50% - 20px);
-        max-width: calc(50% - 20px)
+    &-cover {
+        width: 100%;
+        height: 180px;
+        aspect-ratio: 16 / 9;
+        background-color: #f1f1f1;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        border-radius: 5px;
     }
-
-    @media(min-width: 992px) {
-        flex: 0 0 calc(33.3333333333% - 20px);
-        max-width: calc(33.3333333333% - 20px);
-    }
-
-    @media(min-width: 1800px) {
-        flex: 0 0 calc(25% - 20px);
-        max-width: calc(25% - 20px);
-    }
-
 }
 
 .card-header {
-    padding: 10px 12px 0 12px;
-    margin-bottom: 5px !important;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
 
-    .card-title {
-        padding: 0;
+    .card-header-title {
+        flex: 1;
+
+        &-text {
+            font-weight: bold;
+            text-transform: capitalize;
+            font-size: 24px;
+        }
     }
 
-    .card-subtitle {
-        padding: 12px 0 0 0;
+    .card-header-actions {
+        display: flex;
+        align-items: center;
     }
 }
 
@@ -160,7 +148,7 @@ function editable () {
 }
 
 .card-actions {
-    padding: 8px 12px 8px 12px;
+    padding: 0;
 }
 
 .play-button {

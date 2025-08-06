@@ -2,6 +2,7 @@
     DASHBOARD: "dashboard",
     CREATE_STORY: "create-story",
     CREATE_STEP: "create-step",
+    PLAY_STORY: "play-story",
 }
 
 const dataNarratorToolSettings = {

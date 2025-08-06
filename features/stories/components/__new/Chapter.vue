@@ -4,10 +4,19 @@ import { ref } from "vue";
 
 import ChapterStep from "./ChapterStep.vue";
 
-const chapterSteps = ref([1]);
+const props = defineProps({
+   chapter: {
+       type: Object,
+       required: true
+   }
+});
 
-const addNewStep = () => {
-    chapterSteps.value.push(chapterSteps.value.length + 1);
+function addStep() {
+    props.chapter.steps.push({
+        id: props.chapter.steps.length,
+        title: "",
+        description: ""
+    });
 }
 </script>
 
@@ -15,19 +24,24 @@ const addNewStep = () => {
     <div class="chapter-container">
         <div class="chapter">
             <v-icon>{{ mdiFormatListBulleted }}</v-icon>
-            <div class="chapter-label">A</div>
+            <div class="chapter-label">{{ props.chapter.id + 1 }}</div>
             <div class="chapter-title">
-                <input type="text" placeholder="A Unbenanntes Kapitel" />
+                <input
+                    type="text"
+                    placeholder="A Unbenanntes Kapitel"
+                    v-model="props.chapter.title"
+                    required
+                />
             </div>
-            <div class="chapter-step-add">
-                <v-icon>{{ mdiPlus }}</v-icon>
-            </div>
+<!--            <div class="chapter-step-add">-->
+<!--                <v-icon>{{ mdiPlus }}</v-icon>-->
+<!--            </div>-->
         </div>
 
-        <ChapterStep v-for="(step, index) in chapterSteps" :key="index" :step="step" />
+        <ChapterStep v-for="(step, index) in props.chapter.steps" :key="index" :step="step" />
 
         <v-row justify="center">
-            <v-btn variant="plain" class="mt-2" @click="addNewStep">
+            <v-btn variant="plain" class="mt-2" @click="addStep">
                 <template v-slot:prepend>
                     <div class="add-chapter-button-icon">
                         <v-icon>{{ mdiPlus }}</v-icon>

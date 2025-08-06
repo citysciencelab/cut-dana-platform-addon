@@ -1,6 +1,4 @@
-// this hook is meant for all the map movements
-
-import {computed, customRef} from "vue";
+import {computed, ref} from "vue";
 import {useStore} from "vuex";
 
 export function useNavigation () {
@@ -9,8 +7,21 @@ export function useNavigation () {
     const zoom = computed(() => store.state.Maps.zoom);
     const center = computed(() => store.state.Maps.center);
 
+    const initialZoom   = ref(store.state.Maps.zoom);
+    const initialCenter = ref(store.state.Maps.center);
+
+    const setView = ({ center, zoom }) => {
+        store.commit('Maps/setView', {
+            center,
+            zoom,
+        });
+    }
+
     return {
+        initialZoom,
+        initialCenter,
         zoom,
-        center
+        center,
+        setView
     }
 }

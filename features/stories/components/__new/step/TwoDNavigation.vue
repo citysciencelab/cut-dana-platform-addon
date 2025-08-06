@@ -1,17 +1,37 @@
 <script setup>
 import {mdiPinOutline} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
+import {ref, watch} from "vue";
 
-import {useStepForm} from "../../../../steps/hooks/useStepForm";
 import {useNavigation} from "../../../../steps/hooks/useNavigation";
 
 const {t} = useTranslation();
-const {is3d, zoomLevel, centerCoordinates} = useStepForm();
 const {zoom, center} = useNavigation();
+
+const props = defineProps({
+    modelValue: {
+        type: Object,
+        default: () => ({
+            centerCoordinates: [0, 0],
+            zoomLevel: 0
+        })
+    }
+});
+const emit = defineEmits(['update:modelValue']);
+
+const centerCoordinates = ref(props.modelValue.centerCoordinates);
+const zoomLevel = ref(props.modelValue.zoomLevel);
+
+watch([centerCoordinates, zoomLevel], () => {
+   emit('update:modelValue', {
+       centerCoordinates: centerCoordinates.value,
+       zoomLevel: zoomLevel.value
+   });
+});
 </script>
 
 <template>
-    <div v-if="!is3d" class="navigation-container mb-2 mt-1">
+    <div class="navigation-container mb-2 mt-1">
         <div class="position-container">
             <div class="position-label">
                 Position
@@ -62,6 +82,7 @@ const {zoom, center} = useNavigation();
                     :class="{'position_change': zoomLevel && zoomLevel !== zoom}"
                     :label="t('additional:modules.dataNarrator.label.zoomLevel')"
                     disabled
+                    required
                 >
 
                 <v-btn

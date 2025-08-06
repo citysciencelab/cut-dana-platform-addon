@@ -8,7 +8,7 @@ import TwoDNavigation from "./step/TwoDNavigation.vue";
 
 const {step} = defineProps({
     step: {
-        type: Number,
+        type: Object,
         required: true
     }
 });
@@ -21,18 +21,18 @@ const {t} = useTranslation();
         <v-row class="mb-2" align="center">
             <v-col cols="1" class="p-0">
                 <v-btn variant="text" class="pill-button">
-                    {{ step }}
+                    {{ step.id }}
                 </v-btn>
             </v-col>
 
             <v-col cols="11" class="p-0">
-                <StepTitle />
+                <StepTitle v-model:value="step.title" />
             </v-col>
         </v-row>
 
         <v-row class="mb-2">
             <v-col cols="12" class="p-0">
-                <StepDescription />
+                <StepDescription v-model:value="step.description" />
             </v-col>
         </v-row>
 
@@ -42,7 +42,7 @@ const {t} = useTranslation();
             </v-col>
         </v-row>
 
-        <TwoDNavigation />
+        <TwoDNavigation v-model="step.mapConfig" />
 
         <v-row class="mb-2">
             <v-col cols="12" class="p-0">
@@ -78,6 +78,7 @@ const {t} = useTranslation();
         <v-row class="mb-2" justify="center">
             <v-btn
                 variant="flat"
+                size="small"
                 color="#b8e6c2"
                 :prepend-icon="mdiMapMarkerPlusOutline"
                 :append-icon="mdiChevronRight"

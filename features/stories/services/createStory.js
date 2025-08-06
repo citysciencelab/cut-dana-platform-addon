@@ -1,8 +1,7 @@
 import {backendUrl} from "../../../store/contantsDataNarrator";
 
-
-const createStory = (story) => {
-    return fetch(`${backendUrl}/stories`, {
+export function createStory(story) {
+    return fetch(`${backendUrl}/stories/new`, {
         method: "POST",
         body: JSON.stringify({
             ...story

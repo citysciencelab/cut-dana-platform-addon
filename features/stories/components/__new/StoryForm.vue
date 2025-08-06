@@ -1,11 +1,26 @@
 <script setup>
 import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiPlus} from "@mdi/js";
-import {computed, ref, watch} from "vue";
+import {computed, ref} from "vue";
 
 import Chapter from "./Chapter.vue";
+import {dataNarratorModes} from "../../../../store/contantsDataNarrator";
+import {useDataNarrator} from "../../../../hooks/useDataNarrator";
+import {uploadCoverImage} from "../../services/addCoverImage";
+import {createStory} from "../../services/createStory";
 
-let chapterId = 0;
-const chapters = ref([{ id: chapterId }]);
+const {gotoPage} = useDataNarrator();
+const storyName = ref("");
+const isSaving = ref(false);
+
+let nextChapterId = 1;
+const chapters = ref([
+    {
+        id: 0,
+        sequence: 1,
+        title: '',
+        steps: [],
+    }
+]);
 
 const selectedImage = ref(null);
 const imagePreview = computed(() => {
@@ -15,12 +30,45 @@ const imagePreview = computed(() => {
 });
 
 const addNewChapter = () => {
-    chapters.value.push({ id: chapterId++ });
+    chapters.value.push({
+        id: nextChapterId++,
+        sequence: chapters.value.length,
+        title: '',
+        steps: [],
+    });
+}
+
+const publish = async () => {
+    isSaving.value = true;
+
+    const payload = {
+        title: storyName.value,
+        chapters: chapters.value
+    };
+
+    const createResp = await createStory(payload);
+    if (!createResp.ok) throw new Error("Failed to create story");
+
+    const newStory = await createResp.json();
+    const storyId = newStory.id;
+
+    if (selectedImage.value) {
+        try {
+            await uploadCoverImage(storyId, selectedImage.value);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    console.log("All done! Story published with ID:", storyId);
+
+    isSaving.value = false;
+    gotoPage(dataNarratorModes.DASHBOARD);
 }
 </script>
 
 <template>
-    <div class="story-form">
+    <form @submit.prevent="publish" class="story-form">
         <div :class="['story-form-top', { 'with-image': !!selectedImage }]">
             <v-toolbar
                 :color="selectedImage ? 'white' : 'transparent'"
@@ -29,13 +77,20 @@ const addNewChapter = () => {
                 style="border-radius: 100px;padding: 0;"
             >
                 <template #prepend>
-                    <v-btn :icon="mdiArrowLeft" size="compact" class="mr-2" />
+                    <v-btn
+                        :icon="mdiArrowLeft"
+                        size="compact"
+                        class="mr-2"
+                        @click="() => gotoPage(dataNarratorModes.DASHBOARD)"
+                    />
 
                     <v-text-field
                         id="title"
                         width="200"
                         variant="underlined"
                         placeholder="STORY NAME"
+                        v-model="storyName"
+                        required
                     />
 
                     <v-file-input
@@ -59,7 +114,11 @@ const addNewChapter = () => {
         </div>
 
         <div class="story-form-content">
-            <Chapter v-for="chapter in chapters" :key="chapter.id" />
+            <Chapter
+                v-for="chapter in chapters"
+                :key="chapter.id"
+                :chapter="chapter"
+            />
 
             <v-btn variant="plain" class="text-capitalize mt-2" @click="addNewChapter">
                 <template #prepend>
@@ -74,14 +133,19 @@ const addNewChapter = () => {
         <v-container class="story-form-footer">
             <v-row justify="center">
                 <v-btn class="mr-2" variant="outlined" color="black">
-                    PREVIEW
+                    VORSCHAU
                 </v-btn>
-                <v-btn variant="flat" color="black">
-                    PUBLISH
+                <v-btn
+                    type="submit"
+                    variant="flat"
+                    color="black"
+                    :loading="isSaving"
+                >
+                    VERÖFFENTLICHEN
                 </v-btn>
             </v-row>
         </v-container>
-    </div>
+    </form>
 </template>
 
 <style lang="scss">

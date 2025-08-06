@@ -32,21 +32,10 @@ const {stories, error, loading} = useDashboard();
     padding: 1rem;
 
     .stories-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-
-        .card {
-            border: solid 1px #000;
-            border-radius: .4rem;
-            padding: .4rem;
-            min-width: 16rem;
-
-            .card-footer {
-                display: flex;
-                justify-content: flex-end;
-            }
-        }
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        align-items: flex-start;
     }
 
     .no-results {
