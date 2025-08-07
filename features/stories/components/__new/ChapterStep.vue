@@ -5,6 +5,7 @@ import {mdiEye, mdiTrashCan, mdiMapMarkerPlusOutline, mdiChevronRight} from "@md
 import StepTitle from "./step/StepTitle.vue";
 import StepDescription from "./step/StepDescription.vue";
 import TwoDNavigation from "./step/TwoDNavigation.vue";
+import BackgroundMap from "./step/BackgroundMap.vue";
 
 const {step} = defineProps({
     step: {
@@ -46,13 +47,7 @@ const {t} = useTranslation();
 
         <v-row class="mb-2">
             <v-col cols="12" class="p-0">
-                <v-select
-                    :items="[]"
-                    density="comfortable"
-                    label="Hintergrundkarte"
-                    variant="outlined"
-                    hide-details
-                />
+                <BackgroundMap />
             </v-col>
         </v-row>
 

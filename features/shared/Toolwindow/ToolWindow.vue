@@ -1,30 +1,30 @@
 <script setup>
 import {useDashboard} from "../../dashboard/hooks/useDashboard";
 import {ToolwindowModes as toolwindowModes} from "../../../store/contantsDataNarrator";
-import DragHandle from "./DragHandle.vue";
 import {useDataNarrator} from "../../../hooks/useDataNarrator";
-import {useToolWindow} from "./hooks/useToolWindow";
+import BottomSheet from "./BottomSheet.vue";
 
-const {open, setOpen} = useDashboard();
+const {open} = useDashboard();
 const {toolwindowMode} = useDataNarrator();
 </script>
 
 <template>
     <div :class="['toolwindow-container', toolwindowMode]">
         <div :class="['toolwindow-between', toolwindowMode]">
-            <div :class="['toolwindow', {'with-top-border-radius': toolwindowMode !== toolwindowModes.MOBILE}]">
-                <DragHandle v-if="toolwindowMode === toolwindowModes.MOBILE" @click="setOpen" />
-                <header>
-                    <slot v-if="$slots.header" name="header" />
-                </header>
-                <main :class="[$slots.fixed ? 'slot-fixed' : 'slot', open ? '' : 'removed']">
-                    <slot name="default" />
-                    <slot name="fixed" />
-                </main>
-                <footer class="footer">
-                    <slot v-if="$slots.footer" name="footer" />
-                </footer>
-            </div>
+            <BottomSheet :active="toolwindowMode === toolwindowModes.MOBILE">
+                <div :class="['toolwindow', {'with-top-border-radius': toolwindowMode !== toolwindowModes.MOBILE}]">
+                    <header>
+                        <slot v-if="$slots.header" name="header" />
+                    </header>
+                    <main :class="[$slots.fixed ? 'slot-fixed' : 'slot', open ? '' : 'removed']">
+                        <slot name="default" />
+                        <slot name="fixed" />
+                    </main>
+                    <footer class="footer">
+                        <slot v-if="$slots.footer" name="footer" />
+                    </footer>
+                </div>
+            </BottomSheet>
         </div>
     </div>
 </template>
