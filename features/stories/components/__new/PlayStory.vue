@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref, watch} from "vue";
+import {computed, onBeforeUnmount, ref, watch} from "vue";
 
 import PlayerFrame from "./play/PlayerFrame.vue";
 import ToolWindow from "../../../shared/Toolwindow/ToolWindow.vue";
@@ -10,7 +10,7 @@ import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 
 const {gotoPage} = useDataNarrator()
 const {currentStoryId} = useStory();
-const {setView, initialZoom, initialCenter} = useNavigation();
+const {setView, initialZoom, initialCenter, setBaseLayer, defaultBaseLayerId} = useNavigation();
 
 const story = ref(null);
 const isLoading = ref(true);
@@ -50,6 +50,16 @@ async function loadStory(id) {
     }
 }
 
+function resetBaseLayer() {
+    setBaseLayer(defaultBaseLayerId);
+}
+
+watch(stage, (currentStage) => {
+   if(currentStage === "overview") {
+       resetBaseLayer();
+   }
+});
+
 watch(currentStoryId, (id) => {
     loadStory(id);
     stage.value = "overview";
@@ -69,6 +79,9 @@ watch(
             center: step.centerCoordinate,
             zoom: step.zoomLevel
         });
+
+        const bgId = step.backgroundMapId ?? defaultBaseLayerId;
+        setBaseLayer(bgId);
     },
     { immediate: true }
 );
@@ -110,6 +123,10 @@ function back() {
         });
     }
 }
+
+onBeforeUnmount(() => {
+    resetBaseLayer();
+});
 </script>
 
 <template>

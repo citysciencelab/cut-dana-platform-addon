@@ -11,10 +11,7 @@ const {zoom, center} = useNavigation();
 const props = defineProps({
     modelValue: {
         type: Object,
-        default: () => ({
-            centerCoordinates: [0, 0],
-            zoomLevel: 0
-        })
+        required: true,
     }
 });
 const emit = defineEmits(['update:modelValue']);
@@ -24,6 +21,7 @@ const zoomLevel = ref(props.modelValue.zoomLevel);
 
 watch([centerCoordinates, zoomLevel], () => {
    emit('update:modelValue', {
+       ...props.modelValue,
        centerCoordinates: centerCoordinates.value,
        zoomLevel: zoomLevel.value
    });

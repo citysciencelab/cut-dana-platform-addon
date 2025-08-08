@@ -17,11 +17,18 @@ export function useNavigation () {
         });
     }
 
+    const setBaseLayer = (layerId) => {
+        if (!layerId) return;
+        store.dispatch('Modules/BaselayerSwitcher/updateLayerVisibilityAndZIndex', layerId);
+    };
+
     return {
         initialZoom,
         initialCenter,
         zoom,
         center,
-        setView
+        setView,
+        defaultBaseLayerId: "453",
+        setBaseLayer
     }
 }

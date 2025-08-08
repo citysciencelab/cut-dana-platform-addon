@@ -11,12 +11,21 @@ const props = defineProps({
    }
 });
 
-function addStep() {
-    props.chapter.steps.push({
-        id: props.chapter.steps.length,
+function getDefaultStep(id) {
+    return {
+        id,
         title: "",
-        description: ""
-    });
+        description: "",
+        mapConfig: {
+            centerCoordinates: [0, 0],
+            zoomLevel: 0,
+            backgroundMapId: null,
+        },
+    };
+}
+
+function addStep() {
+    props.chapter.steps.push(getDefaultStep(props.chapter.steps.length + 1));
 }
 </script>
 

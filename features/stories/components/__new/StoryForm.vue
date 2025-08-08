@@ -1,5 +1,5 @@
 <script setup>
-import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiPlus} from "@mdi/js";
+import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiPlus, mdiTrashCan} from "@mdi/js";
 import {computed, ref} from "vue";
 
 import Chapter from "./Chapter.vue";
@@ -111,6 +111,15 @@ const publish = async () => {
                 alt="Selected preview"
                 class="image-preview"
             />
+
+            <div v-if="imagePreview" class="remove-image-btn">
+                <v-btn
+                    :icon="mdiTrashCan"
+                    variant="flat"
+                    density="comfortable"
+                    @click="selectedImage = null"
+                />
+            </div>
         </div>
 
         <div class="story-form-content">
@@ -184,6 +193,12 @@ const publish = async () => {
             width: 100%;
             height: 100%;
             border-radius: 20px;
+        }
+
+        .remove-image-btn {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
         }
     }
 

@@ -47,7 +47,7 @@ const {t} = useTranslation();
 
         <v-row class="mb-2">
             <v-col cols="12" class="p-0">
-                <BackgroundMap />
+                <BackgroundMap v-model="step.mapConfig.backgroundMapId" />
             </v-col>
         </v-row>
 

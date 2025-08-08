@@ -1,13 +1,10 @@
 <script setup>
-import {ref} from "vue";
 import {mdiArrowLeft, mdiDotsVertical} from "@mdi/js";
 
 import {useDataNarrator} from "../../../../../hooks/useDataNarrator";
 import {dataNarratorModes} from "../../../../../store/contantsDataNarrator";
 
-
 const {gotoPage} = useDataNarrator();
-const currentIndex = ref(0);
 
 const props = defineProps({
    title: String
