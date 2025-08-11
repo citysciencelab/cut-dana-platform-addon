@@ -1,11 +1,11 @@
 <script setup>
 import {useTranslation} from "i18next-vue";
-import {mdiEye, mdiTrashCan, mdiMapMarkerPlusOutline, mdiChevronRight} from "@mdi/js";
 
 import StepTitle from "./step/StepTitle.vue";
 import StepDescription from "./step/StepDescription.vue";
 import TwoDNavigation from "./step/TwoDNavigation.vue";
 import BackgroundMap from "./step/BackgroundMap.vue";
+import Layers from "./step/Layers.vue";
 
 const {step} = defineProps({
     step: {
@@ -57,31 +57,7 @@ const {t} = useTranslation();
             </v-col>
         </v-row>
 
-        <v-row class="mb-2" style="margin-top: 0!important;">
-            <v-col cols="12" class="p-0">
-                <v-text-field
-                    variant="outlined"
-                    density="comfortable"
-                    value="Wasserwerte"
-                    :prepend-inner-icon="mdiEye"
-                    :append-inner-icon="mdiTrashCan"
-                    hide-details
-                />
-            </v-col>
-        </v-row>
-
-        <v-row class="mb-2" justify="center">
-            <v-btn
-                variant="flat"
-                size="small"
-                color="#b8e6c2"
-                :prepend-icon="mdiMapMarkerPlusOutline"
-                :append-icon="mdiChevronRight"
-                rounded
-            >
-                Informationsebene hinzufügen
-            </v-btn>
-        </v-row>
+        <Layers v-model="step.informationLayerIds" />
     </div>
 </template>
 

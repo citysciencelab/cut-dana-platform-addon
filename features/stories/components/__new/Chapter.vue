@@ -21,6 +21,7 @@ function getDefaultStep(id) {
             zoomLevel: 0,
             backgroundMapId: null,
         },
+        informationLayerIds: []
     };
 }
 
