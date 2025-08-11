@@ -1,0 +1,69 @@
+<script setup>
+import {mdiArrowLeft, mdiDotsVertical} from "@mdi/js";
+
+import {useDataNarrator} from "../../../../../hooks/useDataNarrator";
+import {dataNarratorModes} from "../../../../../store/contantsDataNarrator";
+
+const {gotoPage} = useDataNarrator();
+
+const props = defineProps({
+   title: String
+});
+</script>
+
+<template>
+    <div class="player-frame">
+        <v-toolbar
+            color="transparent"
+            size="compact"
+            class="sticky-top"
+            style="border-radius: 100px;padding: 0;"
+        >
+            <template #prepend>
+                <v-btn
+                    :icon="mdiArrowLeft"
+                    size="compact"
+                    class="mr-2"
+                    @click="() => gotoPage(dataNarratorModes.DASHBOARD)"
+                />
+
+                <div class="bold">{{props.title}}</div>
+            </template>
+
+            <v-btn :icon="mdiDotsVertical" size="compact" />
+        </v-toolbar>
+
+        <div class="player-content">
+            <slot name="default" />
+        </div>
+
+        <div class="player-footer mb-2 px-2">
+            <slot name="footer" />
+        </div>
+    </div>
+</template>
+
+<style lang="scss" scoped>
+.player-frame {
+    position: absolute;
+    top: 90px;
+    bottom: 90px;
+    left: 20px;
+    right: 0;
+    background-color: #f6f6f6;
+    box-shadow: 0 12px 30px -8px rgba(0,0,0,0.30);
+    border-radius: .8rem;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.player-footer {
+    margin-top: auto;
+}
+</style>

@@ -33,6 +33,14 @@
                 }
             }
 
+            .slot-fixed {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 460px;
+            }
+
             &.with-top-border-radius  {
                 border-top-left-radius: 1rem;
                 border-top-right-radius: 1rem;

@@ -2,8 +2,8 @@
 import DataNarratorDashboard from "./features/dashboard/components/Dashboard.vue";
 import * as constants from "./store/contantsDataNarrator";
 import CreateStory from "./features/stories/components/CreateStory.vue";
-import CreateStep from "./features/steps/components/CreateStep.vue";
 import {useDataNarrator} from "./hooks/useDataNarrator";
+import PlayStory from "./features/stories/components/__new/PlayStory.vue";
 
 defineOptions({
     name: "DataNarrator"
@@ -24,7 +24,7 @@ disableSecondaryMenu();
         >
             <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD" />
             <CreateStory v-if="mode === constants.dataNarratorModes.CREATE_STORY" />
-            <CreateStep v-if="mode === constants.dataNarratorModes.CREATE_STEP" />
+            <PlayStory v-if="mode === constants.dataNarratorModes.PLAY_STORY" />
         </div>
     </Teleport>
 </template>
