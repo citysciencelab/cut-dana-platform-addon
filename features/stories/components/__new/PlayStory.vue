@@ -7,10 +7,12 @@ import {backendUrl, dataNarratorModes} from "../../../../store/contantsDataNarra
 import {useNavigation} from "../../../steps/hooks/useNavigation";
 import {useStory} from "../../hooks/useStory";
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
+import {useStepOverlays} from "../../hooks/useStepOverlays";
 
 const {gotoPage} = useDataNarrator()
 const {currentStoryId} = useStory();
 const {setView, initialZoom, initialCenter, setBaseLayer, defaultBaseLayerId} = useNavigation();
+const {applyForStep, clear: clearOverlays} = useStepOverlays();
 
 const story = ref(null);
 const isLoading = ref(true);
@@ -56,6 +58,7 @@ function resetBaseLayer() {
 
 watch(stage, (currentStage) => {
    if(currentStage === "overview") {
+       clearOverlays();
        resetBaseLayer();
    }
 });
@@ -82,6 +85,8 @@ watch(
 
         const bgId = step.backgroundMapId ?? defaultBaseLayerId;
         setBaseLayer(bgId);
+
+        applyForStep(step);
     },
     { immediate: true }
 );
@@ -125,6 +130,7 @@ function back() {
 }
 
 onBeforeUnmount(() => {
+    clearOverlays();
     resetBaseLayer();
 });
 </script>
