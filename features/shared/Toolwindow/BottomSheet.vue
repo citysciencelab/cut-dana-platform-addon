@@ -59,6 +59,10 @@ onBeforeUnmount(() => {
     z-index: 1000;
 }
 
+.sheet {
+    width: 100%;
+}
+
 .drag-handle-container {
     padding: 20px;
     position: absolute;

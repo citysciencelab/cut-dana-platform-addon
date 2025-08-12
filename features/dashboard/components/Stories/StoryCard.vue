@@ -10,9 +10,12 @@ import ShareSettingsForm from "./ShareSettingsForm.vue";
 import {backendUrl, dataNarratorModes} from "../../../../store/contantsDataNarrator";
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 import {useStory} from "../../../stories/hooks/useStory";
+import {useLogin} from "../../hooks/useLogin";
 
+const {userId} = useLogin();
 const {gotoPage} = useDataNarrator();
-const { currentStoryId } = useStory();
+const {currentStoryId} = useStory();
+const emit = defineEmits(['deleted']);
 
 const props = defineProps({
     story: {
@@ -74,12 +77,13 @@ async function playStory() {
             <v-row>
                 <v-col>
                     <EditButton
-                        v-if="false"
+                        v-if="userId === story.owner"
                         :story-id="story.id"
                     />
                     <DeleteButton
-                        v-if="false"
+                        v-if="userId === story.owner"
                         :story-id="story.id"
+                        @deleted="() => emit('deleted')"
                     />
                     <ShareSettingsButton
                         v-if="false"

@@ -21,23 +21,23 @@ function onClick() {
 </script>
 
 <template>
-    <v-btn
-        color="black"
-        rounded
-        size="small"
-        variant="flat"
-        @click="onClick"
-    >
-        <v-icon
-            id="play-button"
-            color="white"
-        >
-            {{ mdiPlayOutline }}
-            <v-tooltip activator="parent" location="top">
-                {{ t("additional:modules.dataNarrator.play") }}
-            </v-tooltip>
-        </v-icon>
-    </v-btn>
+    <v-tooltip location="top">
+        <template #activator="{ props }">
+            <v-btn
+                v-bind="props"
+                color="black"
+                rounded
+                size="small"
+                variant="flat"
+                @click="onClick"
+            >
+                <v-icon id="play-button" color="white">
+                    {{ mdiPlayOutline }}
+                </v-icon>
+            </v-btn>
+        </template>
+        {{ t("additional:modules.dataNarrator.play") }}
+    </v-tooltip>
 </template>
 
 <style scoped lang="scss">

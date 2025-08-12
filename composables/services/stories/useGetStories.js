@@ -3,7 +3,7 @@ import {ref} from "vue";
 // useFetchStories.js
 
 export function useFetchStories () {
-    const stories = ref(null);
+    const stories = ref([]);
     const error = ref(null);
     const loading = ref(false);
 
@@ -11,7 +11,7 @@ export function useFetchStories () {
     const fetchStories = async (mode) => {
         // Reset state before fetching
         loading.value = true;
-        stories.value = null;
+        stories.value = [];
         error.value = null;
 
         const url = `${backendUrl}/stories/${mode}`;
@@ -19,7 +19,6 @@ export function useFetchStories () {
         try {
             const response = await fetch(url);
             const data = await response.json();
-
             stories.value = data;
         } catch (err) {
             error.value = err;

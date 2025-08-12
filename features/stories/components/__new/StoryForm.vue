@@ -1,16 +1,26 @@
 <script setup>
 import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiPlus, mdiTrashCan} from "@mdi/js";
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 
 import Chapter from "./Chapter.vue";
-import {dataNarratorModes} from "../../../../store/contantsDataNarrator";
+import {dataNarratorModes, ToolwindowModes} from "../../../../store/contantsDataNarrator";
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 import {uploadCoverImage} from "../../services/addCoverImage";
 import {createStory} from "../../services/createStory";
+import Preview from "./preview/Preview.vue";
+import {editStory} from "../../services/editStory";
 
+const props = defineProps({
+    storyId: Number,
+    storyName: String,
+    chapters: Array,
+    storyLoading: Boolean,
+});
+const {toolwindowMode} = useDataNarrator();
 const {gotoPage} = useDataNarrator();
 const storyName = ref("");
 const isSaving = ref(false);
+const previewModal = ref(false);
 
 let nextChapterId = 1;
 const chapters = ref([
@@ -46,11 +56,17 @@ const publish = async () => {
         chapters: chapters.value
     };
 
-    const createResp = await createStory(payload);
-    if (!createResp.ok) throw new Error("Failed to create story");
-
-    const newStory = await createResp.json();
-    const storyId = newStory.id;
+    let storyId = props.storyId;
+    if(storyId) {
+        const updateResp = await editStory(storyId, payload);
+        if (!updateResp.ok) throw new Error("Failed to edit story");
+        await updateResp.json();
+    } else {
+        const createResp = await createStory(payload);
+        if (!createResp.ok) throw new Error("Failed to create story");
+        const newStory = await createResp.json();
+        storyId = newStory.id;
+    }
 
     if (selectedImage.value) {
         try {
@@ -60,15 +76,40 @@ const publish = async () => {
         }
     }
 
-    console.log("All done! Story published with ID:", storyId);
-
     isSaving.value = false;
     gotoPage(dataNarratorModes.DASHBOARD);
 }
+
+watch(
+    [() => props.storyName, () => props.chapters, () => props.storyId],
+    ([s, c, sId]) => {
+        if(sId) {
+            storyName.value = s;
+            chapters.value = c;
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <template>
-    <form @submit.prevent="publish" class="story-form">
+    <div
+        v-if="props.storyLoading"
+        :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
+    >
+        <v-row>
+            <v-col cols="12" class="p-0 pt-2">
+                <v-skeleton-loader
+                    type="article"
+                ></v-skeleton-loader>
+            </v-col>
+        </v-row>
+    </div>
+    <form
+        v-else
+        @submit.prevent="publish"
+        :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
+    >
         <div :class="['story-form-top', { 'with-image': !!selectedImage }]">
             <v-toolbar
                 :color="selectedImage ? 'white' : 'transparent'"
@@ -141,7 +182,13 @@ const publish = async () => {
 
         <v-container class="story-form-footer">
             <v-row justify="center">
-                <v-btn class="mr-2" variant="outlined" color="black">
+                <v-btn
+                    type="button"
+                    class="mr-2"
+                    variant="outlined"
+                    color="black"
+                    @click="previewModal = true"
+                >
                     VORSCHAU
                 </v-btn>
                 <v-btn
@@ -154,6 +201,8 @@ const publish = async () => {
                 </v-btn>
             </v-row>
         </v-container>
+
+        <Preview :chapters="chapters" v-model:open="previewModal" />
     </form>
 </template>
 
@@ -163,13 +212,21 @@ const publish = async () => {
     top: 90px;
     bottom: 90px;
     left: 20px;
-    right: 0;
     background-color: #f6f6f6;
     box-shadow: 0 12px 30px -8px rgba(0,0,0,0.30);
     border-radius: .8rem;
     padding: 0 10px;
     display: flex;
     flex-direction: column;
+
+    &.mobile {
+        background-color: transparent;
+        box-shadow: none;
+        top: 30px;
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+    }
 
     .v-toolbar__content {
         height: 40px !important;

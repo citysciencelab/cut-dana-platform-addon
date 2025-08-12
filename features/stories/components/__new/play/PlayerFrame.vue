@@ -2,17 +2,17 @@
 import {mdiArrowLeft, mdiDotsVertical} from "@mdi/js";
 
 import {useDataNarrator} from "../../../../../hooks/useDataNarrator";
-import {dataNarratorModes} from "../../../../../store/contantsDataNarrator";
+import {dataNarratorModes, ToolwindowModes} from "../../../../../store/contantsDataNarrator";
 
 const {gotoPage} = useDataNarrator();
-
+const {toolwindowMode} = useDataNarrator();
 const props = defineProps({
    title: String
 });
 </script>
 
 <template>
-    <div class="player-frame">
+    <div :class="{ 'player-frame': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }">
         <v-toolbar
             color="transparent"
             size="compact"
@@ -56,6 +56,15 @@ const props = defineProps({
     padding: 0 10px;
     display: flex;
     flex-direction: column;
+
+    &.mobile {
+        background-color: transparent;
+        box-shadow: none;
+        top: 30px;
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+    }
 }
 
 .player-content {

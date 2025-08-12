@@ -21,12 +21,16 @@ export function useDashboard () {
         open.value = !open.value;
     }
 
+    const refetchStories = () => {
+        fetchStories(storiesDisplayMode.value);
+    }
+
     // Initial fetch on component initialization
-    fetchStories(storiesDisplayMode.value);
+    refetchStories();
 
     // Watch for mode changes and manually trigger fetch
     watch(storiesDisplayMode, (newMode) => {
-        console.elie(`Dashboard mode changed to ${newMode}, triggering fetch`);
+        console.log(`Dashboard mode changed to ${newMode}, triggering fetch`);
         fetchStories(newMode);
     });
 
@@ -43,6 +47,7 @@ export function useDashboard () {
         storiesDisplayMode,
         storyModeLists,
         open,
-        setOpen
+        setOpen,
+        refetchStories
     };
 }

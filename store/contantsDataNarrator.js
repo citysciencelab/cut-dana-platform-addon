@@ -3,6 +3,7 @@
     CREATE_STORY: "create-story",
     CREATE_STEP: "create-step",
     PLAY_STORY: "play-story",
+    EDIT_STORY: "edit-story",
 }
 
 const dataNarratorToolSettings = {

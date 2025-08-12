@@ -1,11 +1,11 @@
 import {computed} from "vue";
 import {useStore} from "vuex";
 import {getRedirectUrl} from "../../login/services/loginService";
-import {useDashboard} from "./useDashboard";
 import Cookie from "../../../../../../src/modules/login/js/utilsCookies";
 import OIDC from "../../../../../../src/modules/login/js/utilsOIDC";
 import {useDataNarrator} from "../../../hooks/useDataNarrator";
 import {FetchInterceptor} from "../../../api/FetchInterceptor";
+import {backendUrl} from "../../../store/contantsDataNarrator";
 
 export function useLogin () {
     const {moveTool} = useDataNarrator();
@@ -17,6 +17,7 @@ export function useLogin () {
     const email = computed(() => store.state.Modules.Login.email);
     const screenName = computed(() => store.state.Modules.Login.screenName);
     const username = computed(() => store.state.Modules.Login.username);
+    const userId = computed(() => store.state.Modules.Login.userId);
 
     const getAuthCodeUrl = async () => {
         return getRedirectUrl();
@@ -45,7 +46,7 @@ export function useLogin () {
         }
     }
 
-    const checkLoggedIn = () => {
+    const checkLoggedIn = async () => {
 
         const config = Config.login,
             token = Cookie.get("token"),
@@ -76,6 +77,12 @@ export function useLogin () {
         store.commit("Modules/Login/setUsername", Cookie.get("username"));
         store.commit("Modules/Login/setEmail", Cookie.get("email"));
 
+        const meRes = await fetch(`${backendUrl}/me`);
+        if(meRes.ok) {
+            const res = await meRes.json();
+            store.commit("Modules/Login/setUserId", res.id);
+        }
+
         return loggedIn;
     }
 
@@ -87,6 +94,7 @@ export function useLogin () {
         username,
         openLoginWindow,
         logout,
-        checkLoggedIn
+        checkLoggedIn,
+        userId,
     }
 }

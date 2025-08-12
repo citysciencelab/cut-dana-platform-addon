@@ -43,7 +43,7 @@ async function loadStory(id) {
     if (!id) return;
     isLoading.value = true;
     try {
-        const res  = await fetch(`${backendUrl}/stories/${id}/play`);
+        const res  = await fetch(`${backendUrl}/stories/new/${id}`);
         story.value = await res.json();
     } catch (error) {
         console.error(error);

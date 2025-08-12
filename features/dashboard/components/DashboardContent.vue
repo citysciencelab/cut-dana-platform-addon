@@ -2,8 +2,7 @@
 import StoryCard from "./Stories/StoryCard.vue";
 import {useDashboard} from "../hooks/useDashboard";
 
-const {stories, error, loading} = useDashboard();
-
+const {stories, error, loading, refetchStories} = useDashboard();
 </script>
 
 <template>
@@ -20,7 +19,7 @@ const {stories, error, loading} = useDashboard();
                 :key="story.id + story.updatedAt"
                 :story="story"
                 :grid="true"
-                @imageLoaded="() => {console.log('imageLoaded')}"
+                @deleted="refetchStories"
             />
         </div>
         <div v-else class="no-results">No stories available</div>

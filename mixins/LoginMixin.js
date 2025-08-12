@@ -28,7 +28,8 @@ export default {
         ...mapActions("Modules/Login", [
             "initialize",
             "logout",
-            "checkLoggedIn"
+            "checkLoggedIn",
+            "setUserId"
         ]),
 
         async getAuthCodeUrl() {

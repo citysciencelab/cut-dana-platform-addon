@@ -1,12 +1,10 @@
 <script setup>
-
-// import {useStories} from "../../../stories/hooks/useStories";
 import {mdiTrashCanOutline} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
-import {useStoryForm} from "../../../stories/hooks/useStoryForm";
+import {ref} from "vue";
 
-// const {currentStoryId} = useStories(),
-const {deleteStory} = useStoryForm();
+import {deleteStory} from "../../../stories/services/deleteStory";
+
 const {t} = useTranslation();
 const {storyId} = defineProps({
     storyId: {
@@ -14,32 +12,35 @@ const {storyId} = defineProps({
         required: true
     }
 });
+const emit = defineEmits(['deleted']);
+const isLoading = ref(false);
 
-/**
- *
- */
-function deleteStoryWithConfirm () {
-    deleteStory(storyId);
+async function deleteStoryWithConfirm() {
+    isLoading.value = true;
+    try {
+        await deleteStory(storyId);
+        emit('deleted');
+    } catch (error) {
+        console.error(error);
+    } finally {
+        isLoading.value = false;
+    }
 }
 </script>
 
 <template>
-    <v-tooltip top>
-        <template #activator="{ on }">
-            <v-icon
-                id="delete-button"
-                v-on="on"
-                class="pill-button"
-                @click="deleteStoryWithConfirm()"
-            >
-                {{ mdiTrashCanOutline }}
-            </v-icon>
+    <v-tooltip location="top">
+        <template v-slot:activator="{ props }">
+            <v-btn
+                v-bind="props"
+                :icon="mdiTrashCanOutline"
+                @click="deleteStoryWithConfirm"
+                variant="text"
+                density="comfortable"
+                :loading="isLoading"
+            />
         </template>
-        <span>
-            {{
-                t("additional:modules.tools.dataNarrator.creator.delete")
-            }}
-        </span>
+        {{ t("additional:modules.dataNarrator.creator.delete") }}
     </v-tooltip>
 </template>
 

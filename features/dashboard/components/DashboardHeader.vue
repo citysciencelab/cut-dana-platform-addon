@@ -1,7 +1,6 @@
 <script setup>
 import {storeToRefs} from "pinia";
 import {mdiMapLegend} from "@mdi/js";
-import {computed} from "vue";
 import {useTranslation} from "i18next-vue";
 
 import LoginButton from "./Tools/LoginButton.vue";
@@ -12,11 +11,14 @@ import {useDashboard} from "../hooks/useDashboard";
 import {useLogin} from "../hooks/useLogin";
 import {useDashboardStore} from "../store/useDashboardStore";
 import cutcslDepiction from "../../../img/cutcsl_depiction.png";
+import {ToolwindowModes} from "../../../store/contantsDataNarrator";
+import {useDataNarrator} from "../../../hooks/useDataNarrator";
 
 const {t} = useTranslation();
 const {storyModeLists} = useDashboard();
 const {loggedIn} = useLogin();
 const dashboardStore = useDashboardStore();
+const {toolwindowMode} = useDataNarrator()
 
 const {mode: storiesDisplayMode} = storeToRefs(dashboardStore)
 const legendAdded = true;
@@ -33,8 +35,17 @@ const getBackgroundStyle = () => ({
 
 <template>
     <div class="dashboard-header">
-        <div class="custom-row login-row">
-            <div class="d-flex justify-end align-center mt-2">
+        <Teleport v-if="toolwindowMode === ToolwindowModes.MOBILE" to="body">
+            <div class="login-row-mobile">
+                <div class="d-flex justify-end align-center mt-2 ga-2">
+                    <LoginButton />
+                    <LanguageSwitchButton />
+                </div>
+            </div>
+        </Teleport>
+
+        <div v-else class="login-row">
+            <div class="d-flex justify-end align-center mt-2 ga-2">
                 <LoginButton />
                 <LanguageSwitchButton />
             </div>
@@ -119,6 +130,13 @@ const getBackgroundStyle = () => ({
 
 
 <style lang="scss" scoped>
+.login-row-mobile {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 2000;
+}
+
 .login-row {
     top: 0;
     position: sticky;
