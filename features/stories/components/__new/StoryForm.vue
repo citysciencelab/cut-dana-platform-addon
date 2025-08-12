@@ -212,6 +212,7 @@ watch(
     top: 90px;
     bottom: 90px;
     left: 20px;
+    right: 0;
     background-color: #f6f6f6;
     box-shadow: 0 12px 30px -8px rgba(0,0,0,0.30);
     border-radius: .8rem;
