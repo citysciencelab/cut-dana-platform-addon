@@ -2,13 +2,14 @@
 import PreviewModal from "./PreviewModal.vue";
 
 const open = defineModel('open', { type: Object, default: false });
-const {chapters} = defineProps({
+const {chapters, hasImage} = defineProps({
+    hasImage: Boolean,
     chapters: { type: Object, required: true }
 });
 </script>
 
 <template>
-    <PreviewModal v-model:open="open">
+    <PreviewModal v-model:open="open" :hasImage="hasImage">
         <div>
             <ol>
                 <li v-for="(chapter, cIdx) in chapters" :key="chapter.id">

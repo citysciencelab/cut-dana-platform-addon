@@ -15,6 +15,7 @@ const props = defineProps({
     storyName: String,
     chapters: Array,
     storyLoading: Boolean,
+    coverImageUrl: String,
 });
 const {toolwindowMode} = useDataNarrator();
 const {gotoPage} = useDataNarrator();
@@ -34,9 +35,8 @@ const chapters = ref([
 
 const selectedImage = ref(null);
 const imagePreview = computed(() => {
-    return selectedImage.value
-        ? URL.createObjectURL(selectedImage.value)
-        : null;
+    if(selectedImage.value) return URL.createObjectURL(selectedImage.value);
+    return props.coverImageUrl || null;
 });
 
 const addNewChapter = () => {
@@ -110,7 +110,7 @@ watch(
         @submit.prevent="publish"
         :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
     >
-        <div :class="['story-form-top', { 'with-image': !!selectedImage }]">
+        <div :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]">
             <v-toolbar
                 :color="selectedImage ? 'white' : 'transparent'"
                 size="compact"
@@ -202,7 +202,11 @@ watch(
             </v-row>
         </v-container>
 
-        <Preview :chapters="chapters" v-model:open="previewModal" />
+        <Preview
+            :chapters="chapters"
+            :hasImage="!!selectedImage || !!imagePreview"
+            v-model:open="previewModal"
+        />
     </form>
 </template>
 

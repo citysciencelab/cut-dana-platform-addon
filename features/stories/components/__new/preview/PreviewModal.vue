@@ -4,6 +4,7 @@ import { motion } from "motion-v";
 import {mdiCheck, mdiRestore} from "@mdi/js";
 
 const props = defineProps({
+    hasImage: { type: Boolean, default: false },
     open: { type: Boolean, default: false }
 });
 const emit = defineEmits(["update:open", "close"]);
@@ -29,7 +30,7 @@ const panel = {
 
 <template>
     <motion.div
-        class="preview-modal__overlay"
+        :class="['preview-modal__overlay', { 'with-image': hasImage }]"
         :initial="'closed'"
         :animate="state"
         :variants="overlay"
@@ -80,7 +81,11 @@ const panel = {
     z-index: 2000;
     display: grid;
     place-items: center;
-    padding: 56px 12px 12px 12px;
+    padding: 56px 10px 10px 10px;
+
+    &.with-image {
+        padding-top: 180px;
+    }
 }
 .preview-modal__panel {
     width: 100%;

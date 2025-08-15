@@ -5,12 +5,18 @@ import StoryForm from "./__new/StoryForm.vue";
 import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
 import {getStory} from "../services/getStory";
 import {useStory} from "../hooks/useStory";
+import {backendUrl} from "../../../store/contantsDataNarrator";
 
 const {currentStoryId} = useStory();
 
 const isLoading = ref(false);
 const storyName = ref("");
 const chapters = ref([]);
+const coverImageUrl = ref(null);
+
+function getFileUrl (titleImage) {
+  return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
+}
 
 async function loadStory() {
   if (!currentStoryId?.value) return;
@@ -20,6 +26,7 @@ async function loadStory() {
   try {
     const data = await getStory(currentStoryId.value);
     storyName.value = data.title ?? "";
+    coverImageUrl.value = data.titleImage ? getFileUrl(data.titleImage) : null;
     chapters.value = (data.chapters ?? []).map((c, idx) => ({
       id: idx,
       sequence: c.sequence,
@@ -55,6 +62,7 @@ watch(() => currentStoryId?.value, loadStory);
                 :chapters="chapters"
                 :storyName="storyName"
                 :storyLoading="isLoading"
+                :coverImageUrl="coverImageUrl"
             />
         </template>
     </ToolWindow>
