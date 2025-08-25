@@ -11,7 +11,7 @@ import {useStepOverlays} from "../../hooks/useStepOverlays";
 
 const {gotoPage} = useDataNarrator()
 const {currentStoryId} = useStory();
-const {setView, initialZoom, initialCenter, setBaseLayer, defaultBaseLayerId} = useNavigation();
+const {setAnimatedView, initialZoom, initialCenter, setBaseLayer, defaultBaseLayerId} = useNavigation();
 const {applyForStep, clear: clearOverlays} = useStepOverlays();
 
 const story = ref(null);
@@ -78,7 +78,7 @@ watch(
         const step = story.value.chapters[chapterIndex.value].steps[stepIndex.value];
         if (!step) return;
 
-        setView({
+        setAnimatedView({
             center: step.centerCoordinate,
             zoom: step.zoomLevel
         });
@@ -122,7 +122,7 @@ function back() {
         stepIndex.value = story.value.chapters[chapterIndex.value].steps.length - 1;
     } else {
         stage.value = "overview";
-        setView({
+        setAnimatedView({
             center: initialCenter.value,
             zoom: initialZoom.value,
         });

@@ -7,19 +7,29 @@ export function useNavigation () {
     const zoom = computed(() => store.state.Maps.zoom);
     const center = computed(() => store.state.Maps.center);
 
-    const initialZoom   = ref(store.state.Maps.zoom);
+    const initialZoom = ref(store.state.Maps.zoom);
     const initialCenter = ref(store.state.Maps.center);
 
-    const setView = ({ center, zoom }) => {
-        store.commit('Maps/setView', {
+    const setView = ({center, zoom}) => {
+        store.commit("Maps/setView", {
             center,
-            zoom,
+            zoom
+        });
+    }
+
+    const setAnimatedView = ({center, zoom}) => {
+        store.commit("Maps/animateView", {
+            center,
+            zoom
         });
     }
 
     const setBaseLayer = (layerId) => {
-        if (!layerId) return;
-        store.dispatch('Modules/BaselayerSwitcher/updateLayerVisibilityAndZIndex', layerId);
+        if (!layerId) {
+            return
+        }
+
+        store.dispatch("Modules/BaselayerSwitcher/updateLayerVisibilityAndZIndex", layerId);
     };
 
     return {
@@ -28,6 +38,7 @@ export function useNavigation () {
         zoom,
         center,
         setView,
+        setAnimatedView,
         defaultBaseLayerId: "453",
         setBaseLayer
     }
