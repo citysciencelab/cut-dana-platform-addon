@@ -1,9 +1,159 @@
 {
   "modules": {
-    "DataNarrator": {
-      "title": "DataNarraotr EN",
-      "description": "TEST",
-      "createStory": "Create story"
+    "dataNarrator": {
+      "title": "Data Narrator",
+      "create": "Create Story",
+      "play": "Start Story",
+      "dashboard": "Story Dashboard",
+      "tableOfContents": "Table of Contents",
+      "createStory": "Create Story",
+      "3dForm": "3D View",
+      "label": {
+        "storyUnnamed": "Story Title",
+        "storyDescription": "Description",
+        "author": "Author",
+        "scrolly": "Scrollable Story",
+        "interval": "Autoplay Interval in Seconds",
+        "steps": "Steps",
+        "addChapter": "Add Chapter",
+        "chapter": "Chapter",
+        "chapterName": "Chapter Name",
+        "newChapterNumber": "New Chapter Number",
+        "newChapterTitle": "New Chapter Title",
+        "stepNumber": "Step Number",
+        "stepTitle": "Step Title",
+        "chapterTitle": "Chapter Title",
+        "stepWidth": "Window Width",
+        "visible": "Visibility",
+        "htmlContent": "Content",
+        "mapDisplay": "Map Display",
+        "centerCoordinate": "Take Map Position",
+        "longitude": "Longitude",
+        "latitude": "Latitude",
+        "height": "Height",
+        "zoomLevel": "Zoom Level",
+        "setZoomLevel": "Take Map Zoom Level",
+        "layers": "Layers",
+        "selectLayers": "Select Layers",
+        "selectLayers3D": "Select 3D Layers",
+        "layers3D": "3D Layers",
+        "availableLayers": "Available Layers",
+        "interactionAddons": "Extensions",
+        "is3D": "Show Map in 3D",
+        "heading": "Heading",
+        "pitch": "Pitch",
+        "autoPLay": "Autoplay",
+        "scrollMode": "Scroll Mode",
+        "on": "On",
+        "off": "Off",
+        "private": "Private",
+        "sharedWith": "Enter a new email and press Enter",
+        "sharedWithPlaceholder": "Add Email",
+        "sharedWithDuplicate": "This email has already been added.",
+        "backgroundMap": "Background Map",
+        "dataLayer": "Add Data Layer",
+        "ownData": "Add Own Data",
+        "advancedOptions": "Advanced Options",
+        "ownDatasource": "Add Own Data",
+        "ownWmsLayers": "Add WMS URL",
+        "threeDFiles": "Add 3D Files",
+        "openDrawTool": "Draw Data",
+        "drawToolDescription": "Draw on the map, download the drawn data as a file, and then import it into your story.",
+        "scale": "Scale",
+        "threeDNorthing": "Northing",
+        "threeDEasting": "Easting",
+        "threeDRotation": "Rotation",
+        "increase": "Increase",
+        "decrease": "Decrease",
+        "addCover": "Add Cover Image",
+        "removeCover": "Remove Cover Image"
+      },
+      "storyList": {
+        "all": "All Stories",
+        "my": "My Stories",
+        "featured": "Featured",
+        "popular": "Popular"
+      },
+      "creator": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "editStep": "Edit Step",
+        "deleteStep": "Delete Step"
+      },
+      "dashboardView": {
+        "title": "Data Narrator",
+        "subtitle": "Find and create data stories for Hamburg!",
+        "description": "With the Urban Data Narrator (DaNa), you can read, create, and share data stories based on the Hamburg Geoportal. These data stories tell about many different topics and places in Hamburg. Selected data from the Hamburg Geoportal is combined with texts, photos, and illustrations. This way, you can share your perspective on urban development topics backed by data. DaNa is a project of the City Science Lab at HafenCity University Hamburg and is implemented as part of the Connected Urban Twins project.",
+        "noResults": "No more stories found."
+      },
+      "success": {
+        "storyCreated": "Story successfully created.",
+        "storyDeleted": "Story deleted.",
+        "storyShared": "The story URL has been copied to the clipboard.",
+        "loggedOut": "You have been logged out."
+      },
+      "warning": {
+        "requiredFields": "Required.",
+        "requiredFieldMinCharacters": "At least 5 characters.",
+        "requiredNumeric": "Please enter a number.",
+        "requiredNumericMinMax": "Enter a number between 0 and 20.",
+        "mapMoved": "Some values do not match the current map view.",
+        "sendNoSteps": "Submitting a story is only possible when a step/chapter has been added.",
+        "sendNoHTML": "Submitting a subchapter is only possible once content has been added.",
+        "storyNotSaved": "Your story could not be saved.",
+        "noIntervalOnScrolly": "Scrollable stories cannot have an autoplay interval.",
+        "noStepInChapter": "Chapters must contain at least one step."
+      },
+      "error": {
+        "chapterNumberAlreadyExists": "A chapter with this number already exists. Please choose another number.",
+        "stepNumberAlreadyExists": "A step with this number already exists. Please choose another number.",
+        "errorAddingImage": "The image could not be loaded. Please try another file.",
+        "storyDeleted": "Story could not be deleted."
+      },
+      "confirm": {
+        "closeStoryCreation": {
+          "title": "Close Tool",
+          "description": "Are you sure you want to close the tool? Entered data will not be saved.",
+          "confirmButton": "Close",
+          "denyButton": "Cancel"
+        },
+        "deleteStep": {
+          "title": "Delete Step",
+          "description": "Are you sure you want to delete this step? This cannot be undone.",
+          "confirmButton": "Delete",
+          "denyButton": "Cancel"
+        },
+        "deleteStory": {
+          "title": "Delete Story",
+          "description": "Are you sure you want to delete this story? This cannot be undone.",
+          "confirmButton": "Delete",
+          "denyButton": "Cancel"
+        },
+        "createStoryDataProtectionNotice": {
+          "title": "Accept Privacy Policy",
+          "description": "By continuing, you agree to our privacy policy. Please read it carefully to understand how we use and protect your data.",
+          "confirmButton": "Accept",
+          "denyButton": "Do Not Accept"
+        }
+      },
+      "button": {
+        "cancel": "Cancel",
+        "addStep": "Add Step",
+        "deleteStep": "Delete",
+        "submitAddStep": "Add Step to Story",
+        "submitEditStep": "Save",
+        "previewStory": "Preview",
+        "uploadStory": "Submit",
+        "share": "Share",
+        "shareSettings": "Settings",
+        "addSharedWith": "Add",
+        "featured": "Featured",
+        "backToStory": "Back to Story",
+        "backToStep": "Back to Step",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "newChapter": "New Chapter"
     }
   }
 }
