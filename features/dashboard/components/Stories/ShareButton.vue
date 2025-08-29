@@ -1,35 +1,42 @@
 <script setup>
-import {useTranslation} from "i18next-vue";
-import { mdiLink } from "@mdi/js";
+import { ref, computed } from "vue";
+import { useTranslation } from "i18next-vue";
+import { mdiShareVariant } from "@mdi/js";
 
-const {t} = useTranslation();
-const {storyId} = defineProps({
-    storyId: {
-        type: String,
-        default: "share-story"
-    }
+import ShareDialog from "./ShareDialog.vue";
+
+const { t } = useTranslation();
+
+const props = defineProps({
+    storyId: { type: String, required: true },
+    title: { type: String, default: "Story" },
 });
 
-function shareStory () {
-    console.log("shareStory", storyId);
+const open = ref(false);
+const btnLabel = computed(() => t("additional:modules.dataNarrator.button.share", "Share"));
+
+function onClick() {
+    open.value = true;
 }
 </script>
 
 <template>
-    <v-tooltip top>
-        <template>
-            <v-icon
+    <v-tooltip location="top">
+        <template #activator="{ props: actv }">
+            <v-btn
+                v-bind="actv"
                 id="share-button"
-                @click="shareStory"
+                variant="text"
+                density="comfortable"
+                icon
+                :aria-label="btnLabel"
+                @click.stop="onClick"
             >
-                {{ mdiLink }}
-            </v-icon>
+                <v-icon size="20" :icon="mdiShareVariant" />
+            </v-btn>
         </template>
-        <span>
-            {{
-                t("additional:modules.dataNarrator.button.share")
-            }}
-        </span>
+        <span>{{ btnLabel }}</span>
     </v-tooltip>
-</template>
 
+    <ShareDialog v-model="open" :title="title" :story-id="storyId" />
+</template>

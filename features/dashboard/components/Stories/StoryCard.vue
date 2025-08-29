@@ -58,13 +58,13 @@ async function playStory() {
             </div>
 
             <div class="card-header-actions">
+                <ShareButton
+                    :story-id="story.id"
+                />
                 <FeaturedButton
                     :story-id="story.id"
                     :is-featured="story.featured"
                     :is-admin="false"
-                />
-                <ShareButton
-                    :story-id="story.id"
                 />
             </div>
         </div>
@@ -140,6 +140,7 @@ async function playStory() {
     .card-header-actions {
         display: flex;
         align-items: center;
+        gap: 4px;
     }
 }
 

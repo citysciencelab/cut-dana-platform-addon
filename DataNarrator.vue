@@ -5,6 +5,7 @@ import CreateStory from "./features/stories/components/CreateStory.vue";
 import EditStory from "./features/stories/components/EditStory.vue";
 import PlayStory from "./features/stories/components/__new/PlayStory.vue";
 import * as constants from "./store/contantsDataNarrator";
+import {useDeepLink} from "./hooks/useDeepLink";
 
 defineOptions({
     name: "DataNarrator"
@@ -15,6 +16,7 @@ const {disableFooter, disableMainMenu, disableSecondaryMenu, toolwindowMode, mod
 disableFooter();
 disableMainMenu();
 disableSecondaryMenu();
+useDeepLink();
 </script>
 
 <template lang="html">

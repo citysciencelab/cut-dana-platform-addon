@@ -9,6 +9,13 @@ const {toolwindowMode} = useDataNarrator();
 const props = defineProps({
    title: String
 });
+
+function backToDashboard() {
+    gotoPage(dataNarratorModes.DASHBOARD);
+
+    const baseUrl = `${location.origin}/portal`;
+    window.history.replaceState({}, "", baseUrl);
+}
 </script>
 
 <template>
@@ -24,7 +31,7 @@ const props = defineProps({
                     :icon="mdiArrowLeft"
                     size="compact"
                     class="mr-2"
-                    @click="() => gotoPage(dataNarratorModes.DASHBOARD)"
+                    @click="backToDashboard"
                 />
 
                 <div class="bold">{{props.title}}</div>
