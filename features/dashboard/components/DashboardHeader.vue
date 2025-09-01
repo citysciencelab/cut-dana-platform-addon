@@ -38,16 +38,16 @@ const getBackgroundStyle = () => ({
         <Teleport v-if="toolwindowMode === ToolwindowModes.MOBILE" to="body">
             <div class="login-row-mobile">
                 <div class="d-flex justify-end align-center mt-2 ga-2">
-                    <LoginButton />
-                    <LanguageSwitchButton />
+                    <LoginButton/>
+                    <LanguageSwitchButton/>
                 </div>
             </div>
         </Teleport>
 
         <div v-else class="login-row">
             <div class="d-flex justify-end align-center mt-2 ga-2">
-                <LoginButton />
-                <LanguageSwitchButton />
+                <LoginButton/>
+                <LanguageSwitchButton/>
             </div>
         </div>
 
@@ -75,7 +75,7 @@ const getBackgroundStyle = () => ({
                 cols="12"
                 class="d-flex justify-start align-center"
             >
-                <v-row>
+                <v-row class="dashboard-content-row flex-column flex-sm-row">
                     <v-col
                         lg="1"
                         md="1"
@@ -103,7 +103,7 @@ const getBackgroundStyle = () => ({
                         <h4 class="header-h4">
                             {{ t("additional:modules.dataNarrator.dashboardView.subtitle") }}
                         </h4>
-                        <p>{{ t("additional:modules.dataNarrator.dashboardView.description") }}</p>
+                        <p class="header-body">{{ t("additional:modules.dataNarrator.dashboardView.description") }}</p>
                     </v-col>
                 </v-row>
             </v-col>
@@ -111,7 +111,7 @@ const getBackgroundStyle = () => ({
                 cols="12"
                 class="d-flex justify-center align-end"
             >
-                <CreateStoryButton />
+                <CreateStoryButton/>
             </v-col>
         </v-row>
 
@@ -138,12 +138,17 @@ const getBackgroundStyle = () => ({
 }
 
 .login-row {
-    top: 0;
+    top: 10px;
     position: sticky;
 }
 
 .dashboard-header {
     z-index: 112 !important;
+    padding: 0 10px;
+
+    @media screen and (max-width: 768px) {
+        padding-right: 0;
+    }
 }
 
 #dana-legend-icon {
@@ -153,14 +158,25 @@ const getBackgroundStyle = () => ({
 }
 
 .with-fancy-background {
-    background-position: right bottom;
+    background-position: -40% -20%;
+    background-size: 120%;
     min-height: 220px;
     align-items: end;
     z-index: 112;
 
     @media (min-width: 768px) {
-        background-position: right top;
+        background-position: 80%;
         min-height: 332px;
+        background-size: 60%;
+    }
+}
+
+.dashboard-content-row {
+    padding-top: 60px !important;
+
+    @media (min-width: 768px) {
+        padding-top: 60px !important;
+        padding-left: 100px !important;
     }
 }
 
@@ -174,7 +190,7 @@ const getBackgroundStyle = () => ({
 
 .header-h1 {
     font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     color: black;
     margin-top: 0.25rem;
@@ -182,5 +198,13 @@ const getBackgroundStyle = () => ({
 
 .header-h4 {
     margin-bottom: 1rem;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.header-body {
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 500;
 }
 </style>

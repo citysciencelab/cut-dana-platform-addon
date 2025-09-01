@@ -29,10 +29,16 @@ const {stories, error, loading, refetchStories} = useDashboard();
 <style scoped lang="scss">
 .dashboard-content-container {
     padding: 1rem;
+    width: 70%;
+    margin: 0 auto;
+
+    @media screen and (max-width: 768px) {
+        width: 100%;
+    }
 
     .stories-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 20px;
         align-items: flex-start;
     }

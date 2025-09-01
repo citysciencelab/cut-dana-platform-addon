@@ -3,6 +3,8 @@ import {computed, ref, watch} from "vue";
 import {mdiChevronRight, mdiEye, mdiMapMarkerPlusOutline, mdiPlus, mdiTrashCan} from "@mdi/js";
 import {useStore} from "vuex";
 
+import TreeNode from "./TreeNode.vue";
+
 const props = defineProps({ modelValue: { type: Array, default: () => [] } });
 const emit  = defineEmits(["update:modelValue"]);
 
@@ -21,23 +23,39 @@ const baseLayerIds = computed(() => {
     return new Set(els.map(e => String(e.id)));
 });
 
-const baseConfigs = computed(() => allLayerConfigs.value ?? []);
+const subjectElements = computed(() => store.state.layerConfig?.subjectlayer?.elements ?? []);
 
 const informationLayers = computed(() => {
-    const out = [];
-    for (const conf of baseConfigs.value) {
-        if (conf?.type === "layer" && conf?.showInLayerTree === true && conf?.isNeverVisibleInTree !== true) {
-            out.push(conf);
+    const flat = [];
+    const walk = (nodes = []) => {
+        for (const n of nodes) {
+            const isFolder = n?.type === "folder" || n?.typ === "GROUP" || Array.isArray(n?.elements);
+            const isNever  = n?.isNeverVisibleInTree;
+            if (!n?.name || isNever) continue;
+            if (isFolder) walk(n.elements ?? []);
+            else flat.push(n);
         }
-
-        if (Array.isArray(conf?.elements)) {
-            for (const el of conf.elements) {
-                if (el?.type === "layer" && el?.showInLayerTree === true) out.push(el);
-            }
-        }
-    }
-    return out;
+    };
+    walk(subjectElements.value);
+    return flat;
 });
+
+
+function normalize(nodes = []) {
+    return nodes
+        .filter(n => n?.name && !n?.isNeverVisibleInTree)
+        .map(n => {
+            const isFolder = n?.type === "folder" || n?.typ === "GROUP" || Array.isArray(n?.elements);
+            return {
+                id: String(n.id ?? `folder:${n.name}`),
+                name: n.name,
+                isFolder,
+                raw: n,
+                children: isFolder ? normalize(n.elements ?? []) : []
+            };
+        });
+}
+const layerTree = computed(() => normalize(subjectElements.value));
 
 const displayLayers = computed(() => {
     const list = informationLayers.value.slice();
@@ -159,25 +177,15 @@ watch(
             </v-card-title>
 
             <v-card-text>
-                <v-list density="comfortable">
-                    <v-list-item
-                        v-for="l in displayLayers"
-                        :key="l.id ?? l.name"
-                        :title="l.name"
-                        :disabled="baseLayerIds.has(String(l.id)) || selectedIds.includes(l.id)"
-                    >
-                        <template #append>
-                            <v-btn
-                                size="small"
-                                variant="text"
-                                :prepend-icon="mdiPlus"
-                                :disabled="selectedLayers.some(s => s.id === l.id)"
-                                @click="addLayer(l.id)"
-                            >
-                                Add layer
-                            </v-btn>
-                        </template>
-                    </v-list-item>
+                <v-list density="comfortable" class="pa-0">
+                    <TreeNode
+                        v-for="node in layerTree"
+                        :key="node.id"
+                        :node="node"
+                        :selected-ids="selectedIds"
+                        :base-layer-ids="baseLayerIds"
+                        @add="addLayer"
+                    />
                 </v-list>
             </v-card-text>
 

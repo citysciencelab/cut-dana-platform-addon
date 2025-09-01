@@ -11,6 +11,7 @@ import {backendUrl, dataNarratorModes} from "../../../../store/contantsDataNarra
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 import {useStory} from "../../../stories/hooks/useStory";
 import {useLogin} from "../../hooks/useLogin";
+import {incrementStoryViews} from "../../services/incrementStoryViews";
 
 const {userId} = useLogin();
 const {gotoPage} = useDataNarrator();
@@ -28,14 +29,19 @@ const props = defineProps({
     },
 });
 
-function getFileUrl (titleImage) {
+function getFileUrl(titleImage) {
     return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
 }
 
 async function playStory() {
+    // count a view
+    try { incrementStoryViews(props.story.id) } catch (_) { }
+
     currentStoryId.value = props.story.id;
     gotoPage(dataNarratorModes.PLAY_STORY);
 }
+
+console.log('story', props.story);
 </script>
 
 <template>
@@ -54,7 +60,7 @@ async function playStory() {
                 <div class="card-header-title-text">
                     {{ story.title }}
                 </div>
-                <AuthorDisplay :authorId="story.author" />
+                <AuthorDisplay :authorId="story.author"/>
             </div>
 
             <div class="card-header-actions">
@@ -64,7 +70,7 @@ async function playStory() {
                 <FeaturedButton
                     :story-id="story.id"
                     :is-featured="story.featured"
-                    :is-admin="false"
+                    :is-admin="userId === story.owner"
                 />
             </div>
         </div>
@@ -92,7 +98,7 @@ async function playStory() {
                     />
                 </v-col>
                 <v-col class="play-button">
-                    <PlayButton :story-id="story._id" @click="playStory" />
+                    <PlayButton :story-id="story._id" @click="playStory"/>
                 </v-col>
             </v-row>
         </v-card-actions>
@@ -107,7 +113,7 @@ async function playStory() {
 
 <style lang="scss" scoped>
 .story-card {
-    border:  1px solid rgba(0, 0, 0, 0.40);
+    border: 1px solid rgba(0, 0, 0, 0.40);
     border-radius: 5px;
 
     &-cover {
@@ -125,7 +131,7 @@ async function playStory() {
 .card-header {
     padding: 10px 12px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 
     .card-header-title {
         flex: 1;
@@ -133,7 +139,7 @@ async function playStory() {
         &-text {
             font-weight: bold;
             text-transform: capitalize;
-            font-size: 24px;
+            font-size: 20px;
         }
     }
 
