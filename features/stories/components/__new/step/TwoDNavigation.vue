@@ -20,11 +20,11 @@ const centerCoordinates = ref(props.modelValue.centerCoordinates);
 const zoomLevel = ref(props.modelValue.zoomLevel);
 
 watch([centerCoordinates, zoomLevel], () => {
-   emit('update:modelValue', {
-       ...props.modelValue,
-       centerCoordinates: centerCoordinates.value,
-       zoomLevel: zoomLevel.value
-   });
+    emit('update:modelValue', {
+        ...props.modelValue,
+        centerCoordinates: (centerCoordinates.value ?? []).map(Number),
+        zoomLevel: Number(zoomLevel.value)
+    });
 });
 </script>
 
@@ -102,38 +102,38 @@ watch([centerCoordinates, zoomLevel], () => {
     display: flex;
     gap: 8px;
 
-  .position-container {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
-    flex: 1;
+    .position-container {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px;
+        flex: 1;
 
-    .position-inputs {
-      display: flex;
-      gap: 8px;
+        .position-inputs {
+            display: flex;
+            gap: 8px;
 
-      input[type="text"] {
-        border-bottom: 1px solid #a1a1a1;
-        max-width: 120px;
-      }
+            input[type="text"] {
+                border-bottom: 1px solid #a1a1a1;
+                max-width: 120px;
+            }
+        }
     }
-  }
 
-  .zoom-container {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
-    width: 100px;
+    .zoom-container {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px;
+        width: 100px;
 
-    .zoom-inputs {
-      display: flex;
-      gap: 8px;
+        .zoom-inputs {
+            display: flex;
+            gap: 8px;
 
-      input[type="text"] {
-        border-bottom: 1px solid #a1a1a1;
-        max-width: 16px;
-      }
+            input[type="text"] {
+                border-bottom: 1px solid #a1a1a1;
+                max-width: 16px;
+            }
+        }
     }
-  }
 }
 </style>

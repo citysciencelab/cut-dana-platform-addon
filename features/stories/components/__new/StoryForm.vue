@@ -35,14 +35,14 @@ const chapters = ref([
 
 const selectedImage = ref(null);
 const imagePreview = computed(() => {
-    if(selectedImage.value) return URL.createObjectURL(selectedImage.value);
+    if (selectedImage.value) return URL.createObjectURL(selectedImage.value);
     return props.coverImageUrl || null;
 });
 
 const addNewChapter = () => {
     chapters.value.push({
         id: nextChapterId++,
-        sequence: chapters.value.length,
+        sequence: chapters.value.length + 1,
         title: '',
         steps: [],
     });
@@ -52,19 +52,24 @@ const publish = async () => {
     isSaving.value = true;
 
     const payload = {
-        title: storyName.value,
+        title: String(storyName.value ?? '').trim(),
         chapters: chapters.value
     };
 
     let storyId = props.storyId;
-    if(storyId) {
+    if (storyId) {
         const updateResp = await editStory(storyId, payload);
-        if (!updateResp.ok) throw new Error("Failed to edit story");
-        await updateResp.json();
+        const bodyText = await updateResp.text();
+        if (!updateResp.ok) {
+            throw new Error(`Failed to edit story: ${updateResp.status} ${bodyText}`);
+        }
     } else {
         const createResp = await createStory(payload);
-        if (!createResp.ok) throw new Error("Failed to create story");
-        const newStory = await createResp.json();
+        const bodyText = await createResp.text();
+        if (!createResp.ok) {
+            throw new Error(`Failed to create story: ${createResp.status} ${bodyText}`);
+        }
+        const newStory = JSON.parse(bodyText);
         storyId = newStory.id;
     }
 
@@ -83,12 +88,12 @@ const publish = async () => {
 watch(
     [() => props.storyName, () => props.chapters, () => props.storyId],
     ([s, c, sId]) => {
-        if(sId) {
+        if (sId) {
             storyName.value = s;
             chapters.value = c;
         }
     },
-    { immediate: true }
+    {immediate: true}
 );
 </script>
 
@@ -143,7 +148,7 @@ watch(
                     />
                 </template>
 
-                <v-btn :icon="mdiDotsVertical" size="compact" />
+                <v-btn :icon="mdiDotsVertical" size="compact"/>
             </v-toolbar>
 
             <img
@@ -218,7 +223,7 @@ watch(
     left: 20px;
     right: 0;
     background-color: #f6f6f6;
-    box-shadow: 0 12px 30px -8px rgba(0,0,0,0.30);
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.30);
     border-radius: .8rem;
     padding: 0 10px;
     display: flex;
