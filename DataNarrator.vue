@@ -1,8 +1,8 @@
 ﻿<script setup>
 import {useDataNarrator} from "./hooks/useDataNarrator";
 import DataNarratorDashboard from "./features/dashboard/components/Dashboard.vue";
-import CreateStory from "./features/stories/components/CreateStory.vue";
-import EditStory from "./features/stories/components/EditStory.vue";
+import CreateStory from "./features/stories/components/__new/CreateStory.vue";
+import EditStory from "./features/stories/components/__new/EditStory.vue";
 import PlayStory from "./features/stories/components/__new/PlayStory.vue";
 import * as constants from "./store/contantsDataNarrator";
 import {useDeepLink} from "./hooks/useDeepLink";

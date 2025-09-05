@@ -1,11 +1,11 @@
 <script setup>
 import {onMounted, ref, watch} from "vue";
 
-import StoryForm from "./__new/StoryForm.vue";
-import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
-import {getStory} from "../services/getStory";
-import {useStory} from "../hooks/useStory";
-import {backendUrl} from "../../../store/contantsDataNarrator";
+import StoryForm from "./StoryForm.vue";
+import ToolWindow from "../../../shared/Toolwindow/ToolWindow.vue";
+import {getStory} from "../../services/getStory";
+import {useStory} from "../../hooks/useStory";
+import {backendUrl} from "../../../../store/contantsDataNarrator";
 
 const {currentStoryId} = useStory();
 

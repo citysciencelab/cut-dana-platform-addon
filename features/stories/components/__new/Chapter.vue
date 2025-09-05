@@ -1,15 +1,21 @@
 <script setup>
-import { mdiFormatListBulleted, mdiPlus } from "@mdi/js";
-import { ref } from "vue";
+import {mdiFormatListBulleted, mdiPlus} from "@mdi/js";
 
 import ChapterStep from "./ChapterStep.vue";
+import {numberToLetter} from "../../../../utils/numberToLetter";
 
 const props = defineProps({
-   chapter: {
-       type: Object,
-       required: true
-   }
+    chapter: {
+        type: Object,
+        required: true
+    },
+    activeStepIndex: {
+        type: Number,
+        required: true,
+    }
 });
+
+const emits = defineEmits(["addNewChapter", "addNewStep"]);
 
 function getDefaultStep(id) {
     return {
@@ -27,6 +33,7 @@ function getDefaultStep(id) {
 
 function addStep() {
     props.chapter.steps.push(getDefaultStep(props.chapter.steps.length + 1));
+    emits("addNewStep");
 }
 </script>
 
@@ -34,7 +41,7 @@ function addStep() {
     <div class="chapter-container">
         <div class="chapter">
             <v-icon>{{ mdiFormatListBulleted }}</v-icon>
-            <div class="chapter-label">{{ props.chapter.id + 1 }}</div>
+            <div class="chapter-label">{{ numberToLetter(props.chapter.sequence) }}</div>
             <div class="chapter-title">
                 <input
                     type="text"
@@ -43,12 +50,15 @@ function addStep() {
                     required
                 />
             </div>
-<!--            <div class="chapter-step-add">-->
-<!--                <v-icon>{{ mdiPlus }}</v-icon>-->
-<!--            </div>-->
+            <div class="chapter-step-add" @click="emits('addNewChapter')">
+                <v-icon>{{ mdiPlus }}</v-icon>
+            </div>
         </div>
 
-        <ChapterStep v-for="(step, index) in props.chapter.steps" :key="index" :step="step" />
+        <ChapterStep
+            v-if="props.activeStepIndex > -1 && props.activeStepIndex < props.chapter.steps.length"
+            :step="props.chapter.steps[props.activeStepIndex]"
+        />
 
         <v-row justify="center">
             <v-btn variant="plain" class="mt-2" @click="addStep">

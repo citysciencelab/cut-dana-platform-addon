@@ -1,13 +1,13 @@
 <script setup>
-import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiPlus, mdiTrashCan} from "@mdi/js";
+import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan} from "@mdi/js";
 import {computed, ref, watch} from "vue";
 
 import Chapter from "./Chapter.vue";
+import StoryOverview from "./StoryOverview.vue";
 import {dataNarratorModes, ToolwindowModes} from "../../../../store/contantsDataNarrator";
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 import {uploadCoverImage} from "../../services/addCoverImage";
 import {createStory} from "../../services/createStory";
-import Preview from "./preview/Preview.vue";
 import {editStory} from "../../services/editStory";
 
 const props = defineProps({
@@ -21,7 +21,9 @@ const {toolwindowMode} = useDataNarrator();
 const {gotoPage} = useDataNarrator();
 const storyName = ref("");
 const isSaving = ref(false);
-const previewModal = ref(false);
+const previewVisible = ref(false);
+const activeChapterIndex = ref(0);
+const activeStepIndex = ref(-1);
 
 let nextChapterId = 1;
 const chapters = ref([
@@ -39,16 +41,60 @@ const imagePreview = computed(() => {
     return props.coverImageUrl || null;
 });
 
-const addNewChapter = () => {
-    chapters.value.push({
+function addNewChapter() {
+    const newChapter = {
         id: nextChapterId++,
         sequence: chapters.value.length + 1,
         title: '',
         steps: [],
-    });
+    };
+
+    chapters.value.push(newChapter);
+
+    activeChapterIndex.value = chapters.value.length - 1;
+    activeStepIndex.value = -1;
 }
 
-const publish = async () => {
+function handleAddNewStep() {
+    const chapter = chapters.value[activeChapterIndex.value];
+    activeStepIndex.value = chapter.steps.length - 1;
+}
+
+function handleDeleteStep({chapterIdx, stepIdx}) {
+    const chapter = chapters.value?.[chapterIdx];
+    if (!chapter) return;
+    if (stepIdx < 0 || stepIdx >= chapter.steps.length) return;
+    chapter.steps.splice(stepIdx, 1);
+}
+
+function handleReorderSteps({chapterIdx, newList}) {
+    const chapter = chapters.value?.[chapterIdx];
+    if (!chapter) return;
+    chapter.steps = [...newList];
+}
+
+function handleEditStep({chapterIdx, stepIdx}) {
+    activeChapterIndex.value = chapterIdx;
+    activeStepIndex.value = stepIdx;
+    previewVisible.value = false;
+}
+
+function handleEditChapter({chapterIdx}) {
+    const chapter = chapters.value?.[chapterIdx];
+    if (!chapter) return;
+    previewVisible.value = false;
+    activeChapterIndex.value = chapterIdx;
+    const stepCount = chapters.value[chapterIdx].steps.length ?? 0;
+    activeStepIndex.value = stepCount ? stepCount - 1 : -1;
+}
+
+function handleDeleteChapter({chapterIdx}) {
+    if (chapterIdx < 0 || chapterIdx >= chapters.value.length) return;
+    chapters.value.splice(chapterIdx, 1);
+    chapters.value.forEach((ch, i) => (ch.sequence = i + 1));
+}
+
+async function publish() {
     isSaving.value = true;
 
     const payload = {
@@ -90,7 +136,7 @@ watch(
     ([s, c, sId]) => {
         if (sId) {
             storyName.value = s;
-            chapters.value = c;
+            chapters.value = c ?? [];
         }
     },
     {immediate: true}
@@ -99,7 +145,7 @@ watch(
 
 <template>
     <div
-        v-if="props.storyLoading"
+        v-if="false"
         :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
     >
         <v-row>
@@ -168,22 +214,29 @@ watch(
             </div>
         </div>
 
-        <div class="story-form-content">
+        <div v-if="!previewVisible" class="story-form-content">
             <Chapter
-                v-for="chapter in chapters"
-                :key="chapter.id"
-                :chapter="chapter"
+                :key="chapters[activeChapterIndex]?.id ?? activeChapterIndex"
+                :chapter="chapters[activeChapterIndex]"
+                :activeStepIndex="activeStepIndex"
+                @addNewChapter="addNewChapter"
+                @addNewStep="handleAddNewStep"
             />
-
-            <v-btn variant="plain" class="text-capitalize mt-2" @click="addNewChapter">
-                <template #prepend>
-                    <div class="add-chapter-button-icon">
-                        <v-icon>{{ mdiPlus }}</v-icon>
-                    </div>
-                </template>
-                Neues Kapitel
-            </v-btn>
         </div>
+
+        <StoryOverview
+            v-else
+            :chapters="chapters"
+            @addNewChapter="() => {
+                previewVisible = false;
+                addNewChapter();
+            }"
+            @deleteStep="handleDeleteStep"
+            @reorderSteps="handleReorderSteps"
+            @editStep="handleEditStep"
+            @editChapter="handleEditChapter"
+            @deleteChapter="handleDeleteChapter"
+        />
 
         <v-container class="story-form-footer">
             <v-row justify="center">
@@ -192,7 +245,7 @@ watch(
                     class="mr-2"
                     variant="outlined"
                     color="black"
-                    @click="previewModal = true"
+                    @click="previewVisible = !previewVisible"
                 >
                     VORSCHAU
                 </v-btn>
@@ -200,18 +253,17 @@ watch(
                     type="submit"
                     variant="flat"
                     color="black"
-                    :loading="isSaving"
                 >
                     VERÖFFENTLICHEN
                 </v-btn>
             </v-row>
         </v-container>
 
-        <Preview
-            :chapters="chapters"
-            :hasImage="!!selectedImage || !!imagePreview"
-            v-model:open="previewModal"
-        />
+        <!--        <Preview-->
+        <!--            :chapters="chapters"-->
+        <!--            :hasImage="!!selectedImage || !!imagePreview"-->
+        <!--            v-model:open="previewModal"-->
+        <!--        />-->
     </form>
 </template>
 

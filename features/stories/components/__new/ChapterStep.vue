@@ -1,5 +1,6 @@
 <script setup>
 import {useTranslation} from "i18next-vue";
+import {ref, watch, nextTick} from "vue";
 
 import StepTitle from "./step/StepTitle.vue";
 import StepDescription from "./step/StepDescription.vue";
@@ -14,7 +15,14 @@ const {step} = defineProps({
     }
 });
 
+const stepTitleRef = ref(null);
+
 const {t} = useTranslation();
+
+watch(() => step?.id, async () => {
+    await nextTick();
+    stepTitleRef.value?.focus?.();
+});
 </script>
 
 <template>
@@ -27,27 +35,27 @@ const {t} = useTranslation();
             </v-col>
 
             <v-col cols="11" class="p-0">
-                <StepTitle v-model:value="step.title" />
+                <StepTitle ref="stepTitleRef" v-model:value="step.title"/>
             </v-col>
         </v-row>
 
         <v-row class="mb-2">
             <v-col cols="12" class="p-0">
-                <StepDescription v-model:value="step.description" />
+                <StepDescription v-model:value="step.description"/>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="12" class="p-0">
-                {{ t( "additional:modules.dataNarrator.label.mapDisplay" ) }}
+                {{ t("additional:modules.dataNarrator.label.mapDisplay") }}
             </v-col>
         </v-row>
 
-        <TwoDNavigation v-model="step.mapConfig" />
+        <TwoDNavigation v-model="step.mapConfig"/>
 
         <v-row class="mb-2">
             <v-col cols="12" class="p-0">
-                <BackgroundMap v-model="step.mapConfig.backgroundMapId" />
+                <BackgroundMap v-model="step.mapConfig.backgroundMapId"/>
             </v-col>
         </v-row>
 
@@ -57,7 +65,7 @@ const {t} = useTranslation();
             </v-col>
         </v-row>
 
-        <Layers v-model="step.informationLayerIds" />
+        <Layers v-model="step.informationLayerIds"/>
     </div>
 </template>
 
