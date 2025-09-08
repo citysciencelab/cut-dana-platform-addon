@@ -1,5 +1,5 @@
 <script setup>
-import {mdiPencil, mdiTrashCanOutline} from "@mdi/js";
+import {mdiPencil, mdiShareVariant, mdiTrashCanOutline} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
 
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
@@ -16,7 +16,7 @@ const {storyId} = defineProps({
     }
 });
 
-function gotoSelectedStory () {
+function gotoSelectedStory() {
     currentStoryId.value = storyId;
     gotoPage(constants.dataNarratorModes.EDIT_STORY);
 }
@@ -27,11 +27,13 @@ function gotoSelectedStory () {
         <template #activator="{ props }">
             <v-btn
                 v-bind="props"
-                :icon="mdiPencil"
                 variant="text"
-                density="comfortable"
+                density="compact"
+                icon
                 @click="gotoSelectedStory"
-            />
+            >
+                <v-icon size="18" :icon="mdiPencil"/>
+            </v-btn>
         </template>
         {{ t("additional:modules.dataNarrator.creator.edit") }}
     </v-tooltip>

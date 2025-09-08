@@ -27,12 +27,12 @@ function onClick() {
                 v-bind="actv"
                 id="share-button"
                 variant="text"
-                density="comfortable"
+                density="compact"
                 icon
                 :aria-label="btnLabel"
                 @click.stop="onClick"
             >
-                <v-icon size="20" :icon="mdiShareVariant" />
+                <v-icon size="16" :icon="mdiShareVariant"/>
             </v-btn>
         </template>
         <span>{{ btnLabel }}</span>

@@ -1,12 +1,12 @@
 <script setup>
-import {mdiPinOutline} from "@mdi/js";
+import {mdiChevronDown, mdiChevronUp, mdiPinOutline} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
 import {ref, watch} from "vue";
 
 import {useNavigation} from "../../../../steps/hooks/useNavigation";
 
 const {t} = useTranslation();
-const {zoom, center} = useNavigation();
+const {zoom, center, zoomIn, zoomOut, canZoomIn, canZoomOut} = useNavigation();
 
 const props = defineProps({
     modelValue: {
@@ -83,6 +83,33 @@ watch([centerCoordinates, zoomLevel], () => {
                     required
                 >
 
+                <div class="zoom-stepper">
+                    <v-btn
+                        variant="text"
+                        size="compact"
+                        :icon="mdiChevronUp"
+                        class="stepper-btn"
+                        :title="t('additional:modules.dataNarrator.label.zoomIn')"
+                        @click="() => {
+                            zoomIn();
+                            zoomLevel = zoom;
+                        }"
+                        :disabled="!canZoomIn"
+                    />
+                    <v-btn
+                        variant="text"
+                        size="compact"
+                        :icon="mdiChevronDown"
+                        class="stepper-btn"
+                        :title="t('additional:modules.dataNarrator.label.zoomOut')"
+                        @click="() => {
+                            zoomOut();
+                            zoomLevel = zoom;
+                        }"
+                        :disabled="!canZoomOut"
+                    />
+                </div>
+
                 <v-btn
                     variant="text"
                     size="compact"
@@ -111,6 +138,7 @@ watch([centerCoordinates, zoomLevel], () => {
         .position-inputs {
             display: flex;
             gap: 8px;
+            padding-top: 14px;
 
             input[type="text"] {
                 border-bottom: 1px solid #a1a1a1;
@@ -128,10 +156,24 @@ watch([centerCoordinates, zoomLevel], () => {
         .zoom-inputs {
             display: flex;
             gap: 8px;
+            position: relative;
+            align-items: flex-end;
 
             input[type="text"] {
                 border-bottom: 1px solid #a1a1a1;
                 max-width: 16px;
+            }
+
+            .zoom-stepper {
+                display: flex;
+                flex-direction: column;
+
+                .stepper-btn {
+                    height: 18px;
+                    width: 18px;
+                    min-width: 18px;
+                    padding: 0;
+                }
             }
         }
     }

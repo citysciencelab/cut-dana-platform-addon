@@ -13,6 +13,7 @@ import {editStory} from "../../services/editStory";
 const props = defineProps({
     storyId: Number,
     storyName: String,
+    description: String,
     chapters: Array,
     storyLoading: Boolean,
     coverImageUrl: String,
@@ -20,6 +21,7 @@ const props = defineProps({
 const {toolwindowMode} = useDataNarrator();
 const {gotoPage} = useDataNarrator();
 const storyName = ref("");
+const description = ref("");
 const isSaving = ref(false);
 const previewVisible = ref(false);
 const activeChapterIndex = ref(0);
@@ -99,6 +101,7 @@ async function publish() {
 
     const payload = {
         title: String(storyName.value ?? '').trim(),
+        description: String(description.value ?? '').trim(),
         chapters: chapters.value
     };
 
@@ -132,11 +135,13 @@ async function publish() {
 }
 
 watch(
-    [() => props.storyName, () => props.chapters, () => props.storyId],
-    ([s, c, sId]) => {
+    [() => props.storyName, () => props.description, () => props.chapters, () => props.storyId],
+    ([s, d, c, sId]) => {
         if (sId) {
-            storyName.value = s;
+            storyName.value = s ?? "";
+            description.value = d ?? "";
             chapters.value = c ?? [];
+            previewVisible.value = true;
         }
     },
     {immediate: true}
@@ -145,7 +150,7 @@ watch(
 
 <template>
     <div
-        v-if="false"
+        v-if="storyLoading"
         :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
     >
         <v-row>
@@ -180,7 +185,7 @@ watch(
                         id="title"
                         width="200"
                         variant="underlined"
-                        placeholder="STORY NAME"
+                        placeholder="Story name"
                         v-model="storyName"
                         required
                     />
@@ -215,6 +220,16 @@ watch(
         </div>
 
         <div v-if="!previewVisible" class="story-form-content">
+            <v-textarea
+                id="description"
+                v-model="description"
+                variant="outlined"
+                hide-details="true"
+                rows="3"
+                class="mb-2 bg-white"
+                placeholder="Story description"
+            />
+
             <Chapter
                 :key="chapters[activeChapterIndex]?.id ?? activeChapterIndex"
                 :chapter="chapters[activeChapterIndex]"

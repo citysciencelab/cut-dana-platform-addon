@@ -10,6 +10,12 @@ export function useNavigation () {
     const initialZoom = ref(store.state.Maps.zoom);
     const initialCenter = ref(store.state.Maps.center);
 
+    const canZoomIn  = computed(() => !store.getters["Maps/isMaxZoomDisplayed"]);
+    const canZoomOut = computed(() => !store.getters["Maps/isMinZoomDisplayed"]);
+
+    const zoomIn  = () => store.dispatch("Maps/increaseZoom");
+    const zoomOut = () => store.dispatch("Maps/decreaseZoom");
+
     const setView = ({center, zoom}) => {
         store.commit("Maps/setView", {
             center,
@@ -39,7 +45,11 @@ export function useNavigation () {
         center,
         setView,
         setAnimatedView,
-        defaultBaseLayerId: "453",
+        zoomIn,
+        zoomOut,
+        canZoomIn,
+        canZoomOut,
+        defaultBaseLayerId: "19969",
         setBaseLayer
     }
 }

@@ -48,7 +48,7 @@ async function makeItFeatured() {
                 v-bind="actv"
                 id="featured-button"
                 variant="text"
-                density="comfortable"
+                density="compact"
                 icon
                 @click.stop="makeItFeatured"
                 :disabled="!isAdmin"
@@ -57,7 +57,7 @@ async function makeItFeatured() {
             </v-btn>
         </template>
         <span>
-            {{ t("additional:modules.tools.dataNarrator.button.featured") }}
+            {{ t("additional:modules.dataNarrator.button.featured", "Featured") }}
         </span>
     </v-tooltip>
 </template>

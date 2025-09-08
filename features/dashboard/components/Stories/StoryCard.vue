@@ -35,13 +35,14 @@ function getFileUrl(titleImage) {
 
 async function playStory() {
     // count a view
-    try { incrementStoryViews(props.story.id) } catch (_) { }
+    try {
+        incrementStoryViews(props.story.id)
+    } catch (_) {
+    }
 
     currentStoryId.value = props.story.id;
     gotoPage(dataNarratorModes.PLAY_STORY);
 }
-
-console.log('story', props.story);
 </script>
 
 <template>
@@ -91,11 +92,11 @@ console.log('story', props.story);
                         :story-id="story.id"
                         @deleted="() => emit('deleted')"
                     />
-                    <ShareSettingsButton
-                        v-if="false"
-                        :story="story"
-                        @toggle:shared-settings="shareSettings = !shareSettings"
-                    />
+                    <!--                    <ShareSettingsButton-->
+                    <!--                        v-if="false"-->
+                    <!--                        :story="story"-->
+                    <!--                        @toggle:shared-settings="shareSettings = !shareSettings"-->
+                    <!--                    />-->
                 </v-col>
                 <v-col class="play-button">
                     <PlayButton :story-id="story._id" @click="playStory"/>
@@ -129,7 +130,7 @@ console.log('story', props.story);
 }
 
 .card-header {
-    padding: 10px 12px;
+    padding: 10px 12px 8px 12px;
     display: flex;
     align-items: flex-start;
 
@@ -139,14 +140,13 @@ console.log('story', props.story);
         &-text {
             font-weight: bold;
             text-transform: capitalize;
-            font-size: 20px;
+            font-size: 18px;
         }
     }
 
     .card-header-actions {
         display: flex;
         align-items: center;
-        gap: 4px;
     }
 }
 
@@ -156,6 +156,7 @@ console.log('story', props.story);
     line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    color: #4c4c4c;
 }
 
 .card-actions {

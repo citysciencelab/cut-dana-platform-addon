@@ -38,7 +38,7 @@ function addStep() {
 </script>
 
 <template>
-    <div class="chapter-container">
+    <div v-if="chapter" class="chapter-container">
         <div class="chapter">
             <v-icon>{{ mdiFormatListBulleted }}</v-icon>
             <div class="chapter-label">{{ numberToLetter(props.chapter.sequence) }}</div>

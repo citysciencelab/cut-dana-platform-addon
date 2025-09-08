@@ -13,7 +13,7 @@ const props = defineProps({
 function backToDashboard() {
     gotoPage(dataNarratorModes.DASHBOARD);
 
-    const baseUrl = `${location.origin}/portal`;
+    const baseUrl = `${location.origin}/portal/stories`;
     window.history.replaceState({}, "", baseUrl);
 }
 </script>

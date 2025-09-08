@@ -33,12 +33,14 @@ async function deleteStoryWithConfirm() {
         <template v-slot:activator="{ props }">
             <v-btn
                 v-bind="props"
-                :icon="mdiTrashCanOutline"
                 @click="deleteStoryWithConfirm"
                 variant="text"
-                density="comfortable"
+                icon
+                density="compact"
                 :loading="isLoading"
-            />
+            >
+                <v-icon size="18" :icon="mdiTrashCanOutline"/>
+            </v-btn>
         </template>
         {{ t("additional:modules.dataNarrator.creator.delete") }}
     </v-tooltip>
