@@ -3,6 +3,7 @@ import {mdiFormatListBulleted, mdiPlus} from "@mdi/js";
 
 import ChapterStep from "./ChapterStep.vue";
 import {numberToLetter} from "../../../../utils/numberToLetter";
+import {getStoryColor} from "../../../../utils/getStoryColor";
 
 const props = defineProps({
     chapter: {
@@ -38,10 +39,19 @@ function addStep() {
 </script>
 
 <template>
-    <div v-if="chapter" class="chapter-container">
+    <div
+        v-if="chapter"
+        class="chapter-container"
+        :style="{
+            '--pill-color': getStoryColor(chapter.sequence - 1).primary,
+            '--pill-color-secondary': getStoryColor(chapter.sequence - 1).secondary,
+        }"
+    >
         <div class="chapter">
             <v-icon>{{ mdiFormatListBulleted }}</v-icon>
-            <div class="chapter-label">{{ numberToLetter(props.chapter.sequence) }}</div>
+            <div class="chapter-label">
+                {{ numberToLetter(props.chapter.sequence) }}
+            </div>
             <div class="chapter-title">
                 <input
                     type="text"
@@ -58,6 +68,7 @@ function addStep() {
         <ChapterStep
             v-if="props.activeStepIndex > -1 && props.activeStepIndex < props.chapter.steps.length"
             :step="props.chapter.steps[props.activeStepIndex]"
+            :pillColor="getStoryColor(chapter.id).primary"
         />
 
         <v-row justify="center">
@@ -84,7 +95,7 @@ function addStep() {
         padding: 8px;
 
         &-label {
-            background-color: #413fab;
+            background-color: var(--pill-color);
             padding: 2px 16px;
             border-radius: 20px;
             font-size: 16px;
@@ -121,12 +132,12 @@ function addStep() {
     }
 
     .add-chapter-button-icon {
-        border: 2px solid #226051;
+        border: 2px solid var(--pill-color);
         padding: 0 10px;
         border-radius: 20px;
         font-size: 16px;
         font-weight: bold;
-        color: #226051;
+        color: var(--pill-color);
         cursor: pointer;
     }
 }

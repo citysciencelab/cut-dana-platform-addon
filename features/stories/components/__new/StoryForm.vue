@@ -268,6 +268,7 @@ watch(
                     type="submit"
                     variant="flat"
                     color="black"
+                    :loading="isSaving"
                 >
                     VERÖFFENTLICHEN
                 </v-btn>

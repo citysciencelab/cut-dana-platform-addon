@@ -8,6 +8,7 @@ import {useNavigation} from "../../../steps/hooks/useNavigation";
 import {useStory} from "../../hooks/useStory";
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 import {useStepOverlays} from "../../hooks/useStepOverlays";
+import {getFileUrl} from "../../../../utils/getFileUrl";
 
 const {gotoPage} = useDataNarrator()
 const {currentStoryId} = useStory();
@@ -129,6 +130,15 @@ function back() {
     }
 }
 
+function startFromChapter(idx) {
+    if (!story.value) return;
+    const chapter = story.value.chapters?.[idx];
+    if (!chapter || !chapter.steps?.length) return;
+    chapterIndex.value = idx;
+    stepIndex.value = 0;
+    stage.value = "play";
+}
+
 onBeforeUnmount(() => {
     clearOverlays();
     resetBaseLayer();
@@ -146,10 +156,21 @@ onBeforeUnmount(() => {
 
                     <div v-else>
                         <div v-if="stage === 'overview'">
-                            <h4 class="px-2">{{story.title}}</h4>
+                            <div
+                                v-if="story.titleImage"
+                                class="story-cover mb-2"
+                                :style="`background-image: url(${getFileUrl(story.titleImage)});`"
+                            />
+                            <h5 class="story-title px-2 font-bold mb-2">{{story.title}}</h5>
+                            <div class="story-description px-2 mb-2">{{story.description}}</div>
 
                             <ul class="chapter-list">
-                                <li class="chapter" v-for="(chapter, index) in story.chapters" :key="chapter.id">
+                                <li
+                                    class="chapter"
+                                    v-for="(chapter, index) in story.chapters"
+                                    :key="chapter.id"
+                                    @click="startFromChapter(index)"
+                                >
                                     <div class="chapter-label">{{ index + 1 }}</div>
                                     <div class="chapter-title">
                                         {{ chapter.name }}
@@ -223,6 +244,25 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss" scoped>
+.story-cover {
+    width: 100%;
+    height: 180px;
+    aspect-ratio: 16 / 9;
+    background-color: #f1f1f1;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 5px;
+}
+
+.story-title {
+    font-size: 20px;
+}
+
+.story-description {
+    font-size: 14px;
+}
+
 .chapter-list {
     display: flex;
     flex-direction: column;
@@ -236,6 +276,7 @@ onBeforeUnmount(() => {
     gap: 6px;
     border-radius: 50px;
     padding: 4px 8px;
+    cursor: pointer;
 
     &-label {
         background-color: #413fab;

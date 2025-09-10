@@ -156,7 +156,7 @@ watch(
         <v-btn
             variant="flat"
             size="small"
-            color="#b8e6c2"
+            class="information-btn"
             :prepend-icon="mdiMapMarkerPlusOutline"
             :append-icon="mdiChevronRight"
             rounded
@@ -196,3 +196,9 @@ watch(
         </v-card>
     </v-dialog>
 </template>
+
+<style scoped lang="scss">
+.information-btn {
+    background-color: var(--pill-color-secondary);
+}
+</style>

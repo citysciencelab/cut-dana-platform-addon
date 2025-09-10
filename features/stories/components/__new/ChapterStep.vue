@@ -12,6 +12,9 @@ const {step} = defineProps({
     step: {
         type: Object,
         required: true
+    },
+    pillColor: {
+        type: String,
     }
 });
 
@@ -29,7 +32,10 @@ watch(() => step?.id, async () => {
     <div class="chapter-step px-2 pt-1 pb-2">
         <v-row class="mb-2" align="center">
             <v-col cols="1" class="p-0">
-                <v-btn variant="text" class="pill-button">
+                <v-btn
+                    variant="text"
+                    class="pill-button"
+                >
                     {{ step.id }}
                 </v-btn>
             </v-col>
@@ -78,6 +84,9 @@ watch(() => step?.id, async () => {
     .pill-button {
         .v-btn__content {
             width: 20px !important;
+            border: 2px solid var(--pill-color);
+            color: var(--pill-color);
+            font-weight: bold;
         }
     }
 }

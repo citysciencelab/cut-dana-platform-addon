@@ -3,6 +3,7 @@ import Draggable from "vuedraggable";
 import {mdiDotsVertical, mdiPlus, mdiEqual, mdiDeleteForeverOutline, mdiPencilOutline} from "@mdi/js";
 
 import {numberToLetter} from "../../../../utils/numberToLetter";
+import {getStoryColor} from "../../../../utils/getStoryColor";
 
 const emits = defineEmits([
     "addNewChapter",
@@ -49,7 +50,12 @@ const onDeleteChapterClick = (chapterIdx) => {
 
         <div v-for="(chapter, idx) in props.chapters" :key="chapter.id ?? idx" class="chapter-container">
             <div class="chapter">
-                <div class="chapter-label">{{ numberToLetter(idx + 1) }}</div>
+                <div
+                    class="chapter-label"
+                    :style="{ backgroundColor: getStoryColor(idx).primary }"
+                >
+                    {{ numberToLetter(idx + 1) }}
+                </div>
                 <div class="chapter-title">
                     {{ chapter.title }}
                 </div>
