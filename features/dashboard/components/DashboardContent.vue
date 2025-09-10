@@ -20,6 +20,7 @@ const {stories, error, loading, refetchStories} = useDashboard();
                 :story="story"
                 :grid="true"
                 @deleted="refetchStories"
+                @published="refetchStories"
             />
         </div>
         <div v-else class="no-results">No stories available</div>
@@ -38,9 +39,17 @@ const {stories, error, loading, refetchStories} = useDashboard();
 
     .stories-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 20px;
         align-items: flex-start;
+        grid-template-columns: repeat(1, minmax(240px, 1fr));
+
+        @media (min-width: 600px) {
+            grid-template-columns: repeat(2, minmax(240px, 1fr));
+        }
+
+        @media (min-width: 992px) {
+            grid-template-columns: repeat(3, minmax(240px, 1fr));
+        }
     }
 
     .no-results {

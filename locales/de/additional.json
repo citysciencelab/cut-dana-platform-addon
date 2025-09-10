@@ -151,7 +151,9 @@
         "backToStory": "Zurück zu Story",
         "backToStep": "Zurück zum Schritt",
         "previous": "Zurück",
-        "next": "Weiter"
+        "next": "Weiter",
+        "publish": "Veröffentlichen",
+        "unpublish": "Veröffentlichung aufheben"
       },
       "newChapter": "Neues Kapitel"
     }

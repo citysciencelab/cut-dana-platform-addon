@@ -5,18 +5,19 @@ import AuthorDisplay from "./Author.vue";
 import ShareButton from "./ShareButton.vue";
 import FeaturedButton from "./FeaturedButton.vue";
 import DeleteButton from "./DeleteButton.vue";
-import ShareSettingsButton from "./ShareSettingsButton.vue";
-import ShareSettingsForm from "./ShareSettingsForm.vue";
+import PublishButton from "./PublishButton.vue";
 import {backendUrl, dataNarratorModes} from "../../../../store/contantsDataNarrator";
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 import {useStory} from "../../../stories/hooks/useStory";
 import {useLogin} from "../../hooks/useLogin";
 import {incrementStoryViews} from "../../services/incrementStoryViews";
+import {useDashboard} from "../../hooks/useDashboard";
 
 const {userId} = useLogin();
 const {gotoPage} = useDataNarrator();
 const {currentStoryId} = useStory();
-const emit = defineEmits(['deleted']);
+const {storiesDisplayMode} = useDashboard();
+const emit = defineEmits(['deleted', 'published']);
 
 const props = defineProps({
     story: {
@@ -42,6 +43,9 @@ async function playStory() {
 
     currentStoryId.value = props.story.id;
     gotoPage(dataNarratorModes.PLAY_STORY);
+
+    const baseUrl = `${location.origin}/portal/stories/?id=${props.story.id}`;
+    window.history.replaceState({}, "", baseUrl);
 }
 </script>
 
@@ -73,6 +77,12 @@ async function playStory() {
                     :is-featured="story.featured"
                     :is-admin="userId === story.owner"
                 />
+                <PublishButton
+                    v-if="storiesDisplayMode === 'my' && userId === story.owner"
+                    :is-draft="story.isDraft"
+                    :story-id="story.id"
+                    @success="() => emit('published')"
+                />
             </div>
         </div>
 
@@ -92,23 +102,12 @@ async function playStory() {
                         :story-id="story.id"
                         @deleted="() => emit('deleted')"
                     />
-                    <!--                    <ShareSettingsButton-->
-                    <!--                        v-if="false"-->
-                    <!--                        :story="story"-->
-                    <!--                        @toggle:shared-settings="shareSettings = !shareSettings"-->
-                    <!--                    />-->
                 </v-col>
                 <v-col class="play-button">
                     <PlayButton :story-id="story._id" @click="playStory"/>
                 </v-col>
             </v-row>
         </v-card-actions>
-
-        <ShareSettingsForm
-            v-if="shareSettings"
-            :story="story"
-            @close:shared-settings="shareSettings = false"
-        />
     </v-card>
 </template>
 
@@ -153,9 +152,11 @@ async function playStory() {
 .card-text {
     padding: 0 12px;
     display: -webkit-box;
-    line-clamp: 4;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
     overflow: hidden;
+    white-space: normal;
+    overflow-wrap: anywhere;
     color: #4c4c4c;
 }
 
