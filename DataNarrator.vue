@@ -1,11 +1,12 @@
 ﻿<script setup>
 import {useDataNarrator} from "./hooks/useDataNarrator";
+import {useDeepLink} from "./hooks/useDeepLink";
+import {useLayers} from "./hooks/useLayers";
 import DataNarratorDashboard from "./features/dashboard/components/Dashboard.vue";
 import CreateStory from "./features/stories/components/__new/CreateStory.vue";
 import EditStory from "./features/stories/components/__new/EditStory.vue";
 import PlayStory from "./features/stories/components/__new/PlayStory.vue";
 import * as constants from "./store/contantsDataNarrator";
-import {useDeepLink} from "./hooks/useDeepLink";
 
 defineOptions({
     name: "DataNarrator"
@@ -13,6 +14,7 @@ defineOptions({
 
 const {disableFooter, disableMainMenu, disableSecondaryMenu, toolwindowMode, mode} = useDataNarrator();
 
+useLayers();
 disableFooter();
 disableMainMenu();
 disableSecondaryMenu();

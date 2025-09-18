@@ -6,7 +6,7 @@ import StepTitle from "./step/StepTitle.vue";
 import StepDescription from "./step/StepDescription.vue";
 import TwoDNavigation from "./step/TwoDNavigation.vue";
 import BackgroundMap from "./step/BackgroundMap.vue";
-import Layers from "./step/Layers.vue";
+import Layers from "./step/layers/Layers.vue";
 
 const {step} = defineProps({
     step: {

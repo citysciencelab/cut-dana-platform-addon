@@ -5,6 +5,7 @@ import EditStoryForm from "../features/stories/store/EditStoryForm";
 import EditStepForm from "../features/steps/store/EditStepForm";
 import DashboardStore from "../features/dashboard/store/DashboardStore";
 import StoryStore from "../features/stories/store/StoryStore";
+import LayersStore from "../features/stories/store/LayersStore";
 
 export default {
     namespaced: true,
@@ -15,6 +16,7 @@ export default {
         EditStoryForm,
         EditStepForm,
         DashboardStore,
-        StoryStore
+        StoryStore,
+        LayersStore
     }
 };
