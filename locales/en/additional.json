@@ -134,6 +134,12 @@
           "description": "By continuing, you agree to our privacy policy. Please read it carefully to understand how we use and protect your data.",
           "confirmButton": "Accept",
           "denyButton": "Do Not Accept"
+        },
+        "leaveWithoutSaving": {
+          "title": "Leave without Saving?",
+          "description": "You have unsaved changes in this story. If you go back now, your progress will be lost. Do you want to continue?",
+          "confirmButton": "Leave",
+          "denyButton": "Stay"
         }
       },
       "button": {

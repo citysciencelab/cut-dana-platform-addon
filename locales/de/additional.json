@@ -134,6 +134,12 @@
           "description": "Indem Sie fortfahren, stimmen Sie unserer Datenschutzerklärung zu. Bitte lesen Sie diese sorgfältig, um zu verstehen, wie wir Ihre Daten verwenden und schützen.",
           "confirmButton": "Akzeptieren",
           "denyButton": "Nicht akzeptieren"
+        },
+        "leaveWithoutSaving": {
+          "title": "Ohne Speichern verlassen?",
+          "description": "Sie haben ungespeicherte Änderungen in dieser Story. Wenn Sie jetzt zurückgehen, gehen alle Änderungen verloren. Möchten Sie fortfahren?",
+          "confirmButton": "Verlassen",
+          "denyButton": "Bleiben"
         }
       },
       "button": {

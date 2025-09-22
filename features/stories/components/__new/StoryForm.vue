@@ -1,9 +1,11 @@
 <script setup>
 import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan} from "@mdi/js";
 import {computed, ref, watch} from "vue";
+import {useTranslation} from "i18next-vue";
 
 import Chapter from "./Chapter.vue";
 import StoryOverview from "./StoryOverview.vue";
+import ConfirmationDialog from "../../../shared/ConfirmationDialog.vue";
 import {dataNarratorModes, ToolwindowModes} from "../../../../store/contantsDataNarrator";
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 import {uploadCoverImage} from "../../services/addCoverImage";
@@ -18,8 +20,10 @@ const props = defineProps({
     storyLoading: Boolean,
     coverImageUrl: String,
 });
+const {t} = useTranslation();
 const {toolwindowMode} = useDataNarrator();
 const {gotoPage} = useDataNarrator();
+const backConfirmation = ref(false);
 const storyName = ref("");
 const description = ref("");
 const isSaving = ref(false);
@@ -178,7 +182,7 @@ watch(
                         :icon="mdiArrowLeft"
                         size="compact"
                         class="mr-2"
-                        @click="() => gotoPage(dataNarratorModes.DASHBOARD)"
+                        @click="backConfirmation = true"
                     />
 
                     <v-text-field
@@ -281,6 +285,15 @@ watch(
         <!--            v-model:open="previewModal"-->
         <!--        />-->
     </form>
+
+    <ConfirmationDialog
+        :title="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.title')"
+        :message="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.description')"
+        :cancel-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.denyButton')"
+        :confirm-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.confirmButton')"
+        v-model="backConfirmation"
+        @confirm="() => gotoPage(dataNarratorModes.DASHBOARD)"
+    />
 </template>
 
 <style lang="scss">

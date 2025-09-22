@@ -4,6 +4,7 @@ import {mdiFormatListBulleted, mdiPlus} from "@mdi/js";
 import ChapterStep from "./ChapterStep.vue";
 import {numberToLetter} from "../../../../utils/numberToLetter";
 import {getStoryColor} from "../../../../utils/getStoryColor";
+import {useNavigation} from "../../../steps/hooks/useNavigation";
 
 const props = defineProps({
     chapter: {
@@ -18,14 +19,16 @@ const props = defineProps({
 
 const emits = defineEmits(["addNewChapter", "addNewStep"]);
 
+const {initialZoom, initialCenter} = useNavigation();
+
 function getDefaultStep(id) {
     return {
         id,
         title: "",
         description: "",
         mapConfig: {
-            centerCoordinates: [0, 0],
-            zoomLevel: 0,
+            centerCoordinates: initialCenter,
+            zoomLevel: initialZoom,
             backgroundMapId: null,
         },
         informationLayerIds: []

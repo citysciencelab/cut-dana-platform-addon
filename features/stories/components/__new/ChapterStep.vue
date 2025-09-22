@@ -7,6 +7,7 @@ import StepDescription from "./step/StepDescription.vue";
 import TwoDNavigation from "./step/TwoDNavigation.vue";
 import BackgroundMap from "./step/BackgroundMap.vue";
 import Layers from "./step/layers/Layers.vue";
+import {useNavigation} from "../../../steps/hooks/useNavigation";
 
 const {step} = defineProps({
     step: {
@@ -18,9 +19,10 @@ const {step} = defineProps({
     }
 });
 
-const stepTitleRef = ref(null);
-
 const {t} = useTranslation();
+const {setBaseLayer} = useNavigation();
+
+const stepTitleRef = ref(null);
 
 watch(() => step?.id, async () => {
     await nextTick();
@@ -61,7 +63,10 @@ watch(() => step?.id, async () => {
 
         <v-row class="mb-2">
             <v-col cols="12" class="p-0">
-                <BackgroundMap v-model="step.mapConfig.backgroundMapId"/>
+                <BackgroundMap
+                    v-model="step.mapConfig.backgroundMapId"
+                    @update:modelValue="setBaseLayer"
+                />
             </v-col>
         </v-row>
 

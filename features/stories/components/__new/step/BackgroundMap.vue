@@ -8,7 +8,7 @@ const {items} = useBaseLayer();
 const props = defineProps({
     modelValue: String
 });
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:modelValue']);
 
 const inputValue = computed({
     get: () => props.modelValue,
