@@ -37,5 +37,6 @@ const {t} = useTranslation();
         :autofocus="true"
         v-model="inputValue"
         hide-details
+        required
     />
 </template>

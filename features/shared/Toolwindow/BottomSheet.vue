@@ -36,6 +36,7 @@ onBeforeUnmount(() => {
             :drag-controls="controls"
             :drag-listener="false"
             :dragConstraints="{ top: 0, bottom }"
+            :initial="{ y: '33%' }"
         >
             <motion.div
                 class="drag-handle-container"

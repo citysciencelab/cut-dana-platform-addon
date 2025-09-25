@@ -47,6 +47,14 @@ const imagePreview = computed(() => {
     return props.coverImageUrl || null;
 });
 
+const canPublish = computed(() => {
+    const totalSteps = (chapters.value ?? []).reduce(
+        (sum, ch) => sum + ((ch?.steps?.length ?? 0)),
+        0
+    );
+    return totalSteps > 0 && storyName.value.trim().length > 0;
+});
+
 function addNewChapter() {
     const newChapter = {
         id: nextChapterId++,
@@ -273,6 +281,7 @@ watch(
                     variant="flat"
                     color="black"
                     :loading="isSaving"
+                    :disabled="!canPublish"
                 >
                     VERÖFFENTLICHEN
                 </v-btn>
