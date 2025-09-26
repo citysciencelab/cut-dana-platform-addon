@@ -6,12 +6,16 @@ import {computed} from "vue";
 import * as constants from "../../../../../store/contantsDataNarrator";
 
 const props = defineProps({
-   value: String,
+    value: String,
 });
 const emit = defineEmits(['update:value']);
 const inputValue = computed({
-    get() { return props.value },
-    set(v) { emit('update:value', v) }
+    get() {
+        return props.value
+    },
+    set(v) {
+        emit('update:value', v)
+    }
 });
 
 const {t} = useTranslation();
@@ -22,7 +26,6 @@ const {t} = useTranslation();
         <vue-editor
             :placeholder="t('additional:modules.dataNarrator.label.htmlContent')"
             :editor-toolbar="constants.htmlEditorToolbar"
-            use-custom-image-handler
             v-model="inputValue"
         />
     </div>

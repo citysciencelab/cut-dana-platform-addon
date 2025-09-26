@@ -9,6 +9,7 @@ import {useStory} from "../../hooks/useStory";
 import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 import {useStepOverlays} from "../../hooks/useStepOverlays";
 import {getFileUrl} from "../../../../utils/getFileUrl";
+import RichTextViewer from "./step/RichTextViewer.vue";
 
 const {gotoPage} = useDataNarrator()
 const {currentStoryId} = useStory();
@@ -44,7 +45,7 @@ async function loadStory(id) {
     if (!id) return;
     isLoading.value = true;
     try {
-        const res  = await fetch(`${backendUrl}/stories/new/${id}`);
+        const res = await fetch(`${backendUrl}/stories/new/${id}`);
         story.value = await res.json();
     } catch (error) {
         console.error(error);
@@ -58,10 +59,10 @@ function resetBaseLayer() {
 }
 
 watch(stage, (currentStage) => {
-   if(currentStage === "overview") {
-       clearOverlays();
-       resetBaseLayer();
-   }
+    if (currentStage === "overview") {
+        clearOverlays();
+        resetBaseLayer();
+    }
 });
 
 watch(currentStoryId, (id) => {
@@ -69,7 +70,7 @@ watch(currentStoryId, (id) => {
     stage.value = "overview";
     chapterIndex.value = 0;
     stepIndex.value = 0;
-}, { immediate: true });
+}, {immediate: true});
 
 watch(
     () => [chapterIndex.value, stepIndex.value, stage.value],
@@ -89,7 +90,7 @@ watch(
 
         applyForStep(step);
     },
-    { immediate: true }
+    {immediate: true}
 );
 
 function startPlay() {
@@ -99,7 +100,7 @@ function startPlay() {
 }
 
 function next() {
-    if(!story.value) return;
+    if (!story.value) return;
 
     const steps = story.value.chapters[chapterIndex.value].steps;
     if (stepIndex.value < steps.length - 1) {
@@ -113,7 +114,7 @@ function next() {
 }
 
 function back() {
-    if(!story.value) return;
+    if (!story.value) return;
 
     if (stage.value === "overview") return;
     if (stepIndex.value > 0) {
@@ -161,8 +162,8 @@ onBeforeUnmount(() => {
                                 class="story-cover mb-2"
                                 :style="`background-image: url(${getFileUrl(story.titleImage)});`"
                             />
-                            <h5 class="story-title px-2 font-bold mb-2">{{story.title}}</h5>
-                            <div class="story-description px-2 mb-2">{{story.description}}</div>
+                            <h5 class="story-title px-2 font-bold mb-2">{{ story.title }}</h5>
+                            <div class="story-description px-2 mb-2">{{ story.description }}</div>
 
                             <ul class="chapter-list">
                                 <li
@@ -193,7 +194,9 @@ onBeforeUnmount(() => {
                                     </h2>
                                     <h3 class="font-bold">{{ story.chapters[chapterIndex].steps[stepIndex].title }}</h3>
                                 </div>
-                                <div class="mt-4" v-html="story.chapters[chapterIndex].steps[stepIndex].html" />
+                                <div class="mt-4">
+                                    <RichTextViewer v-model="story.chapters[chapterIndex].steps[stepIndex].html"/>
+                                </div>
                             </div>
                         </div>
                     </div>
