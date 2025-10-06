@@ -1,5 +1,5 @@
 <script setup>
-import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan} from "@mdi/js";
+import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan, mdiPencilOutline} from "@mdi/js";
 import {computed, ref, watch} from "vue";
 import {useTranslation} from "i18next-vue";
 
@@ -30,6 +30,7 @@ const isSaving = ref(false);
 const previewVisible = ref(false);
 const activeChapterIndex = ref(0);
 const activeStepIndex = ref(-1);
+const editStoryVisible = ref(true);
 
 let nextChapterId = 1;
 const chapters = ref([
@@ -158,6 +159,12 @@ watch(
     },
     {immediate: true}
 );
+
+watch(activeStepIndex, (activeStepIndex) => {
+    if (activeStepIndex >= 0) {
+        editStoryVisible.value = false;
+    }
+});
 </script>
 
 <template>
@@ -178,7 +185,7 @@ watch(
         @submit.prevent="publish"
         :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
     >
-        <div :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]">
+        <div v-if="editStoryVisible" :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]">
             <v-toolbar
                 :color="selectedImage ? 'white' : 'transparent'"
                 size="compact"
@@ -211,7 +218,19 @@ watch(
                     />
                 </template>
 
-                <v-btn :icon="mdiDotsVertical" size="compact"/>
+                <v-menu v-if="editStoryVisible" location="bottom end" offset="4">
+                    <template #activator="{ props: actv }">
+                        <v-btn v-bind="actv" variant="text" :icon="mdiDotsVertical" size="compact"/>
+                    </template>
+                    <v-list density="compact">
+                        <v-list-item @click.stop="editStoryVisible = false">
+                            <template v-slot:prepend>
+                                <v-icon :icon="mdiPencilOutline"></v-icon>
+                            </template>
+                            <v-list-item-title>Close Panel</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
             </v-toolbar>
 
             <img
@@ -231,29 +250,35 @@ watch(
             </div>
         </div>
 
-        <div v-if="!previewVisible" class="story-form-content">
+        <div class="mb-2">
             <v-textarea
+                v-if="editStoryVisible"
                 id="description"
                 v-model="description"
                 variant="outlined"
                 hide-details="true"
                 rows="3"
-                class="mb-2 bg-white"
+                class="bg-white"
                 placeholder="Story description"
             />
+        </div>
 
+        <div v-if="!previewVisible" class="story-form-content">
             <Chapter
                 :key="chapters[activeChapterIndex]?.id ?? activeChapterIndex"
                 :chapter="chapters[activeChapterIndex]"
                 :activeStepIndex="activeStepIndex"
+                :editStoryVisible="editStoryVisible"
                 @addNewChapter="addNewChapter"
                 @addNewStep="handleAddNewStep"
+                @editStoryVisible="editStoryVisible = true"
             />
         </div>
-
         <StoryOverview
             v-else
             :chapters="chapters"
+            :editStoryVisible="editStoryVisible"
+            @editStoryVisible="editStoryVisible = true"
             @addNewChapter="() => {
                 previewVisible = false;
                 addNewChapter();

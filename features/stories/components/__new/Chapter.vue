@@ -1,5 +1,5 @@
 <script setup>
-import {mdiFormatListBulleted, mdiPlus} from "@mdi/js";
+import {mdiDeleteForeverOutline, mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus} from "@mdi/js";
 
 import ChapterStep from "./ChapterStep.vue";
 import {numberToLetter} from "../../../../utils/numberToLetter";
@@ -14,10 +14,13 @@ const props = defineProps({
     activeStepIndex: {
         type: Number,
         required: true,
+    },
+    editStoryVisible: {
+        type: Boolean
     }
 });
 
-const emits = defineEmits(["addNewChapter", "addNewStep"]);
+const emits = defineEmits(["addNewChapter", "addNewStep", "editStoryVisible"]);
 
 const {initialZoom, initialCenter} = useNavigation();
 
@@ -50,22 +53,38 @@ function addStep() {
             '--pill-color-secondary': getStoryColor(chapter.sequence - 1).secondary,
         }"
     >
-        <div class="chapter">
-            <v-icon>{{ mdiFormatListBulleted }}</v-icon>
-            <div class="chapter-label">
-                {{ numberToLetter(props.chapter.sequence) }}
+        <div class="d-flex align-center ga-2">
+            <div class="chapter flex-1-0">
+                <v-icon>{{ mdiFormatListBulleted }}</v-icon>
+                <div class="chapter-label">
+                    {{ numberToLetter(props.chapter.sequence) }}
+                </div>
+                <div class="chapter-title">
+                    <input
+                        type="text"
+                        placeholder="A Unbenanntes Kapitel"
+                        v-model="props.chapter.title"
+                        required
+                    />
+                </div>
+                <div class="chapter-step-add" @click="emits('addNewChapter')">
+                    <v-icon>{{ mdiPlus }}</v-icon>
+                </div>
             </div>
-            <div class="chapter-title">
-                <input
-                    type="text"
-                    placeholder="A Unbenanntes Kapitel"
-                    v-model="props.chapter.title"
-                    required
-                />
-            </div>
-            <div class="chapter-step-add" @click="emits('addNewChapter')">
-                <v-icon>{{ mdiPlus }}</v-icon>
-            </div>
+
+            <v-menu v-if="!editStoryVisible" location="bottom end" offset="4">
+                <template #activator="{ props: actv }">
+                    <v-btn v-bind="actv" variant="text" :icon="mdiDotsVertical" size="compact"/>
+                </template>
+                <v-list density="compact">
+                    <v-list-item @click.stop="emits('editStoryVisible')">
+                        <template v-slot:prepend>
+                            <v-icon :icon="mdiPencilOutline"></v-icon>
+                        </template>
+                        <v-list-item-title>Edit Story</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
         </div>
 
         <ChapterStep

@@ -11,13 +11,17 @@ const emits = defineEmits([
     "reorderSteps",
     "editStep",
     "editChapter",
-    "deleteChapter"
+    "deleteChapter",
+    "editStoryVisible",
 ]);
 
 const props = defineProps({
     chapters: {
         type: Array,
         default: () => [],
+    },
+    editStoryVisible: {
+        type: Boolean,
     }
 });
 
@@ -43,9 +47,25 @@ const onDeleteChapterClick = (chapterIdx) => {
 </script>
 
 <template>
-    <div class="px-2 overflow-auto">
-        <div class="font-bold">
-            STRUKTUR
+    <div class="px-2 overflow-auto mt-2">
+        <div class="d-flex">
+            <div class="flex-1-0 font-bold">
+                STRUKTUR
+            </div>
+
+            <v-menu v-if="!editStoryVisible" location="bottom end" offset="4">
+                <template #activator="{ props: actv }">
+                    <v-btn v-bind="actv" variant="text" :icon="mdiDotsVertical" size="compact"/>
+                </template>
+                <v-list density="compact">
+                    <v-list-item @click.stop="emits('editStoryVisible')">
+                        <template v-slot:prepend>
+                            <v-icon :icon="mdiPencilOutline"></v-icon>
+                        </template>
+                        <v-list-item-title>Edit Story</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
         </div>
 
         <div v-for="(chapter, idx) in props.chapters" :key="chapter.id ?? idx" class="chapter-container">
