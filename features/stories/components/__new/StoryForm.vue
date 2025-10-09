@@ -49,11 +49,13 @@ const imagePreview = computed(() => {
 });
 
 const canPublish = computed(() => {
-    const totalSteps = (chapters.value ?? []).reduce(
-        (sum, ch) => sum + ((ch?.steps?.length ?? 0)),
-        0
-    );
-    return totalSteps > 0 && storyName.value.trim().length > 0;
+    const chapterList = chapters.value ?? [];
+
+    const allChaptersHaveSteps =
+        chapterList.length > 0 &&
+        chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
+
+    return allChaptersHaveSteps && storyName.value.trim().length > 0;
 });
 
 function addNewChapter() {
