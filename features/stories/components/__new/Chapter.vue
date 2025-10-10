@@ -34,7 +34,8 @@ function getDefaultStep(id) {
             zoomLevel: initialZoom,
             backgroundMapId: null,
         },
-        informationLayerIds: []
+        informationLayerIds: [],
+        mapSources: [],
     };
 }
 

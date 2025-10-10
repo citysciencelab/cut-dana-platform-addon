@@ -8,6 +8,7 @@ import TwoDNavigation from "./step/TwoDNavigation.vue";
 import BackgroundMap from "./step/BackgroundMap.vue";
 import Layers from "./step/layers/Layers.vue";
 import {useNavigation} from "../../../steps/hooks/useNavigation";
+import AddWMS from "../../../../tools/addWms/components/AddWMS.vue";
 
 const {step} = defineProps({
     step: {
@@ -24,10 +25,24 @@ const {setBaseLayer} = useNavigation();
 
 const stepTitleRef = ref(null);
 
-watch(() => step?.id, async () => {
-    await nextTick();
-    stepTitleRef.value?.focus?.();
-});
+function onWmsSelected(sources) {
+    if (!Array.isArray(step.mapSources)) step.mapSources = [];
+    const existing = new Set(step.mapSources.map((s) => s.id));
+    for (const src of sources) {
+        if (!existing.has(src.id)) {
+            src.showInLayerTree = false;
+            step.mapSources.push(src);
+        }
+    }
+}
+
+watch(
+    () => step?.id,
+    async () => {
+        await nextTick();
+        stepTitleRef.value?.focus?.();
+    },
+);
 </script>
 
 <template>
@@ -76,7 +91,12 @@ watch(() => step?.id, async () => {
             </v-col>
         </v-row>
 
-        <Layers v-model="step.informationLayerIds"/>
+        <Layers v-model="step.informationLayerIds" />
+
+        <AddWMS
+            @selected="onWmsSelected"
+            @error="(msg) => console.error(msg)"
+        />
     </div>
 </template>
 
