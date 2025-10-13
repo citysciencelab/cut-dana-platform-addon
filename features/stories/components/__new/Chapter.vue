@@ -36,6 +36,23 @@ function getDefaultStep(id) {
         },
         informationLayerIds: [],
         mapSources: [],
+        is3D: false,
+        navigation3D: {
+            cameraPosition: [null, null, null], // [lng, lat, height]
+            heading: null,
+            pitch: null,
+        },
+        threeD: {
+            /*[{ 
+                modelId: string, 
+                uri?: string, 
+                position: { x: number, y: number, z: number },
+                scale: 1,
+                orientation: { heading: number, pitch: number, roll: number },
+                show: true
+            }]*/
+            models: [], 
+        }
     };
 }
 

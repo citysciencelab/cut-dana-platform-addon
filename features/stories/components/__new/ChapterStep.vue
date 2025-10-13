@@ -9,6 +9,7 @@ import BackgroundMap from "./step/BackgroundMap.vue";
 import Layers from "./step/layers/Layers.vue";
 import {useNavigation} from "../../../steps/hooks/useNavigation";
 import AddWMS from "../../../../tools/addWms/components/AddWMS.vue";
+import ThreeDNavigation from "./step/ThreeDNavigation.vue";
 
 const {step} = defineProps({
     step: {
@@ -91,12 +92,14 @@ watch(
             </v-col>
         </v-row>
 
-        <Layers v-model="step.informationLayerIds" />
+        <Layers v-model="step.informationLayerIds"/>
 
         <AddWMS
             @selected="onWmsSelected"
             @error="(msg) => console.error(msg)"
         />
+
+        <ThreeDNavigation/>
     </div>
 </template>
 
