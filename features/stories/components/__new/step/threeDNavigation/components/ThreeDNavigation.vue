@@ -1,13 +1,15 @@
-<script setup lang="js">
-import {reactive, computed, watch, nextTick, ref, onMounted} from "vue";
+<script setup>
+import {watch, ref, onMounted, onBeforeUnmount} from "vue";
 import {useStore} from "vuex";
 import {mdiCubeScan} from "@mdi/js";
+
+import useCesiumModelDrag from "../hooks/useCesiumDrag";
+import EntityList from "./EntityList.vue";
+import Coordinates from "./Coordinates.vue";
 
 const store = useStore();
 const threeDEnabled = ref(false);
 const fileLoading = ref(false);
-
-const importedModels = computed(() => store.getters["Modules/Modeler3D/importedModels"]);
 
 watch(threeDEnabled, (is3DEnabled) => {
     store.dispatch("Maps/changeMapMode", is3DEnabled ? "3D" : "2D");
@@ -94,17 +96,22 @@ function onFileChange(file) {
     reader.readAsText(file);
 }
 
-function zoomTo(id) {
-    const scene = mapCollection.getMap("3D").getCesiumScene(),
-        entities = mapCollection.getMap("3D").getDataSourceDisplay().defaultDataSource.entities,
-        entity = entities.getById(id),
-        entityPosition = entity.position.getValue(),
-        destination = Cesium.Cartographic.fromCartesian(entityPosition);
+const drag = useCesiumModelDrag({
+    threeDEnabled,
+    onPositionChanged: (id, cartesian) => {
+        store.dispatch("Modules/Modeler3D/updatePositionUI");
+    },
+    mapId: "3D",
+    mapElementId: "map",
+});
 
-    scene.camera.flyTo({
-        destination: Cesium.Cartesian3.fromRadians(destination.longitude, destination.latitude, destination.height + 250)
-    });
-}
+onMounted(() => {
+    drag.mount();
+});
+
+onBeforeUnmount(() => {
+    drag.unmount();
+});
 </script>
 
 <template>
@@ -131,10 +138,10 @@ function zoomTo(id) {
                 @update:modelValue="onFileChange"
             />
 
-            <div v-for="model in importedModels">
-                <div @click="zoomTo(model.id)">{{ model.name }}</div>
-            </div>
+            <EntityList />
         </div>
+
+        <Coordinates />
     </div>
 </template>
 

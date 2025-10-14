@@ -9,7 +9,7 @@ import BackgroundMap from "./step/BackgroundMap.vue";
 import Layers from "./step/layers/Layers.vue";
 import {useNavigation} from "../../../steps/hooks/useNavigation";
 import AddWMS from "../../../../tools/addWms/components/AddWMS.vue";
-import ThreeDNavigation from "./step/ThreeDNavigation.vue";
+import ThreeDNavigation from "./step/threeDNavigation/components/ThreeDNavigation.vue";
 
 const {step} = defineProps({
     step: {
