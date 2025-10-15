@@ -1,6 +1,7 @@
 <script setup>
 import {useTranslation} from "i18next-vue";
 import {ref, watch, nextTick} from "vue";
+import {useStore} from "vuex";
 
 import StepTitle from "./step/StepTitle.vue";
 import StepDescription from "./step/StepDescription.vue";
@@ -23,6 +24,7 @@ const {step} = defineProps({
 
 const {t} = useTranslation();
 const {setBaseLayer} = useNavigation();
+const store = useStore();
 
 const stepTitleRef = ref(null);
 
@@ -36,6 +38,10 @@ function onWmsSelected(sources) {
         }
     }
 }
+
+watch(() => step.is3D, (is3DEnabled) => {
+    store.dispatch("Maps/changeMapMode", is3DEnabled ? "3D" : "2D");
+}, {immediate: true});
 
 watch(
     () => step?.id,
@@ -99,7 +105,25 @@ watch(
             @error="(msg) => console.error(msg)"
         />
 
-        <ThreeDNavigation/>
+        <div>
+            <div class="mb-2">
+                3D Navigation
+            </div>
+
+            <div class="mb-2">
+                <v-switch
+                    v-model="step.is3D"
+                    hide-details
+                    inset
+                    label="Enable 3D for this step"
+                />
+            </div>
+        </div>
+
+        <ThreeDNavigation
+            v-if="step.is3D"
+            v-model="step.navigation3D"
+        />
     </div>
 </template>
 

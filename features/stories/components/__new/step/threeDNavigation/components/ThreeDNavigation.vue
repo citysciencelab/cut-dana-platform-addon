@@ -1,19 +1,32 @@
 <script setup>
-import {watch, ref, onMounted, onBeforeUnmount} from "vue";
+import {ref, computed, watch} from "vue";
 import {useStore} from "vuex";
 import {mdiCubeScan} from "@mdi/js";
 
-import useCesiumModelDrag from "../hooks/useCesiumDrag";
 import EntityList from "./EntityList.vue";
-import Coordinates from "./Coordinates.vue";
+import Modeler3D from "./Modeler3D.vue";
+import Modeler3DEntityModel
+    from "../../../../../../../../../../src/modules/modeler3D/components/Modeler3DEntityModel.vue";
+
+const props = defineProps({
+    modelValue: {
+        type: Object,
+        required: true,
+    }
+});
+
+const emit = defineEmits(["update:modelValue"]);
 
 const store = useStore();
-const threeDEnabled = ref(false);
 const fileLoading = ref(false);
 
-watch(threeDEnabled, (is3DEnabled) => {
-    store.dispatch("Maps/changeMapMode", is3DEnabled ? "3D" : "2D");
-}, {immediate: true});
+const importedModels = computed(() => store.getters["Modules/Modeler3D/importedModels"]);
+const coordinateEasting = computed(() => store.getters["Modules/Modeler3D/coordinateEasting"]);
+const coordinateNorthing = computed(() => store.getters["Modules/Modeler3D/coordinateNorthing"]);
+const height = computed(() => store.getters["Modules/Modeler3D/height"]);
+const scale = computed(() => store.getters["Modules/Modeler3D/scale"]);
+const rotation = computed(() => store.getters["Modules/Modeler3D/rotation"]);
+const adaptToHeight = computed(() => store.getters["Modules/Modeler3D/adaptToHeight"]);
 
 async function handleGltfFile(blob, fileName) {
     const position = getCenterOfView3D();
@@ -96,54 +109,52 @@ function onFileChange(file) {
     reader.readAsText(file);
 }
 
-const drag = useCesiumModelDrag({
-    threeDEnabled,
-    onPositionChanged: (id, cartesian) => {
-        store.dispatch("Modules/Modeler3D/updatePositionUI");
-    },
-    mapId: "3D",
-    mapElementId: "map",
-});
+watch([
+    coordinateEasting,
+    coordinateNorthing,
+    height,
+    scale,
+    rotation,
+    adaptToHeight
+], ([ce, cn, h, s, r, ah]) => {
+    const prev = props.modelValue ?? {};
 
-onMounted(() => {
-    drag.mount();
-});
+    const next = {
+        coordinates: {
+            easting: ce ?? prev?.coordinates?.easting ?? null,
+            northing: cn ?? prev?.coordinates?.northing ?? null,
+        },
+        dimensions: {
+            height: h ?? prev?.dimensions?.height ?? 0,
+            adaptToTerrain: !!(ah ?? prev?.dimensions?.adaptToTerrain ?? true),
+        },
+        transforms: {
+            rotation: r ?? prev?.transforms?.rotation ?? 0,
+            scale: s ?? prev?.transforms?.scale ?? 1,
+        },
+    };
 
-onBeforeUnmount(() => {
-    drag.unmount();
-});
+    emit("update:modelValue", next);
+}, {immediate: true});
 </script>
 
 <template>
-    <div>
-        <div class="mb-2">
-            3D Navigation
-        </div>
-        <div class="mb-2">
-            <v-switch
-                v-model="threeDEnabled"
-                hide-details
-                inset
-                label="Enable 3D for this step"
-            />
-        </div>
+    <div class="mb-2">
+        <v-file-input
+            variant="outlined"
+            label="Upload model (.glb, .gltf)"
+            accept=".glb,.gltf"
+            show-size
+            :prepend-icon="mdiCubeScan"
+            @update:modelValue="onFileChange"
+        />
 
-        <div v-if="threeDEnabled" class="mb-2">
-            <v-file-input
-                variant="outlined"
-                label="Upload model (.glb, .gltf)"
-                accept=".glb,.gltf"
-                show-size
-                :prepend-icon="mdiCubeScan"
-                @update:modelValue="onFileChange"
-            />
+        <EntityList/>
 
-            <EntityList />
+        <div class="mt-2">
+            <Modeler3DEntityModel v-if="importedModels.length > 0"/>
         </div>
-
-        <Coordinates />
     </div>
-</template>
 
-<style scoped lang="scss">
-</style>
+    <Modeler3D/>
+</template>
