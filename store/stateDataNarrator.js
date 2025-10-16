@@ -22,7 +22,7 @@ const state = {
         animationChecked: false,
         direction: "out"
     },
-    mode: dataNarratorModes.CREATE_STORY,
+    mode: dataNarratorModes.DASHBOARD,
     toolwindowMode: ToolwindowModes.DASHBOARD
 };
 

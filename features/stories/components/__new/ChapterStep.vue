@@ -22,6 +22,8 @@ const {step} = defineProps({
     }
 });
 
+const emit = defineEmits(["modelSelected"]);
+
 const {t} = useTranslation();
 const {setBaseLayer} = useNavigation();
 const store = useStore();
@@ -123,6 +125,7 @@ watch(
         <ThreeDNavigation
             v-if="step.is3D"
             v-model="step.navigation3D"
+            @modelSelected="(file) => emit('modelSelected', { step, file })"
         />
     </div>
 </template>

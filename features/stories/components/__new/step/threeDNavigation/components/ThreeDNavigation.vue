@@ -15,7 +15,7 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "modelSelected"]);
 
 const store = useStore();
 const fileLoading = ref(false);
@@ -86,6 +86,13 @@ function getCenterOfView3D() {
 }
 
 function onFileChange(file) {
+    if (!file) {
+        emit("modelSelected", null);
+        return;
+    }
+
+    emit("modelSelected", file);
+
     const reader = new FileReader(),
         fileName = file.name.split(".")[0],
         fileExtension = file.name.split(".").pop();

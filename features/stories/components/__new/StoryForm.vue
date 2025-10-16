@@ -11,6 +11,7 @@ import {useDataNarrator} from "../../../../hooks/useDataNarrator";
 import {uploadCoverImage} from "../../services/addCoverImage";
 import {createStory} from "../../services/createStory";
 import {editStory} from "../../services/editStory";
+import {uploadStepModel} from "../../services/uploadStepModel";
 
 const props = defineProps({
     storyId: Number,
@@ -31,6 +32,7 @@ const previewVisible = ref(false);
 const activeChapterIndex = ref(0);
 const activeStepIndex = ref(-1);
 const editStoryVisible = ref(true);
+const modelFiles = new WeakMap();
 
 let nextChapterId = 1;
 const chapters = ref([
@@ -57,6 +59,11 @@ const canPublish = computed(() => {
 
     return allChaptersHaveSteps && storyName.value.trim().length > 0;
 });
+
+function handleModelSelected({ step, file }) {
+    if (file) modelFiles.set(step, file);
+    else modelFiles.delete(step);
+}
 
 function addNewChapter() {
     const newChapter = {
@@ -121,6 +128,7 @@ async function publish() {
     };
 
     let storyId = props.storyId;
+    let createdStory;
     if (storyId) {
         const updateResp = await editStory(storyId, payload);
         const bodyText = await updateResp.text();
@@ -133,9 +141,29 @@ async function publish() {
         if (!createResp.ok) {
             throw new Error(`Failed to create story: ${createResp.status} ${bodyText}`);
         }
-        const newStory = JSON.parse(bodyText);
-        storyId = newStory.id;
+        createdStory = JSON.parse(bodyText);
+        storyId = createdStory.id;
     }
+
+    const uploads = [];
+    for (const ch of chapters.value) {
+        const dbChapter = createdStory.chapters.find((x) => x.sequence === ch.sequence);
+        if (!dbChapter) continue;
+
+        for (let sIdx = 0; sIdx < ch.steps.length; sIdx++) {
+            const uiStep = ch.steps[sIdx];
+            const file = modelFiles.get(uiStep);
+            if (!file) continue;
+
+            const dbStep = dbChapter.StoryStep.find((x) => x.stepNumber === sIdx + 1);
+            if (!dbStep) continue;
+
+            await uploadStepModel(storyId, dbStep.id, file);
+            modelFiles.delete(uiStep);
+        }
+    }
+
+    await Promise.all(uploads);
 
     if (selectedImage.value) {
         try {
@@ -274,6 +302,7 @@ watch(activeStepIndex, (activeStepIndex) => {
                 @addNewChapter="addNewChapter"
                 @addNewStep="handleAddNewStep"
                 @editStoryVisible="editStoryVisible = true"
+                @modelSelected="handleModelSelected"
             />
         </div>
         <StoryOverview
