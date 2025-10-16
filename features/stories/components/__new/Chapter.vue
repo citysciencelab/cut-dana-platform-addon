@@ -1,5 +1,5 @@
 <script setup>
-import {mdiDeleteForeverOutline, mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus} from "@mdi/js";
+import {mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus} from "@mdi/js";
 
 import ChapterStep from "./ChapterStep.vue";
 import {numberToLetter} from "../../../../utils/numberToLetter";
@@ -20,7 +20,7 @@ const props = defineProps({
     }
 });
 
-const emits = defineEmits(["addNewChapter", "addNewStep", "editStoryVisible"]);
+const emits = defineEmits(["addNewChapter", "addNewStep", "editStoryVisible", "modelSelected"]);
 
 const {initialZoom, initialCenter} = useNavigation();
 
@@ -36,6 +36,24 @@ function getDefaultStep(id) {
         },
         informationLayerIds: [],
         mapSources: [],
+        // 3D
+        is3D: false,
+        modelUrl: "",
+        navigation3D: {
+            coordinates: {
+                easting: null,
+                northing: null,
+            },
+            dimensions: {
+                height: 0,
+                adaptToTerrain: true,
+            },
+            transforms: {
+                rotation: 0,
+                scale: 1,
+            }
+        }
+
     };
 }
 
@@ -92,6 +110,7 @@ function addStep() {
             v-if="props.activeStepIndex > -1 && props.activeStepIndex < props.chapter.steps.length"
             :step="props.chapter.steps[props.activeStepIndex]"
             :pillColor="getStoryColor(chapter.id).primary"
+            @modelSelected="(p) => emits('modelSelected', p)"
         />
 
         <v-row justify="center">

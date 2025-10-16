@@ -1,6 +1,7 @@
 <script setup>
 import {useTranslation} from "i18next-vue";
 import {ref, watch, nextTick} from "vue";
+import {useStore} from "vuex";
 
 import StepTitle from "./step/StepTitle.vue";
 import StepDescription from "./step/StepDescription.vue";
@@ -9,6 +10,7 @@ import BackgroundMap from "./step/BackgroundMap.vue";
 import Layers from "./step/layers/Layers.vue";
 import {useNavigation} from "../../../steps/hooks/useNavigation";
 import AddWMS from "../../../../tools/addWms/components/AddWMS.vue";
+import ThreeDNavigation from "./step/threeDNavigation/components/ThreeDNavigation.vue";
 
 const {step} = defineProps({
     step: {
@@ -20,8 +22,11 @@ const {step} = defineProps({
     }
 });
 
+const emit = defineEmits(["modelSelected"]);
+
 const {t} = useTranslation();
 const {setBaseLayer} = useNavigation();
+const store = useStore();
 
 const stepTitleRef = ref(null);
 
@@ -35,6 +40,10 @@ function onWmsSelected(sources) {
         }
     }
 }
+
+watch(() => step.is3D, (is3DEnabled) => {
+    store.dispatch("Maps/changeMapMode", is3DEnabled ? "3D" : "2D");
+}, {immediate: true});
 
 watch(
     () => step?.id,
@@ -91,11 +100,32 @@ watch(
             </v-col>
         </v-row>
 
-        <Layers v-model="step.informationLayerIds" />
+        <Layers v-model="step.informationLayerIds"/>
 
         <AddWMS
             @selected="onWmsSelected"
             @error="(msg) => console.error(msg)"
+        />
+
+        <div>
+            <div class="mb-2">
+                3D Navigation
+            </div>
+
+            <div class="mb-2">
+                <v-switch
+                    v-model="step.is3D"
+                    hide-details
+                    inset
+                    label="Enable 3D for this step"
+                />
+            </div>
+        </div>
+
+        <ThreeDNavigation
+            v-if="step.is3D"
+            v-model="step.navigation3D"
+            @modelSelected="(file) => emit('modelSelected', { step, file })"
         />
     </div>
 </template>
