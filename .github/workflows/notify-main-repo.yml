@@ -1,7 +1,6 @@
 name: Trigger cut-dana-platform-mp Build
 on:
-  push:
-    branches: [ staging ]
+  workflow_dispatch:
 jobs:
   notify:
     runs-on: ubuntu-latest
