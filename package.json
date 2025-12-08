@@ -7,7 +7,7 @@
     "noLegacyInstall": "npm install --legacy-peer-deps"
   },
   "author": "",
-  "license": "ISC",
+  "license": "GPLv3",
   "description": "",
   "dependencies": {
     "@heroicons/vue": "^1.0.6",
