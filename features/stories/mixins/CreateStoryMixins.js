@@ -1,22 +1,23 @@
 
-import LoginMixin from "../../../mixins/LoginMixin";
-import {mapGetters, mapMutations,} from "vuex";
-import {mutations as editStoryMutations, state as editStoryState} from "../store/EditStoryForm";
-import {backendUrl} from "../../../store/contantsDataNarrator";
-import {uploadCoverImage} from "../services/addCoverImage";
+import { mapGetters, mapMutations, } from 'vuex';
+
+import LoginMixin from '../../../mixins/LoginMixin';
+import { backendUrl } from '../../../store/contantsDataNarrator';
+import { uploadCoverImage } from '../services/addCoverImage';
+import { mutations as editStoryMutations, state as editStoryState } from '../store/EditStoryForm';
 
 export default {
-    mixins: [LoginMixin],
+    mixins: [ LoginMixin ],
 
     computed: {
-        ...mapGetters("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryState)),
+        ...mapGetters('Modules/DataNarrator/EditStoryForm', Object.keys(editStoryState)),
     },
 
     methods: {
-        ...mapMutations("Modules/DataNarrator/EditStoryForm", Object.keys(editStoryMutations)),
+        ...mapMutations('Modules/DataNarrator/EditStoryForm', Object.keys(editStoryMutations)),
 
         async uploadCoverImage(storyId) {
-            console.log("uploadCoverImage", storyId, this.coverImage);
+            console.log('uploadCoverImage', storyId, this.coverImage);
             const token = this.accessToken;
             return await uploadCoverImage(storyId, token, this.coverImage);
         },
@@ -24,10 +25,10 @@ export default {
         async updateStory() {
             const token = this.accessToken;
             const response = await fetch(`${backendUrl}/stories/${this.selectedStoryId}`, {
-                method: "PUT",
+                method: 'PUT',
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     title: this.storyTitle,
@@ -43,10 +44,10 @@ export default {
         async createStory() {
             const token = this.accessToken;
             const response = await fetch(`${backendUrl}/stories`, {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     title: this.storyTitle,

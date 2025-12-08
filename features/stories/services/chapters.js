@@ -1,4 +1,4 @@
-import {backendUrl} from "../../../store/contantsDataNarrator";
+import { backendUrl } from '../../../store/contantsDataNarrator';
 
 export const createChapter = (storyId, chapterData) => {
     return fetch(`${backendUrl}/stories/${storyId}/chapter`, {

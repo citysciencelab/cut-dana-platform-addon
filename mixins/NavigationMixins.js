@@ -1,12 +1,14 @@
-import {mapGetters, mapMutations} from "vuex";
-import getters from "../store/gettersDataNarrator";
-import DataNarratorWindowMixins from "./DataNarratorWindowMixins";
+import { mapGetters, mapMutations } from 'vuex';
+
+import getters from '../store/gettersDataNarrator';
+
+import DataNarratorWindowMixins from './DataNarratorWindowMixins';
 
 export default {
-    mixins: [DataNarratorWindowMixins],
+    mixins: [ DataNarratorWindowMixins ],
 
     methods: {
-        ...mapMutations("Modules/DataNarrator", ["setMode"]),
+        ...mapMutations('Modules/DataNarrator', [ 'setMode' ]),
         gotoPage(page) {
             this.setMode(page);
             this.moveTool();

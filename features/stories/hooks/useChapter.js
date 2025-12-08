@@ -1,10 +1,12 @@
-import {ref} from "vue";
-import {createChapter} from "../services/chapters";
-import {useStoryForm} from "./useStoryForm";
+import { ref } from 'vue';
+
+import { createChapter } from '../services/chapters';
+
+import { useStoryForm } from './useStoryForm';
 
 export function useChapter () {
 
-    const {storyId} = useStoryForm();
+    const { storyId } = useStoryForm();
     const chapterName = ref('');
 
     const chapters = ref([]);

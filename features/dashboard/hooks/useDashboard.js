@@ -1,21 +1,22 @@
-﻿import {watch, computed} from "vue";
-import {storeToRefs} from "pinia";
+﻿import { storeToRefs } from 'pinia';
+import { watch, computed } from 'vue';
 
-import {availableStoryListModes} from "../../../store/contantsDataNarrator";
-import {useDashboardStore} from "../store/useDashboardStore";
-import {useFetchStories} from "../../../composables/services/stories/useGetStories";
-import {useLogin} from "./useLogin";
+import { useFetchStories } from '../../../composables/services/stories/useGetStories';
+import { availableStoryListModes } from '../../../store/contantsDataNarrator';
+import { useDashboardStore } from '../store/useDashboardStore';
+
+import { useLogin } from './useLogin';
 
 /**
  *
  */
 export function useDashboard () {
-    const {loggedIn} = useLogin()
+    const { loggedIn } = useLogin()
     const dashboardStore = useDashboardStore();
-    const {mode: storiesDisplayMode, open} = storeToRefs(dashboardStore);
+    const { mode: storiesDisplayMode, open } = storeToRefs(dashboardStore);
 
     // Initialize the fetch composable
-    const {stories, error, loading, fetchStories} = useFetchStories();
+    const { stories, error, loading, fetchStories } = useFetchStories();
 
     const setOpen = () => {
         open.value = !open.value;
@@ -36,7 +37,7 @@ export function useDashboard () {
 
     const storyModeLists = computed(() => {
         return Object.values(availableStoryListModes).filter(mode =>
-            loggedIn.value || mode !== "my"
+            loggedIn.value || mode !== 'my'
         );
     });
 

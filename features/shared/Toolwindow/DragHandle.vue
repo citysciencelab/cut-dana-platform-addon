@@ -76,14 +76,14 @@
 </script>
 
 <template>
-<!--    <div-->
-<!--        ref="header-draggable-container"-->
-<!--        :class="['header-draggable-container', {mobile: isMobile}]"-->
-<!--    >-->
-<!--        <div class="header-draggable" />-->
-<!--    </div>-->
+  <!--    <div-->
+  <!--        ref="header-draggable-container"-->
+  <!--        :class="['header-draggable-container', {mobile: isMobile}]"-->
+  <!--    >-->
+  <!--        <div class="header-draggable" />-->
+  <!--    </div>-->
 
-    <div></div>
+  <div />
 </template>
 
 <style scoped lang="scss">

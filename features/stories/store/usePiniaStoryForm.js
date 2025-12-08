@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
-import { generateSimpleGetters, generateSimpleMutations } from "../../../../../../src/shared/js/utils/generators";
+
+import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../src/shared/js/utils/generators';
 
 export const usePiniaStoryStore = defineStore('story', {
     state: () => ({
         selectedStoryId: null,
         coverImage: null,
-        storyTitle: "",
-        storyDescription: "",
+        storyTitle: '',
+        storyDescription: '',
         storyChapters: [],
     }),
 
@@ -16,8 +17,8 @@ export const usePiniaStoryStore = defineStore('story', {
             isLoading: false,
             selectedStoryId: null,
             coverImage: null,
-            storyTitle: "",
-            storyDescription: "",
+            storyTitle: '',
+            storyDescription: '',
             storyChapters: [],
         }),
     },
@@ -29,8 +30,8 @@ export const usePiniaStoryStore = defineStore('story', {
             isLoading: false,
             selectedStoryId: null,
             coverImage: null,
-            storyTitle: "",
-            storyDescription: "",
+            storyTitle: '',
+            storyDescription: '',
             storyChapters: [],
         }),
 
@@ -40,15 +41,15 @@ export const usePiniaStoryStore = defineStore('story', {
         },
 
         setStoryData(storyData) {
-            console.log("storyData", storyData);
+            console.log('storyData', storyData);
             this.storyTitle = storyData.title;
             this.storyDescription = storyData.description;
             this.storyChapters = storyData.chapters;
         },
 
         resetStoryForm() {
-            this.storyTitle = "";
-            this.storyDescription = "";
+            this.storyTitle = '';
+            this.storyDescription = '';
             this.isLoading = false;
             this.selectedStoryId = null;
         }

@@ -1,4 +1,4 @@
-import {getStories} from "../features/stories/services/getStories";
+import { getStories } from '../features/stories/services/getStories';
 
 export default {
 

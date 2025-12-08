@@ -1,17 +1,19 @@
 <script setup>
-import {onMounted, ref, watch} from "vue";
+import { onMounted, ref, watch } from 'vue';
 
-import StoryForm from "./StoryForm.vue";
-import ToolWindow from "../../../shared/Toolwindow/ToolWindow.vue";
-import {getStory} from "../../services/getStory";
-import {useStory} from "../../hooks/useStory";
-import {backendUrl} from "../../../../store/contantsDataNarrator";
+import { backendUrl } from '../../../../store/contantsDataNarrator';
+import ToolWindow from '../../../shared/Toolwindow/ToolWindow.vue';
 
-const {currentStoryId} = useStory();
+import { useStory } from '../../hooks/useStory';
+import { getStory } from '../../services/getStory';
+
+import StoryForm from './StoryForm.vue';
+
+const { currentStoryId } = useStory();
 
 const isLoading = ref(false);
-const storyName = ref("");
-const description = ref("");
+const storyName = ref('');
+const description = ref('');
 const chapters = ref([]);
 const coverImageUrl = ref(null);
 
@@ -26,8 +28,8 @@ async function loadStory() {
 
     try {
         const data = await getStory(currentStoryId.value);
-        storyName.value = data.title ?? "";
-        description.value = data.description ?? "";
+        storyName.value = data.title ?? '';
+        description.value = data.description ?? '';
         coverImageUrl.value = data.titleImage ? getFileUrl(data.titleImage) : null;
         chapters.value = (data.chapters ?? []).map((c, idx) => ({
             id: idx,
@@ -57,16 +59,16 @@ watch(() => currentStoryId?.value, loadStory);
 </script>
 
 <template>
-    <ToolWindow>
-        <template #fixed>
-            <StoryForm
-                :storyId="currentStoryId"
-                :chapters="chapters"
-                :storyName="storyName"
-                :description="description"
-                :storyLoading="isLoading"
-                :coverImageUrl="coverImageUrl"
-            />
-        </template>
-    </ToolWindow>
+  <ToolWindow>
+    <template #fixed>
+      <StoryForm
+        :story-id="currentStoryId"
+        :chapters="chapters"
+        :story-name="storyName"
+        :description="description"
+        :story-loading="isLoading"
+        :cover-image-url="coverImageUrl"
+      />
+    </template>
+  </ToolWindow>
 </template>

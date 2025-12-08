@@ -1,5 +1,6 @@
-import {generateSimpleMutations} from "../../../../src/shared/js/utils/generators";
-import stateDataNarrator from "./stateDataNarrator";
+import { generateSimpleMutations } from '../../../../src/shared/js/utils/generators';
+
+import stateDataNarrator from './stateDataNarrator';
 
 const mutations = {
     /**
@@ -17,8 +18,8 @@ const mutations = {
      * @returns {void}
      */
     applyTranslationKey: (state, payload) => {
-        if (payload && payload.indexOf("translate#") > -1) {
-            state.name = payload.substr("translate#".length);
+        if (payload && payload.indexOf('translate#') > -1) {
+            state.name = payload.substr('translate#'.length);
         }
     },
 

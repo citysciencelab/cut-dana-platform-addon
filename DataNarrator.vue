@@ -1,18 +1,18 @@
 ﻿<script setup>
-import {useDataNarrator} from "./hooks/useDataNarrator";
-import {useDeepLink} from "./hooks/useDeepLink";
-import {useLayers} from "./hooks/useLayers";
-import DataNarratorDashboard from "./features/dashboard/components/Dashboard.vue";
-import CreateStory from "./features/stories/components/__new/CreateStory.vue";
-import EditStory from "./features/stories/components/__new/EditStory.vue";
-import PlayStory from "./features/stories/components/__new/PlayStory.vue";
-import * as constants from "./store/contantsDataNarrator";
+import DataNarratorDashboard from './features/dashboard/components/Dashboard.vue';
+import CreateStory from './features/stories/components/__new/CreateStory.vue';
+import EditStory from './features/stories/components/__new/EditStory.vue';
+import PlayStory from './features/stories/components/__new/PlayStory.vue';
+import { useDataNarrator } from './hooks/useDataNarrator';
+import { useDeepLink } from './hooks/useDeepLink';
+import { useLayers } from './hooks/useLayers';
+import * as constants from './store/contantsDataNarrator';
 
 defineOptions({
-    name: "DataNarrator"
+    name: 'DataNarrator'
 });
 
-const {disableFooter, disableMainMenu, disableSecondaryMenu, toolwindowMode, mode} = useDataNarrator();
+const { disableFooter, disableMainMenu, disableSecondaryMenu, toolwindowMode, mode } = useDataNarrator();
 
 useLayers();
 disableFooter();
@@ -22,17 +22,17 @@ useDeepLink();
 </script>
 
 <template lang="html">
-    <Teleport to="#datanarrator-root">
-        <div
-            id="datanarrator-container"
-            :class="[toolwindowMode]"
-        >
-            <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD" />
-            <CreateStory v-if="mode === constants.dataNarratorModes.CREATE_STORY" />
-            <EditStory v-if="mode === constants.dataNarratorModes.EDIT_STORY" />
-            <PlayStory v-if="mode === constants.dataNarratorModes.PLAY_STORY" />
-        </div>
-    </Teleport>
+  <Teleport to="#datanarrator-root">
+    <div
+      id="datanarrator-container"
+      :class="[toolwindowMode]"
+    >
+      <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD" />
+      <CreateStory v-if="mode === constants.dataNarratorModes.CREATE_STORY" />
+      <EditStory v-if="mode === constants.dataNarratorModes.EDIT_STORY" />
+      <PlayStory v-if="mode === constants.dataNarratorModes.PLAY_STORY" />
+    </div>
+  </Teleport>
 </template>
 
 <style lang="scss">

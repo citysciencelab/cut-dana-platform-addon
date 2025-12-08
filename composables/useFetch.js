@@ -1,4 +1,4 @@
-import {ref, toValue, watch} from "vue";
+import { ref, toValue, watch } from 'vue';
 
 
 export const useFetch = (url, options) => {

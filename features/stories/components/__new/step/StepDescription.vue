@@ -1,14 +1,14 @@
 <script setup>
-import {useTranslation} from "i18next-vue";
-import {VueEditor} from "vue3-editor";
-import {computed} from "vue";
+import { useTranslation } from 'i18next-vue';
+import { computed } from 'vue';
+import { VueEditor } from 'vue3-editor';
 
-import * as constants from "../../../../../store/contantsDataNarrator";
+import * as constants from '../../../../../store/contantsDataNarrator';
 
 const props = defineProps({
     value: String,
 });
-const emit = defineEmits(['update:value']);
+const emit = defineEmits([ 'update:value' ]);
 const inputValue = computed({
     get() {
         return props.value
@@ -18,17 +18,17 @@ const inputValue = computed({
     }
 });
 
-const {t} = useTranslation();
+const { t } = useTranslation();
 </script>
 
 <template>
-    <div class="editor-wrapper">
-        <vue-editor
-            :placeholder="t('additional:modules.dataNarrator.label.htmlContent')"
-            :editor-toolbar="constants.htmlEditorToolbar"
-            v-model="inputValue"
-        />
-    </div>
+  <div class="editor-wrapper">
+    <vue-editor
+      v-model="inputValue"
+      :placeholder="t('additional:modules.dataNarrator.label.htmlContent')"
+      :editor-toolbar="constants.htmlEditorToolbar"
+    />
+  </div>
 </template>
 
 <style lang="scss">

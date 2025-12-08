@@ -1,14 +1,14 @@
 <script setup>
-import {computed} from "vue";
+import { computed } from 'vue';
 
-import {useBaseLayer} from "../../../hooks/useBaseLayer";
+import { useBaseLayer } from '../../../hooks/useBaseLayer';
 
-const {items} = useBaseLayer();
+const { items } = useBaseLayer();
 
 const props = defineProps({
     modelValue: String
 });
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits([ 'update:modelValue' ]);
 
 const inputValue = computed({
     get: () => props.modelValue,
@@ -17,12 +17,12 @@ const inputValue = computed({
 </script>
 
 <template>
-    <v-select
-        :items="items"
-        density="comfortable"
-        label="Hintergrundkarte"
-        variant="outlined"
-        hide-details
-        v-model="inputValue"
-    />
+  <v-select
+    v-model="inputValue"
+    :items="items"
+    density="comfortable"
+    label="Hintergrundkarte"
+    variant="outlined"
+    hide-details
+  />
 </template>

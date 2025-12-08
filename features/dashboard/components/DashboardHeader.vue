@@ -1,31 +1,36 @@
 <script setup>
-import {storeToRefs} from "pinia";
-import {mdiMapLegend} from "@mdi/js";
-import {useTranslation} from "i18next-vue";
+import { mdiMapLegend } from '@mdi/js';
+import { useTranslation } from 'i18next-vue';
+import { storeToRefs } from 'pinia';
 
-import LoginButton from "./Tools/LoginButton.vue";
-import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
-import CreateStoryButton from "./Tools/CreateStoryButton.vue";
-import ListButton from "./Tools/ListButton.vue";
-import {useDashboard} from "../hooks/useDashboard";
-import {useLogin} from "../hooks/useLogin";
-import {useDashboardStore} from "../store/useDashboardStore";
-import cutcslDepiction from "../../../img/cutcsl_depiction.png";
-import {ToolwindowModes} from "../../../store/contantsDataNarrator";
-import {useDataNarrator} from "../../../hooks/useDataNarrator";
+import { useDataNarrator } from '../../../hooks/useDataNarrator';
+import cutcslDepiction from '../../../img/cutcsl_depiction.png';
+import { ToolwindowModes } from '../../../store/contantsDataNarrator';
+import { useDashboard } from '../hooks/useDashboard';
 
-const {t} = useTranslation();
-const {storyModeLists} = useDashboard();
-const {loggedIn} = useLogin();
+import { useLogin } from '../hooks/useLogin';
+
+import { useDashboardStore } from '../store/useDashboardStore';
+
+import CreateStoryButton from './Tools/CreateStoryButton.vue';
+import LanguageSwitchButton from './Tools/LanguageSwitchButton.vue';
+import ListButton from './Tools/ListButton.vue';
+
+
+import LoginButton from './Tools/LoginButton.vue';
+
+const { t } = useTranslation();
+const { storyModeLists } = useDashboard();
+// const { loggedIn } = useLogin();
 const dashboardStore = useDashboardStore();
-const {toolwindowMode} = useDataNarrator()
+const { toolwindowMode } = useDataNarrator()
 
-const {mode: storiesDisplayMode} = storeToRefs(dashboardStore)
+const { mode: storiesDisplayMode } = storeToRefs(dashboardStore)
 const legendAdded = true;
 const isMobile = false;
 
 const toggleLegend = () => {
-    console.log("toggleLegend");
+    console.log('toggleLegend');
 };
 
 const getBackgroundStyle = () => ({
@@ -34,98 +39,106 @@ const getBackgroundStyle = () => ({
 </script>
 
 <template>
-    <div class="dashboard-header">
-        <Teleport v-if="toolwindowMode === ToolwindowModes.MOBILE" to="body">
-            <div class="login-row-mobile">
-                <div class="d-flex justify-end align-center mt-2 ga-2">
-                    <LoginButton/>
-                    <LanguageSwitchButton/>
-                </div>
-            </div>
-        </Teleport>
-
-        <div v-else class="login-row">
-            <div class="d-flex justify-end align-center mt-2 ga-2">
-                <LoginButton/>
-                <LanguageSwitchButton/>
-            </div>
+  <div class="dashboard-header">
+    <Teleport
+      v-if="toolwindowMode === ToolwindowModes.MOBILE"
+      to="body"
+    >
+      <div class="login-row-mobile">
+        <div class="d-flex justify-end align-center mt-2 ga-2">
+          <LoginButton />
+          <LanguageSwitchButton />
         </div>
+      </div>
+    </Teleport>
 
-        <div
-            v-if="!legendAdded"
-            id="dana-legend-button"
-            class="row controls-row-right d-none d-md-block"
-        >
-            <div>
-                <v-icon
-                    id="dana-legend-icon"
-                    class="bootstrap-icon"
-                    @click="toggleLegend()"
-                >
-                    {{ mdiMapLegend }}
-                </v-icon>
-            </div>
-        </div>
-
-        <v-row
-            :class="`with-fancy-background ${isMobile && 'fancy-mobile'}`"
-            :style="getBackgroundStyle()"
-        >
-            <v-col
-                cols="12"
-                class="d-flex justify-start align-center"
-            >
-                <v-row class="dashboard-content-row flex-column flex-sm-row">
-                    <v-col
-                        lg="1"
-                        md="1"
-                        sm="2"
-                        cols="2"
-                        class="d-flex align-start justify-center"
-                    >
-                        <img
-                            src="../../../img/logonotext-xs.png"
-                            alt="logo"
-                            class="header-logo"
-                            width="55"
-                        >
-                    </v-col>
-                    <v-col
-                        lg="4"
-                        md="5"
-                        sm="9"
-                        cols="9"
-                        class="justify-start align-start"
-                    >
-                        <h1 class="header-h1">
-                            {{ t("additional:modules.dataNarrator.dashboardView.title") }}
-                        </h1>
-                        <h4 class="header-h4">
-                            {{ t("additional:modules.dataNarrator.dashboardView.subtitle") }}
-                        </h4>
-                        <p class="header-body">{{ t("additional:modules.dataNarrator.dashboardView.description") }}</p>
-                    </v-col>
-                </v-row>
-            </v-col>
-            <v-col
-                cols="12"
-                class="d-flex justify-center align-end"
-            >
-                <CreateStoryButton/>
-            </v-col>
-        </v-row>
-
-        <v-row class="list-buttons">
-            <v-col class="d-flex justify-center align-center">
-                <ListButton
-                    v-for="value in storyModeLists"
-                    :key="value"
-                    :mode="value"
-                    :active="storiesDisplayMode === value"
-                />
-            </v-col>
-        </v-row>
+    <div
+      v-else
+      class="login-row"
+    >
+      <div class="d-flex justify-end align-center mt-2 ga-2">
+        <LoginButton />
+        <LanguageSwitchButton />
+      </div>
     </div>
+
+    <div
+      v-if="!legendAdded"
+      id="dana-legend-button"
+      class="row controls-row-right d-none d-md-block"
+    >
+      <div>
+        <v-icon
+          id="dana-legend-icon"
+          class="bootstrap-icon"
+          @click="toggleLegend()"
+        >
+          {{ mdiMapLegend }}
+        </v-icon>
+      </div>
+    </div>
+
+    <v-row
+      :class="`with-fancy-background ${isMobile && 'fancy-mobile'}`"
+      :style="getBackgroundStyle()"
+    >
+      <v-col
+        cols="12"
+        class="d-flex justify-start align-center"
+      >
+        <v-row class="dashboard-content-row flex-column flex-sm-row">
+          <v-col
+            lg="1"
+            md="1"
+            sm="2"
+            cols="2"
+            class="d-flex align-start justify-center"
+          >
+            <img
+              src="../../../img/logonotext-xs.png"
+              alt="logo"
+              class="header-logo"
+              width="55"
+            >
+          </v-col>
+          <v-col
+            lg="4"
+            md="5"
+            sm="9"
+            cols="9"
+            class="justify-start align-start"
+          >
+            <h1 class="header-h1">
+              {{ t("additional:modules.dataNarrator.dashboardView.title") }}
+            </h1>
+            <h4 class="header-h4">
+              {{ t("additional:modules.dataNarrator.dashboardView.subtitle") }}
+            </h4>
+            <p class="header-body">
+              {{ t("additional:modules.dataNarrator.dashboardView.description") }}
+            </p>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col
+        cols="12"
+        class="d-flex justify-center align-end"
+      >
+        <CreateStoryButton />
+      </v-col>
+    </v-row>
+
+    <v-row class="list-buttons">
+      <v-col class="d-flex justify-center align-center">
+        <ListButton
+          v-for="value in storyModeLists"
+          :key="value"
+          :mode="value"
+          :active="storiesDisplayMode === value"
+        />
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 

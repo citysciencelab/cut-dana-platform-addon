@@ -1,25 +1,25 @@
 <script setup>
-import {ref, computed, onMounted} from "vue";
-import {mdiCheckCircle} from "@mdi/js";
-import axios from "axios";
-import WMSCapabilities from "ol/format/WMSCapabilities.js";
-import {intersects as olIntersects} from "ol/extent";
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from '@masterportal/masterportalapi/src/crs';
+import { mdiCheckCircle } from '@mdi/js';
+import axios from 'axios';
+import { intersects as olIntersects } from 'ol/extent';
+import WMSCapabilities from 'ol/format/WMSCapabilities.js';
+import { ref, computed, onMounted } from 'vue';
 
 const props = defineProps({
-    projectionCode: {type: String, default: "EPSG:3857"},
-    currentExtent: {type: Array, default: null},
-    autoFocus: {type: Boolean, default: false},
-    disabled: {type: Boolean, default: false},
+    projectionCode: { type: String, default: 'EPSG:3857' },
+    currentExtent: { type: Array, default: null },
+    autoFocus: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(["selected", "error"]);
+const emit = defineEmits([ 'selected', 'error' ]);
 
 const inputRef = ref(null);
-const wmsUrl = ref("");
+const wmsUrl = ref('');
 const loading = ref(false);
 const invalidUrl = ref(false);
-const version = ref("");
+const version = ref('');
 const loaded = ref(false);
 
 onMounted(() => {
@@ -28,7 +28,7 @@ onMounted(() => {
 
 function isHttpUrl(url) {
     try {
-        return new URL(url).protocol === "http:";
+        return new URL(url).protocol === 'http:';
     } catch {
         return false;
     }
@@ -36,22 +36,22 @@ function isHttpUrl(url) {
 
 function normalizeBaseUrl(raw) {
     const u = new URL(raw);
-    u.searchParams.delete("request");
-    u.searchParams.delete("service");
-    u.searchParams.delete("version");
+    u.searchParams.delete('request');
+    u.searchParams.delete('service');
+    u.searchParams.delete('version');
     return u.toString();
 }
 
 function buildCapabilitiesUrl(raw) {
     const base = new URL(normalizeBaseUrl(raw));
-    base.searchParams.set("request", "GetCapabilities");
-    base.searchParams.set("service", "WMS");
+    base.searchParams.set('request', 'GetCapabilities');
+    base.searchParams.set('service', 'WMS');
     return base.toString();
 }
 
 function isVersionEnabled(v) {
     if (!v) return false;
-    const p = v.split(".").map((n) => parseInt(n, 10));
+    const p = v.split('.').map((n) => parseInt(n, 10));
     if (p[0] < 1) return false;
     if (p[0] === 1 && (p[1] ?? 0) < 3) return false;
     return true;
@@ -59,14 +59,14 @@ function isVersionEnabled(v) {
 
 function reversedDataForOldSpec(xml) {
     const xmlStr =
-        typeof xml === "string"
+        typeof xml === 'string'
             ? xml
             : new XMLSerializer().serializeToString(xml);
     const patched = xmlStr
-        .replace(/<SRS>/g, "<CRS>")
-        .replace(/<\/SRS>/g, "</CRS>")
-        .replace(/SRS=/g, "CRS=");
-    return new DOMParser().parseFromString(patched, "text/xml");
+        .replace(/<SRS>/g, '<CRS>')
+        .replace(/<\/SRS>/g, '</CRS>')
+        .replace(/SRS=/g, 'CRS=');
+    return new DOMParser().parseFromString(patched, 'text/xml');
 }
 
 function inCurrentExtent(capability, ext) {
@@ -76,7 +76,7 @@ function inCurrentExtent(capability, ext) {
     const bboxes = capability?.Capability?.Layer?.BoundingBox?.filter(
         (b) =>
             b?.crs &&
-            b.crs.includes("EPSG") &&
+            b.crs.includes('EPSG') &&
             crs.getProjection(b.crs) &&
             Array.isArray(b.extent) &&
             b.extent.length === 4,
@@ -88,15 +88,15 @@ function inCurrentExtent(capability, ext) {
 
     for (const bb of bboxes) {
         if (bb.crs === props.projectionCode) {
-            first = [bb.extent[0], bb.extent[1]];
-            second = [bb.extent[2], bb.extent[3]];
+            first = [ bb.extent[0], bb.extent[1] ];
+            second = [ bb.extent[2], bb.extent[3] ];
             break;
         }
     }
 
     if (!first.length) {
         const src = bboxes[0];
-        const epsg4326 = bboxes.find((b) => b.crs === "EPSG:4326");
+        const epsg4326 = bboxes.find((b) => b.crs === 'EPSG:4326');
         if (epsg4326) {
             first = crs.transform(epsg4326.crs, props.projectionCode, [
                 epsg4326.extent[1],
@@ -118,7 +118,7 @@ function inCurrentExtent(capability, ext) {
         }
     }
 
-    const transformed = [first[0], first[1], second[0], second[1]];
+    const transformed = [ first[0], first[1], second[0], second[1] ];
     return olIntersects(current, transformed);
 }
 
@@ -131,7 +131,7 @@ function safeLegendURL(obj) {
 }
 
 function makeId(serviceUrl, layerName) {
-    let host = "wms";
+    let host = 'wms';
     try {
         host = new URL(serviceUrl).host;
     } catch {}
@@ -150,9 +150,9 @@ function collectStepSources(node, out, baseUrl, ver) {
 
     out.push({
         id: makeId(baseUrl, String(name)),
-        type: "WMS",
+        type: 'WMS',
         serviceUrl: baseUrl,
-        layers: [String(name)],
+        layers: [ String(name) ],
         name: String(title ?? name),
         version: ver,
         visible: true,
@@ -171,18 +171,18 @@ async function importLayers() {
 
     if (!raw) {
         invalidUrl.value = true;
-        emit("error", "Please enter a WMS service URL.");
+        emit('error', 'Please enter a WMS service URL.');
         return;
     }
     if (isHttpUrl(raw)) {
-        emit("error", "Only HTTPS WMS URLs are allowed.");
+        emit('error', 'Only HTTPS WMS URLs are allowed.');
         return;
     }
 
     loading.value = true;
     try {
         const capUrl = buildCapabilitiesUrl(raw);
-        const {data} = await axios({url: capUrl, timeout: 8000});
+        const { data } = await axios({ url: capUrl, timeout: 8000 });
 
         const parser = new WMSCapabilities();
         let capability = parser.read(data);
@@ -196,13 +196,13 @@ async function importLayers() {
 
         if (!inCurrentExtent(capability, props.currentExtent)) {
             emit(
-                "error",
-                "The service’s extent does not intersect the current map view.",
+                'error',
+                'The service’s extent does not intersect the current map view.',
             );
             return;
         }
 
-        version.value = ver || "";
+        version.value = ver || '';
         const baseUrl = normalizeBaseUrl(raw);
 
         const sources = [];
@@ -213,16 +213,16 @@ async function importLayers() {
         }
 
         if (!sources.length) {
-            emit("error", "No importable layers were found.");
+            emit('error', 'No importable layers were found.');
             return;
         }
 
-        emit("selected", sources);
+        emit('selected', sources);
         loaded.value = true;
     } catch (e) {
         emit(
-            "error",
-            "Failed to load WMS capabilities. The server might block CORS or the URL is invalid.",
+            'error',
+            'Failed to load WMS capabilities. The server might block CORS or the URL is invalid.',
         );
     } finally {
         loading.value = false;
@@ -230,51 +230,60 @@ async function importLayers() {
 }
 
 function onKeydown(e) {
-    if (e.key === "Enter") importLayers();
+    if (e.key === 'Enter') importLayers();
 }
 
-const btnLabel = computed(() => (loading.value ? "Loading…" : "Load"));
+const btnLabel = computed(() => (loading.value ? 'Loading…' : 'Load'));
 </script>
 
 <template>
-    <div class="add-wms my-4">
-        <div v-if="invalidUrl" class="error">
-            Please enter a WMS service URL.
-        </div>
-
-        <div class="d-flex ga-2 align-center">
-            <v-text-field
-                ref="inputRef"
-                v-model="wmsUrl"
-                placeholder="Enter WMS service URL"
-                :disabled="loading || disabled"
-                density="comfortable"
-                variant="outlined"
-                hide-details="auto"
-                @keydown="onKeydown"
-            >
-                <template v-if="loaded" v-slot:prepend-inner>
-                    <v-icon :icon="mdiCheckCircle" color="black" />
-                </template>
-                <template v-slot:append-inner>
-                    <v-btn
-                        variant="outlined"
-                        density="comfortable"
-                        :loading="loading"
-                        :disabled="loading || !wmsUrl"
-                        @click="importLayers"
-                    >
-                        {{ btnLabel }}
-                    </v-btn>
-                </template>
-            </v-text-field>
-        </div>
-
-        <div class="hint">
-            You can paste either the base WMS service URL or a full
-            GetCapabilities URL.
-        </div>
+  <div class="add-wms my-4">
+    <div
+      v-if="invalidUrl"
+      class="error"
+    >
+      Please enter a WMS service URL.
     </div>
+
+    <div class="d-flex ga-2 align-center">
+      <v-text-field
+        ref="inputRef"
+        v-model="wmsUrl"
+        placeholder="Enter WMS service URL"
+        :disabled="loading || disabled"
+        density="comfortable"
+        variant="outlined"
+        hide-details="auto"
+        @keydown="onKeydown"
+      >
+        <template
+          v-if="loaded"
+          #prepend-inner
+        >
+          <v-icon
+            :icon="mdiCheckCircle"
+            color="black"
+          />
+        </template>
+        <template #append-inner>
+          <v-btn
+            variant="outlined"
+            density="comfortable"
+            :loading="loading"
+            :disabled="loading || !wmsUrl"
+            @click="importLayers"
+          >
+            {{ btnLabel }}
+          </v-btn>
+        </template>
+      </v-text-field>
+    </div>
+
+    <div class="hint">
+      You can paste either the base WMS service URL or a full
+      GetCapabilities URL.
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">

@@ -1,6 +1,6 @@
 <script setup>
-import {VueEditor} from "vue3-editor";
-import {computed} from "vue";
+import { computed } from 'vue';
+import { VueEditor } from 'vue3-editor';
 
 const props = defineProps({
     modelValue: {
@@ -8,29 +8,29 @@ const props = defineProps({
         required: true,
     }
 });
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits([ 'update:modelValue' ]);
 
 const internalValue = computed({
     get: () => props.modelValue,
-    set: v => emit("update:modelValue", v),
+    set: v => emit('update:modelValue', v),
 });
 
 const viewerOptions = {
-    modules: {toolbar: false},
+    modules: { toolbar: false },
     readOnly: true,
-    theme: "bubble",
+    theme: 'bubble',
 };
 </script>
 
 <template>
-    <div class="viewer">
-        <vue-editor
-            v-model="internalValue"
-            :editorOptions="viewerOptions"
-            :editor-toolbar="[]"
-            :disabled="true"
-        />
-    </div>
+  <div class="viewer">
+    <vue-editor
+      v-model="internalValue"
+      :editor-options="viewerOptions"
+      :editor-toolbar="[]"
+      :disabled="true"
+    />
+  </div>
 </template>
 
 <style lang="scss" scoped>

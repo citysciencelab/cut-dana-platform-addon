@@ -1,5 +1,5 @@
-import {computed} from "vue";
-import {useStore} from "vuex";
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 export function useStory () {
     const store = useStore();
@@ -9,7 +9,7 @@ export function useStory () {
             return store.state.Modules.DataNarrator.StoryStore.selectedStoryId;
         },
         set(id) {
-            store.commit("Modules/DataNarrator/StoryStore/setSelectedStoryId", id);
+            store.commit('Modules/DataNarrator/StoryStore/setSelectedStoryId', id);
         }
     });
 
