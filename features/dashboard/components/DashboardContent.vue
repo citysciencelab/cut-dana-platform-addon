@@ -1,43 +1,60 @@
 <script setup>
-
 import StoryCard from "./Stories/StoryCard.vue";
 import {useDashboard} from "../hooks/useDashboard";
 
-const {stories, getAllStories} = useDashboard();
-
-getAllStories();
+const {stories, error, loading, refetchStories} = useDashboard();
 </script>
 
 <template>
-    <div class="stories-card-container">
-        <StoryCard
-            v-for="story in stories"
-            :key="story.id + story.updatedAt"
-            :story="story"
-            :grid="true"
-            @refreshStoryList="getAllStories"
-            @imageLoaded="() => {console.log('imageLoaded')}"
-        />
+    <div class="dashboard-content-container">
+        <div v-if="loading">
+            Loading...
+        </div>
+        <div v-else-if="error">
+            Error: {{ error }}
+        </div>
+        <div v-else-if="stories.length > 0" class="stories-container">
+            <StoryCard
+                v-for="story in stories"
+                :key="story.id + story.updatedAt"
+                :story="story"
+                :grid="true"
+                @deleted="refetchStories"
+                @published="refetchStories"
+            />
+        </div>
+        <div v-else class="no-results">No stories available</div>
     </div>
 </template>
 
 <style scoped lang="scss">
-.stories-card-container {
-    display: flex;
-    flex-wrap: wrap;
+.dashboard-content-container {
     padding: 1rem;
-    gap: 0.4rem;
+    width: 70%;
+    margin: 0 auto;
 
-    .card {
-        border: solid 1px #000;
-        border-radius: .4rem;
-        padding: .4rem;
-        min-width: 16rem;
+    @media screen and (max-width: 768px) {
+        width: 100%;
+    }
 
-        .card-footer {
-            display: flex;
-            justify-content: flex-end;
+    .stories-container {
+        display: grid;
+        gap: 20px;
+        align-items: flex-start;
+        grid-template-columns: repeat(1, minmax(240px, 1fr));
+
+        @media (min-width: 600px) {
+            grid-template-columns: repeat(2, minmax(240px, 1fr));
         }
+
+        @media (min-width: 992px) {
+            grid-template-columns: repeat(3, minmax(240px, 1fr));
+        }
+    }
+
+    .no-results {
+        color: #808080;
+        text-align: center;
     }
 }
 </style>

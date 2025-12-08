@@ -6,7 +6,8 @@ export const state = {
     selectedStoryId: null,
     coverImage: null,
     storyTitle: "",
-    storyDescription: ""
+    storyDescription: "",
+    storyChapters: [],
 };
 
 // eslint-disable-next-line one-var
@@ -20,8 +21,10 @@ export const mutations = {
 
     // eslint-disable-next-line no-shadow
     setStoryData (state, storyData) {
+        console.log("storyData",storyData);
         state.storyTitle = storyData.title;
         state.storyDescription = storyData.description;
+        state.storyChapters = storyData.chapters;
     },
 
     // eslint-disable-next-line no-shadow

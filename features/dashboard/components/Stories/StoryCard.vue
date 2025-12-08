@@ -1,14 +1,23 @@
 <script setup>
-
-import {defineComponent} from "vue";
 import PlayButton from "./PlayButton.vue";
 import EditButton from "./EditButton.vue";
 import AuthorDisplay from "./Author.vue";
 import ShareButton from "./ShareButton.vue";
 import FeaturedButton from "./FeaturedButton.vue";
 import DeleteButton from "./DeleteButton.vue";
-import ShareSettingsButton from "./ShareSettingsButton.vue";
-import ShareSettingsForm from "./ShareSettingsForm.vue";
+import PublishButton from "./PublishButton.vue";
+import {backendUrl, dataNarratorModes} from "../../../../store/contantsDataNarrator";
+import {useDataNarrator} from "../../../../hooks/useDataNarrator";
+import {useStory} from "../../../stories/hooks/useStory";
+import {useLogin} from "../../hooks/useLogin";
+import {incrementStoryViews} from "../../services/incrementStoryViews";
+import {useDashboard} from "../../hooks/useDashboard";
+
+const {userId} = useLogin();
+const {gotoPage} = useDataNarrator();
+const {currentStoryId} = useStory();
+const {storiesDisplayMode} = useDashboard();
+const emit = defineEmits(['deleted', 'published']);
 
 const props = defineProps({
     story: {
@@ -21,54 +30,61 @@ const props = defineProps({
     },
 });
 
-function reloadMasonry () {
-
+function getFileUrl(titleImage) {
+    return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
 }
 
-function getFileUrl (titleImage) {
-    return titleImage;
-}
+async function playStory() {
+    // count a view
+    try {
+        incrementStoryViews(props.story.id)
+    } catch (_) {
+    }
 
-function editable () {
-    // TODO:Jonas implement this
-    return true;
+    currentStoryId.value = props.story.id;
+    gotoPage(dataNarratorModes.PLAY_STORY);
+
+    const baseUrl = `${location.origin}/portal/stories/?id=${props.story.id}`;
+    window.history.replaceState({}, "", baseUrl);
 }
 </script>
 
 <template>
     <v-card
-        class="mb-5"
-        flat
-        :class="{'grid-item': grid, 'topper': shareSettings}"
+        class="story-card"
+        variant="flat"
     >
-        <v-img
+        <div
             v-if="story.titleImage"
-            :src="getFileUrl(story.titleImage)"
-            :alt="story.title"
-            eager
-            height="95px"
-            @load="reloadMasonry"
+            class="story-card-cover"
+            :style="`background-image: url(${getFileUrl(story.titleImage)});`"
         />
 
-        <v-row class="card-header">
-            <v-col cols="11">
-                <v-card-title class="card-title">
+        <div class="card-header">
+            <div class="card-header-title">
+                <div class="card-header-title-text">
                     {{ story.title }}
-                </v-card-title>
-                <AuthorDisplay :authorId="story.author" />
-            </v-col>
+                </div>
+                <AuthorDisplay :authorId="story.author"/>
+            </div>
 
-            <v-col cols="1">
-                <FeaturedButton
-                    :story-id="story.id"
-                    :is-featured="story.featured"
-                    :is-admin="isAdmin"
-                />
+            <div class="card-header-actions">
                 <ShareButton
                     :story-id="story.id"
                 />
-            </v-col>
-        </v-row>
+                <FeaturedButton
+                    :story-id="story.id"
+                    :is-featured="story.featured"
+                    :is-admin="userId === story.owner"
+                />
+                <PublishButton
+                    v-if="storiesDisplayMode === 'my' && userId === story.owner"
+                    :is-draft="story.isDraft"
+                    :story-id="story.id"
+                    @success="() => emit('published')"
+                />
+            </div>
+        </div>
 
         <v-card-text class="card-text">
             {{ story.description }}
@@ -78,89 +94,74 @@ function editable () {
             <v-row>
                 <v-col>
                     <EditButton
-                        v-if="editable()"
+                        v-if="userId === story.owner"
                         :story-id="story.id"
                     />
                     <DeleteButton
-                        v-if="editable()"
+                        v-if="userId === story.owner"
                         :story-id="story.id"
-                    />
-                    <ShareSettingsButton
-                        v-if="editable()"
-                        :story="story"
-                        @toggle:shared-settings="shareSettings = !shareSettings"
+                        @deleted="() => emit('deleted')"
                     />
                 </v-col>
                 <v-col class="play-button">
-                    <PlayButton :story-id="story._id" />
+                    <PlayButton :story-id="story._id" @click="playStory"/>
                 </v-col>
             </v-row>
         </v-card-actions>
-
-
-        <ShareSettingsForm
-            v-if="shareSettings"
-            :story="story"
-            @close:shared-settings="shareSettings = false"
-        />
     </v-card>
 </template>
 
 <style lang="scss" scoped>
-
-.topper {
-    z-index: 1000;
-}
-.grid-item {
-    width: 100%;
-
-    flex: 0 0 100%;
-    max-width: 100%;
-
-    border-radius: 5px;
+.story-card {
     border: 1px solid rgba(0, 0, 0, 0.40);
+    border-radius: 5px;
 
-
-    @media (min-width: 768px){
-        flex: 0 0 calc(50% - 20px);
-        max-width: calc(50% - 20px)
+    &-cover {
+        width: 100%;
+        height: 180px;
+        aspect-ratio: 16 / 9;
+        background-color: #f1f1f1;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        border-radius: 5px;
     }
-
-    @media(min-width: 992px) {
-        flex: 0 0 calc(33.3333333333% - 20px);
-        max-width: calc(33.3333333333% - 20px);
-    }
-
-    @media(min-width: 1800px) {
-        flex: 0 0 calc(25% - 20px);
-        max-width: calc(25% - 20px);
-    }
-
 }
 
 .card-header {
-    padding: 10px 12px 0 12px;
-    margin-bottom: 5px !important;
+    padding: 10px 12px 8px 12px;
+    display: flex;
+    align-items: flex-start;
 
-    .card-title {
-        padding: 0;
+    .card-header-title {
+        flex: 1;
+
+        &-text {
+            font-weight: bold;
+            text-transform: capitalize;
+            font-size: 18px;
+        }
     }
 
-    .card-subtitle {
-        padding: 12px 0 0 0;
+    .card-header-actions {
+        display: flex;
+        align-items: center;
     }
 }
 
 .card-text {
     padding: 0 12px;
     display: -webkit-box;
-    line-clamp: 4;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
     overflow: hidden;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    color: #4c4c4c;
 }
 
 .card-actions {
-    padding: 8px 12px 8px 12px;
+    padding: 0;
 }
 
 .play-button {

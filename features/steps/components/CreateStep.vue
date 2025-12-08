@@ -7,18 +7,9 @@ import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
 </script>
 
 <template>
-
     <ToolWindow>
-        <template v-slot:header>
-            <div>header</div>
-        </template>
         <template v-slot:default>
-            <div id="tool-dataNarrator-creator-stepForm">
-                <StepForm />
-            </div>
-        </template>
-        <template v-slot:footer>
-            <div class="actions-container" />
+            <StepForm />
         </template>
     </ToolWindow>
 </template>

@@ -4,48 +4,39 @@ import {useStories} from "../../../stories/hooks/useStories";
 import {mdiPlayOutline} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
 
-
 const {t} = useTranslation();
-const {currentStoryId} = useStories(),
-    {storyId} = defineProps({
-        storyId: {
-            type: String,
-            required: true
-        }
-    });
+const {currentStoryId} = useStories();
+const emit = defineEmits(["click"]);
+const {storyId} = defineProps({
+    storyId: {
+        type: String,
+        required: true
+    }
+});
 
-/**
- *
- */
-function playStory () {
-    currentStoryId.value = storyId;
+function onClick() {
+    emit('click');
 }
+
 </script>
 
 <template>
-    <v-tooltip top>
-        <template #activator="{ on }">
+    <v-tooltip location="top">
+        <template #activator="{ props }">
             <v-btn
-                dark
+                v-bind="props"
+                color="black"
                 rounded
-                x-small
-                @click="playStory()"
+                size="small"
+                variant="flat"
+                @click="onClick"
             >
-                <v-icon
-                    id="play-button"
-                    color="white"
-                    small
-                    v-on="on"
-                >
+                <v-icon id="play-button" color="white">
                     {{ mdiPlayOutline }}
                 </v-icon>
             </v-btn>
         </template>
-        <span>
-            {{
-                t("additional:modules.dataNarrator.play")
-            }}
-        </span>
+        {{ t("additional:modules.dataNarrator.play") }}
     </v-tooltip>
 </template>
 

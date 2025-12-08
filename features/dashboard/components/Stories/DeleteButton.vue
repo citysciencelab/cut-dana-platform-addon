@@ -1,10 +1,11 @@
 <script setup>
-
-// import {useStories} from "../../../stories/hooks/useStories";
 import {mdiTrashCanOutline} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
+import {ref} from "vue";
 
-// const {currentStoryId} = useStories(),
+import {deleteStory} from "../../../stories/services/deleteStory";
+import ConfirmationDialog from "../../../shared/ConfirmationDialog.vue";
+
 const {t} = useTranslation();
 const {storyId} = defineProps({
     storyId: {
@@ -12,31 +13,47 @@ const {storyId} = defineProps({
         required: true
     }
 });
+const emit = defineEmits(['deleted']);
+const isLoading = ref(false);
+const deleteStoryDialogVisible = ref(false);
 
-/**
- *
- */
-function deleteStoryWithConfirm () {
-    console.log(storyId, "delete");
+async function deleteStoryWithConfirm() {
+    isLoading.value = true;
+    try {
+        await deleteStory(storyId);
+        emit('deleted');
+    } catch (error) {
+        console.error(error);
+    } finally {
+        isLoading.value = false;
+    }
 }
 </script>
 
 <template>
-    <v-tooltip top>
-        <template #activator="{ on }">
-            <v-icon
-                id="delete-button"
-                v-on="on"
-                @click="deleteStoryWithConfirm()"
+    <v-tooltip location="top">
+        <template v-slot:activator="{ props }">
+            <v-btn
+                v-bind="props"
+                @click="deleteStoryDialogVisible = true"
+                variant="text"
+                icon
+                density="compact"
+                :loading="isLoading"
             >
-                {{ mdiTrashCanOutline }}
-            </v-icon>
+                <v-icon size="18" :icon="mdiTrashCanOutline"/>
+            </v-btn>
         </template>
-        <span>
-            {{
-                t("additional:modules.tools.dataNarrator.creator.delete")
-            }}
-        </span>
+        {{ t("additional:modules.dataNarrator.creator.delete") }}
     </v-tooltip>
+
+    <ConfirmationDialog
+        :message="t('additional:modules.dataNarrator.confirm.deleteStory.description')"
+        :title="t('additional:modules.dataNarrator.confirm.deleteStory.title')"
+        :confirm-text="t('additional:modules.dataNarrator.confirm.deleteStory.confirmButton')"
+        :cancel-text="t('additional:modules.dataNarrator.confirm.deleteStory.denyButton')"
+        v-model="deleteStoryDialogVisible"
+        @confirm="deleteStoryWithConfirm"
+    />
 </template>
 

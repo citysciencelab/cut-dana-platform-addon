@@ -1,6 +1,5 @@
 import {backendUrl} from "../../../store/contantsDataNarrator";
 
-
-export function getStories () {
-    return fetch(`${backendUrl}/stories`);
+export function getStories (mode) {
+    return fetch(`${backendUrl}/stories/${mode}`);
 }

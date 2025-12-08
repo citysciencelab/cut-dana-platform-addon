@@ -1,33 +1,55 @@
 <script setup>
+import {storeToRefs} from "pinia";
+import {mdiMapLegend} from "@mdi/js";
+import {useTranslation} from "i18next-vue";
+
 import LoginButton from "./Tools/LoginButton.vue";
 import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
 import CreateStoryButton from "./Tools/CreateStoryButton.vue";
 import ListButton from "./Tools/ListButton.vue";
-import {mdiMapLegend} from "@mdi/js";
-import {useTranslation} from "i18next-vue";
-import {ref} from "vue";
-
+import {useDashboard} from "../hooks/useDashboard";
+import {useLogin} from "../hooks/useLogin";
+import {useDashboardStore} from "../store/useDashboardStore";
+import cutcslDepiction from "../../../img/cutcsl_depiction.png";
+import {ToolwindowModes} from "../../../store/contantsDataNarrator";
+import {useDataNarrator} from "../../../hooks/useDataNarrator";
 
 const {t} = useTranslation();
+const {storyModeLists} = useDashboard();
+const {loggedIn} = useLogin();
+const dashboardStore = useDashboardStore();
+const {toolwindowMode} = useDataNarrator()
+
+const {mode: storiesDisplayMode} = storeToRefs(dashboardStore)
 const legendAdded = true;
-const toggleLegend = () => {};
 const isMobile = false;
 
-function availableStoryListModes () {
-    return ["all", "featured", "popular"];
-}
+const toggleLegend = () => {
+    console.log("toggleLegend");
+};
 
-const storyListMode = ref("all");
+const getBackgroundStyle = () => ({
+    backgroundImage: `url(${cutcslDepiction})`
+});
 </script>
 
 <template>
     <div class="dashboard-header">
-        <v-row class="login-row">
-            <v-col class="d-flex justify-end align-center">
-                <LoginButton />
-                <LanguageSwitchButton />
-            </v-col>
-        </v-row>
+        <Teleport v-if="toolwindowMode === ToolwindowModes.MOBILE" to="body">
+            <div class="login-row-mobile">
+                <div class="d-flex justify-end align-center mt-2 ga-2">
+                    <LoginButton/>
+                    <LanguageSwitchButton/>
+                </div>
+            </div>
+        </Teleport>
+
+        <div v-else class="login-row">
+            <div class="d-flex justify-end align-center mt-2 ga-2">
+                <LoginButton/>
+                <LanguageSwitchButton/>
+            </div>
+        </div>
 
         <div
             v-if="!legendAdded"
@@ -47,13 +69,13 @@ const storyListMode = ref("all");
 
         <v-row
             :class="`with-fancy-background ${isMobile && 'fancy-mobile'}`"
+            :style="getBackgroundStyle()"
         >
             <v-col
                 cols="12"
                 class="d-flex justify-start align-center"
             >
-                <v-row>
-
+                <v-row class="dashboard-content-row flex-column flex-sm-row">
                     <v-col
                         lg="1"
                         md="1"
@@ -75,11 +97,13 @@ const storyListMode = ref("all");
                         cols="9"
                         class="justify-start align-start"
                     >
-                        <h1 class="header-h1">{{ t("additional:modules.dataNarrator.dashboardView.title") }}</h1>
-                        <h4 class="header-h4">{{
-                                t("additional:modules.dataNarrator.dashboardView.subtitle")
-                            }}</h4>
-                        <p>{{ t("additional:modules.dataNarrator.dashboardView.description") }}</p>
+                        <h1 class="header-h1">
+                            {{ t("additional:modules.dataNarrator.dashboardView.title") }}
+                        </h1>
+                        <h4 class="header-h4">
+                            {{ t("additional:modules.dataNarrator.dashboardView.subtitle") }}
+                        </h4>
+                        <p class="header-body">{{ t("additional:modules.dataNarrator.dashboardView.description") }}</p>
                     </v-col>
                 </v-row>
             </v-col>
@@ -87,17 +111,17 @@ const storyListMode = ref("all");
                 cols="12"
                 class="d-flex justify-center align-end"
             >
-                <CreateStoryButton />
+                <CreateStoryButton/>
             </v-col>
         </v-row>
 
         <v-row class="list-buttons">
             <v-col class="d-flex justify-center align-center">
                 <ListButton
-                    v-for="mode in availableStoryListModes()"
-                    :key="mode"
-                    :mode="mode"
-                    :active="storyListMode === mode"
+                    v-for="value in storyModeLists"
+                    :key="value"
+                    :mode="value"
+                    :active="storiesDisplayMode === value"
                 />
             </v-col>
         </v-row>
@@ -106,14 +130,25 @@ const storyListMode = ref("all");
 
 
 <style lang="scss" scoped>
+.login-row-mobile {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 2000;
+}
+
 .login-row {
+    top: 10px;
     position: sticky;
-    top: 0;
 }
 
 .dashboard-header {
-
     z-index: 112 !important;
+    padding: 0 10px;
+
+    @media screen and (max-width: 768px) {
+        padding-right: 0;
+    }
 }
 
 #dana-legend-icon {
@@ -123,15 +158,25 @@ const storyListMode = ref("all");
 }
 
 .with-fancy-background {
-    background-position: right bottom;
+    background-position: -40% -20%;
+    background-size: 120%;
     min-height: 220px;
     align-items: end;
     z-index: 112;
-    background-image: url("../../../img/cutcsl_depiction.png");
 
     @media (min-width: 768px) {
-        background-position: right top;
+        background-position: 80%;
         min-height: 332px;
+        background-size: 60%;
+    }
+}
+
+.dashboard-content-row {
+    padding-top: 60px !important;
+
+    @media (min-width: 768px) {
+        padding-top: 60px !important;
+        padding-left: 100px !important;
     }
 }
 
@@ -145,7 +190,7 @@ const storyListMode = ref("all");
 
 .header-h1 {
     font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     color: black;
     margin-top: 0.25rem;
@@ -153,6 +198,13 @@ const storyListMode = ref("all");
 
 .header-h4 {
     margin-bottom: 1rem;
+    font-size: 16px;
+    font-weight: 600;
 }
 
+.header-body {
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 500;
+}
 </style>

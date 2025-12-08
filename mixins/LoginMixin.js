@@ -1,7 +1,7 @@
 ﻿import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import getters from "../store/gettersDataNarrator";
 import mutations from "../store/mutationsDataNarrator";
-import {getRedirectUrl} from "../services/loginService";
+import {getRedirectUrl} from "../features/login/services/loginService";
 import DataNarratorWindowMixins from "./DataNarratorWindowMixins";
 
 export default {
@@ -28,7 +28,8 @@ export default {
         ...mapActions("Modules/Login", [
             "initialize",
             "logout",
-            "checkLoggedIn"
+            "checkLoggedIn",
+            "setUserId"
         ]),
 
         async getAuthCodeUrl() {

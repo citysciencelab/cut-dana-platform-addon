@@ -1,49 +1,40 @@
 <script setup>
-
-import {useStories} from "../../../stories/hooks/useStories";
-import {mdiPencil} from "@mdi/js";
+import {mdiPencil, mdiShareVariant, mdiTrashCanOutline} from "@mdi/js";
 import {useTranslation} from "i18next-vue";
 
+import {useDataNarrator} from "../../../../hooks/useDataNarrator";
+import * as constants from "../../../../store/contantsDataNarrator"
+import {useStory} from "../../../stories/hooks/useStory";
+
 const {t} = useTranslation();
+const {currentStoryId} = useStory();
+const {gotoPage} = useDataNarrator();
+const {storyId} = defineProps({
+    storyId: {
+        type: String,
+        required: true
+    }
+});
 
-const {currentStoryId} = useStories(),
-    {storyId} = defineProps({
-        storyId: {
-            type: String,
-            required: true
-        }
-    });
-
-/**
- *
- */
-function gotoSelectedStory () {
+function gotoSelectedStory() {
     currentStoryId.value = storyId;
+    gotoPage(constants.dataNarratorModes.EDIT_STORY);
 }
 </script>
 
 <template>
-    <v-tooltip top>
-        <template #activator="{ on }">
-            <v-icon
-                id="edit-button"
-                v-on="on"
-                @click="gotoSelectedStory()"
+    <v-tooltip location="top">
+        <template #activator="{ props }">
+            <v-btn
+                v-bind="props"
+                variant="text"
+                density="compact"
+                icon
+                @click="gotoSelectedStory"
             >
-                {{ mdiPencil }}
-            </v-icon>
+                <v-icon size="18" :icon="mdiPencil"/>
+            </v-btn>
         </template>
-        <span>
-            {{
-                t("additional:modules.dataNarrator.creator.edit")
-            }}
-        </span>
+        {{ t("additional:modules.dataNarrator.creator.edit") }}
     </v-tooltip>
 </template>
-
-<style scoped lang="scss">
-#play-button {
-    float:right;
-    color: #413FAB;
-}
-</style>

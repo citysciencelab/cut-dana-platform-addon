@@ -23,8 +23,7 @@ const state = {
         direction: "out"
     },
     mode: dataNarratorModes.DASHBOARD,
-    toolwindowMode: ToolwindowModes.DASHBOARD,
-    isLoginOpen: true
+    toolwindowMode: ToolwindowModes.DASHBOARD
 };
 
 export default state;

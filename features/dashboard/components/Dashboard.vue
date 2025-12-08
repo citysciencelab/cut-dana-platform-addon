@@ -2,8 +2,6 @@
 import DashboardHeader from "./DashboardHeader.vue";
 import DashboardContent from "./DashboardContent.vue";
 import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
-
-
 </script>
 
 <template>
@@ -20,5 +18,4 @@ import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
 </template>
 
 <style>
-
 </style>

@@ -1,9 +1,36 @@
+<script setup>
+import {ref, onMounted, onBeforeUnmount} from "vue";
+import {useTranslation} from "i18next-vue";
+import {mdiWeb} from "@mdi/js";
+
+const {t, i18next} = useTranslation();
+const currentLanguage = ref(i18next.language);
+
+function handleLangChanged(lng) {
+    currentLanguage.value = lng
+}
+onMounted(() => {
+    i18next.on('languageChanged', handleLangChanged);
+})
+
+onBeforeUnmount(() => {
+    i18next.off('languageChanged', handleLangChanged);
+})
+
+const languages = ['en', 'de']
+function changeToNextLanguage() {
+    const idx = languages.indexOf(i18next.language)
+    const next = languages[(idx + 1) % languages.length]
+    i18next.changeLanguage(next)
+}
+</script>
+
 <template>
     <v-btn
         rounded
-        small
+        size="small"
+        elevation="0"
         @click="changeToNextLanguage()"
-        @keypress="changeToNextLanguage()"
     >
         <v-icon small>
             {{ mdiWeb }}
@@ -11,19 +38,3 @@
         {{ currentLanguage }}
     </v-btn>
 </template>
-<script setup>
-
-
-import {useTranslation} from "i18next-vue";
-import {mdiWeb} from "@mdi/js";
-
-const {t, i18next} = useTranslation();
-
-const currentLanguage = i18next.language;
-
-function changeToNextLanguage () {
-    const languages = ["en", "de"];
-    const nextLanguage = languages[0];
-    i18next.changeLanguage(nextLanguage);
-}
-</script>

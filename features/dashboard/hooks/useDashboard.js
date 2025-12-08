@@ -1,37 +1,53 @@
-﻿import {computed, ref} from "vue";
-import {useStore} from "vuex";
-import {getStories} from "../services/getStories";
+﻿import {watch, computed} from "vue";
+import {storeToRefs} from "pinia";
+
+import {availableStoryListModes} from "../../../store/contantsDataNarrator";
+import {useDashboardStore} from "../store/useDashboardStore";
+import {useFetchStories} from "../../../composables/services/stories/useGetStories";
+import {useLogin} from "./useLogin";
 
 /**
  *
  */
 export function useDashboard () {
+    const {loggedIn} = useLogin()
+    const dashboardStore = useDashboardStore();
+    const {mode: storiesDisplayMode, open} = storeToRefs(dashboardStore);
 
+    // Initialize the fetch composable
+    const {stories, error, loading, fetchStories} = useFetchStories();
 
-    const isOpen = ref(true),
-        stories = ref([]),
+    const setOpen = () => {
+        open.value = !open.value;
+    }
 
-        store = useStore(),
+    const refetchStories = () => {
+        fetchStories(storiesDisplayMode.value);
+    }
 
-        setIsOpen = () => {
-            isOpen.value = !isOpen.value;
-            this.moveTool();
-        },
+    // Initial fetch on component initialization
+    refetchStories();
 
-        getAllStories = async () => {
-            const response = await getStories();
-            const data = await response.json();
-            
-            stories.value = data;
-        };
+    // Watch for mode changes and manually trigger fetch
+    watch(storiesDisplayMode, (newMode) => {
+        console.log(`Dashboard mode changed to ${newMode}, triggering fetch`);
+        fetchStories(newMode);
+    });
+
+    const storyModeLists = computed(() => {
+        return Object.values(availableStoryListModes).filter(mode =>
+            loggedIn.value || mode !== "my"
+        );
+    });
 
     return {
-
-        storyListMode: computed(() => store.state.Modules.DataNarrator.storyListMode),
-        isOpen,
         stories,
-
-        setIsOpen,
-        getAllStories
+        error,
+        loading,
+        storiesDisplayMode,
+        storyModeLists,
+        open,
+        setOpen,
+        refetchStories
     };
 }

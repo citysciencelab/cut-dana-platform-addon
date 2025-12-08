@@ -23,8 +23,9 @@ const loginLogoutAction = () => {
 <template>
     <v-btn
         rounded
-        small
+        size="small"
         @click="loginLogoutAction()"
+        elevation="0"
     >
         <v-icon small>
             {{ loggedIn ? mdiLogout : mdiLogin }}
