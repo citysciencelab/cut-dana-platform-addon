@@ -1,7 +1,7 @@
 .toolwindow-container {
     width: 100vw;
     height: 100%;
-    padding: 0 100px;
+    padding: 0 min(100px, 6vw);
     display: flex;
     align-items: center;
 
