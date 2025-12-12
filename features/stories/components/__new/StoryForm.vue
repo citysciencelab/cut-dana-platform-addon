@@ -1,18 +1,19 @@
 <script setup>
-import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan, mdiPencilOutline} from "@mdi/js";
-import {computed, ref, watch, reactive} from "vue";
-import {useTranslation} from "i18next-vue";
+import { mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan, mdiPencilOutline } from '@mdi/js';
+import { useTranslation } from 'i18next-vue';
+import { computed, ref, watch, reactive } from 'vue';
 
-import Chapter from "./Chapter.vue";
-import StoryOverview from "./StoryOverview.vue";
-import ConfirmationDialog from "../../../shared/ConfirmationDialog.vue";
-import {dataNarratorModes, ToolwindowModes} from "../../../../store/contantsDataNarrator";
-import {useDataNarrator} from "../../../../hooks/useDataNarrator";
-import {uploadCoverImage} from "../../services/addCoverImage";
-import {createStory} from "../../services/createStory";
-import {editStory} from "../../services/editStory";
-import {uploadStepModel} from "../../services/uploadStepModel";
-import ConfirmSavePopup from "../inputs/ConfirmSavePopup.vue";
+import { useDataNarrator } from '../../../../hooks/useDataNarrator';
+import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
+import ConfirmationDialog from '../../../shared/ConfirmationDialog.vue';
+import { uploadCoverImage } from '../../services/addCoverImage';
+import { createStory } from '../../services/createStory';
+import { editStory } from '../../services/editStory';
+import { uploadStepModel } from '../../services/uploadStepModel';
+import ConfirmSavePopup from '../inputs/ConfirmSavePopup.vue';
+
+import Chapter from './Chapter.vue';
+import StoryOverview from './StoryOverview.vue';
 
 const props = defineProps({
     storyId: Number,
@@ -22,12 +23,12 @@ const props = defineProps({
     storyLoading: Boolean,
     coverImageUrl: String,
 });
-const {t} = useTranslation();
-const {toolwindowMode} = useDataNarrator();
-const {gotoPage} = useDataNarrator();
+const { t } = useTranslation();
+const { toolwindowMode } = useDataNarrator();
+const { gotoPage } = useDataNarrator();
 const backConfirmation = ref(false);
-const storyName = ref("");
-const description = ref("");
+const storyName = ref('');
+const description = ref('');
 const isSaving = ref(false);
 const previewVisible = ref(false);
 const activeChapterIndex = ref(0);
@@ -86,26 +87,26 @@ function handleAddNewStep() {
     activeStepIndex.value = chapter.steps.length - 1;
 }
 
-function handleDeleteStep({chapterIdx, stepIdx}) {
+function handleDeleteStep({ chapterIdx, stepIdx }) {
     const chapter = chapters.value?.[chapterIdx];
     if (!chapter) return;
     if (stepIdx < 0 || stepIdx >= chapter.steps.length) return;
     chapter.steps.splice(stepIdx, 1);
 }
 
-function handleReorderSteps({chapterIdx, newList}) {
+function handleReorderSteps({ chapterIdx, newList }) {
     const chapter = chapters.value?.[chapterIdx];
     if (!chapter) return;
-    chapter.steps = [...newList];
+    chapter.steps = [ ...newList ];
 }
 
-function handleEditStep({chapterIdx, stepIdx}) {
+function handleEditStep({ chapterIdx, stepIdx }) {
     activeChapterIndex.value = chapterIdx;
     activeStepIndex.value = stepIdx;
     previewVisible.value = false;
 }
 
-function handleEditChapter({chapterIdx}) {
+function handleEditChapter({ chapterIdx }) {
     const chapter = chapters.value?.[chapterIdx];
     if (!chapter) return;
     previewVisible.value = false;
@@ -114,7 +115,7 @@ function handleEditChapter({chapterIdx}) {
     activeStepIndex.value = stepCount ? stepCount - 1 : -1;
 }
 
-function handleDeleteChapter({chapterIdx}) {
+function handleDeleteChapter({ chapterIdx }) {
     if (chapterIdx < 0 || chapterIdx >= chapters.value.length) return;
     chapters.value.splice(chapterIdx, 1);
     chapters.value.forEach((ch, i) => (ch.sequence = i + 1));
@@ -193,16 +194,16 @@ async function publish() {
 }
 
 watch(
-    [() => props.storyName, () => props.description, () => props.chapters, () => props.storyId],
-    ([s, d, c, sId]) => {
+    [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId ],
+    ([ s, d, c, sId ]) => {
         if (sId) {
-            storyName.value = s ?? "";
-            description.value = d ?? "";
+            storyName.value = s ?? '';
+            description.value = d ?? '';
             chapters.value = c ?? [];
             previewVisible.value = true;
         }
     },
-    {immediate: true}
+    { immediate: true }
 );
 
 watch(activeStepIndex, (activeStepIndex) => {
@@ -213,169 +214,194 @@ watch(activeStepIndex, (activeStepIndex) => {
 </script>
 
 <template>
-    <div
-        v-if="storyLoading"
-        :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
-    >
-        <v-row>
-            <v-col cols="12" class="p-0 pt-2">
-                <v-skeleton-loader
-                    type="article"
-                ></v-skeleton-loader>
-            </v-col>
-        </v-row>
-    </div>
-    <form
-        v-else
-        @submit.prevent="true"
-        :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
-    >
-        <div v-if="editStoryVisible" :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]">
-            <v-toolbar
-                :color="selectedImage ? 'white' : 'transparent'"
-                size="compact"
-                class="sticky-top"
-                style="border-radius: 100px;padding: 0;"
-            >
-                <template #prepend>
-                    <v-btn
-                        :icon="mdiArrowLeft"
-                        size="compact"
-                        class="mr-2"
-                        @click="backConfirmation = true"
-                    />
-
-                    <v-text-field
-                        id="title"
-                        width="200"
-                        variant="underlined"
-                        placeholder="Story name"
-                        v-model="storyName"
-                        required
-                    />
-
-                    <v-file-input
-                        class="ml-2"
-                        :prepend-icon="mdiImagePlusOutline"
-                        hide-input
-                        accept="image/png, image/jpeg"
-                        v-model="selectedImage"
-                    />
-                </template>
-
-                <v-menu v-if="editStoryVisible" location="bottom end" offset="4">
-                    <template #activator="{ props: actv }">
-                        <v-btn v-bind="actv" variant="text" :icon="mdiDotsVertical" size="compact"/>
-                    </template>
-                    <v-list density="compact">
-                        <v-list-item @click.stop="editStoryVisible = false">
-                            <template v-slot:prepend>
-                                <v-icon :icon="mdiPencilOutline"></v-icon>
-                            </template>
-                            <v-list-item-title>Close Panel</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </v-toolbar>
-
-            <img
-                v-if="imagePreview"
-                :src="imagePreview"
-                alt="Selected preview"
-                class="image-preview"
-            />
-
-            <div v-if="imagePreview" class="remove-image-btn">
-                <v-btn
-                    :icon="mdiTrashCan"
-                    variant="flat"
-                    density="comfortable"
-                    @click="selectedImage = null"
-                />
-            </div>
-        </div>
-
-        <div class="mb-2">
-            <v-textarea
-                v-if="editStoryVisible"
-                id="description"
-                v-model="description"
-                variant="outlined"
-                hide-details="true"
-                rows="3"
-                class="bg-white"
-                placeholder="Story description"
-            />
-        </div>
-
-        <div v-if="!previewVisible" class="story-form-content">
-            <Chapter
-                :key="chapters[activeChapterIndex]?.id ?? activeChapterIndex"
-                :chapter="chapters[activeChapterIndex]"
-                :activeStepIndex="activeStepIndex"
-                :editStoryVisible="editStoryVisible"
-                @addNewChapter="addNewChapter"
-                @addNewStep="handleAddNewStep"
-                @editStoryVisible="editStoryVisible = true"
-                @modelSelected="handleModelSelected"
-            />
-        </div>
-        <StoryOverview
-            v-else
-            :chapters="chapters"
-            :editStoryVisible="editStoryVisible"
-            @editStoryVisible="editStoryVisible = true"
-            @addNewChapter="() => {
-                previewVisible = false;
-                addNewChapter();
-            }"
-            @deleteStep="handleDeleteStep"
-            @reorderSteps="handleReorderSteps"
-            @editStep="handleEditStep"
-            @editChapter="handleEditChapter"
-            @deleteChapter="handleDeleteChapter"
+  <div
+    v-if="storyLoading"
+    :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
+  >
+    <v-row>
+      <v-col
+        cols="12"
+        class="p-0 pt-2"
+      >
+        <v-skeleton-loader
+          type="article"
         />
+      </v-col>
+    </v-row>
+  </div>
+  <form
+    v-else
+    :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
+    @submit.prevent="true"
+  >
+    <div
+      v-if="editStoryVisible"
+      :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]"
+    >
+      <v-toolbar
+        :color="selectedImage ? 'white' : 'transparent'"
+        size="compact"
+        class="sticky-top"
+        style="border-radius: 100px;padding: 0;"
+      >
+        <template #prepend>
+          <v-btn
+            :icon="mdiArrowLeft"
+            size="compact"
+            class="mr-2"
+            @click="backConfirmation = true"
+          />
 
-        <v-container class="story-form-footer">
-            <v-row justify="center">
-                <v-btn
-                    type="button"
-                    class="mr-2"
-                    variant="outlined"
-                    color="black"
-                    @click="previewVisible = !previewVisible"
-                >
-                    ÜBERSICHT
-                </v-btn>
-                <v-btn
-                    type="submit"
-                    variant="flat"
-                    color="black"
-                    :loading="isSaving"
-                    :disabled="!canPublish"
-                    @click="confirmSaveOpen = true"
-                >
-                    SPEICHERN
-                </v-btn>
-            </v-row>
-        </v-container>
+          <v-text-field
+            id="title"
+            v-model="storyName"
+            width="200"
+            variant="underlined"
+            placeholder="Story name"
+            required
+          />
 
-        <!--        <Preview-->
-        <!--            :chapters="chapters"-->
-        <!--            :hasImage="!!selectedImage || !!imagePreview"-->
-        <!--            v-model:open="previewModal"-->
-        <!--        />-->
-    </form>
-    <ConfirmSavePopup :dialogOpen="confirmSaveOpen" :okClicked="publishOk" :cancelClicked="publishCancel" />
+          <v-file-input
+            v-model="selectedImage"
+            class="ml-2"
+            :prepend-icon="mdiImagePlusOutline"
+            hide-input
+            accept="image/png, image/jpeg"
+          />
+        </template>
 
-    <ConfirmationDialog
-        :title="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.title')"
-        :message="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.description')"
-        :cancel-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.denyButton')"
-        :confirm-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.confirmButton')"
-        v-model="backConfirmation"
-        @confirm="() => gotoPage(dataNarratorModes.DASHBOARD)"
+        <v-menu
+          v-if="editStoryVisible"
+          location="bottom end"
+          offset="4"
+        >
+          <template #activator="{ props: actv }">
+            <v-btn
+              v-bind="actv"
+              variant="text"
+              :icon="mdiDotsVertical"
+              size="compact"
+            />
+          </template>
+          <v-list density="compact">
+            <v-list-item @click.stop="editStoryVisible = false">
+              <template #prepend>
+                <v-icon :icon="mdiPencilOutline" />
+              </template>
+              <v-list-item-title>Close Panel</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-toolbar>
+
+      <img
+        v-if="imagePreview"
+        :src="imagePreview"
+        alt="Selected preview"
+        class="image-preview"
+      >
+
+      <div
+        v-if="imagePreview"
+        class="remove-image-btn"
+      >
+        <v-btn
+          :icon="mdiTrashCan"
+          variant="flat"
+          density="comfortable"
+          @click="selectedImage = null"
+        />
+      </div>
+    </div>
+
+    <div class="mb-2">
+      <v-textarea
+        v-if="editStoryVisible"
+        id="description"
+        v-model="description"
+        variant="outlined"
+        hide-details="true"
+        rows="3"
+        class="bg-white"
+        placeholder="Story description"
+      />
+    </div>
+
+    <div
+      v-if="!previewVisible"
+      class="story-form-content"
+    >
+      <Chapter
+        :key="chapters[activeChapterIndex]?.id ?? activeChapterIndex"
+        :chapter="chapters[activeChapterIndex]"
+        :active-step-index="activeStepIndex"
+        :edit-story-visible="editStoryVisible"
+        @add-new-chapter="addNewChapter"
+        @add-new-step="handleAddNewStep"
+        @edit-story-visible="editStoryVisible = true"
+        @model-selected="handleModelSelected"
+      />
+    </div>
+    <StoryOverview
+      v-else
+      :chapters="chapters"
+      :edit-story-visible="editStoryVisible"
+      @edit-story-visible="editStoryVisible = true"
+      @add-new-chapter="() => {
+        previewVisible = false;
+        addNewChapter();
+      }"
+      @delete-step="handleDeleteStep"
+      @reorder-steps="handleReorderSteps"
+      @edit-step="handleEditStep"
+      @edit-chapter="handleEditChapter"
+      @delete-chapter="handleDeleteChapter"
     />
+
+    <v-container class="story-form-footer">
+      <v-row justify="center">
+        <v-btn
+          type="button"
+          class="mr-2"
+          variant="outlined"
+          color="black"
+          @click="previewVisible = !previewVisible"
+        >
+          ÜBERSICHT
+        </v-btn>
+        <v-btn
+          type="submit"
+          variant="flat"
+          color="black"
+          :loading="isSaving"
+          :disabled="!canPublish"
+          @click="confirmSaveOpen = true"
+        >
+          SPEICHERN
+        </v-btn>
+      </v-row>
+    </v-container>
+
+    <!--        <Preview-->
+    <!--            :chapters="chapters"-->
+    <!--            :hasImage="!!selectedImage || !!imagePreview"-->
+    <!--            v-model:open="previewModal"-->
+    <!--        />-->
+  </form>
+  <ConfirmSavePopup
+    :dialog-open="confirmSaveOpen"
+    :ok-clicked="publishOk"
+    :cancel-clicked="publishCancel"
+  />
+
+  <ConfirmationDialog
+    v-model="backConfirmation"
+    :title="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.title')"
+    :message="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.description')"
+    :cancel-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.denyButton')"
+    :confirm-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.confirmButton')"
+    @confirm="() => gotoPage(dataNarratorModes.DASHBOARD)"
+  />
 </template>
 
 <style lang="scss">
