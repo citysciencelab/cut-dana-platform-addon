@@ -1,4 +1,3 @@
-<!-- CategoryBrowser.vue -->
 <script setup>
 import {ref, computed} from 'vue';
 import {mdiClose} from "@mdi/js";
@@ -34,59 +33,3 @@ const props = defineProps({
     </v-card>
   </v-dialog>
 </template>
-
-<style scoped lang="scss">
-.nav {
-    &-header {
-        .crumbs {
-            grid-column: 1 / -1;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 6px;
-
-            .crumb {
-                background: transparent;
-                border: 0;
-                color: #2f84ff;
-                cursor: pointer;
-                padding: 0;
-                font-weight: 600;
-
-                &[disabled] {
-                    color: #999;
-                    cursor: default;
-                }
-
-                &.current {
-                    color: #111;
-                    font-weight: 700;
-                    cursor: default;
-                }
-            }
-        }
-    }
-
-    .panel {
-        width: 100%;
-
-        &-row {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 28px 1fr auto 18px;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 12px;
-            background: transparent;
-            border: 0;
-            text-align: left;
-            cursor: pointer;
-            border-radius: 4px;
-
-            &:hover {
-                background-color: #f1f1f1;
-            }
-        }
-    }
-}
-</style>
