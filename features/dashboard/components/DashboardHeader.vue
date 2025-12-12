@@ -1,36 +1,28 @@
 <script setup>
-import { mdiMapLegend } from '@mdi/js';
-import { useTranslation } from 'i18next-vue';
-import { storeToRefs } from 'pinia';
+import {storeToRefs} from "pinia";
+import {mdiMapLegend} from "@mdi/js";
+import {useTranslation} from "i18next-vue";
 
-import { useDataNarrator } from '../../../hooks/useDataNarrator';
-import cutcslDepiction from '../../../img/cutcsl_depiction.png';
-import { ToolwindowModes } from '../../../store/contantsDataNarrator';
-import { useDashboard } from '../hooks/useDashboard';
+import LoginButton from "./Tools/LoginButton.vue";
+import LanguageSwitchButton from "./Tools/LanguageSwitchButton.vue";
+import CreateStoryButton from "./Tools/CreateStoryButton.vue";
+import ListButton from "./Tools/ListButton.vue";
+import {useDashboard} from "../hooks/useDashboard";
+import {useDashboardStore} from "../store/useDashboardStore";
+import cutcslDepiction from "../../../img/cutcsl_depiction.png";
+import {ToolwindowModes} from "../../../store/contantsDataNarrator";
+import {useDataNarrator} from "../../../hooks/useDataNarrator";
 
-import { useLogin } from '../hooks/useLogin';
-
-import { useDashboardStore } from '../store/useDashboardStore';
-
-import CreateStoryButton from './Tools/CreateStoryButton.vue';
-import LanguageSwitchButton from './Tools/LanguageSwitchButton.vue';
-import ListButton from './Tools/ListButton.vue';
-
-
-import LoginButton from './Tools/LoginButton.vue';
-
-const { t } = useTranslation();
-const { storyModeLists } = useDashboard();
-// const { loggedIn } = useLogin();
+const {t} = useTranslation();
+const {storyModeLists} = useDashboard();
 const dashboardStore = useDashboardStore();
-const { toolwindowMode } = useDataNarrator()
+const {toolwindowMode} = useDataNarrator()
 
-const { mode: storiesDisplayMode } = storeToRefs(dashboardStore)
+const {mode: storiesDisplayMode} = storeToRefs(dashboardStore)
 const legendAdded = true;
-const isMobile = false;
 
 const toggleLegend = () => {
-    console.log('toggleLegend');
+    console.log("toggleLegend");
 };
 
 const getBackgroundStyle = () => ({
@@ -39,106 +31,83 @@ const getBackgroundStyle = () => ({
 </script>
 
 <template>
-  <div class="dashboard-header">
-    <Teleport
-      v-if="toolwindowMode === ToolwindowModes.MOBILE"
-      to="body"
-    >
-      <div class="login-row-mobile">
-        <div class="d-flex justify-end align-center mt-2 ga-2">
-          <LoginButton />
-          <LanguageSwitchButton />
+    <div class="with-fancy-background" :style="getBackgroundStyle()">
+        <Teleport v-if="toolwindowMode === ToolwindowModes.MOBILE" to="body">
+            <div class="login-row-mobile">
+                <div class="d-flex justify-end align-center mt-2 ga-2">
+                    <LoginButton/>
+                    <LanguageSwitchButton/>
+                </div>
+            </div>
+        </Teleport>
+        <div v-else class="login-row">
+            <div class="d-flex justify-end align-center mt-2 ga-2">
+                <LoginButton/>
+                <LanguageSwitchButton/>
+            </div>
         </div>
-      </div>
-    </Teleport>
 
-    <div
-      v-else
-      class="login-row"
-    >
-      <div class="d-flex justify-end align-center mt-2 ga-2">
-        <LoginButton />
-        <LanguageSwitchButton />
-      </div>
-    </div>
-
-    <div
-      v-if="!legendAdded"
-      id="dana-legend-button"
-      class="row controls-row-right d-none d-md-block"
-    >
-      <div>
-        <v-icon
-          id="dana-legend-icon"
-          class="bootstrap-icon"
-          @click="toggleLegend()"
+        <div
+            v-if="!legendAdded"
+            id="dana-legend-button"
+            class="row controls-row-right d-none d-md-block"
         >
-          {{ mdiMapLegend }}
-        </v-icon>
-      </div>
-    </div>
+            <div>
+                <v-icon
+                    id="dana-legend-icon"
+                    class="bootstrap-icon"
+                    @click="toggleLegend()"
+                >
+                    {{ mdiMapLegend }}
+                </v-icon>
+            </div>
+        </div>
 
-    <v-row
-      :class="`with-fancy-background ${isMobile && 'fancy-mobile'}`"
-      :style="getBackgroundStyle()"
-    >
-      <v-col
-        cols="12"
-        class="d-flex justify-start align-center"
-      >
-        <v-row class="dashboard-content-row flex-column flex-sm-row">
-          <v-col
-            lg="1"
-            md="1"
-            sm="2"
-            cols="2"
-            class="d-flex align-start justify-center"
-          >
-            <img
-              src="../../../img/logonotext-xs.png"
-              alt="logo"
-              class="header-logo"
-              width="55"
+        <v-row>
+            <v-col
+                lg="4"
+                md="5"
+                sm="12"
+                cols="12"
+                offset-lg="2"
+                offset-md="2"
+                offset-sm="0"
+                class="justify-start align-start header-col"
             >
-          </v-col>
-          <v-col
-            lg="4"
-            md="5"
-            sm="9"
-            cols="9"
-            class="justify-start align-start"
-          >
-            <h1 class="header-h1">
-              {{ t("additional:modules.dataNarrator.dashboardView.title") }}
-            </h1>
-            <h4 class="header-h4">
-              {{ t("additional:modules.dataNarrator.dashboardView.subtitle") }}
-            </h4>
-            <p class="header-body">
-              {{ t("additional:modules.dataNarrator.dashboardView.description") }}
-            </p>
-          </v-col>
+                <h1 class="header-h1">
+                    <img
+                        src="../../../img/logonotext-xs.png"
+                        alt="logo"
+                        class="header-logo"
+                    >
+                    {{ t("additional:modules.dataNarrator.dashboardView.title") }}
+                </h1>
+                <h4 class="header-h4">
+                    {{ t("additional:modules.dataNarrator.dashboardView.subtitle") }}
+                </h4>
+                <p class="header-body">{{ t("additional:modules.dataNarrator.dashboardView.description") }}</p>
+            </v-col>
         </v-row>
-      </v-col>
-      <v-col
-        cols="12"
-        class="d-flex justify-center align-end"
-      >
-        <CreateStoryButton />
-      </v-col>
-    </v-row>
+        <v-row>
+            <v-col
+                cols="12"
+                class="d-flex justify-center align-end"
+            >
+                <CreateStoryButton/>
+            </v-col>
+        </v-row>
 
-    <v-row class="list-buttons">
-      <v-col class="d-flex justify-center align-center">
-        <ListButton
-          v-for="value in storyModeLists"
-          :key="value"
-          :mode="value"
-          :active="storiesDisplayMode === value"
-        />
-      </v-col>
-    </v-row>
-  </div>
+        <v-row class="list-buttons">
+            <v-col class="d-flex justify-center align-center">
+                <ListButton
+                    v-for="value in storyModeLists"
+                    :key="value"
+                    :mode="value"
+                    :active="storiesDisplayMode === value"
+                />
+            </v-col>
+        </v-row>
+    </div>
 </template>
 
 
@@ -155,13 +124,10 @@ const getBackgroundStyle = () => ({
     position: sticky;
 }
 
-.dashboard-header {
-    z-index: 112 !important;
-    padding: 0 10px;
-
-    @media screen and (max-width: 768px) {
-        padding-right: 0;
-    }
+.header-col {
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 #dana-legend-icon {
@@ -171,30 +137,12 @@ const getBackgroundStyle = () => ({
 }
 
 .with-fancy-background {
-    background-position: -40% -20%;
-    background-size: 120%;
-    min-height: 220px;
-    align-items: end;
-    z-index: 112;
+    background-position: -50% -50%;
 
     @media (min-width: 768px) {
         background-position: 80%;
-        min-height: 332px;
-        background-size: 60%;
+        background-size: 50%;
     }
-}
-
-.dashboard-content-row {
-    padding-top: 60px !important;
-
-    @media (min-width: 768px) {
-        padding-top: 60px !important;
-        padding-left: 100px !important;
-    }
-}
-
-.fancy-mobile {
-    margin-top: 150px !important;
 }
 
 .list-buttons {
@@ -202,11 +150,22 @@ const getBackgroundStyle = () => ({
 }
 
 .header-h1 {
-    font-size: 2.5rem;
+    position: relative;
     font-weight: 600;
     text-transform: uppercase;
     color: black;
     margin-top: 0.25rem;
+
+    img {
+        position: absolute;
+        height: 1em;
+        top: -1.2em;
+
+        @media (min-width: 768px) {
+            left: -1.5em;
+            top: unset;
+        }
+    }
 }
 
 .header-h4 {
