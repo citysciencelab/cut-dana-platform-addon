@@ -132,72 +132,73 @@ function onLayerClick(layer) {
             class="panel"
             role="list"
         >
-        <button
-            v-if="matchingLayers.length > 0"
-            v-for="(match, i) in matchingLayers"
-            :key="'search-' + i"
-            class="panel-row search-result-row"
-            role="listitem"
-            @click="onLayerClick(match.layer)"
-        >
-            <span class="icon">
-                <v-icon :icon="mdiFileDocumentOutline" />
-            </span>
-            <div>
-                <div class="meta">
-                    {{ match.cat.category }} >
-                    {{ match.sub.name }}
-                </div>
-                <div class="label">{{ match.layer.name }}</div>
-            </div>
-        </button>
-        <button
-            v-if="matchingLayers.length === 0"
-            v-for="(row, i) in rows"
-            :key="i"
-            class="panel-row"
-            role="listitem"
-            v-bind="row.type !== 'layer' ? { 'aria-haspopup': 'list' } : {}"
-            @click="
-            row.type==='category'
-                ? enterCategory(row.cat)
-                : row.type==='subcategory'
-                ? enterSubcategory(row.cat, row.sub)
-                : onLayerClick(row.layer)
-            "
-        >
-            <span class="icon">
-            <template v-if="row.type==='category'">
-                <v-icon :icon="mdiFolderOutline" />
-            </template>
-            <template v-else-if="row.type==='subcategory'">
-                <v-icon :icon="mdiFolderOutline" />
-            </template>
-            <template v-else>
-                <v-icon :icon="mdiFileDocumentOutline" />
-            </template>
-            </span>
-
-            <span class="label">
-            <template v-if="row.type==='category'">{{ row.cat.category }}</template>
-            <template v-else-if="row.type==='subcategory'">{{ row.sub.name }}</template>
-            <template v-else>{{ row.layer.name }}</template>
-            </span>
-
-            <span
-                v-if="row.type!=='layer'"
-                class="meta"
+        <template v-if="matchingLayers.length === 0">
+            <button
+                v-for="(match, i) in matchingLayers"
+                :key="'search-' + i"
+                class="panel-row search-result-row"
+                role="listitem"
+                @click="onLayerClick(match.layer)"
             >
-            <template v-if="row.type==='category'">{{ row.cat.subcategories?.length ?? 0 }}</template>
-            <template v-else>{{ row.sub.layers?.length ?? 0 }}</template>
-            </span>
+                <span class="icon">
+                    <v-icon :icon="mdiFileDocumentOutline" />
+                </span>
+                <div>
+                    <div class="meta">
+                        {{ match.cat.category }} >
+                        {{ match.sub.name }}
+                    </div>
+                    <div class="label">{{ match.layer.name }}</div>
+                </div>
+            </button>
+        </template>
+        <template v-else>
+            <button
+                v-for="(row, i) in rows"
+                :key="i"
+                class="panel-row"
+                role="listitem"
+                v-bind="row.type !== 'layer' ? { 'aria-haspopup': 'list' } : {}"
+                @click="
+                row.type==='category'
+                    ? enterCategory(row.cat)
+                    : row.type==='subcategory'
+                    ? enterSubcategory(row.cat, row.sub)
+                    : onLayerClick(row.layer)
+                "
+            >
+                <span class="icon">
+                <template v-if="row.type==='category'">
+                    <v-icon :icon="mdiFolderOutline" />
+                </template>
+                <template v-else-if="row.type==='subcategory'">
+                    <v-icon :icon="mdiFolderOutline" />
+                </template>
+                <template v-else>
+                    <v-icon :icon="mdiFileDocumentOutline" />
+                </template>
+                </span>
 
-            <v-icon
-                v-if="row.type!=='layer'"
-                :icon="mdiChevronRight"
-            />
-        </button>
+                <span class="label">
+                <template v-if="row.type==='category'">{{ row.cat.category }}</template>
+                <template v-else-if="row.type==='subcategory'">{{ row.sub.name }}</template>
+                <template v-else>{{ row.layer.name }}</template>
+                </span>
 
+                <span
+                    v-if="row.type!=='layer'"
+                    class="meta"
+                >
+                <template v-if="row.type==='category'">{{ row.cat.subcategories?.length ?? 0 }}</template>
+                <template v-else>{{ row.sub.layers?.length ?? 0 }}</template>
+                </span>
+
+                <v-icon
+                    v-if="row.type!=='layer'"
+                    :icon="mdiChevronRight"
+                />
+            </button>
+        </template>
         <p
             v-if="rows.length === 0"
             class="empty"
