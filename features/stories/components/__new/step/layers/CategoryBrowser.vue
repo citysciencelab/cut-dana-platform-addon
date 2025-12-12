@@ -1,7 +1,7 @@
 <!-- CategoryBrowser.vue -->
 <script setup>
 import { mdiChevronRight, mdiFileDocumentOutline, mdiFolderOutline } from '@mdi/js';
-import { ref, computed } from 'vue';
+import { ref, computed, h } from 'vue';
 
 const props = defineProps({
     items: { type: Array, required: true, default: () => [] },
@@ -13,7 +13,7 @@ const emit = defineEmits([ 'select:layer' ]);
 const stack = ref([]);
 const searchQuery = ref('');
 
-const matchingLayers = computed(() => {
+const searchResultLayers = computed(() => {
     if (searchQuery.value.length < 3) return [];
 
     const query = searchQuery.value.toLowerCase();
@@ -36,17 +36,29 @@ const matchingLayers = computed(() => {
     return matches;
 });
 
+const hasSearchResultLayers = computed(() => searchResultLayers.value.length > 0);
+
 const level = computed(() => stack.value.at(-1)?.level ?? 'root');
 
-const currentCategory = computed(() =>
-    level.value === 'category' || level.value === 'subcategory'
-        ? stack.value[0]?.cat
-        : null
-);
+const currentCategory = computed(() => {
+    if (hasSearchResultLayers.value) {
+        return null;
+    }
+    if (level.value === 'category' || level.value === 'subcategory') {
+        return stack.value[0]?.cat;
+    }
+    return null;
+});
 
-const currentSubcategory = computed(() =>
-    level.value === 'subcategory' ? stack.value[1]?.sub : null
-);
+const currentSubcategory = computed(() => {
+    if (hasSearchResultLayers.value) {
+        return null;
+    }
+    if (level.value === 'subcategory') {
+        return stack.value[1]?.sub;
+    }
+    return null;
+});
 
 const rows = computed(() => {
     if (level.value === 'root') {
@@ -71,10 +83,6 @@ function enterSubcategory(cat, sub) {
     stack.value = [ { level: 'category', cat }, { level: 'subcategory', cat, sub } ];
 }
 
-// function goBack() {
-//     stack.value.pop();
-// }
-
 function goHome() {
     stack.value = [];
 }
@@ -82,6 +90,7 @@ function goHome() {
 function onLayerClick(layer) {
     emit('select:layer', layer);
 }
+
 </script>
 
 <template>
@@ -109,22 +118,23 @@ function onLayerClick(layer) {
                 >
                     Datenquellen
                 </button>
-                <span
-                    v-if="level!=='root'"
-                    class="sep"
-                >/</span>
-                <template v-if="level==='category' || level==='subcategory'">
-                <button
-                    class="crumb"
-                    @click="stack = [{ level: 'category', cat: currentCategory }]"
-                >
-                    {{ currentCategory?.category }}
-                </button>
-                </template>
-
-                <template v-if="level==='subcategory'">
-                <span class="sep">/</span>
-                <span class="crumb current">{{ currentSubcategory?.name }}</span>
+                <template v-if="!hasSearchResultLayers">
+                    <span
+                        v-if="level!=='root'"
+                        class="sep"
+                    >/</span>
+                    <template v-if="level==='category' || level==='subcategory'">
+                        <button
+                            class="crumb"
+                            @click="stack = [{ level: 'category', cat: currentCategory }]"
+                        >
+                            {{ currentCategory?.category }}
+                        </button>
+                    </template>
+                    <template v-if="level==='subcategory'">
+                        <span class="sep">/</span>
+                        <span class="crumb current">{{ currentSubcategory?.name }}</span>
+                    </template>
                 </template>
             </div>
         </div>
@@ -132,9 +142,9 @@ function onLayerClick(layer) {
             class="panel"
             role="list"
         >
-        <template v-if="matchingLayers.length === 0">
+        <template v-if="hasSearchResultLayers">
             <button
-                v-for="(match, i) in matchingLayers"
+                v-for="(match, i) in searchResultLayers"
                 :key="'search-' + i"
                 class="panel-row search-result-row"
                 role="listitem"
@@ -200,7 +210,7 @@ function onLayerClick(layer) {
             </button>
         </template>
         <p
-            v-if="rows.length === 0"
+            v-if="rows.length === 0 && !hasSearchResultLayers"
             class="empty"
         >
             <span v-if="level==='root'">No categories available.</span>
