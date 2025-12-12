@@ -260,14 +260,19 @@ watch(activeStepIndex, (activeStepIndex) => {
             placeholder="Story name"
             required
           />
-
-          <v-file-input
-            v-model="selectedImage"
-            class="ml-2"
-            :prepend-icon="mdiImagePlusOutline"
-            hide-input
-            accept="image/png, image/jpeg"
-          />
+            <v-tooltip location="top">
+                <template #activator="{ props: actv }">
+                  <v-file-input
+                    v-model="selectedImage"
+                    class="ml-2"
+                    :prepend-icon="mdiImagePlusOutline"
+                    hide-input
+                    accept="image/png, image/jpeg"
+                    v-bind="actv"
+                  />
+                </template>
+                <span>{{ t('additional:modules.dataNarrator.label.imageUpload') }}</span>
+            </v-tooltip>
         </template>
 
         <v-menu
