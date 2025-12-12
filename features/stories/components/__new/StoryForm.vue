@@ -1,6 +1,6 @@
 <script setup>
 import {mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan, mdiPencilOutline} from "@mdi/js";
-import {computed, ref, watch} from "vue";
+import {computed, ref, watch, reactive} from "vue";
 import {useTranslation} from "i18next-vue";
 
 import Chapter from "./Chapter.vue";
@@ -12,6 +12,7 @@ import {uploadCoverImage} from "../../services/addCoverImage";
 import {createStory} from "../../services/createStory";
 import {editStory} from "../../services/editStory";
 import {uploadStepModel} from "../../services/uploadStepModel";
+import ConfirmSavePopup from "../inputs/ConfirmSavePopup.vue";
 
 const props = defineProps({
     storyId: Number,
@@ -33,6 +34,7 @@ const activeChapterIndex = ref(0);
 const activeStepIndex = ref(-1);
 const editStoryVisible = ref(true);
 const modelFiles = new WeakMap();
+const confirmSaveOpen = ref(false);
 
 let nextChapterId = 1;
 const chapters = ref([
@@ -116,6 +118,19 @@ function handleDeleteChapter({chapterIdx}) {
     if (chapterIdx < 0 || chapterIdx >= chapters.value.length) return;
     chapters.value.splice(chapterIdx, 1);
     chapters.value.forEach((ch, i) => (ch.sequence = i + 1));
+}
+
+function prepublish() {
+    confirmSaveOpen.value = true;
+}
+
+function publishOk() {
+    confirmSaveOpen.value = false;
+    publish();
+}
+
+function publishCancel() {
+    confirmSaveOpen.value = false;
 }
 
 async function publish() {
@@ -212,7 +227,7 @@ watch(activeStepIndex, (activeStepIndex) => {
     </div>
     <form
         v-else
-        @submit.prevent="publish"
+        @submit.prevent="true"
         :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
     >
         <div v-if="editStoryVisible" :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]">
@@ -330,7 +345,7 @@ watch(activeStepIndex, (activeStepIndex) => {
                     color="black"
                     @click="previewVisible = !previewVisible"
                 >
-                    VORSCHAU
+                    ÜBERSICHT
                 </v-btn>
                 <v-btn
                     type="submit"
@@ -338,8 +353,9 @@ watch(activeStepIndex, (activeStepIndex) => {
                     color="black"
                     :loading="isSaving"
                     :disabled="!canPublish"
+                    @click="confirmSaveOpen = true"
                 >
-                    VERÖFFENTLICHEN
+                    SPEICHERN
                 </v-btn>
             </v-row>
         </v-container>
@@ -350,6 +366,7 @@ watch(activeStepIndex, (activeStepIndex) => {
         <!--            v-model:open="previewModal"-->
         <!--        />-->
     </form>
+    <ConfirmSavePopup :dialogOpen="confirmSaveOpen" :okClicked="publishOk" :cancelClicked="publishCancel" />
 
     <ConfirmationDialog
         :title="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.title')"
