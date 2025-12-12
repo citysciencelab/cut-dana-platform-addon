@@ -1,14 +1,14 @@
 <!-- CategoryBrowser.vue -->
 <script setup>
-import {ref, computed} from 'vue';
-import {mdiChevronRight, mdiFileDocumentOutline, mdiFolderOutline} from "@mdi/js";
+import { mdiChevronRight, mdiFileDocumentOutline, mdiFolderOutline } from '@mdi/js';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
-    items: {type: Array, required: true, default: () => []},
-    loading: {type: Boolean, default: false},
+    items: { type: Array, required: true, default: () => [] },
+    loading: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(['select:layer']);
+const emit = defineEmits([ 'select:layer' ]);
 
 const stack = ref([]);
 
@@ -26,25 +26,25 @@ const currentSubcategory = computed(() =>
 
 const rows = computed(() => {
     if (level.value === 'root') {
-        return (props.items ?? []).map((cat) => ({type: 'category', cat}));
+        return (props.items ?? []).map((cat) => ({ type: 'category', cat }));
     }
 
     if (level.value === 'category') {
         const cat = currentCategory.value;
-        return (cat?.subcategories ?? []).map((sub) => ({type: 'subcategory', cat, sub}));
+        return (cat?.subcategories ?? []).map((sub) => ({ type: 'subcategory', cat, sub }));
     }
 
     const cat = currentCategory.value;
     const sub = currentSubcategory.value;
-    return (sub?.layers ?? []).map((layer) => ({type: 'layer', cat, sub, layer}));
+    return (sub?.layers ?? []).map((layer) => ({ type: 'layer', cat, sub, layer }));
 });
 
 function enterCategory(cat) {
-    stack.value = [{level: 'category', cat}];
+    stack.value = [ { level: 'category', cat } ];
 }
 
 function enterSubcategory(cat, sub) {
-    stack.value = [{level: 'category', cat}, {level: 'subcategory', cat, sub}];
+    stack.value = [ { level: 'category', cat }, { level: 'subcategory', cat, sub } ];
 }
 
 // function goBack() {
@@ -61,76 +61,103 @@ function onLayerClick(layer) {
 </script>
 
 <template>
-    <div v-if="loading">
-        <v-skeleton-loader type="paragraph" />
+  <div v-if="loading">
+    <v-skeleton-loader type="paragraph" />
+  </div>
+  <div
+    v-else
+    class="nav px-4"
+  >
+    <div class="nav-header mb-2">
+      <div class="crumbs">
+        <button
+          class="crumb"
+          :disabled="level==='root'"
+          @click="goHome"
+        >
+          Subject data
+        </button>
+        <span
+          v-if="level!=='root'"
+          class="sep"
+        >/</span>
+
+        <template v-if="level==='category' || level==='subcategory'">
+          <button
+            class="crumb"
+            @click="stack = [{ level: 'category', cat: currentCategory }]"
+          >
+            {{ currentCategory?.category }}
+          </button>
+        </template>
+
+        <template v-if="level==='subcategory'">
+          <span class="sep">/</span>
+          <span class="crumb current">{{ currentSubcategory?.name }}</span>
+        </template>
+      </div>
     </div>
-    <div v-else class="nav px-4">
-        <div class="nav-header mb-2">
-            <div class="crumbs">
-                <button class="crumb" :disabled="level==='root'" @click="goHome">Subject data</button>
-                <span v-if="level!=='root'" class="sep">/</span>
 
-                <template v-if="level==='category' || level==='subcategory'">
-                    <button class="crumb" @click="stack = [{ level: 'category', cat: currentCategory }]">
-                        {{ currentCategory?.category }}
-                    </button>
-                </template>
+    <div
+      class="panel"
+      role="list"
+    >
+      <button
+        v-for="(row, i) in rows"
+        :key="i"
+        class="panel-row"
+        role="listitem"
+        v-bind="row.type !== 'layer' ? { 'aria-haspopup': 'list' } : {}"
+        @click="
+          row.type==='category'
+            ? enterCategory(row.cat)
+            : row.type==='subcategory'
+              ? enterSubcategory(row.cat, row.sub)
+              : onLayerClick(row.layer)
+        "
+      >
+        <span class="icon">
+          <template v-if="row.type==='category'">
+            <v-icon :icon="mdiFolderOutline" />
+          </template>
+          <template v-else-if="row.type==='subcategory'">
+            <v-icon :icon="mdiFolderOutline" />
+          </template>
+          <template v-else>
+            <v-icon :icon="mdiFileDocumentOutline" />
+          </template>
+        </span>
 
-                <template v-if="level==='subcategory'">
-                    <span class="sep">/</span>
-                    <span class="crumb current">{{ currentSubcategory?.name }}</span>
-                </template>
-            </div>
-        </div>
+        <span class="label">
+          <template v-if="row.type==='category'">{{ row.cat.category }}</template>
+          <template v-else-if="row.type==='subcategory'">{{ row.sub.name }}</template>
+          <template v-else>{{ row.layer.name }}</template>
+        </span>
 
-        <div class="panel" role="list">
-            <button
-                v-for="(row, i) in rows"
-                :key="i"
-                class="panel-row"
-                role="listitem"
-                v-bind="row.type !== 'layer' ? { 'aria-haspopup': 'list' } : {}"
-                @click="
-                  row.type==='category'
-                    ? enterCategory(row.cat)
-                    : row.type==='subcategory'
-                      ? enterSubcategory(row.cat, row.sub)
-                      : onLayerClick(row.layer)
-                "
-            >
-                <span class="icon">
-                  <template v-if="row.type==='category'">
-                      <v-icon :icon="mdiFolderOutline"/>
-                  </template>
-                  <template v-else-if="row.type==='subcategory'">
-                      <v-icon :icon="mdiFolderOutline"/>
-                  </template>
-                  <template v-else>
-                      <v-icon :icon="mdiFileDocumentOutline"/>
-                  </template>
-                </span>
+        <span
+          v-if="row.type!=='layer'"
+          class="meta"
+        >
+          <template v-if="row.type==='category'">{{ row.cat.subcategories?.length ?? 0 }}</template>
+          <template v-else>{{ row.sub.layers?.length ?? 0 }}</template>
+        </span>
 
-                <span class="label">
-                  <template v-if="row.type==='category'">{{ row.cat.category }}</template>
-                  <template v-else-if="row.type==='subcategory'">{{ row.sub.name }}</template>
-                  <template v-else>{{ row.layer.name }}</template>
-                </span>
+        <v-icon
+          v-if="row.type!=='layer'"
+          :icon="mdiChevronRight"
+        />
+      </button>
 
-                <span class="meta" v-if="row.type!=='layer'">
-                  <template v-if="row.type==='category'">{{ row.cat.subcategories?.length ?? 0 }}</template>
-                  <template v-else>{{ row.sub.layers?.length ?? 0 }}</template>
-                </span>
-
-                <v-icon v-if="row.type!=='layer'" :icon="mdiChevronRight"/>
-            </button>
-
-            <p v-if="rows.length === 0" class="empty">
-                <span v-if="level==='root'">No categories available.</span>
-                <span v-else-if="level==='category'">No subcategories in this folder.</span>
-                <span v-else>No layers in this folder.</span>
-            </p>
-        </div>
+      <p
+        v-if="rows.length === 0"
+        class="empty"
+      >
+        <span v-if="level==='root'">No categories available.</span>
+        <span v-else-if="level==='category'">No subcategories in this folder.</span>
+        <span v-else>No layers in this folder.</span>
+      </p>
     </div>
+  </div>
 </template>
 
 <style scoped lang="scss">

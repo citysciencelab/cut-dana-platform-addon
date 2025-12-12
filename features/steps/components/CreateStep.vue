@@ -1,17 +1,18 @@
 <script setup>
 
-import StepForm from "./StepForm.vue";
+import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 
-import ToolWindow from "../../shared/Toolwindow/ToolWindow.vue";
+import StepForm from './StepForm.vue';
+
 
 </script>
 
 <template>
-    <ToolWindow>
-        <template v-slot:default>
-            <StepForm />
-        </template>
-    </ToolWindow>
+  <ToolWindow>
+    <template #default>
+      <StepForm />
+    </template>
+  </ToolWindow>
 </template>
 
 <style scoped lang="scss">

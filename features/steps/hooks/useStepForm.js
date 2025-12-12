@@ -1,5 +1,5 @@
-import {useStore} from "vuex";
-import {customRef, ref} from "vue";
+import { customRef, ref } from 'vue';
+import { useStore } from 'vuex';
 
 export function useStepForm () {
     const store = useStore();
@@ -153,19 +153,19 @@ export function useStepForm () {
     const isValid = ref(false);
 
     const onSubmit = () => {
-        console.log("Submit step form");
+        console.log('Submit step form');
     }
 
     const onAddImage = () => {
-        console.log("Add image");
+        console.log('Add image');
     }
 
     const onRemoveImage = () => {
-        console.log("Remove image");
+        console.log('Remove image');
     }
 
     const onDeleteStep = () => {
-        console.log("delete step");
+        console.log('delete step');
     }
 
     return {

@@ -1,77 +1,77 @@
 <script setup>
-import { ref, watch } from "vue";
-import { motion } from "motion-v";
-import {mdiCheck, mdiRestore} from "@mdi/js";
+import { mdiCheck, mdiRestore } from '@mdi/js';
+import { motion } from 'motion-v';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
     hasImage: { type: Boolean, default: false },
     open: { type: Boolean, default: false }
 });
-const emit = defineEmits(["update:open", "close"]);
+const emit = defineEmits([ 'update:open', 'close' ]);
 
-const state = ref(props.open ? "open" : "closed");
-watch(() => props.open, (v) => (state.value = v ? "open" : "closed"));
+const state = ref(props.open ? 'open' : 'closed');
+watch(() => props.open, (v) => (state.value = v ? 'open' : 'closed'));
 
 function close() {
-    emit("update:open", false);
-    emit("close");
+    emit('update:open', false);
+    emit('close');
 }
 
 const overlay = {
-    closed: { opacity: 0, pointerEvents: "none", transition: { duration: 0.2 } },
-    open:   { opacity: 1, pointerEvents: "auto", transition: { duration: 0.2 } }
+    closed: { opacity: 0, pointerEvents: 'none', transition: { duration: 0.2 } },
+    open:   { opacity: 1, pointerEvents: 'auto', transition: { duration: 0.2 } }
 };
 
 const panel = {
     closed: { opacity: 0, y: 20, scale: 0.98, transition: { duration: 0.18 } },
-    open:   { opacity: 1, y: 0,  scale: 1,   transition: { type: "spring", stiffness: 420, damping: 32 } }
+    open:   { opacity: 1, y: 0,  scale: 1,   transition: { type: 'spring', stiffness: 420, damping: 32 } }
 };
 </script>
 
 <template>
+  <motion.div
+    :class="['preview-modal__overlay', { 'with-image': hasImage }]"
+    :initial="'closed'"
+    :animate="state"
+    :variants="overlay"
+  >
     <motion.div
-        :class="['preview-modal__overlay', { 'with-image': hasImage }]"
-        :initial="'closed'"
-        :animate="state"
-        :variants="overlay"
+      class="preview-modal__panel"
+      :initial="'closed'"
+      :animate="state"
+      :variants="panel"
+      role="dialog"
+      aria-modal="true"
     >
-        <motion.div
-            class="preview-modal__panel"
-            :initial="'closed'"
-            :animate="state"
-            :variants="panel"
-            role="dialog"
-            aria-modal="true"
-        >
-            <div class="preview-modal__content">
-                <div class="preview-modal__content__top mb-3">
-                    <slot />
-                </div>
+      <div class="preview-modal__content">
+        <div class="preview-modal__content__top mb-3">
+          <slot />
+        </div>
 
-                <v-row class="justify-center preview-modal__content__footer">
-                    <v-btn
-                        type="button"
-                        :icon="mdiRestore"
-                        class="mr-1"
-                        density="comfortable"
-                        variant="flat"
-                        color="#d1e2ff"
-                        @click="close"
-                    />
-                    <v-btn
-                        type="button"
-                        :prepend-icon="mdiCheck"
-                        rounded
-                        variant="flat"
-                        color="#d1e2ff"
-                        @click="close"
-                    >
-                        Fertig
-                    </v-btn>
-                </v-row>
-            </div>
-        </motion.div>
+        <v-row class="justify-center preview-modal__content__footer">
+          <v-btn
+            type="button"
+            :icon="mdiRestore"
+            class="mr-1"
+            density="comfortable"
+            variant="flat"
+            color="#d1e2ff"
+            @click="close"
+          />
+          <v-btn
+            type="button"
+            :prepend-icon="mdiCheck"
+            rounded
+            variant="flat"
+            color="#d1e2ff"
+            @click="close"
+          >
+            Fertig
+          </v-btn>
+        </v-row>
+      </div>
     </motion.div>
+  </motion.div>
 </template>
 
 <style scoped lang="scss">

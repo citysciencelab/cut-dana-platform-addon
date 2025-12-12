@@ -2,7 +2,10 @@
   "name": "datanarrator",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "lint": "eslint -c eslint.config.js ./",
+    "lint:fix": "npm run lint -- --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "noLegacyInstall": "npm install --legacy-peer-deps"
   },
@@ -20,13 +23,20 @@
     "vuetify": "^3.7.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@sinonjs/fake-timers": "^10.0.2",
+    "@stylistic/eslint-plugin": "^5.2.3",
     "@vue/test-utils": "^ 2.4.6",
     "chai": "^5.1.1",
     "css-loader": "4.3.0",
     "esbuild-loader": "^4.1.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-chai-friendly": "^1.1.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-vue": "^10.6.2",
     "file-loader": "6.2.0",
     "fs-extra": "^11.2.0",
+    "globals": "^16.3.0",
     "imports-loader": "1.2.0",
     "jsdom-global": "^3.0.2",
     "mocha": "^10.2.0",

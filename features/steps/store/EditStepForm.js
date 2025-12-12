@@ -1,14 +1,14 @@
-import {generateSimpleGetters, generateSimpleMutations} from "../../../../../../src/shared/js/utils/generators";
+import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../src/shared/js/utils/generators';
 
 export const state = {
     isStepFormLoading: false,
     selectedStepId: null,
     stepNumber: 0,
-    stepChapterId: "",
+    stepChapterId: '',
     stepWidth: 0,
     stepVisible: false,
-    stepTitle: "",
-    stepDescription: "",
+    stepTitle: '',
+    stepDescription: '',
     stepCenterCoordinates: [], // float array
     stepZoomLevel: 0,
     stepInteractionAddons: [], // string array
@@ -43,11 +43,11 @@ export const mutations = {
         state.isStepFormLoading = false;
         state.selectedStoryId = null;
         state.stepNumber = 0;
-        state.stepChapterId = "";
+        state.stepChapterId = '';
         state.stepWidth = 0;
         state.stepVisible = false;
-        state.stepTitle = "";
-        state.stepDescription = "";
+        state.stepTitle = '';
+        state.stepDescription = '';
         state.stepCenterCoordinates = {};
         state.stepZoomLevel = 0;
         state.stepInteractionAddons = [];

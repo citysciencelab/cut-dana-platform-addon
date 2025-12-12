@@ -1,20 +1,20 @@
 export class FetchInterceptor {
     static headers = {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
     };
 
     static register() {
-        const {fetch: originalFetch} = window;
+        const { fetch: originalFetch } = window;
 
         window.fetch = async (...args) => {
-            let [resource, options] = args;
+            let [ resource, options ] = args;
 
             // Start with default headers
-            let finalHeaders = {...FetchInterceptor.headers};
+            let finalHeaders = { ...FetchInterceptor.headers };
 
             // Process options headers, allowing for header removal
             if (options?.headers) {
-                for (const [key, value] of Object.entries(options.headers)) {
+                for (const [ key, value ] of Object.entries(options.headers)) {
                     if (value === null) {
                         // Remove header if value is explicitly set to null
                         delete finalHeaders[key];

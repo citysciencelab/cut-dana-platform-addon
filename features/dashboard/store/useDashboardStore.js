@@ -1,9 +1,9 @@
-import {defineStore} from "pinia";
-import {ref, watch} from "vue";
+import { defineStore } from 'pinia';
+import { ref, watch } from 'vue';
 
 
-export const useDashboardStore = defineStore("dashboard", () => {
-    const mode = ref("all");
+export const useDashboardStore = defineStore('dashboard', () => {
+    const mode = ref('all');
     const open = ref(true);
 
     // Watch for changes to the mode ref and log them

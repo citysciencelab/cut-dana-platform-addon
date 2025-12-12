@@ -1,11 +1,11 @@
 <script setup>
-import {mdiArrowLeft, mdiDotsVertical} from "@mdi/js";
+import { mdiArrowLeft, mdiDotsVertical } from '@mdi/js';
 
-import {useDataNarrator} from "../../../../../hooks/useDataNarrator";
-import {dataNarratorModes, ToolwindowModes} from "../../../../../store/contantsDataNarrator";
+import { useDataNarrator } from '../../../../../hooks/useDataNarrator';
+import { dataNarratorModes, ToolwindowModes } from '../../../../../store/contantsDataNarrator';
 
-const {gotoPage} = useDataNarrator();
-const {toolwindowMode} = useDataNarrator();
+const { gotoPage } = useDataNarrator();
+const { toolwindowMode } = useDataNarrator();
 const props = defineProps({
    title: String
 });
@@ -14,40 +14,45 @@ function backToDashboard() {
     gotoPage(dataNarratorModes.DASHBOARD);
 
     const baseUrl = `${location.origin}/portal/stories`;
-    window.history.replaceState({}, "", baseUrl);
+    window.history.replaceState({}, '', baseUrl);
 }
 </script>
 
 <template>
-    <div :class="{ 'player-frame': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }">
-        <v-toolbar
-            color="transparent"
-            size="compact"
-            class="sticky-top"
-            style="border-radius: 100px;padding: 0;"
-        >
-            <template #prepend>
-                <v-btn
-                    :icon="mdiArrowLeft"
-                    size="compact"
-                    class="mr-2"
-                    @click="backToDashboard"
-                />
+  <div :class="{ 'player-frame': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }">
+    <v-toolbar
+      color="transparent"
+      size="compact"
+      class="sticky-top"
+      style="border-radius: 100px;padding: 0;"
+    >
+      <template #prepend>
+        <v-btn
+          :icon="mdiArrowLeft"
+          size="compact"
+          class="mr-2"
+          @click="backToDashboard"
+        />
 
-                <div class="bold">{{props.title}}</div>
-            </template>
-
-            <v-btn :icon="mdiDotsVertical" size="compact" />
-        </v-toolbar>
-
-        <div class="player-content">
-            <slot name="default" />
+        <div class="bold">
+          {{ props.title }}
         </div>
+      </template>
 
-        <div class="player-footer mb-2 px-2">
-            <slot name="footer" />
-        </div>
+      <v-btn
+        :icon="mdiDotsVertical"
+        size="compact"
+      />
+    </v-toolbar>
+
+    <div class="player-content">
+      <slot name="default" />
     </div>
+
+    <div class="player-footer mb-2 px-2">
+      <slot name="footer" />
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>

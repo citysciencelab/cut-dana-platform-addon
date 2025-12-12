@@ -1,12 +1,13 @@
 <script setup>
-import {ref, computed, watch} from "vue";
-import {useStore} from "vuex";
-import {mdiCubeScan} from "@mdi/js";
+import { mdiCubeScan } from '@mdi/js';
+import { ref, computed, watch } from 'vue';
+import { useStore } from 'vuex';
 
-import EntityList from "./EntityList.vue";
-import Modeler3D from "./Modeler3D.vue";
 import Modeler3DEntityModel
-    from "../../../../../../../../../../src/modules/modeler3D/components/Modeler3DEntityModel.vue";
+    from '../../../../../../../../../../src/modules/modeler3D/components/Modeler3DEntityModel.vue';
+
+import EntityList from './EntityList.vue';
+import Modeler3D from './Modeler3D.vue';
 
 const props = defineProps({
     modelValue: {
@@ -15,22 +16,22 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(["update:modelValue", "modelSelected"]);
+const emit = defineEmits([ 'update:modelValue', 'modelSelected' ]);
 
 const store = useStore();
 const fileLoading = ref(false);
 
-const importedModels = computed(() => store.getters["Modules/Modeler3D/importedModels"]);
-const coordinateEasting = computed(() => store.getters["Modules/Modeler3D/coordinateEasting"]);
-const coordinateNorthing = computed(() => store.getters["Modules/Modeler3D/coordinateNorthing"]);
-const height = computed(() => store.getters["Modules/Modeler3D/height"]);
-const scale = computed(() => store.getters["Modules/Modeler3D/scale"]);
-const rotation = computed(() => store.getters["Modules/Modeler3D/rotation"]);
-const adaptToHeight = computed(() => store.getters["Modules/Modeler3D/adaptToHeight"]);
+const importedModels = computed(() => store.getters['Modules/Modeler3D/importedModels']);
+const coordinateEasting = computed(() => store.getters['Modules/Modeler3D/coordinateEasting']);
+const coordinateNorthing = computed(() => store.getters['Modules/Modeler3D/coordinateNorthing']);
+const height = computed(() => store.getters['Modules/Modeler3D/height']);
+const scale = computed(() => store.getters['Modules/Modeler3D/scale']);
+const rotation = computed(() => store.getters['Modules/Modeler3D/rotation']);
+const adaptToHeight = computed(() => store.getters['Modules/Modeler3D/adaptToHeight']);
 
 async function handleGltfFile(blob, fileName) {
     const position = getCenterOfView3D();
-    await store.dispatch("Modules/Modeler3D/createEntity", {
+    await store.dispatch('Modules/Modeler3D/createEntity', {
         blob: blob,
         fileName: fileName,
         position: position.cartesian,
@@ -38,7 +39,7 @@ async function handleGltfFile(blob, fileName) {
 }
 
 function getCenterOfView3D() {
-    const scene = mapCollection.getMap("3D").getCesiumScene();
+    const scene = mapCollection.getMap('3D').getCesiumScene();
     const camera = scene.camera;
     const canvas = scene.canvas;
 
@@ -67,16 +68,16 @@ function getCenterOfView3D() {
     if (!Cesium.defined(cartesian)) {
         // If the camera points to the sky, there’s no intersection.
         // As a last resort, use the camera position (not the ground) or return null.
-        const {x, y, z} = camera.positionWC;
+        const { x, y, z } = camera.positionWC;
         return {
-            cartesian: {x, y, z},
+            cartesian: { x, y, z },
             cartographic: null
         };
     }
 
     const carto = Cesium.Cartographic.fromCartesian(cartesian);
     return {
-        cartesian: {x: cartesian.x, y: cartesian.y, z: cartesian.z},
+        cartesian: { x: cartesian.x, y: cartesian.y, z: cartesian.z },
         cartographic: {
             lon: Cesium.Math.toDegrees(carto.longitude),
             lat: Cesium.Math.toDegrees(carto.latitude),
@@ -87,19 +88,19 @@ function getCenterOfView3D() {
 
 function onFileChange(file) {
     if (!file) {
-        emit("modelSelected", null);
+        emit('modelSelected', null);
         return;
     }
 
-    emit("modelSelected", file);
+    emit('modelSelected', file);
 
     const reader = new FileReader(),
-        fileName = file.name.split(".")[0],
-        fileExtension = file.name.split(".").pop();
+        fileName = file.name.split('.')[0],
+        fileExtension = file.name.split('.').pop();
 
     fileLoading.value = true;
 
-    if (fileExtension === "gltf" || fileExtension === "glb") {
+    if (fileExtension === 'gltf' || fileExtension === 'glb') {
         handleGltfFile(file, fileName);
         return;
     }
@@ -109,7 +110,7 @@ function onFileChange(file) {
     };
 
     reader.onerror = (e) => {
-        console.error("Error reading the file:", e.target.error);
+        console.error('Error reading the file:', e.target.error);
         fileLoading.value = false;
     };
 
@@ -123,7 +124,7 @@ watch([
     scale,
     rotation,
     adaptToHeight
-], ([ce, cn, h, s, r, ah]) => {
+], ([ ce, cn, h, s, r, ah ]) => {
     const prev = props.modelValue ?? {};
 
     const next = {
@@ -141,27 +142,27 @@ watch([
         },
     };
 
-    emit("update:modelValue", next);
-}, {immediate: true});
+    emit('update:modelValue', next);
+}, { immediate: true });
 </script>
 
 <template>
-    <div class="mb-2">
-        <v-file-input
-            variant="outlined"
-            label="Upload model (.glb, .gltf)"
-            accept=".glb,.gltf"
-            show-size
-            :prepend-icon="mdiCubeScan"
-            @update:modelValue="onFileChange"
-        />
+  <div class="mb-2">
+    <v-file-input
+      variant="outlined"
+      label="Upload model (.glb, .gltf)"
+      accept=".glb,.gltf"
+      show-size
+      :prepend-icon="mdiCubeScan"
+      @update:model-value="onFileChange"
+    />
 
-        <EntityList/>
+    <EntityList />
 
-        <div class="mt-2">
-            <Modeler3DEntityModel v-if="importedModels.length > 0"/>
-        </div>
+    <div class="mt-2">
+      <Modeler3DEntityModel v-if="importedModels.length > 0" />
     </div>
+  </div>
 
-    <Modeler3D/>
+  <Modeler3D />
 </template>

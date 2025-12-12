@@ -1,9 +1,9 @@
 <script setup>
-import {ref, onMounted, onBeforeUnmount} from "vue";
-import {useTranslation} from "i18next-vue";
-import {mdiWeb} from "@mdi/js";
+import { mdiWeb } from '@mdi/js';
+import { useTranslation } from 'i18next-vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
-const {t, i18next} = useTranslation();
+const { t, i18next } = useTranslation();
 const currentLanguage = ref(i18next.language);
 
 function handleLangChanged(lng) {
@@ -17,7 +17,7 @@ onBeforeUnmount(() => {
     i18next.off('languageChanged', handleLangChanged);
 })
 
-const languages = ['en', 'de']
+const languages = [ 'en', 'de' ]
 function changeToNextLanguage() {
     const idx = languages.indexOf(i18next.language)
     const next = languages[(idx + 1) % languages.length]
@@ -26,15 +26,15 @@ function changeToNextLanguage() {
 </script>
 
 <template>
-    <v-btn
-        rounded
-        size="small"
-        elevation="0"
-        @click="changeToNextLanguage()"
-    >
-        <v-icon small>
-            {{ mdiWeb }}
-        </v-icon>
-        {{ currentLanguage }}
-    </v-btn>
+  <v-btn
+    rounded
+    size="small"
+    elevation="0"
+    @click="changeToNextLanguage()"
+  >
+    <v-icon small>
+      {{ mdiWeb }}
+    </v-icon>
+    {{ currentLanguage }}
+  </v-btn>
 </template>

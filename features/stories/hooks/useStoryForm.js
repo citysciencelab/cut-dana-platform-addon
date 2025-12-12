@@ -1,14 +1,15 @@
-import {useStore} from "vuex";
-import {customRef, ref} from "vue";
-import {backendUrl} from "../../../store/contantsDataNarrator";
-import {isNullOrWhitespace} from "../../../utils/stringUtils";
-import {createChapter} from "../services/chapters";
-import {useDashboard} from "../../dashboard/hooks/useDashboard";
-import {uploadCoverImage} from "../services/addCoverImage";
+import { customRef, ref } from 'vue';
+import { useStore } from 'vuex';
+
+import { backendUrl } from '../../../store/contantsDataNarrator';
+import { isNullOrWhitespace } from '../../../utils/stringUtils';
+import { useDashboard } from '../../dashboard/hooks/useDashboard';
+import { uploadCoverImage } from '../services/addCoverImage';
+import { createChapter } from '../services/chapters';
 
 export function useStoryForm () {
     const store = useStore();
-    const {getAllStories} = useDashboard();
+    const { getAllStories } = useDashboard();
 
     const chapterName = ref('');
 
@@ -23,7 +24,7 @@ export function useStoryForm () {
 
         if (isValidStory(story)){
             await fetch(`${backendUrl}/stories`, {
-                method: "POST",
+                method: 'POST',
                 body: JSON.stringify({
                     ...story
                 })
@@ -42,7 +43,7 @@ export function useStoryForm () {
 
         if (isValidStory(story)){
             await fetch(`${backendUrl}/stories/${storyState.selectedStoryId}`, {
-                method: "PUT",
+                method: 'PUT',
                 body: JSON.stringify({
                     ...story
                 })
@@ -51,7 +52,7 @@ export function useStoryForm () {
     }
     const createDraftStory = async () => {
         const response = await fetch(`${backendUrl}/stories/draft`, {
-            method: "POST"
+            method: 'POST'
         });
         if (response.ok) {
             const storyId = await response.json();
@@ -112,7 +113,7 @@ export function useStoryForm () {
     })
 
     const fetchStory = async () => {
-        if (storyId) {
+        if (storyId.value) {
             const response = await fetch(`${backendUrl}/stories/${storyId.value}`);
             if (response.ok) {
                 const storyData = await response.json();
@@ -142,7 +143,7 @@ export function useStoryForm () {
     }
     const deleteStory = async (toDeleteStoryId) => {
         const response = await fetch(`${backendUrl}/stories/${toDeleteStoryId}`, {
-            method: "DELETE"
+            method: 'DELETE'
         });
         if (response.ok) {
             await getAllStories();

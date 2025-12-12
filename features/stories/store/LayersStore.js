@@ -1,10 +1,10 @@
-import {generateSimpleGetters, generateSimpleMutations} from "../../../../../../src/shared/js/utils/generators";
+import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../src/shared/js/utils/generators';
 
 export const state = {
     layersTree: [],
     loading: false,
     error: null,
-    sourceURL: "https://geodienste.hamburg.de/services-internet.json",
+    sourceURL: 'https://geodienste.hamburg.de/services-internet.json',
 };
 
 export const mutations = {
@@ -25,23 +25,23 @@ export const mutations = {
 };
 
 export const actions = {
-    async fetchAndSortServices({commit, state}, {url} = {}) {
+    async fetchAndSortServices({ commit, state }, { url } = {}) {
         const URL = url || state.sourceURL;
 
-        commit("setLoading", true);
-        commit("setError", null);
+        commit('setLoading', true);
+        commit('setError', null);
 
         try {
-            const norm = v => (String(v ?? "").trim() || "ohne Kategorie");
-            const normSub = v => (String(v ?? "").trim() || "ohne Subkategorie");
+            const norm = v => (String(v ?? '').trim() || 'ohne Kategorie');
+            const normSub = v => (String(v ?? '').trim() || 'ohne Subkategorie');
 
             const res = await fetch(URL);
             const services = await res.json();
 
             const filtered = Array.isArray(services)
                 ? services.filter(s => {
-                    const t = String(s?.typ || "").toUpperCase();
-                    return t === "WMS";
+                    const t = String(s?.typ || '').toUpperCase();
+                    return t === 'WMS';
                 })
                 : [];
 
@@ -51,8 +51,8 @@ export const actions = {
                 const dsArr = Array.isArray(svc.datasets) ? svc.datasets : [];
 
                 if (!dsArr.length) {
-                    const cat = "ohne Kategorie";
-                    const sub = "ohne Subkategorie";
+                    const cat = 'ohne Kategorie';
+                    const sub = 'ohne Subkategorie';
                     if (!catMap.has(cat)) catMap.set(cat, new Map());
                     const subMap = catMap.get(cat);
                     if (!subMap.has(sub)) subMap.set(sub, []);
@@ -63,7 +63,7 @@ export const actions = {
                 dsArr.forEach(ds => {
                     const cats = Array.isArray(ds.kategorie_opendata) && ds.kategorie_opendata.length
                         ? ds.kategorie_opendata.map(norm)
-                        : ["ohne Kategorie"];
+                        : [ 'ohne Kategorie' ];
                     const sub = normSub(ds.md_name);
 
                     cats.forEach(cat => {
@@ -76,25 +76,25 @@ export const actions = {
                 });
             });
 
-            const layersTree = [...catMap.entries()]
-                .sort(([a], [b]) => a.localeCompare(b))
-                .map(([category, subMap]) => ({
+            const layersTree = [ ...catMap.entries() ]
+                .sort(([ a ], [ b ]) => a.localeCompare(b))
+                .map(([ category, subMap ]) => ({
                     category,
-                    subcategories: [...subMap.entries()]
-                        .sort(([a], [b]) => a.localeCompare(b))
-                        .map(([name, layers]) => ({
+                    subcategories: [ ...subMap.entries() ]
+                        .sort(([ a ], [ b ]) => a.localeCompare(b))
+                        .map(([ name, layers ]) => ({
                             name,
                             layers: layers.sort((x, y) => x.name.localeCompare(y.name))
                         }))
                 }));
 
-            commit("setLayersTree", layersTree);
+            commit('setLayersTree', layersTree);
         } catch (err) {
             console.log('error', err);
-            commit("setError", err instanceof Error ? err.message : String(err));
-            commit("setLayersTree", []);
+            commit('setError', err instanceof Error ? err.message : String(err));
+            commit('setLayersTree', []);
         } finally {
-            commit("setLoading", false);
+            commit('setLoading', false);
         }
     }
 };

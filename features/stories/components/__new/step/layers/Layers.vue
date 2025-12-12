@@ -1,16 +1,17 @@
 <script setup>
-import {ref, computed, watch} from "vue";
-import {mdiChevronRight, mdiEye, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose} from "@mdi/js";
-import {useStore} from "vuex";
+import { mdiChevronRight, mdiEye, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose } from '@mdi/js';
+import { ref, computed, watch } from 'vue';
+import { useStore } from 'vuex';
 
-import {useLayers} from "../../../../../../hooks/useLayers";
-import CategoryBrowser from "./CategoryBrowser.vue";
+import { useLayers } from '../../../../../../hooks/useLayers';
+
+import CategoryBrowser from './CategoryBrowser.vue';
 
 const store = useStore();
-const {layersTree, idToLayerMap, loading} = useLayers();
+const { layersTree, idToLayerMap, loading } = useLayers();
 
-const props = defineProps({modelValue: {type: Array, default: () => []}});
-const emit = defineEmits(["update:modelValue"]);
+const props = defineProps({ modelValue: { type: Array, default: () => [] } });
+const emit = defineEmits([ 'update:modelValue' ]);
 
 const dialogOpen = ref(false);
 const selectedIds = ref([]);
@@ -25,7 +26,7 @@ const selectedLayers = computed(() =>
 function addLayer(layerId) {
   if (!layerId) return;
   if (!selectedIds.value.includes(layerId)) {
-    selectedIds.value = [...selectedIds.value, layerId];
+    selectedIds.value = [ ...selectedIds.value, layerId ];
   }
   dialogOpen.value = false;
 }
@@ -43,7 +44,7 @@ watch(
 
       if (added.length) {
         for (const id of added) {
-          store.dispatch("addOrReplaceLayer", {
+          store.dispatch('addOrReplaceLayer', {
             layerId: id,
             zIndex: nextZIndex.value++
           });
@@ -51,41 +52,53 @@ watch(
       }
 
       for (const id of removed) {
-        store.dispatch("Modules/LayerTree/removeLayer", {id});
+        store.dispatch('Modules/LayerTree/removeLayer', { id });
       }
     },
-    {deep: false}
+    { deep: false }
 );
 </script>
 
 <template>
-  <v-row class="mb-2" style="margin-top: 0!important;">
-    <v-col cols="12" class="p-0">
-      <v-list density="comfortable" class="pa-0">
+  <v-row
+    class="mb-2"
+    style="margin-top: 0!important;"
+  >
+    <v-col
+      cols="12"
+      class="p-0"
+    >
+      <v-list
+        density="comfortable"
+        class="pa-0"
+      >
         <v-list-item
-            v-for="l in selectedLayers"
-            :key="l.id"
-            class="pa-0"
+          v-for="l in selectedLayers"
+          :key="l.id"
+          class="pa-0"
         >
           <v-sheet
-              width="100%"
-              rounded
-              class="d-flex align-center px-3 py-2"
-              style="border: 1px solid #e1e1e1"
+            width="100%"
+            rounded
+            class="d-flex align-center px-3 py-2"
+            style="border: 1px solid #e1e1e1"
           >
-            <v-icon :icon="mdiEye" class="mr-2"/>
+            <v-icon
+              :icon="mdiEye"
+              class="mr-2"
+            />
             <span class="flex-grow-1">{{ l.name }}</span>
             <v-icon
-                :icon="mdiTrashCan"
-                class="cursor-pointer"
-                @click="removeLayer(l.id)"
+              :icon="mdiTrashCan"
+              class="cursor-pointer"
+              @click="removeLayer(l.id)"
             />
           </v-sheet>
         </v-list-item>
 
         <div
-            v-if="selectedLayers.length === 0"
-            class="text-medium-emphasis py-2"
+          v-if="selectedLayers.length === 0"
+          class="text-medium-emphasis py-2"
         >
           Keine Ebenen ausgewählt.
         </div>
@@ -93,39 +106,54 @@ watch(
     </v-col>
   </v-row>
 
-  <v-row class="mb-2" justify="center">
+  <v-row
+    class="mb-2"
+    justify="center"
+  >
     <v-btn
-        variant="flat"
-        size="small"
-        class="information-btn"
-        :prepend-icon="mdiMapMarkerPlusOutline"
-        :append-icon="mdiChevronRight"
-        rounded
-        @click="dialogOpen = true"
+      variant="flat"
+      size="small"
+      class="information-btn"
+      :prepend-icon="mdiMapMarkerPlusOutline"
+      :append-icon="mdiChevronRight"
+      rounded
+      @click="dialogOpen = true"
     >
       Informationsebene hinzufügen
     </v-btn>
   </v-row>
 
-  <v-dialog v-model="dialogOpen" max-width="520">
+  <v-dialog
+    v-model="dialogOpen"
+    max-width="520"
+  >
     <v-card>
       <v-card-title class="d-flex align-center">
         Informationsebene
-        <v-spacer/>
-        <v-btn icon variant="text" @click="dialogOpen = false">
-          <v-icon :icon="mdiClose"/>
+        <v-spacer />
+        <v-btn
+          icon
+          variant="text"
+          @click="dialogOpen = false"
+        >
+          <v-icon :icon="mdiClose" />
         </v-btn>
       </v-card-title>
 
       <CategoryBrowser
-          :items="layersTree"
-          :loading="loading"
-          @select:layer="(l) => addLayer(l.id)"
+        :items="layersTree"
+        :loading="loading"
+        @select:layer="(l) => addLayer(l.id)"
       />
 
       <v-card-actions>
-        <v-spacer/>
-        <v-btn variant="text" @click="dialogOpen = false">Schließen</v-btn>
+        <v-spacer />
+        <v-btn
+          variant="text"
+          @click="dialogOpen = false"
+        >
+          Schließen
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

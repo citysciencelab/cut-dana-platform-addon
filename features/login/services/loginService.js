@@ -1,5 +1,5 @@
-import OIDC from "../../../../../../src/modules/login/js/utilsOIDC";
-import * as constants from "../../../store/contantsDataNarrator";
+import OIDC from '../../../../../../src/modules/login/js/utilsOIDC';
+import * as constants from '../../../store/contantsDataNarrator';
 
 export const getRedirectUrl = async () => {
 
@@ -14,10 +14,10 @@ export const getRedirectUrl = async () => {
             oidcScope: json.scope,
             oidcAuthorizationEndpoint: json.authUri
         },
-        oidcAuthorizationEndpoint = config.oidcAuthorizationEndpoint || "oidcAuthorizationEndpoint_not_defined_in_config.js",
-        oidcClientId = config.oidcClientId || "oidcClientId_not_defined_in_config.js",
-        oidcRedirectUri = config.oidcRedirectUri || "oidcRedirectUri_not_defined_in_config.js",
-        oidcScope = config.oidcScope || "oidcScope_not_defined_in_config.js";
+        oidcAuthorizationEndpoint = config.oidcAuthorizationEndpoint || 'oidcAuthorizationEndpoint_not_defined_in_config.js',
+        oidcClientId = config.oidcClientId || 'oidcClientId_not_defined_in_config.js',
+        oidcRedirectUri = config.oidcRedirectUri || 'oidcRedirectUri_not_defined_in_config.js',
+        oidcScope = config.oidcScope || 'oidcScope_not_defined_in_config.js';
 
     return OIDC.getAuthCodeUrl(oidcAuthorizationEndpoint, oidcClientId, oidcRedirectUri, oidcScope);
 }

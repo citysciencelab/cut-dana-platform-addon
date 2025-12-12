@@ -1,5 +1,5 @@
-import {computed, ref} from "vue";
-import {useStore} from "vuex";
+import { computed, ref } from 'vue';
+import { useStore } from 'vuex';
 
 export function useNavigation () {
     const store = useStore();
@@ -10,21 +10,21 @@ export function useNavigation () {
     const initialZoom = ref(store.state.Maps.zoom);
     const initialCenter = ref(store.state.Maps.center);
 
-    const canZoomIn  = computed(() => !store.getters["Maps/isMaxZoomDisplayed"]);
-    const canZoomOut = computed(() => !store.getters["Maps/isMinZoomDisplayed"]);
+    const canZoomIn  = computed(() => !store.getters['Maps/isMaxZoomDisplayed']);
+    const canZoomOut = computed(() => !store.getters['Maps/isMinZoomDisplayed']);
 
-    const zoomIn  = () => store.dispatch("Maps/increaseZoom");
-    const zoomOut = () => store.dispatch("Maps/decreaseZoom");
+    const zoomIn  = () => store.dispatch('Maps/increaseZoom');
+    const zoomOut = () => store.dispatch('Maps/decreaseZoom');
 
-    const setView = ({center, zoom}) => {
-        store.commit("Maps/setView", {
+    const setView = ({ center, zoom }) => {
+        store.commit('Maps/setView', {
             center,
             zoom
         });
     }
 
-    const setAnimatedView = ({center, zoom}) => {
-        store.commit("Maps/animateView", {
+    const setAnimatedView = ({ center, zoom }) => {
+        store.commit('Maps/animateView', {
             center,
             zoom
         });
@@ -35,7 +35,7 @@ export function useNavigation () {
             return
         }
 
-        store.dispatch("Modules/BaselayerSwitcher/updateLayerVisibilityAndZIndex", layerId);
+        store.dispatch('Modules/BaselayerSwitcher/updateLayerVisibilityAndZIndex', layerId);
     };
 
     return {
@@ -49,7 +49,7 @@ export function useNavigation () {
         zoomOut,
         canZoomIn,
         canZoomOut,
-        defaultBaseLayerId: "19969",
+        defaultBaseLayerId: '19969',
         setBaseLayer
     }
 }

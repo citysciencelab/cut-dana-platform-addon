@@ -1,5 +1,6 @@
-import {backendUrl} from "../../../store/contantsDataNarrator";
-import {ref} from "vue";
+import { ref } from 'vue';
+
+import { backendUrl } from '../../../store/contantsDataNarrator';
 // useFetchStories.js
 
 export function useFetchStories () {
