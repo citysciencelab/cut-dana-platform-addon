@@ -238,14 +238,19 @@ watch(activeStepIndex, (activeStepIndex) => {
                         v-model="storyName"
                         required
                     />
-
-                    <v-file-input
-                        class="ml-2"
-                        :prepend-icon="mdiImagePlusOutline"
-                        hide-input
-                        accept="image/png, image/jpeg"
-                        v-model="selectedImage"
-                    />
+                    <v-tooltip location="top">
+                        <template #activator="{ props: actv }">
+                            <v-file-input
+                                class="ml-2"
+                                :prepend-icon="mdiImagePlusOutline"
+                                hide-input
+                                accept="image/png, image/jpeg"
+                                v-model="selectedImage"
+                                v-bind="actv"
+                            />
+                        </template>
+                        <span>{{ t('additional:modules.dataNarrator.label.imageUpload') }}</span>
+                    </v-tooltip>
                 </template>
 
                 <v-menu v-if="editStoryVisible" location="bottom end" offset="4">
