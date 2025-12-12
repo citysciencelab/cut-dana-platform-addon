@@ -1,18 +1,19 @@
 <script setup>
-import {ref, computed} from "vue";
-import {useTranslation} from "i18next-vue";
-import {mdiCloudUploadOutline, mdiCloudOffOutline} from "@mdi/js";
-import {publishStory} from "../../services/publishStory";
+import { mdiCloudUploadOutline, mdiCloudOffOutline } from '@mdi/js';
+import { useTranslation } from 'i18next-vue';
+import { ref, computed } from 'vue';
 
-const {t} = useTranslation();
+import { publishStory } from '../../services/publishStory';
+
+const { t } = useTranslation();
 
 const props = defineProps({
-    storyId: {type: Number, required: true},
-    isDraft: {type: Boolean, required: true},
+    storyId: { type: Number, required: true },
+    isDraft: { type: Boolean, required: true },
 });
 
 const emit = defineEmits([
-    "success"
+    'success'
 ]);
 
 const loading = ref(false);
@@ -21,8 +22,8 @@ const isDraft = computed(() => props.isDraft);
 const icon = computed(() => (isDraft.value ? mdiCloudUploadOutline : mdiCloudOffOutline));
 const btnLabel = computed(() =>
     isDraft.value
-        ? t("additional:modules.dataNarrator.button.publish", "Publish")
-        : t("additional:modules.dataNarrator.button.unpublish", "Unpublish")
+        ? t('additional:modules.dataNarrator.button.publish', 'Publish')
+        : t('additional:modules.dataNarrator.button.unpublish', 'Unpublish')
 );
 
 async function onClick() {
@@ -31,13 +32,13 @@ async function onClick() {
     try {
         if (isDraft.value) {
             await publishStory(props.storyId, false);
-            emit("success");
+            emit('success');
         } else {
             await publishStory(props.storyId, true);
-            emit("success");
+            emit('success');
         }
     } catch (err) {
-        console.error("Failed to toggle publish state", err);
+        console.error('Failed to toggle publish state', err);
     } finally {
         loading.value = false;
     }
@@ -45,20 +46,23 @@ async function onClick() {
 </script>
 
 <template>
-    <v-tooltip location="top">
-        <template #activator="{ props: actv }">
-            <v-btn
-                v-bind="actv"
-                variant="text"
-                density="compact"
-                icon
-                :loading="loading"
-                :aria-label="btnLabel"
-                @click.stop="onClick"
-            >
-                <v-icon size="20" :icon="icon"/>
-            </v-btn>
-        </template>
-        <span>{{ btnLabel }}</span>
-    </v-tooltip>
+  <v-tooltip location="top">
+    <template #activator="{ props: actv }">
+      <v-btn
+        v-bind="actv"
+        variant="text"
+        density="compact"
+        icon
+        :loading="loading"
+        :aria-label="btnLabel"
+        @click.stop="onClick"
+      >
+        <v-icon
+          size="20"
+          :icon="icon"
+        />
+      </v-btn>
+    </template>
+    <span>{{ btnLabel }}</span>
+  </v-tooltip>
 </template>

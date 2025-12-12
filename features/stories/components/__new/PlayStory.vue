@@ -1,25 +1,26 @@
 <script setup>
-import {computed, onBeforeUnmount, ref, watch} from "vue";
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
-import PlayerFrame from "./play/PlayerFrame.vue";
-import ToolWindow from "../../../shared/Toolwindow/ToolWindow.vue";
-import {backendUrl, dataNarratorModes} from "../../../../store/contantsDataNarrator";
-import {useNavigation} from "../../../steps/hooks/useNavigation";
-import {useStory} from "../../hooks/useStory";
-import {useDataNarrator} from "../../../../hooks/useDataNarrator";
-import {useStepOverlays} from "../../hooks/useStepOverlays";
-import {getFileUrl} from "../../../../utils/getFileUrl";
-import RichTextViewer from "./step/RichTextViewer.vue";
+import { useDataNarrator } from '../../../../hooks/useDataNarrator';
+import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
+import { getFileUrl } from '../../../../utils/getFileUrl';
+import ToolWindow from '../../../shared/Toolwindow/ToolWindow.vue';
+import { useNavigation } from '../../../steps/hooks/useNavigation';
+import { useStepOverlays } from '../../hooks/useStepOverlays';
+import { useStory } from '../../hooks/useStory';
 
-const {gotoPage} = useDataNarrator()
-const {currentStoryId} = useStory();
-const {setAnimatedView, initialZoom, initialCenter, setBaseLayer, defaultBaseLayerId} = useNavigation();
-const {applyForStep, clear: clearOverlays} = useStepOverlays();
+import PlayerFrame from './play/PlayerFrame.vue';
+import RichTextViewer from './step/RichTextViewer.vue';
+
+const { gotoPage } = useDataNarrator()
+const { currentStoryId } = useStory();
+const { setAnimatedView, initialZoom, initialCenter, setBaseLayer, defaultBaseLayerId } = useNavigation();
+const { applyForStep, clear: clearOverlays } = useStepOverlays();
 
 const story = ref(null);
 const isLoading = ref(true);
 
-const stage = ref("overview");
+const stage = ref('overview');
 const chapterIndex = ref(0);
 const stepIndex = ref(0);
 
@@ -32,7 +33,7 @@ const totalSteps = computed(() => {
 });
 
 const currentGlobalStep = computed(() => {
-    if (stage.value === "overview" || !story.value) return 0;
+    if (stage.value === 'overview' || !story.value) return 0;
 
     const prevSteps = story.value.chapters
         .slice(0, chapterIndex.value)
@@ -59,7 +60,7 @@ function resetBaseLayer() {
 }
 
 watch(stage, (currentStage) => {
-    if (currentStage === "overview") {
+    if (currentStage === 'overview') {
         clearOverlays();
         resetBaseLayer();
     }
@@ -67,13 +68,13 @@ watch(stage, (currentStage) => {
 
 watch(currentStoryId, (id) => {
     loadStory(id);
-    stage.value = "overview";
+    stage.value = 'overview';
     chapterIndex.value = 0;
     stepIndex.value = 0;
-}, {immediate: true});
+}, { immediate: true });
 
 watch(
-    () => [chapterIndex.value, stepIndex.value, stage.value],
+    () => [ chapterIndex.value, stepIndex.value, stage.value ],
     () => {
         if (stage.value !== 'play' || !story.value) return;
 
@@ -90,11 +91,11 @@ watch(
 
         applyForStep(step);
     },
-    {immediate: true}
+    { immediate: true }
 );
 
 function startPlay() {
-    stage.value = "play";
+    stage.value = 'play';
     chapterIndex.value = 0;
     stepIndex.value = 0;
 }
@@ -116,14 +117,14 @@ function next() {
 function back() {
     if (!story.value) return;
 
-    if (stage.value === "overview") return;
+    if (stage.value === 'overview') return;
     if (stepIndex.value > 0) {
         stepIndex.value--;
     } else if (chapterIndex.value > 0) {
         chapterIndex.value--;
         stepIndex.value = story.value.chapters[chapterIndex.value].steps.length - 1;
     } else {
-        stage.value = "overview";
+        stage.value = 'overview';
         setAnimatedView({
             center: initialCenter.value,
             zoom: initialZoom.value,
@@ -137,7 +138,7 @@ function startFromChapter(idx) {
     if (!chapter || !chapter.steps?.length) return;
     chapterIndex.value = idx;
     stepIndex.value = 0;
-    stage.value = "play";
+    stage.value = 'play';
 }
 
 onBeforeUnmount(() => {
@@ -147,103 +148,113 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <ToolWindow>
-        <template #fixed>
-            <PlayerFrame :title="stage === 'play' ? story.title : undefined">
-                <template #default>
-                    <div v-if="isLoading">
-                        Loading...
-                    </div>
+  <ToolWindow>
+    <template #fixed>
+      <PlayerFrame :title="stage === 'play' ? story.title : undefined">
+        <template #default>
+          <div v-if="isLoading">
+            Loading...
+          </div>
 
-                    <div v-else>
-                        <div v-if="stage === 'overview'">
-                            <div
-                                v-if="story.titleImage"
-                                class="story-cover mb-2"
-                                :style="`background-image: url(${getFileUrl(story.titleImage)});`"
-                            />
-                            <h5 class="story-title px-2 font-bold mb-2">{{ story.title }}</h5>
-                            <div class="story-description px-2 mb-2">{{ story.description }}</div>
+          <div v-else>
+            <div v-if="stage === 'overview'">
+              <div
+                v-if="story.titleImage"
+                class="story-cover mb-2"
+                :style="`background-image: url(${getFileUrl(story.titleImage)});`"
+              />
+              <h5 class="story-title px-2 font-bold mb-2">
+                {{ story.title }}
+              </h5>
+              <div class="story-description px-2 mb-2">
+                {{ story.description }}
+              </div>
 
-                            <ul class="chapter-list">
-                                <li
-                                    class="chapter"
-                                    v-for="(chapter, index) in story.chapters"
-                                    :key="chapter.id"
-                                    @click="startFromChapter(index)"
-                                >
-                                    <div class="chapter-label">{{ index + 1 }}</div>
-                                    <div class="chapter-title">
-                                        {{ chapter.name }}
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+              <ul class="chapter-list">
+                <li
+                  v-for="(chapter, index) in story.chapters"
+                  :key="chapter.id"
+                  class="chapter"
+                  @click="startFromChapter(index)"
+                >
+                  <div class="chapter-label">
+                    {{ index + 1 }}
+                  </div>
+                  <div class="chapter-title">
+                    {{ chapter.name }}
+                  </div>
+                </li>
+              </ul>
+            </div>
 
-                        <div v-else>
-                            <div class="chapter px-2">
-                                <div class="chapter-label">{{ chapterIndex + 1 }}</div>
-                                <div class="chapter-title">
-                                    {{ story.chapters[chapterIndex].name }}
-                                </div>
-                            </div>
-                            <div class="step-content px-2">
-                                <div class="step-content-title mt-10">
-                                    <h2 class="step-pill">
-                                        {{ stepIndex + 1 }}
-                                    </h2>
-                                    <h3 class="font-bold">{{ story.chapters[chapterIndex].steps[stepIndex].title }}</h3>
-                                </div>
-                                <div class="mt-4">
-                                    <RichTextViewer v-model="story.chapters[chapterIndex].steps[stepIndex].html"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-
-                <template #footer>
-                    <v-row align="center">
-                        <div>{{ currentGlobalStep }}/{{ totalSteps }}</div>
-
-                        <v-col class="p-0">
-                            <v-row justify="end">
-                                <v-btn
-                                    v-if="stage === 'play'"
-                                    variant="text"
-                                    rounded
-                                    @click="back"
-                                >
-                                    Zurück
-                                </v-btn>
-                                <v-btn
-                                    v-if="stage === 'overview'"
-                                    class="ml-2"
-                                    variant="flat"
-                                    color="black"
-                                    rounded
-                                    @click="startPlay"
-                                    :loading="isLoading"
-                                >
-                                    Start
-                                </v-btn>
-                                <v-btn
-                                    v-else
-                                    class="ml-2"
-                                    variant="flat"
-                                    color="black"
-                                    rounded
-                                    @click="next"
-                                >
-                                    {{ totalSteps === currentGlobalStep ? 'Beenden' : 'Weiter' }}
-                                </v-btn>
-                            </v-row>
-                        </v-col>
-                    </v-row>
-                </template>
-            </PlayerFrame>
+            <div v-else>
+              <div class="chapter px-2">
+                <div class="chapter-label">
+                  {{ chapterIndex + 1 }}
+                </div>
+                <div class="chapter-title">
+                  {{ story.chapters[chapterIndex].name }}
+                </div>
+              </div>
+              <div class="step-content px-2">
+                <div class="step-content-title mt-10">
+                  <h2 class="step-pill">
+                    {{ stepIndex + 1 }}
+                  </h2>
+                  <h3 class="font-bold">
+                    {{ story.chapters[chapterIndex].steps[stepIndex].title }}
+                  </h3>
+                </div>
+                <div class="mt-4">
+                  <RichTextViewer v-model="story.chapters[chapterIndex].steps[stepIndex].html" />
+                </div>
+              </div>
+            </div>
+          </div>
         </template>
-    </ToolWindow>
+
+        <template #footer>
+          <v-row align="center">
+            <div>{{ currentGlobalStep }}/{{ totalSteps }}</div>
+
+            <v-col class="p-0">
+              <v-row justify="end">
+                <v-btn
+                  v-if="stage === 'play'"
+                  variant="text"
+                  rounded
+                  @click="back"
+                >
+                  Zurück
+                </v-btn>
+                <v-btn
+                  v-if="stage === 'overview'"
+                  class="ml-2"
+                  variant="flat"
+                  color="black"
+                  rounded
+                  :loading="isLoading"
+                  @click="startPlay"
+                >
+                  Start
+                </v-btn>
+                <v-btn
+                  v-else
+                  class="ml-2"
+                  variant="flat"
+                  color="black"
+                  rounded
+                  @click="next"
+                >
+                  {{ totalSteps === currentGlobalStep ? 'Beenden' : 'Weiter' }}
+                </v-btn>
+              </v-row>
+            </v-col>
+          </v-row>
+        </template>
+      </PlayerFrame>
+    </template>
+  </ToolWindow>
 </template>
 
 <style lang="scss" scoped>

@@ -1,10 +1,11 @@
 <script setup>
-import {mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus} from "@mdi/js";
+import { mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus } from '@mdi/js';
 
-import ChapterStep from "./ChapterStep.vue";
-import {numberToLetter} from "../../../../utils/numberToLetter";
-import {getStoryColor} from "../../../../utils/getStoryColor";
-import {useNavigation} from "../../../steps/hooks/useNavigation";
+import { getStoryColor } from '../../../../utils/getStoryColor';
+import { numberToLetter } from '../../../../utils/numberToLetter';
+import { useNavigation } from '../../../steps/hooks/useNavigation';
+
+import ChapterStep from './ChapterStep.vue';
 
 const props = defineProps({
     chapter: {
@@ -20,15 +21,15 @@ const props = defineProps({
     }
 });
 
-const emits = defineEmits(["addNewChapter", "addNewStep", "editStoryVisible", "modelSelected"]);
+const emits = defineEmits([ 'addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected' ]);
 
-const {initialZoom, initialCenter} = useNavigation();
+const { initialZoom, initialCenter } = useNavigation();
 
 function getDefaultStep(id) {
     return {
         id,
-        title: "",
-        description: "",
+        title: '',
+        description: '',
         mapConfig: {
             centerCoordinates: initialCenter,
             zoomLevel: initialZoom,
@@ -38,7 +39,7 @@ function getDefaultStep(id) {
         mapSources: [],
         // 3D
         is3D: false,
-        modelUrl: "",
+        modelUrl: '',
         navigation3D: {
             coordinates: {
                 easting: null,
@@ -59,71 +60,87 @@ function getDefaultStep(id) {
 
 function addStep() {
     props.chapter.steps.push(getDefaultStep(props.chapter.steps.length + 1));
-    emits("addNewStep");
+    emits('addNewStep');
 }
 </script>
 
 <template>
-    <div
-        v-if="chapter"
-        class="chapter-container"
-        :style="{
-            '--pill-color': getStoryColor(chapter.sequence - 1).primary,
-            '--pill-color-secondary': getStoryColor(chapter.sequence - 1).secondary,
-        }"
-    >
-        <div class="d-flex align-center ga-2">
-            <div class="chapter flex-1-0">
-                <v-icon>{{ mdiFormatListBulleted }}</v-icon>
-                <div class="chapter-label">
-                    {{ numberToLetter(props.chapter.sequence) }}
-                </div>
-                <div class="chapter-title">
-                    <input
-                        type="text"
-                        placeholder="A Unbenanntes Kapitel"
-                        v-model="props.chapter.title"
-                        required
-                    />
-                </div>
-                <div class="chapter-step-add" @click="emits('addNewChapter')">
-                    <v-icon>{{ mdiPlus }}</v-icon>
-                </div>
-            </div>
-
-            <v-menu v-if="!editStoryVisible" location="bottom end" offset="4">
-                <template #activator="{ props: actv }">
-                    <v-btn v-bind="actv" variant="text" :icon="mdiDotsVertical" size="compact"/>
-                </template>
-                <v-list density="compact">
-                    <v-list-item @click.stop="emits('editStoryVisible')">
-                        <template v-slot:prepend>
-                            <v-icon :icon="mdiPencilOutline"></v-icon>
-                        </template>
-                        <v-list-item-title>Edit Story</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
+  <div
+    v-if="chapter"
+    class="chapter-container"
+    :style="{
+      '--pill-color': getStoryColor(chapter.sequence - 1).primary,
+      '--pill-color-secondary': getStoryColor(chapter.sequence - 1).secondary,
+    }"
+  >
+    <div class="d-flex align-center ga-2">
+      <div class="chapter flex-1-0">
+        <v-icon>{{ mdiFormatListBulleted }}</v-icon>
+        <div class="chapter-label">
+          {{ numberToLetter(props.chapter.sequence) }}
         </div>
+        <div class="chapter-title">
+          <input
+            v-model="props.chapter.title"
+            type="text"
+            placeholder="A Unbenanntes Kapitel"
+            required
+          >
+        </div>
+        <div
+          class="chapter-step-add"
+          @click="emits('addNewChapter')"
+        >
+          <v-icon>{{ mdiPlus }}</v-icon>
+        </div>
+      </div>
 
-        <ChapterStep
-            v-if="props.activeStepIndex > -1 && props.activeStepIndex < props.chapter.steps.length"
-            :step="props.chapter.steps[props.activeStepIndex]"
-            :pillColor="getStoryColor(chapter.id).primary"
-            @modelSelected="(p) => emits('modelSelected', p)"
-        />
-
-        <v-row justify="center">
-            <v-btn variant="plain" class="mt-2" @click="addStep">
-                <template v-slot:prepend>
-                    <div class="add-chapter-button-icon">
-                        <v-icon>{{ mdiPlus }}</v-icon>
-                    </div>
-                </template>
-                SCHRITT HINZUFÜGEN
-            </v-btn>
-        </v-row>
+      <v-menu
+        v-if="!editStoryVisible"
+        location="bottom end"
+        offset="4"
+      >
+        <template #activator="{ props: actv }">
+          <v-btn
+            v-bind="actv"
+            variant="text"
+            :icon="mdiDotsVertical"
+            size="compact"
+          />
+        </template>
+        <v-list density="compact">
+          <v-list-item @click.stop="emits('editStoryVisible')">
+            <template #prepend>
+              <v-icon :icon="mdiPencilOutline" />
+            </template>
+            <v-list-item-title>Edit Story</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
+
+    <ChapterStep
+      v-if="props.activeStepIndex > -1 && props.activeStepIndex < props.chapter.steps.length"
+      :step="props.chapter.steps[props.activeStepIndex]"
+      :pill-color="getStoryColor(chapter.id).primary"
+      @model-selected="(p) => emits('modelSelected', p)"
+    />
+
+    <v-row justify="center">
+      <v-btn
+        variant="plain"
+        class="mt-2"
+        @click="addStep"
+      >
+        <template #prepend>
+          <div class="add-chapter-button-icon">
+            <v-icon>{{ mdiPlus }}</v-icon>
+          </div>
+        </template>
+        SCHRITT HINZUFÜGEN
+      </v-btn>
+    </v-row>
+  </div>
 </template>
 
 <style lang="scss" scoped>

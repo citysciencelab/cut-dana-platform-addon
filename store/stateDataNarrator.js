@@ -1,18 +1,18 @@
-import {dataNarratorModes, ToolwindowModes} from "./contantsDataNarrator";
+import { dataNarratorModes, ToolwindowModes } from './contantsDataNarrator';
 
 const state = {
-    description: "additional:modules.DataNarrator.description",
+    description: 'additional:modules.DataNarrator.description',
     active: false,
-    id: "DataNarrator",
-    name: "additional:modules.DataNarrator.title",
-    icon: "bi-book",
+    id: 'DataNarrator',
+    name: 'additional:modules.DataNarrator.title',
+    icon: 'bi-book',
     renderToWindow: true,
     resizableWindow: true,
     isVisibleInMenu: true,
     deactivateGFI: true,
-    metaVerPath: "",
+    metaVerPath: '',
     blacklistedDistricts: [],
-    serviceURL: "",
+    serviceURL: '',
     listChunk: 5,
     setMarkerOnClickInList: true,
     onstart: {
@@ -20,7 +20,7 @@ const state = {
         numbersChecked: true,
         beamsChecked: true,
         animationChecked: false,
-        direction: "out"
+        direction: 'out'
     },
     mode: dataNarratorModes.DASHBOARD,
     toolwindowMode: ToolwindowModes.DASHBOARD

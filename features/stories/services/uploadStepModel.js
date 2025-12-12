@@ -1,15 +1,15 @@
-import {backendUrl} from "../../../store/contantsDataNarrator";
+import { backendUrl } from '../../../store/contantsDataNarrator';
 
 export async function uploadStepModel(storyId, stepId, file) {
     const form = new FormData();
-    form.append("files", file);
+    form.append('files', file);
 
     const resp = await fetch(
         `${backendUrl}/stories/${storyId}/steps/${stepId}/model`, {
-            method: "POST",
+            method: 'POST',
             body: form,
             headers: {
-                "Content-Type": null,
+                'Content-Type': null,
             },
         });
     if (!resp.ok) {

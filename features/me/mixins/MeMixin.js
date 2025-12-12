@@ -1,8 +1,8 @@
-﻿import LoginMixin from "../../../mixins/LoginMixin";
-import {getMe} from "../services/getMe";
+﻿import LoginMixin from '../../../mixins/LoginMixin';
+import { getMe } from '../services/getMe';
 
 export default {
-    mixins: [LoginMixin],
+    mixins: [ LoginMixin ],
 
     methods: {
         async getMe() {

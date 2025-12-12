@@ -1,10 +1,10 @@
-import {computed, onMounted} from "vue";
-import {useStore} from "vuex";
+import { computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
 
 export function useLayers(opts = {}) {
-    const {autoFetch = true, url} = opts;
+    const { autoFetch = true, url } = opts;
     const store = useStore();
-    const ns = "Modules/DataNarrator/LayersStore";
+    const ns = 'Modules/DataNarrator/LayersStore';
 
     const layersTree = computed(() => store.getters[`${ns}/layersTree`]);
     const loading = computed(() => store.getters[`${ns}/loading`]);
@@ -23,7 +23,7 @@ export function useLayers(opts = {}) {
     });
 
     const fetchNow = (customUrl) =>
-        store.dispatch(`${ns}/fetchAndSortServices`, customUrl ? {url: customUrl} : undefined);
+        store.dispatch(`${ns}/fetchAndSortServices`, customUrl ? { url: customUrl } : undefined);
 
     onMounted(() => {
         if (!autoFetch) return;
@@ -33,5 +33,5 @@ export function useLayers(opts = {}) {
         }
     });
 
-    return {layersTree, loading, error, fetchNow, idToLayerMap};
+    return { layersTree, loading, error, fetchNow, idToLayerMap };
 }

@@ -1,12 +1,13 @@
-import {useStore} from "vuex";
-import isMobile from "../../../../../../../src/shared/js/utils/isMobile";
-import {dataNarratorModes, ToolwindowModes} from "../../../../store/contantsDataNarrator";
-import {computed, onUnmounted, ref} from "vue";
+import { computed, onUnmounted, ref } from 'vue';
+import { useStore } from 'vuex';
+
+import isMobile from '../../../../../../../src/shared/js/utils/isMobile';
+import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
 
 export const useToolWindow = () => {
 
     const store = useStore();
-    const setToolWindowMode = (mode) => store.commit("Modules/DataNarrator/setToolwindowMode", mode);
+    const setToolWindowMode = (mode) => store.commit('Modules/DataNarrator/setToolwindowMode', mode);
     const isToolMobile = ref(false);
 
     const keepWindowInCorrectMode = () => {

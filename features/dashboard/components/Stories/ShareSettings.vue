@@ -1,7 +1,7 @@
 <script setup>
-import { useTranslation } from "i18next-vue";
+import { useTranslation } from 'i18next-vue';
 
-const {t} = useTranslation();
+const { t } = useTranslation();
 const props = defineProps({
     privateStory: {
         type: Boolean,
@@ -15,38 +15,38 @@ const props = defineProps({
 </script>
 
 <template>
-    <div id="shareSettingsInput">
-        <div class="form-group">
-            <v-checkbox
-                id="story-private"
-                :value="privateStory"
-                :label="t('additional:modules.dataNarrator.label.private')"
-                hide-details="auto"
-                @change="$emit('update:private-story', $event)"
-            />
-        </div>
-
-        <div
-            v-if="privateStory"
-            class="form-group"
-        >
-            <label for="sharedWith">
-                {{ t( "additional:modules.dataNarrator.label.sharedWith" ) }}
-            </label>
-            <BFormTags
-                :value="sharedWith"
-                class="form-control"
-                input-type="email"
-                input-id="sharedWith"
-                tag-variant="primary"
-                tag-pills
-                :placeholder="t('additional:modules.dataNarrator.label.sharedWithPlaceholder')"
-                :add-button-text="t('additional:modules.dataNarrator.button.addSharedWith')"
-                :duplicate-tag-text="t('additional:modules.dataNarrator.label.sharedWithDuplicate')"
-                @input="value => $emit('update:shared-with', value)"
-            />
-        </div>
+  <div id="shareSettingsInput">
+    <div class="form-group">
+      <v-checkbox
+        id="story-private"
+        :value="privateStory"
+        :label="t('additional:modules.dataNarrator.label.private')"
+        hide-details="auto"
+        @change="$emit('update:private-story', $event)"
+      />
     </div>
+
+    <div
+      v-if="privateStory"
+      class="form-group"
+    >
+      <label for="sharedWith">
+        {{ t( "additional:modules.dataNarrator.label.sharedWith" ) }}
+      </label>
+      <BFormTags
+        :value="sharedWith"
+        class="form-control"
+        input-type="email"
+        input-id="sharedWith"
+        tag-variant="primary"
+        tag-pills
+        :placeholder="t('additional:modules.dataNarrator.label.sharedWithPlaceholder')"
+        :add-button-text="t('additional:modules.dataNarrator.button.addSharedWith')"
+        :duplicate-tag-text="t('additional:modules.dataNarrator.label.sharedWithDuplicate')"
+        @input="value => $emit('update:shared-with', value)"
+      />
+    </div>
+  </div>
 </template>
 
 <style lang="scss">

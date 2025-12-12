@@ -1,14 +1,15 @@
-import {computed} from "vue";
-import {useStore} from "vuex";
-import {getRedirectUrl} from "../../login/services/loginService";
-import Cookie from "../../../../../../src/modules/login/js/utilsCookies";
-import OIDC from "../../../../../../src/modules/login/js/utilsOIDC";
-import {useDataNarrator} from "../../../hooks/useDataNarrator";
-import {FetchInterceptor} from "../../../api/FetchInterceptor";
-import {backendUrl} from "../../../store/contantsDataNarrator";
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+
+import Cookie from '../../../../../../src/modules/login/js/utilsCookies';
+import OIDC from '../../../../../../src/modules/login/js/utilsOIDC';
+import { FetchInterceptor } from '../../../api/FetchInterceptor';
+import { useDataNarrator } from '../../../hooks/useDataNarrator';
+import { backendUrl } from '../../../store/contantsDataNarrator';
+import { getRedirectUrl } from '../../login/services/loginService';
 
 export function useLogin () {
-    const {moveTool} = useDataNarrator();
+    const { moveTool } = useDataNarrator();
 
     const store = useStore();
 
@@ -24,16 +25,16 @@ export function useLogin () {
     }
 
     const logout = () => {
-        store.dispatch("Modules/Login/logout");
+        store.dispatch('Modules/Login/logout');
     }
 
     const openLoginWindow = async () => {
         if (!loggedIn.value) {
-            const params = "width=500,height=500,status=no,location=no,menubar=no," +
+            const params = 'width=500,height=500,status=no,location=no,menubar=no,' +
                     `top=${window.screenY + (window.outerHeight - 500) / 2.5},` +
                     `left=${window.screenX + (window.outerWidth - 500) / 2}`;
 
-            const loginPopup = window.open(await getAuthCodeUrl(), "login", params);
+            const loginPopup = window.open(await getAuthCodeUrl(), 'login', params);
 
             const timer = setInterval(() => {
                 checkLoggedIn();
@@ -49,18 +50,18 @@ export function useLogin () {
     const checkLoggedIn = async () => {
 
         const config = Config.login,
-            token = Cookie.get("token"),
-            refreshToken = Cookie.get("refresh_token");
+            token = Cookie.get('token'),
+            refreshToken = Cookie.get('refresh_token');
 
         let localLoggedIn = false;
 
-        store.commit("Modules/Login/setAccessToken", token);
+        store.commit('Modules/Login/setAccessToken', token);
 
         FetchInterceptor.setHeader(
-            "Authorization",
+            'Authorization',
             `Bearer ${token}`
         );
-        store.commit("Modules/Login/setRefreshToken", refreshToken);
+        store.commit('Modules/Login/setRefreshToken', refreshToken);
 
         if (OIDC.getTokenExpiry(token) < 1) {
             logout();
@@ -71,16 +72,16 @@ export function useLogin () {
 
         localLoggedIn = Boolean(token);
 
-        store.commit("Modules/Login/setLoggedIn", localLoggedIn);
+        store.commit('Modules/Login/setLoggedIn', localLoggedIn);
 
-        store.commit("Modules/Login/setScreenName", Cookie.get("name"));
-        store.commit("Modules/Login/setUsername", Cookie.get("username"));
-        store.commit("Modules/Login/setEmail", Cookie.get("email"));
+        store.commit('Modules/Login/setScreenName', Cookie.get('name'));
+        store.commit('Modules/Login/setUsername', Cookie.get('username'));
+        store.commit('Modules/Login/setEmail', Cookie.get('email'));
 
         const meRes = await fetch(`${backendUrl}/me`);
         if(meRes.ok) {
             const res = await meRes.json();
-            store.commit("Modules/Login/setUserId", res.id);
+            store.commit('Modules/Login/setUserId', res.id);
         }
 
         return loggedIn;

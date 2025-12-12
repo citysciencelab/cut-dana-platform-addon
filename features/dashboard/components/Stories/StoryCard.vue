@@ -1,23 +1,24 @@
 <script setup>
-import PlayButton from "./PlayButton.vue";
-import EditButton from "./EditButton.vue";
-import AuthorDisplay from "./Author.vue";
-import ShareButton from "./ShareButton.vue";
-import FeaturedButton from "./FeaturedButton.vue";
-import DeleteButton from "./DeleteButton.vue";
-import PublishButton from "./PublishButton.vue";
-import {backendUrl, dataNarratorModes} from "../../../../store/contantsDataNarrator";
-import {useDataNarrator} from "../../../../hooks/useDataNarrator";
-import {useStory} from "../../../stories/hooks/useStory";
-import {useLogin} from "../../hooks/useLogin";
-import {incrementStoryViews} from "../../services/incrementStoryViews";
-import {useDashboard} from "../../hooks/useDashboard";
+import { useDataNarrator } from '../../../../hooks/useDataNarrator';
+import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
+import { useStory } from '../../../stories/hooks/useStory';
+import { useDashboard } from '../../hooks/useDashboard';
+import { useLogin } from '../../hooks/useLogin';
+import { incrementStoryViews } from '../../services/incrementStoryViews';
 
-const {userId} = useLogin();
-const {gotoPage} = useDataNarrator();
-const {currentStoryId} = useStory();
-const {storiesDisplayMode} = useDashboard();
-const emit = defineEmits(['deleted', 'published']);
+import AuthorDisplay from './Author.vue';
+import DeleteButton from './DeleteButton.vue';
+import EditButton from './EditButton.vue';
+import FeaturedButton from './FeaturedButton.vue';
+import PlayButton from './PlayButton.vue';
+import PublishButton from './PublishButton.vue';
+import ShareButton from './ShareButton.vue';
+
+const { userId } = useLogin();
+const { gotoPage } = useDataNarrator();
+const { currentStoryId } = useStory();
+const { storiesDisplayMode } = useDashboard();
+const emit = defineEmits([ 'deleted', 'published' ]);
 
 const props = defineProps({
     story: {
@@ -45,70 +46,73 @@ async function playStory() {
     gotoPage(dataNarratorModes.PLAY_STORY);
 
     const baseUrl = `${location.origin}/portal/stories/?id=${props.story.id}`;
-    window.history.replaceState({}, "", baseUrl);
+    window.history.replaceState({}, '', baseUrl);
 }
 </script>
 
 <template>
-    <v-card
-        class="story-card"
-        variant="flat"
-    >
-        <div
-            v-if="story.titleImage"
-            class="story-card-cover"
-            :style="`background-image: url(${getFileUrl(story.titleImage)});`"
-        />
+  <v-card
+    class="story-card"
+    variant="flat"
+  >
+    <div
+      v-if="story.titleImage"
+      class="story-card-cover"
+      :style="`background-image: url(${getFileUrl(story.titleImage)});`"
+    />
 
-        <div class="card-header">
-            <div class="card-header-title">
-                <div class="card-header-title-text">
-                    {{ story.title }}
-                </div>
-                <AuthorDisplay :authorId="story.author"/>
-            </div>
-
-            <div class="card-header-actions">
-                <ShareButton
-                    :story-id="story.id"
-                />
-                <FeaturedButton
-                    :story-id="story.id"
-                    :is-featured="story.featured"
-                    :is-admin="userId === story.owner"
-                />
-                <PublishButton
-                    v-if="storiesDisplayMode === 'my' && userId === story.owner"
-                    :is-draft="story.isDraft"
-                    :story-id="story.id"
-                    @success="() => emit('published')"
-                />
-            </div>
+    <div class="card-header">
+      <div class="card-header-title">
+        <div class="card-header-title-text">
+          {{ story.title }}
         </div>
+        <AuthorDisplay :author-id="story.author" />
+      </div>
 
-        <v-card-text class="card-text">
-            {{ story.description }}
-        </v-card-text>
+      <div class="card-header-actions">
+        <ShareButton
+          :story-id="story.id"
+        />
+        <FeaturedButton
+          :story-id="story.id"
+          :is-featured="story.featured"
+          :is-admin="userId === story.owner"
+        />
+        <PublishButton
+          v-if="storiesDisplayMode === 'my' && userId === story.owner"
+          :is-draft="story.isDraft"
+          :story-id="story.id"
+          @success="() => emit('published')"
+        />
+      </div>
+    </div>
 
-        <v-card-actions class="card-actions">
-            <v-row>
-                <v-col>
-                    <EditButton
-                        v-if="userId === story.owner"
-                        :story-id="story.id"
-                    />
-                    <DeleteButton
-                        v-if="userId === story.owner"
-                        :story-id="story.id"
-                        @deleted="() => emit('deleted')"
-                    />
-                </v-col>
-                <v-col class="play-button">
-                    <PlayButton :story-id="story._id" @click="playStory"/>
-                </v-col>
-            </v-row>
-        </v-card-actions>
-    </v-card>
+    <v-card-text class="card-text">
+      {{ story.description }}
+    </v-card-text>
+
+    <v-card-actions class="card-actions">
+      <v-row>
+        <v-col>
+          <EditButton
+            v-if="userId === story.owner"
+            :story-id="story.id"
+          />
+          <DeleteButton
+            v-if="userId === story.owner"
+            :story-id="story.id"
+            @deleted="() => emit('deleted')"
+          />
+        </v-col>
+        <v-col class="play-button">
+          <PlayButton
+            :story-id="story._id"
+            @click="playStory"
+          />
+        </v-col>
+      </v-row>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <style lang="scss" scoped>

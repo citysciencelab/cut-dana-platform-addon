@@ -1,10 +1,14 @@
-﻿import {nextTick} from "vue";
-import * as constants from "../store/contantsDataNarrator";
-import isMobile from "../../../../src/shared/js/utils/isMobile";
-import {dataNarratorModes, ToolwindowModes} from "../store/contantsDataNarrator";
-import {mapGetters, mapMutations} from "vuex";
-import getters from "../store/gettersDataNarrator";
-import mutations from "../store/mutationsDataNarrator";
+﻿import { nextTick } from 'vue';
+
+import { mapGetters, mapMutations } from 'vuex';
+
+import isMobile from '../../../../src/shared/js/utils/isMobile';
+import * as constants from '../store/contantsDataNarrator';
+import { dataNarratorModes, ToolwindowModes } from '../store/contantsDataNarrator';
+
+
+import getters from '../store/gettersDataNarrator';
+import mutations from '../store/mutationsDataNarrator';
 
 export default {
     mixins: [],
@@ -29,7 +33,7 @@ export default {
     },
 
     methods: {
-        ...mapMutations("Modules/DataNarrator", ["setToolwindowMode"]),
+        ...mapMutations('Modules/DataNarrator', [ 'setToolwindowMode' ]),
 
         setToolIsOpen () {
           this.isOpen = !this.isOpen;
@@ -63,7 +67,7 @@ export default {
         },
 
         async moveTool () {
-            const toolWindows = document.querySelectorAll("#datanarrator-root .toolwindow-container .toolwindow");
+            const toolWindows = document.querySelectorAll('#datanarrator-root .toolwindow-container .toolwindow');
 
             for (const toolWindow of toolWindows) {
                 await nextTick();
@@ -72,7 +76,7 @@ export default {
                     toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset}px`;
                     this.setToolwindowMode(ToolwindowModes.MOBILE);
                 } else {
-                    toolWindow.style.top = `0px`;
+                    toolWindow.style.top = '0px';
 
                     if (this.mode === dataNarratorModes.DASHBOARD) {
                         this.setToolwindowMode(ToolwindowModes.DASHBOARD);
@@ -84,7 +88,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Modules/DataNarrator", Object.keys(getters))
+        ...mapGetters('Modules/DataNarrator', Object.keys(getters))
     },
     watch: {
         isMobile () {

@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, nextTick, onBeforeUnmount } from "vue";
-import { motion, useDragControls } from "motion-v";
+import { motion, useDragControls } from 'motion-v';
+import { ref, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 const sheet = ref(null);
 const bottom = ref(0);
@@ -28,26 +28,30 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div v-if="props.active" class="overlay" @click.self="close">
-        <motion.div
-            ref="sheet"
-            class="sheet"
-            drag="y"
-            :drag-controls="controls"
-            :drag-listener="false"
-            :dragConstraints="{ top: 0, bottom }"
-            :initial="{ y: '33%' }"
-        >
-            <motion.div
-                class="drag-handle-container"
-                @pointerdown="(event) => controls.start(event)"
-            >
-                <div class="drag-handle" />
-            </motion.div>
-            <slot />
-        </motion.div>
-    </div>
-    <slot v-else />
+  <div
+    v-if="props.active"
+    class="overlay"
+    @click.self="close"
+  >
+    <motion.div
+      ref="sheet"
+      class="sheet"
+      drag="y"
+      :drag-controls="controls"
+      :drag-listener="false"
+      :drag-constraints="{ top: 0, bottom }"
+      :initial="{ y: '33%' }"
+    >
+      <motion.div
+        class="drag-handle-container"
+        @pointerdown="(event) => controls.start(event)"
+      >
+        <div class="drag-handle" />
+      </motion.div>
+      <slot />
+    </motion.div>
+  </div>
+  <slot v-else />
 </template>
 
 <style lang="scss" scoped>

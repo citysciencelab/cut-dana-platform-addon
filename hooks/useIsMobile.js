@@ -1,5 +1,6 @@
 ﻿import { ref, onMounted, onUnmounted } from 'vue';
-import isMobile from "../../../../src/shared/js/utils/isMobile";
+
+import isMobile from '../../../../src/shared/js/utils/isMobile';
 
 export const useIsMobile = () => {
     const isMobileRef = ref(isMobile());
