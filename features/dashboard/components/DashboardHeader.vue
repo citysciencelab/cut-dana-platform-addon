@@ -7,20 +7,21 @@ import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import cutcslDepiction from '../../../img/cutcsl_depiction.png';
 import { ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { useDashboard } from '../hooks/useDashboard';
+import { useLogin } from '../hooks/useLogin';
 
 import { useDashboardStore } from '../store/useDashboardStore';
 
 import CreateStoryButton from './Tools/CreateStoryButton.vue';
+import DeleteAccountButton from './Tools/DeleteAccountButton.vue';
 import LanguageSwitchButton from './Tools/LanguageSwitchButton.vue';
 import ListButton from './Tools/ListButton.vue';
-
-
 import LoginButton from './Tools/LoginButton.vue';
 
 const { t } = useTranslation();
 const { storyModeLists } = useDashboard();
 const dashboardStore = useDashboardStore();
 const { toolwindowMode } = useDataNarrator()
+const { loggedIn } = useLogin();
 
 const { mode: storiesDisplayMode } = storeToRefs(dashboardStore)
 const legendAdded = true;
@@ -46,6 +47,7 @@ const getBackgroundStyle = () => ({
       <div class="login-row-mobile">
         <div class="d-flex justify-end align-center mt-2 ga-2">
           <LoginButton />
+          <DeleteAccountButton v-if="loggedIn" />
           <LanguageSwitchButton />
         </div>
       </div>
@@ -56,6 +58,7 @@ const getBackgroundStyle = () => ({
     >
       <div class="d-flex justify-end align-center mt-2 ga-2">
         <LoginButton />
+        <DeleteAccountButton v-if="loggedIn" />
         <LanguageSwitchButton />
       </div>
     </div>
