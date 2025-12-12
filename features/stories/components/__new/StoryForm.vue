@@ -128,7 +128,7 @@ async function publish() {
     };
 
     let storyId = props.storyId;
-    let createdStory;
+    let createdStory = payload;
     if (storyId) {
         const updateResp = await editStory(storyId, payload);
         const bodyText = await updateResp.text();
