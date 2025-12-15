@@ -1,9 +1,10 @@
 <script setup>
 import { mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan, mdiPencilOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { computed, ref, watch, reactive } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
+import { useNavigation } from '../../../steps/hooks/useNavigation';
 import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
 import ConfirmationDialog from '../../../shared/ConfirmationDialog.vue';
 import { uploadCoverImage } from '../../services/addCoverImage';
@@ -26,6 +27,7 @@ const props = defineProps({
 const { t } = useTranslation();
 const { toolwindowMode } = useDataNarrator();
 const { gotoPage } = useDataNarrator();
+const { initialZoom, initialCenter } = useNavigation();
 const backConfirmation = ref(false);
 const storyName = ref('');
 const description = ref('');
@@ -68,6 +70,39 @@ function handleModelSelected({ step, file }) {
     else modelFiles.delete(step);
 }
 
+function getDefaultStep(id) {
+    return {
+        id,
+        title: '',
+        description: '',
+        mapConfig: {
+            centerCoordinates: initialCenter,
+            zoomLevel: initialZoom,
+            backgroundMapId: null,
+        },
+        informationLayerIds: [],
+        mapSources: [],
+        // 3D
+        is3D: false,
+        modelUrl: '',
+        navigation3D: {
+            coordinates: {
+                easting: null,
+                northing: null,
+            },
+            dimensions: {
+                height: 0,
+                adaptToTerrain: true,
+            },
+            transforms: {
+                rotation: 0,
+                scale: 1,
+            }
+        }
+
+    };
+}
+
 function addNewChapter() {
     const newChapter = {
         id: nextChapterId++,
@@ -82,9 +117,11 @@ function addNewChapter() {
     activeStepIndex.value = -1;
 }
 
-function handleAddNewStep() {
-    const chapter = chapters.value[activeChapterIndex.value];
-    activeStepIndex.value = chapter.steps.length - 1;
+function handleAddNewStep({ chapterIdx }) {
+  const chapter = chapters.value[chapterIdx];
+  chapter.steps.push(getDefaultStep(chapter.steps.length + 1));
+  activeChapterIndex.value = chapterIdx;
+  activeStepIndex.value = chapter.steps.length - 1;
 }
 
 function handleDeleteStep({ chapterIdx, stepIdx }) {
@@ -94,7 +131,7 @@ function handleDeleteStep({ chapterIdx, stepIdx }) {
     chapter.steps.splice(stepIdx, 1);
 }
 
-function handleReorderSteps({ chapterIdx, newList }) {
+function handleStepsChange({ chapterIdx, newList }) {
     const chapter = chapters.value?.[chapterIdx];
     if (!chapter) return;
     chapter.steps = [ ...newList ];
@@ -119,6 +156,10 @@ function handleDeleteChapter({ chapterIdx }) {
     if (chapterIdx < 0 || chapterIdx >= chapters.value.length) return;
     chapters.value.splice(chapterIdx, 1);
     chapters.value.forEach((ch, i) => (ch.sequence = i + 1));
+}
+
+function handleChaptersChange(newList) {
+    chapters.value = [ ...newList ];
 }
 
 function prepublish() {
@@ -360,7 +401,10 @@ watch(activeStepIndex, (activeStepIndex) => {
         :active-step-index="activeStepIndex"
         :edit-story-visible="editStoryVisible"
         @add-new-chapter="addNewChapter"
-        @add-new-step="handleAddNewStep"
+        @add-new-step="() => {
+          previewVisible = false;
+          handleAddNewStep({ chapterIdx: activeChapterIndex });
+        }"
         @edit-story-visible="editStoryVisible = true"
         @model-selected="handleModelSelected"
       />
@@ -374,11 +418,16 @@ watch(activeStepIndex, (activeStepIndex) => {
         previewVisible = false;
         addNewChapter();
       }"
+      @add-new-step="({ chapterIdx }) => {
+        previewVisible = false;
+        handleAddNewStep({ chapterIdx });
+      }"
       @delete-step="handleDeleteStep"
-      @reorder-steps="handleReorderSteps"
+      @steps-change="handleStepsChange"
       @edit-step="handleEditStep"
       @edit-chapter="handleEditChapter"
       @delete-chapter="handleDeleteChapter"
+      @chapters-change="handleChaptersChange"
     />
 
     <v-container class="story-form-footer">

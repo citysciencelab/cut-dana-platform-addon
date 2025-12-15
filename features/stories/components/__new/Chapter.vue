@@ -61,7 +61,6 @@ function getDefaultStep(id) {
 }
 
 function addStep() {
-    props.chapter.steps.push(getDefaultStep(props.chapter.steps.length + 1));
     emits('addNewStep');
 }
 </script>
