@@ -166,7 +166,9 @@
         "publish": "Publish",
         "unpublish": "Unpublish"
       },
-      "newChapter": "New Chapter"
+      "newChapter": "New Chapter",
+      "editChapter": "Edit Chapter",
+      "deleteChapter": "Delete Chapter"
     }
   }
 }

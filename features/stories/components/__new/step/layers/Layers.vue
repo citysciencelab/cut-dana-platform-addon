@@ -59,103 +59,103 @@ watch(
 </script>
 
 <template>
-    <v-row
-        class="mb-2"
-        style="margin-top: 0!important;"
+  <v-row
+    class="mb-2"
+    style="margin-top: 0!important;"
+  >
+    <v-col
+      cols="12"
+      class="p-0"
     >
-        <v-col
-        cols="12"
-        class="p-0"
+      <v-list
+        density="comfortable"
+        class="pa-0"
+      >
+        <v-list-item
+          v-for="l in selectedLayers"
+          :key="l.id"
+          class="pa-0"
         >
-        <v-list
-            density="comfortable"
-            class="pa-0"
+          <v-sheet
+            width="100%"
+            rounded
+            class="d-flex align-center px-3 py-2"
+            style="border: 1px solid #e1e1e1"
+          >
+            <v-icon
+              :icon="mdiEye"
+              class="mr-2"
+            />
+            <span class="grow">{{ l.name }}</span>
+            <v-icon
+              :icon="mdiTrashCan"
+              class="cursor-pointer"
+              @click="removeLayer(l.id)"
+            />
+          </v-sheet>
+        </v-list-item>
+
+        <div
+          v-if="selectedLayers.length === 0"
+          class="text-medium-emphasis py-2"
         >
-            <v-list-item
-            v-for="l in selectedLayers"
-            :key="l.id"
-            class="pa-0"
-            >
-            <v-sheet
-                width="100%"
-                rounded
-                class="d-flex align-center px-3 py-2"
-                style="border: 1px solid #e1e1e1"
-            >
-                <v-icon
-                :icon="mdiEye"
-                class="mr-2"
-                />
-                <span class="grow">{{ l.name }}</span>
-                <v-icon
-                :icon="mdiTrashCan"
-                class="cursor-pointer"
-                @click="removeLayer(l.id)"
-                />
-            </v-sheet>
-            </v-list-item>
+          Keine Ebenen ausgewählt.
+        </div>
+      </v-list>
+    </v-col>
+  </v-row>
 
-            <div
-            v-if="selectedLayers.length === 0"
-            class="text-medium-emphasis py-2"
-            >
-            Keine Ebenen ausgewählt.
-            </div>
-        </v-list>
-        </v-col>
-    </v-row>
-
-    <v-row
-        class="mb-2"
-        justify="center"
+  <v-row
+    class="mb-2"
+    justify="center"
+  >
+    <v-btn
+      variant="flat"
+      size="small"
+      class="information-btn"
+      :prepend-icon="mdiMapMarkerPlusOutline"
+      :append-icon="mdiChevronRight"
+      rounded
+      @click="dialogOpen = true"
     >
+      Informationsebene hinzufügen
+    </v-btn>
+  </v-row>
+
+  <v-dialog
+    v-model="dialogOpen"
+    max-width="520"
+  >
+    <v-card>
+      <v-card-title class="d-flex align-center">
+        Informationsebene
+        <v-spacer />
         <v-btn
-        variant="flat"
-        size="small"
-        class="information-btn"
-        :prepend-icon="mdiMapMarkerPlusOutline"
-        :append-icon="mdiChevronRight"
-        rounded
-        @click="dialogOpen = true"
+          icon
+          variant="text"
+          @click="dialogOpen = false"
         >
-        Informationsebene hinzufügen
+          <v-icon :icon="mdiClose" />
         </v-btn>
-    </v-row>
+      </v-card-title>
 
-    <v-dialog
-        v-model="dialogOpen"
-        max-width="520"
-    >
-        <v-card>
-        <v-card-title class="d-flex align-center">
-            Informationsebene
-            <v-spacer />
-            <v-btn
-            icon
-            variant="text"
-            @click="dialogOpen = false"
-            >
-            <v-icon :icon="mdiClose" />
-            </v-btn>
-        </v-card-title>
+      <CategoryBrowser
+        :items="layersTree"
+        :loading="loading"
+        @select:layer="(l) => addLayer(l.id)"
+      />
 
-        <CategoryBrowser
-            :items="layersTree"
-            :loading="loading"
-            @select:layer="(l) => addLayer(l.id)"
-        />
-
-        <v-card-actions>
-            <v-spacer />
-            <v-btn
-            variant="text"
-            @click="dialogOpen = false"
-            >
-            Schließen
-            </v-btn>
-        </v-card-actions>
-        </v-card>
-    </v-dialog>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          variant="text"
+          @click="dialogOpen = false"
+        >
+          Schließen
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped lang="scss">

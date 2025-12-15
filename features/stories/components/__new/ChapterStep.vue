@@ -58,102 +58,102 @@ watch(
 </script>
 
 <template>
-    <div class="chapter-step px-2 pt-1 pb-2">
-        <v-row
-            class="mb-2"
+  <div class="chapter-step px-2 pt-1 pb-2">
+    <v-row
+      class="mb-2"
+    >
+      <v-col
+        cols="1"
+        class="p-0"
+      >
+        <v-btn
+          variant="text"
+          class="pill-button"
         >
-        <v-col
-            cols="1"
-            class="p-0"
-        >
-            <v-btn
-            variant="text"
-            class="pill-button"
-            >
-            {{ step.id }}
-            </v-btn>
-        </v-col>
+          {{ step.id }}
+        </v-btn>
+      </v-col>
 
-        <v-col
-            cols="11"
-            class="p-0"
-        >
-            <StepTitle
-            ref="stepTitleRef"
-            v-model:value="step.title"
-            />
-        </v-col>
-        </v-row>
-
-        <v-row class="mb-2">
-        <v-col
-            cols="12"
-            class="p-0"
-        >
-            <StepDescription v-model:value="step.description" />
-        </v-col>
-        </v-row>
-
-        <v-row>
-        <v-col
-            cols="12"
-            class="p-0"
-        >
-            {{ t("additional:modules.dataNarrator.label.mapDisplay") }}
-        </v-col>
-        </v-row>
-
-        <TwoDNavigation v-model="step.mapConfig" />
-
-        <v-row class="mb-2">
-        <v-col
-            cols="12"
-            class="p-0"
-        >
-            <BackgroundMap
-            v-model="step.mapConfig.backgroundMapId"
-            @update:model-value="setBaseLayer"
-            />
-        </v-col>
-        </v-row>
-
-        <v-row class="mb-1">
-        <v-col
-            cols="12"
-            class="p-0"
-        >
-            Informationsebenen
-        </v-col>
-        </v-row>
-
-        <Layers v-model="step.informationLayerIds" />
-
-        <AddWMS
-        @selected="onWmsSelected"
-        @error="(msg) => console.error(msg)"
+      <v-col
+        cols="11"
+        class="p-0"
+      >
+        <StepTitle
+          ref="stepTitleRef"
+          v-model:value="step.title"
         />
+      </v-col>
+    </v-row>
 
-        <div>
-        <div class="mb-2">
-            3D Navigation
-        </div>
+    <v-row class="mb-2">
+      <v-col
+        cols="12"
+        class="p-0"
+      >
+        <StepDescription v-model:value="step.description" />
+      </v-col>
+    </v-row>
 
-        <div class="mb-2">
-            <v-switch
-            v-model="step.is3D"
-            hide-details
-            inset
-            label="Enable 3D for this step"
-            />
-        </div>
-        </div>
+    <v-row>
+      <v-col
+        cols="12"
+        class="p-0"
+      >
+        {{ t("additional:modules.dataNarrator.label.mapDisplay") }}
+      </v-col>
+    </v-row>
 
-        <ThreeDNavigation
-        v-if="step.is3D"
-        v-model="step.navigation3D"
-        @model-selected="(file) => emit('modelSelected', { step, file })"
+    <TwoDNavigation v-model="step.mapConfig" />
+
+    <v-row class="mb-2">
+      <v-col
+        cols="12"
+        class="p-0"
+      >
+        <BackgroundMap
+          v-model="step.mapConfig.backgroundMapId"
+          @update:model-value="setBaseLayer"
         />
+      </v-col>
+    </v-row>
+
+    <v-row class="mb-1">
+      <v-col
+        cols="12"
+        class="p-0"
+      >
+        Informationsebenen
+      </v-col>
+    </v-row>
+
+    <Layers v-model="step.informationLayerIds" />
+
+    <AddWMS
+      @selected="onWmsSelected"
+      @error="(msg) => console.error(msg)"
+    />
+
+    <div>
+      <div class="mb-2">
+        3D Navigation
+      </div>
+
+      <div class="mb-2">
+        <v-switch
+          v-model="step.is3D"
+          hide-details
+          inset
+          label="Enable 3D for this step"
+        />
+      </div>
     </div>
+
+    <ThreeDNavigation
+      v-if="step.is3D"
+      v-model="step.navigation3D"
+      @model-selected="(file) => emit('modelSelected', { step, file })"
+    />
+  </div>
 </template>
 
 <style lang="scss">

@@ -1,10 +1,11 @@
 <script setup>
 import { mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus } from '@mdi/js';
 
+import { useTranslation } from 'i18next-vue';
+
 import { getStoryColor } from '../../../../utils/getStoryColor';
 import { numberToLetter } from '../../../../utils/numberToLetter';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
-import { useTranslation } from 'i18next-vue';
 
 import ChapterStep from './ChapterStep.vue';
 
@@ -61,7 +62,6 @@ function getDefaultStep(id) {
 }
 
 function addStep() {
-    props.chapter.steps.push(getDefaultStep(props.chapter.steps.length + 1));
     emits('addNewStep');
 }
 </script>
@@ -93,8 +93,8 @@ function addStep() {
           <template #activator="{ props: actv }">
             <div
               class="chapter-step-add"
-              @click="emits('addNewChapter')"
               v-bind="actv"
+              @click="emits('addNewChapter')"
             >
               <v-icon>{{ mdiPlus }}</v-icon>
             </div>

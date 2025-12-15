@@ -1,4 +1,4 @@
-﻿{
+{
   "modules": {
     "dataNarrator": {
       "title": "Data Narrator",
@@ -166,7 +166,9 @@
         "publish": "Veröffentlichen",
         "unpublish": "Veröffentlichung aufheben"
       },
-      "newChapter": "Neues Kapitel"
+      "newChapter": "Neues Kapitel",
+      "editChapter": "Kapitel bearbeiten",
+      "deleteChapter": "Kapitel löschen"
     }
   }
 }
