@@ -3,12 +3,14 @@ import { mdiArrowLeft, mdiDotsVertical } from '@mdi/js';
 
 import { useDataNarrator } from '../../../../../hooks/useDataNarrator';
 import { dataNarratorModes, ToolwindowModes } from '../../../../../store/contantsDataNarrator';
+import { useTranslation } from 'i18next-vue';
 
 const { gotoPage } = useDataNarrator();
 const { toolwindowMode } = useDataNarrator();
 const props = defineProps({
    title: String
 });
+const { t } = useTranslation();
 
 function backToDashboard() {
     gotoPage(dataNarratorModes.DASHBOARD);
@@ -27,12 +29,18 @@ function backToDashboard() {
       style="border-radius: 100px;padding: 0;"
     >
       <template #prepend>
-        <v-btn
-          :icon="mdiArrowLeft"
-          size="compact"
-          class="mr-2"
-          @click="backToDashboard"
-        />
+        <v-tooltip location="top">
+          <template #activator="{ props: actv }">
+            <v-btn
+              :icon="mdiArrowLeft"
+              size="compact"
+              class="mr-2"
+              @click="backToDashboard"
+              v-bind="actv"
+            />
+          </template>
+          <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
+        </v-tooltip>
 
         <div class="bold">
           {{ props.title }}

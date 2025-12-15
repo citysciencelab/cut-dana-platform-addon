@@ -245,12 +245,18 @@ watch(activeStepIndex, (activeStepIndex) => {
         style="border-radius: 100px;padding: 0;"
       >
         <template #prepend>
-          <v-btn
-            :icon="mdiArrowLeft"
-            size="compact"
-            class="mr-2"
-            @click="backConfirmation = true"
-          />
+          <v-tooltip location="top">
+            <template #activator="{ props: actv}">
+                <v-btn
+                  v-bind="actv"
+                  :icon="mdiArrowLeft"
+                  size="compact"
+                  class="mr-2"
+                  @click="backConfirmation = true"
+                />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
+          </v-tooltip>
 
           <v-text-field
             id="title"
@@ -280,14 +286,20 @@ watch(activeStepIndex, (activeStepIndex) => {
           location="bottom end"
           offset="4"
         >
-          <template #activator="{ props: actv }">
-            <v-btn
-              v-bind="actv"
-              variant="text"
-              :icon="mdiDotsVertical"
-              size="compact"
-            />
-          </template>
+        <template #activator="{ props: actv }">
+            <v-tooltip location="top">
+                <template #activator="{ props: tooltipProps }">
+                    <v-btn
+                        v-bind="{...actv, ...tooltipProps}"
+                        variant="text"
+                        :icon="mdiDotsVertical"
+                        size="compact"
+                    />
+                </template>
+                <span>{{ t('additional:modules.dataNarrator.label.openStoryMenu') }}</span>
+
+            </v-tooltip>
+        </template>
           <v-list density="compact">
             <v-list-item @click.stop="editStoryVisible = false">
               <template #prepend>
@@ -310,12 +322,18 @@ watch(activeStepIndex, (activeStepIndex) => {
         v-if="imagePreview"
         class="remove-image-btn"
       >
-        <v-btn
-          :icon="mdiTrashCan"
-          variant="flat"
-          density="comfortable"
-          @click="selectedImage = null"
-        />
+      <v-tooltip location="top" v-if="imagePreview">
+        <template #activator="{ props: actv}">
+              <v-btn
+                v-bind="actv"
+                :icon="mdiTrashCan"
+                variant="flat"
+                density="comfortable"
+                @click="selectedImage = null"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.removeLogoImage') }}</span>
+        </v-tooltip>
       </div>
     </div>
 
