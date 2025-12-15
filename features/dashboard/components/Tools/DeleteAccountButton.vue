@@ -48,8 +48,7 @@ const deleteAccount = async () => {
 <template>
   <div>
     <v-btn
-      rounded
-      size="small"
+      v-bind="$attrs"
       elevation="0"
       @click="openDeleteDialog()"
     >
