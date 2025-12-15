@@ -6,11 +6,11 @@ import {
   mdiDeleteForeverOutline,
   mdiPencilOutline
 } from '@mdi/js';
+import { useTranslation } from 'i18next-vue';
 import Draggable from 'vuedraggable';
 
 import { getStoryColor } from '../../../../utils/getStoryColor';
 import { numberToLetter } from '../../../../utils/numberToLetter';
-import { useTranslation } from 'i18next-vue';
 
 const { t } = useTranslation();
 
