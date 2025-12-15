@@ -4,6 +4,9 @@ import Draggable from 'vuedraggable';
 
 import { getStoryColor } from '../../../../utils/getStoryColor';
 import { numberToLetter } from '../../../../utils/numberToLetter';
+import { useTranslation } from 'i18next-vue';
+
+const { t } = useTranslation();
 
 const emits = defineEmits([
     'addNewChapter',
@@ -59,12 +62,17 @@ const onDeleteChapterClick = (chapterIdx) => {
         offset="4"
       >
         <template #activator="{ props: actv }">
-          <v-btn
-            v-bind="actv"
-            variant="text"
-            :icon="mdiDotsVertical"
-            size="compact"
-          />
+          <v-tooltip location="top">
+            <template #activator="{ props: tooltipProps}">
+              <v-btn
+                v-bind="{...actv, ...tooltipProps}"
+                variant="text"
+                :icon="mdiDotsVertical"
+                size="compact"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.openStoryMenu') }}</span>
+          </v-tooltip>
         </template>
         <v-list density="compact">
           <v-list-item @click.stop="emits('editStoryVisible')">
@@ -97,12 +105,17 @@ const onDeleteChapterClick = (chapterIdx) => {
           offset="4"
         >
           <template #activator="{ props: actv }">
-            <v-btn
-              v-bind="actv"
-              variant="text"
-              :icon="mdiDotsVertical"
-              size="compact"
-            />
+            <v-tooltip location="top">
+              <template #activator="{ props: tooltipProps}">
+                <v-btn
+                  v-bind="{...actv, ...tooltipProps}"
+                  variant="text"
+                  :icon="mdiDotsVertical"
+                  size="compact"
+                />
+              </template>
+              <span>{{ t('additional:modules.dataNarrator.label.openChapterMenu') }}</span>
+            </v-tooltip>
           </template>
           <v-list density="compact">
             <v-list-item @click.stop="onEditChapterClick(idx)">
@@ -145,18 +158,30 @@ const onDeleteChapterClick = (chapterIdx) => {
               <span>{{ step.title }}</span>
 
               <div class="step-content-action ml-auto d-flex flex-row align-center ga-1">
-                <v-btn
-                  variant="text"
-                  :icon="mdiDeleteForeverOutline"
-                  size="compact"
-                  @click.stop="onDeleteClick(idx, stepIdx)"
-                />
-                <v-btn
-                  variant="text"
-                  :icon="mdiDotsVertical"
-                  size="compact"
-                  @click.stop="onEditStepClick(idx, stepIdx)"
-                />
+                <v-tooltip location="top">
+                  <template #activator="{ props:actv }">
+                    <v-btn
+                      v-bind="actv"
+                      variant="text"
+                      :icon="mdiDeleteForeverOutline"
+                      size="compact"
+                      @click.stop="onDeleteClick(idx, stepIdx)"
+                    />
+                  </template>    
+                  <span>{{ t('additional:modules.dataNarrator.creator.deleteStep') }}</span> 
+                </v-tooltip>
+                <v-tooltip location="top">
+                  <template #activator="{ props: actv}">
+                    <v-btn
+                      variant="text"
+                      :icon="mdiDotsVertical"
+                      size="compact"
+                      @click.stop="onEditStepClick(idx, stepIdx)"
+                      v-bind="actv"
+                    />
+                  </template>
+                  <span>{{ t('additional:modules.dataNarrator.creator.editStep') }}</span>
+                </v-tooltip>
               </div>
             </div>
           </div>

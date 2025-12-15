@@ -67,7 +67,11 @@
         "decrease": "Verringern",
         "addCover": "Cover Bild hinzufügen",
         "removeCover": "Cover Bild entfernen",
-        "imageUpload": "Bild für das Story-Logo hochladen"
+        "imageUpload": "Bild für das Story-Logo hochladen",
+        "backToDashboard": "Zurück zum Dashboard",
+        "openStoryMenu": "Story-Menü öffnen",
+        "removeLogoImage": "Bild für das Story-Logo entfernen",
+        "openChapterMenu": "Kapitel-Menü öffnen"
       },
       "storyList": {
         "all": "Alle Stories",

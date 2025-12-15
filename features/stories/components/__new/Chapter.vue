@@ -4,6 +4,7 @@ import { mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus } fro
 import { getStoryColor } from '../../../../utils/getStoryColor';
 import { numberToLetter } from '../../../../utils/numberToLetter';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
+import { useTranslation } from 'i18next-vue';
 
 import ChapterStep from './ChapterStep.vue';
 
@@ -24,6 +25,7 @@ const props = defineProps({
 const emits = defineEmits([ 'addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected' ]);
 
 const { initialZoom, initialCenter } = useNavigation();
+const { t } = useTranslation();
 
 function getDefaultStep(id) {
     return {
@@ -87,12 +89,18 @@ function addStep() {
             required
           >
         </div>
-        <div
-          class="chapter-step-add"
-          @click="emits('addNewChapter')"
-        >
-          <v-icon>{{ mdiPlus }}</v-icon>
-        </div>
+        <v-tooltip location="top">
+          <template #activator="{ props: actv }">
+            <div
+              class="chapter-step-add"
+              @click="emits('addNewChapter')"
+              v-bind="actv"
+            >
+              <v-icon>{{ mdiPlus }}</v-icon>
+            </div>
+          </template>
+          <span>{{ t('additional:modules.dataNarrator.label.addChapter') }}</span>
+        </v-tooltip>
       </div>
 
       <v-menu
@@ -101,12 +109,17 @@ function addStep() {
         offset="4"
       >
         <template #activator="{ props: actv }">
-          <v-btn
-            v-bind="actv"
-            variant="text"
-            :icon="mdiDotsVertical"
-            size="compact"
-          />
+          <v-tooltip location="top">
+            <template #activator="{ props: tooltipProps}">
+              <v-btn
+                v-bind="{...actv, ...tooltipProps}"
+                variant="text"
+                :icon="mdiDotsVertical"
+                size="compact"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.openStoryMenu') }}</span>
+          </v-tooltip>
         </template>
         <v-list density="compact">
           <v-list-item @click.stop="emits('editStoryVisible')">
