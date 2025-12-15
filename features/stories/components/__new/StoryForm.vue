@@ -159,7 +159,11 @@ function handleDeleteChapter({ chapterIdx }) {
 }
 
 function handleChaptersChange(newList) {
-    chapters.value = [ ...newList ];
+    const newChapters = newList.map((ch, i) => ({
+        ...ch,
+        sequence: i + 1,
+    }));
+    chapters.value = newChapters;
 }
 
 function prepublish() {
