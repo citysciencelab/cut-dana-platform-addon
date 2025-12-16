@@ -2,20 +2,21 @@
 import { useTranslation } from 'i18next-vue';
 import { computed } from 'vue';
 import { VueEditor } from 'vue3-editor';
+import { fixLinksInHTMLString } from '../../../../../utils/stringUtils';
 
 import * as constants from '../../../../../store/contantsDataNarrator';
 
 const props = defineProps({
-    value: String,
+  value: String,
 });
 const emit = defineEmits([ 'update:value' ]);
 const inputValue = computed({
-    get() {
-        return props.value
-    },
-    set(v) {
-        emit('update:value', v)
-    }
+  get() {
+    return props.value
+  },
+  set(v) {
+    emit('update:value', fixLinksInHTMLString(v))
+  }
 });
 
 const { t } = useTranslation();
@@ -33,26 +34,26 @@ const { t } = useTranslation();
 
 <style lang="scss">
 .editor-wrapper {
-    .quillWrapper {
-        display: flex;
-        flex-direction: column-reverse;
+  .quillWrapper {
+    display: flex;
+    flex-direction: column-reverse;
 
-        .ql-container {
-            border: 1px solid #ccc !important;
-            border-top-left-radius: 4px;
-            border-top-right-radius: 4px;
-            border-bottom: 0 !important;
-        }
-
-        .ql-container .ql-editor {
-            min-height: 80px;
-        }
-
-        .ql-toolbar {
-            border-top: 0;
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
+    .ql-container {
+      border: 1px solid #ccc !important;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      border-bottom: 0 !important;
     }
+
+    .ql-container .ql-editor {
+      min-height: 80px;
+    }
+
+    .ql-toolbar {
+      border-top: 0;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+  }
 }
 </style>
