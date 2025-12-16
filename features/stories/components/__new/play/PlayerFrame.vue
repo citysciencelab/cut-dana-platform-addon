@@ -4,16 +4,21 @@ import { mdiArrowLeft, mdiDotsVertical } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 
 import { useDataNarrator } from '../../../../../hooks/useDataNarrator';
+import { useNavigation } from '../../../../steps/hooks/useNavigation';
 import { dataNarratorModes, ToolwindowModes } from '../../../../../store/contantsDataNarrator';
 
 const { gotoPage } = useDataNarrator();
 const { toolwindowMode } = useDataNarrator();
+const {
+  removeAllVisibleLayers,
+} = useNavigation();
 const props = defineProps({
   title: String
 });
 const { t } = useTranslation();
 
 function backToDashboard() {
+  removeAllVisibleLayers();
   gotoPage(dataNarratorModes.DASHBOARD);
 
   const baseUrl = `${location.origin}/portal/stories`;

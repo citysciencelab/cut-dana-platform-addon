@@ -13,8 +13,6 @@ import StepTitle from './step/StepTitle.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 import TwoDNavigation from './step/TwoDNavigation.vue';
 
-
-
 const { step } = defineProps({
   step: {
     type: Object,
@@ -54,6 +52,14 @@ watch(
     await nextTick();
     stepTitleRef.value?.focus?.();
   },
+);
+
+watch(
+  () => step?.mapConfig?.backgroundMapId,
+  (newId) => {
+    setBaseLayer(newId);
+  },
+  { immediate: true }
 );
 </script>
 

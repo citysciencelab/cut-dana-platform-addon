@@ -70,11 +70,11 @@ const onReorderChapters = (newList) => {
         location="bottom end"
         offset="4"
       >
-        <template #activator="{ props: actv }">
+        <template #activator="{ props }">
           <v-tooltip location="top">
             <template #activator="{ props: tooltipProps}">
               <v-btn
-                v-bind="{...actv, ...tooltipProps}"
+                v-bind="{...props, ...tooltipProps}"
                 variant="text"
                 :icon="mdiDotsVertical"
                 size="compact"
@@ -128,7 +128,7 @@ const onReorderChapters = (newList) => {
                 <v-tooltip location="top">
                   <template #activator="{ props: tooltipProps}">
                     <v-btn
-                      v-bind="{...actv, ...tooltipProps}"
+                      v-bind="{...tooltipProps}"
                       variant="text"
                       :icon="mdiDeleteForeverOutline"
                       size="compact"
@@ -140,7 +140,7 @@ const onReorderChapters = (newList) => {
                 <v-tooltip location="top">
                   <template #activator="{ props: tooltipProps}">
                     <v-btn
-                      v-bind="{...actv, ...tooltipProps}"
+                      v-bind="{...tooltipProps}"
                       variant="text"
                       :icon="mdiPencilOutline"
                       size="compact"
@@ -179,7 +179,7 @@ const onReorderChapters = (newList) => {
                     <v-tooltip location="top">
                       <template #activator="{ props: tooltipProps}">
                         <v-btn
-                          v-bind="{...actv, ...tooltipProps}"
+                          v-bind="{...tooltipProps}"
                           variant="text"
                           :icon="mdiDeleteForeverOutline"
                           size="compact"
@@ -191,7 +191,7 @@ const onReorderChapters = (newList) => {
                     <v-tooltip location="top">
                       <template #activator="{ props: tooltipProps}">
                         <v-btn
-                          v-bind="{...actv, ...tooltipProps}"
+                          v-bind="{...tooltipProps}"
                           variant="text"
                           :icon="mdiPencilOutline"
                           size="compact"

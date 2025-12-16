@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
-export function useNavigation () {
+export function useNavigation() {
   const store = useStore();
 
   const zoom = computed(() => store.state.Maps.zoom);
@@ -10,10 +10,10 @@ export function useNavigation () {
   const initialZoom = ref(store.state.Maps.zoom);
   const initialCenter = ref(store.state.Maps.center);
 
-  const canZoomIn  = computed(() => !store.getters['Maps/isMaxZoomDisplayed']);
+  const canZoomIn = computed(() => !store.getters['Maps/isMaxZoomDisplayed']);
   const canZoomOut = computed(() => !store.getters['Maps/isMinZoomDisplayed']);
 
-  const zoomIn  = () => store.dispatch('Maps/increaseZoom');
+  const zoomIn = () => store.dispatch('Maps/increaseZoom');
   const zoomOut = () => store.dispatch('Maps/decreaseZoom');
 
   const setView = ({ center, zoom }) => {
@@ -38,18 +38,52 @@ export function useNavigation () {
     store.dispatch('Modules/BaselayerSwitcher/updateLayerVisibilityAndZIndex', layerId);
   };
 
+  const setInformationLayers = (layerIds = [], removableBlackList = ['19969']) => {
+    const prev = store.getters.visibleLayerConfigs.map(config => config.id) || [];
+
+    const added = layerIds.filter(id => !prev.includes(id));
+    const removed = prev.filter(id => !layerIds.includes(id));
+
+    for (const id of added) {
+      store.dispatch('addOrReplaceLayer', {
+        layerId: id,
+        isBaseLayer: false
+      });
+    }
+
+    for (const id of removed) {
+      if (removableBlackList.includes(id)) {
+        continue;
+      }
+      store.dispatch('Modules/LayerTree/removeLayer', { id });
+    }
+  }
+
+  const removeAllVisibleLayers = (restoreDefaultBaseLayer = true) => {
+    for (const layerConfig of store.getters.visibleLayerConfigs) {
+      const id = layerConfig.id;
+      store.dispatch('Modules/LayerTree/removeLayer', { id });
+    }
+
+    if (restoreDefaultBaseLayer) {
+      setBaseLayer('19969');
+    }
+  }
+
   return {
-    initialZoom,
-    initialCenter,
-    zoom,
-    center,
-    setView,
-    setAnimatedView,
-    zoomIn,
-    zoomOut,
     canZoomIn,
     canZoomOut,
+    center,
+    removeAllVisibleLayers,
     defaultBaseLayerId: '19969',
-    setBaseLayer
+    initialCenter,
+    initialZoom,
+    setAnimatedView,
+    setBaseLayer,
+    setInformationLayers,
+    setView,
+    zoom,
+    zoomIn,
+    zoomOut,
   }
 }

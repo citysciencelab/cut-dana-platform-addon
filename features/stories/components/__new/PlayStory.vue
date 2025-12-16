@@ -14,7 +14,14 @@ import RichTextViewer from './step/RichTextViewer.vue';
 
 const { gotoPage } = useDataNarrator()
 const { currentStoryId } = useStory();
-const { setAnimatedView, initialZoom, initialCenter, setBaseLayer, defaultBaseLayerId } = useNavigation();
+const {
+  defaultBaseLayerId,
+  initialZoom,
+  initialCenter,
+  setAnimatedView,
+  setBaseLayer,
+  setInformationLayers
+} = useNavigation();
 const { applyForStep, clear: clearOverlays } = useStepOverlays();
 
 const story = ref(null);
@@ -25,125 +32,126 @@ const chapterIndex = ref(0);
 const stepIndex = ref(0);
 
 const totalSteps = computed(() => {
-  if (!story.value) return 0;
-  return story.value.chapters.reduce(
-    (sum, chap) => sum + chap.steps.length,
-    0
-  );
+    if (!story.value) return 0;
+    return story.value.chapters.reduce(
+        (sum, chap) => sum + chap.steps.length,
+        0
+    );
 });
 
 const currentGlobalStep = computed(() => {
-  if (stage.value === 'overview' || !story.value) return 0;
+    if (stage.value === 'overview' || !story.value) return 0;
 
-  const prevSteps = story.value.chapters
-    .slice(0, chapterIndex.value)
-    .reduce((sum, chap) => sum + chap.steps.length, 0);
+    const prevSteps = story.value.chapters
+        .slice(0, chapterIndex.value)
+        .reduce((sum, chap) => sum + chap.steps.length, 0);
 
-  return prevSteps + stepIndex.value + 1;
+    return prevSteps + stepIndex.value + 1;
 });
 
 async function loadStory(id) {
-  if (!id) return;
-  isLoading.value = true;
-  try {
-    const res = await fetch(`${backendUrl}/stories/new/${id}`);
-    story.value = await res.json();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    isLoading.value = false;
-  }
+    if (!id) return;
+    isLoading.value = true;
+    try {
+        const res = await fetch(`${backendUrl}/stories/new/${id}`);
+        story.value = await res.json();
+    } catch (error) {
+        console.error(error);
+    } finally {
+        isLoading.value = false;
+    }
 }
 
 function resetBaseLayer() {
-  setBaseLayer(defaultBaseLayerId);
+    setBaseLayer(defaultBaseLayerId);
 }
 
 watch(stage, (currentStage) => {
-  if (currentStage === 'overview') {
-    clearOverlays();
-    resetBaseLayer();
-  }
+    if (currentStage === 'overview') {
+        clearOverlays();
+        resetBaseLayer();
+    }
 });
 
 watch(currentStoryId, (id) => {
-  loadStory(id);
-  stage.value = 'overview';
-  chapterIndex.value = 0;
-  stepIndex.value = 0;
+    loadStory(id);
+    stage.value = 'overview';
+    chapterIndex.value = 0;
+    stepIndex.value = 0;
 }, { immediate: true });
 
 watch(
-  () => [ chapterIndex.value, stepIndex.value, stage.value ],
-  () => {
-    if (stage.value !== 'play' || !story.value) return;
+    () => [ chapterIndex.value, stepIndex.value, stage.value ],
+    () => {
+        if (stage.value !== 'play' || !story.value) return;
 
-    const step = story.value.chapters[chapterIndex.value].steps[stepIndex.value];
-    if (!step) return;
+        const step = story.value.chapters[chapterIndex.value].steps[stepIndex.value];
+        if (!step) return;
 
-    setAnimatedView({
-      center: step.centerCoordinate,
-      zoom: step.zoomLevel
-    });
+        setAnimatedView({
+            center: step.centerCoordinate,
+            zoom: step.zoomLevel
+        });
 
-    const bgId = step.backgroundMapId ?? defaultBaseLayerId;
-    setBaseLayer(bgId);
+        const bgId = step.backgroundMapId || defaultBaseLayerId;
+        setBaseLayer(bgId);
+        setInformationLayers(step.informationLayerIds ?? [], [bgId]);
 
-    applyForStep(step);
-  },
-  { immediate: true }
+        applyForStep(step);
+    },
+    { immediate: true }
 );
 
 function startPlay() {
-  stage.value = 'play';
-  chapterIndex.value = 0;
-  stepIndex.value = 0;
+    stage.value = 'play';
+    chapterIndex.value = 0;
+    stepIndex.value = 0;
 }
 
 function next() {
-  if (!story.value) return;
+    if (!story.value) return;
 
-  const steps = story.value.chapters[chapterIndex.value].steps;
-  if (stepIndex.value < steps.length - 1) {
-    stepIndex.value++;
-  } else if (chapterIndex.value < story.value.chapters.length - 1) {
-    chapterIndex.value++;
-    stepIndex.value = 0;
-  } else {
-    gotoPage(dataNarratorModes.DASHBOARD);
-  }
+    const steps = story.value.chapters[chapterIndex.value].steps;
+    if (stepIndex.value < steps.length - 1) {
+        stepIndex.value++;
+    } else if (chapterIndex.value < story.value.chapters.length - 1) {
+        chapterIndex.value++;
+        stepIndex.value = 0;
+    } else {
+        gotoPage(dataNarratorModes.DASHBOARD);
+    }
 }
 
 function back() {
-  if (!story.value) return;
+    if (!story.value) return;
 
-  if (stage.value === 'overview') return;
-  if (stepIndex.value > 0) {
-    stepIndex.value--;
-  } else if (chapterIndex.value > 0) {
-    chapterIndex.value--;
-    stepIndex.value = story.value.chapters[chapterIndex.value].steps.length - 1;
-  } else {
-    stage.value = 'overview';
-    setAnimatedView({
-      center: initialCenter.value,
-      zoom: initialZoom.value,
-    });
-  }
+    if (stage.value === 'overview') return;
+    if (stepIndex.value > 0) {
+        stepIndex.value--;
+    } else if (chapterIndex.value > 0) {
+        chapterIndex.value--;
+        stepIndex.value = story.value.chapters[chapterIndex.value].steps.length - 1;
+    } else {
+        stage.value = 'overview';
+        setAnimatedView({
+            center: initialCenter.value,
+            zoom: initialZoom.value,
+        });
+    }
 }
 
 function startFromChapter(idx) {
-  if (!story.value) return;
-  const chapter = story.value.chapters?.[idx];
-  if (!chapter || !chapter.steps?.length) return;
-  chapterIndex.value = idx;
-  stepIndex.value = 0;
-  stage.value = 'play';
+    if (!story.value) return;
+    const chapter = story.value.chapters?.[idx];
+    if (!chapter || !chapter.steps?.length) return;
+    chapterIndex.value = idx;
+    stepIndex.value = 0;
+    stage.value = 'play';
 }
 
 onBeforeUnmount(() => {
-  clearOverlays();
-  resetBaseLayer();
+    clearOverlays();
+    resetBaseLayer();
 });
 </script>
 

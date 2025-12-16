@@ -12,7 +12,6 @@ import { createStory } from '../../services/createStory';
 import { editStory } from '../../services/editStory';
 import { uploadStepModel } from '../../services/uploadStepModel';
 import ConfirmSavePopup from '../inputs/ConfirmSavePopup.vue';
-
 import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
 
@@ -27,7 +26,13 @@ const props = defineProps({
 const { t } = useTranslation();
 const { toolwindowMode } = useDataNarrator();
 const { gotoPage } = useDataNarrator();
-const { initialZoom, initialCenter } = useNavigation();
+
+const {
+  initialCenter,
+  initialZoom,
+  removeAllVisibleLayers
+} = useNavigation();
+
 const backConfirmation = ref(false);
 const storyName = ref('');
 const description = ref('');
@@ -63,6 +68,13 @@ const canPublish = computed(() => {
         chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
 
   return allChaptersHaveSteps && storyName.value.trim().length > 0;
+});
+
+const activeStep = computed(() => {
+    const chapter = chapters.value?.[activeChapterIndex.value];
+    if (!chapter) return null;
+    const step = chapter.steps?.[activeStepIndex.value];
+    return step || null;
 });
 
 function handleModelSelected({ step, file }) {
@@ -190,20 +202,21 @@ async function publish() {
 
   let storyId = props.storyId;
   let createdStory = payload;
+
   if (storyId) {
-    const updateResp = await editStory(storyId, payload);
-    const bodyText = await updateResp.text();
-    if (!updateResp.ok) {
-      throw new Error(`Failed to edit story: ${updateResp.status} ${bodyText}`);
-    }
+      const updateResp = await editStory(storyId, payload);
+      const bodyText = await updateResp.text();
+      if (!updateResp.ok) {
+          throw new Error(`Failed to edit story: ${updateResp.status} ${bodyText}`);
+      }
   } else {
-    const createResp = await createStory(payload);
-    const bodyText = await createResp.text();
-    if (!createResp.ok) {
-      throw new Error(`Failed to create story: ${createResp.status} ${bodyText}`);
-    }
-    createdStory = JSON.parse(bodyText);
-    storyId = createdStory.id;
+      const createResp = await createStory(payload);
+      const bodyText = await createResp.text();
+      if (!createResp.ok) {
+          throw new Error(`Failed to create story: ${createResp.status} ${bodyText}`);
+      }
+      createdStory = JSON.parse(bodyText);
+      storyId = createdStory.id;
   }
 
   const uploads = [];
@@ -256,6 +269,12 @@ watch(activeStepIndex, (activeStepIndex) => {
     editStoryVisible.value = false;
   }
 });
+
+// When the step is change we remove all visible layers and reset to default base layer
+watch([activeStep, previewVisible], () => {
+  removeAllVisibleLayers();
+});
+
 </script>
 
 <template>
@@ -331,11 +350,11 @@ watch(activeStepIndex, (activeStepIndex) => {
           location="bottom end"
           offset="4"
         >
-          <template #activator="{ props: actv }">
+          <template #activator="{ props: menuProps }">
             <v-tooltip location="top">
               <template #activator="{ props: tooltipProps }">
                 <v-btn
-                  v-bind="{...actv, ...tooltipProps}"
+                  v-bind="{...menuProps, ...tooltipProps}"
                   variant="text"
                   :icon="mdiDotsVertical"
                   size="compact"
@@ -439,6 +458,7 @@ watch(activeStepIndex, (activeStepIndex) => {
     <v-container class="story-form-footer">
       <v-row justify="center">
         <v-btn
+          v-if="!previewVisible"
           type="button"
           class="mr-2"
           variant="outlined"
@@ -459,7 +479,6 @@ watch(activeStepIndex, (activeStepIndex) => {
         </v-btn>
       </v-row>
     </v-container>
-
     <!--        <Preview-->
     <!--            :chapters="chapters"-->
     <!--            :hasImage="!!selectedImage || !!imagePreview"-->
