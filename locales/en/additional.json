@@ -168,7 +168,16 @@
       },
       "newChapter": "New Chapter",
       "editChapter": "Edit Chapter",
-      "deleteChapter": "Delete Chapter"
+      "deleteChapter": "Delete Chapter",
+      "deleteAccount": {
+        "title": "Delete Account",
+        "text": "Are you sure you want to delete your account? This action cannot be undone. Deleting your account will permanently remove all your data, including your stories, settings, and personal information. Please note that this action is irreversible.",
+        "confirmPrompt": "To confirm, please enter your username: {{username}}",
+        "usernamePlaceholder": "Enter your username",
+        "confirm": "Delete Account",
+        "cancel": "Cancel",
+        "error": "An error occurred while deleting the account."
+      }
     }
   }
 }

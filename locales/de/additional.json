@@ -168,7 +168,16 @@
       },
       "newChapter": "Neues Kapitel",
       "editChapter": "Kapitel bearbeiten",
-      "deleteChapter": "Kapitel löschen"
+      "deleteChapter": "Kapitel löschen",
+      "deleteAccount": {
+        "title": "Konto löschen",
+        "text": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Durch das Löschen Ihres Kontos werden alle Ihre Daten dauerhaft entfernt, einschließlich Ihrer Stories, Einstellungen und persönlichen Informationen. Bitte beachten Sie, dass diese Aktion irreversibel ist.",
+        "confirmPrompt": "Zur Bestätigung geben Sie bitte Ihren Benutzernamen ein: {{username}}",
+        "usernamePlaceholder": "Benutzernamen eingeben",
+        "confirm": "Konto löschen",
+        "cancel": "Abbrechen",
+        "error": "Es ist ein Fehler beim Löschen des Kontos aufgetreten."
+      }
     }
   }
 }
