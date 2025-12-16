@@ -136,7 +136,9 @@
         },
         "createStoryDataProtectionNotice": {
           "title": "Accept Privacy Policy",
-          "description": "By continuing, you agree to our privacy policy. Please read it carefully to understand how we use and protect your data.",
+          "description": "By continuing, you agree to our {termsOfUseLink}. Please read it carefully to understand how we use and protect your data.",
+          "termsOfUseLinkTitle": "Privacy Policy",
+          "termsOfUseLinkHref": "https://cut.io/datenschutz/",
           "confirmButton": "Accept",
           "denyButton": "Do Not Accept"
         },
