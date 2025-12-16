@@ -118,10 +118,10 @@ function addNewChapter() {
 }
 
 function handleAddNewStep({ chapterIdx }) {
-  const chapter = chapters.value[chapterIdx];
-  chapter.steps.push(getDefaultStep(chapter.steps.length + 1));
-  activeChapterIndex.value = chapterIdx;
-  activeStepIndex.value = chapter.steps.length - 1;
+    const chapter = chapters.value[chapterIdx];
+    chapter.steps.push(getDefaultStep(chapter.steps.length + 1));
+    activeChapterIndex.value = chapterIdx;
+    activeStepIndex.value = chapter.steps.length - 1;
 }
 
 function handleDeleteStep({ chapterIdx, stepIdx }) {

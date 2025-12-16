@@ -43,10 +43,10 @@ watch(
 
         if (added.length) {
             for (const id of added) {
-            store.dispatch('addOrReplaceLayer', {
-                layerId: id,
-                zIndex: nextZIndex.value++
-            });
+                store.dispatch('addOrReplaceLayer', {
+                    layerId: id,
+                    zIndex: nextZIndex.value++
+                });
             }
         }
 

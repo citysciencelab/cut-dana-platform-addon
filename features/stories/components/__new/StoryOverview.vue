@@ -1,10 +1,10 @@
 <script setup>
 import {
-  mdiDotsVertical,
-  mdiPlus,
-  mdiDragHorizontalVariant,
-  mdiDeleteForeverOutline,
-  mdiPencilOutline
+    mdiDotsVertical,
+    mdiPlus,
+    mdiDragHorizontalVariant,
+    mdiDeleteForeverOutline,
+    mdiPencilOutline
 } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import Draggable from 'vuedraggable';

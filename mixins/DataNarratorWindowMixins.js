@@ -36,8 +36,8 @@ export default {
         ...mapMutations('Modules/DataNarrator', [ 'setToolwindowMode' ]),
 
         setToolIsOpen () {
-          this.isOpen = !this.isOpen;
-          this.moveTool();
+            this.isOpen = !this.isOpen;
+            this.moveTool();
         },
 
         updateIsMobile () {

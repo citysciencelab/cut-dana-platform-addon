@@ -18,6 +18,7 @@ export default [
             'chai-friendly': pluginChaiFriendly
         },
         rules: {
+            'indent': [ 'error', 4 ],
             'no-debugger': 'error',
             // -----------------------------------------
             // TODO: Change to 'error' or remove this block later

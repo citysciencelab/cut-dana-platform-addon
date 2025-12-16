@@ -9,7 +9,7 @@ import { dataNarratorModes, ToolwindowModes } from '../../../../../store/contant
 const { gotoPage } = useDataNarrator();
 const { toolwindowMode } = useDataNarrator();
 const props = defineProps({
-   title: String
+    title: String
 });
 const { t } = useTranslation();
 
