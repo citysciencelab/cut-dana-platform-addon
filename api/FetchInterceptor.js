@@ -3,10 +3,14 @@ export class FetchInterceptor {
     'Content-Type': 'application/json',
   };
 
+  static timeout = 15000; // 15 seconds
+
   static register() {
     const { fetch: originalFetch } = window;
 
     window.fetch = async (...args) => {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), FetchInterceptor.timeout);
       let [ resource, options ] = args;
 
       // Start with default headers
@@ -27,10 +31,21 @@ export class FetchInterceptor {
 
       const newOptions = {
         ...options,
-        headers: finalHeaders
+        headers: finalHeaders,
+        signal: controller.signal
       };
 
-      return await originalFetch(resource, newOptions);
+      try {
+        const result = await originalFetch(resource, newOptions);
+        clearTimeout(id);
+        return result;
+      } catch (error) {
+        clearTimeout(id);
+        if (error.name === 'AbortError') {
+          throw new Error(`Request timeout after ${FetchInterceptor.timeout}ms`, { cause: error } );
+        }
+        throw error;
+      }
     }
   }
 
