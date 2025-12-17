@@ -8,8 +8,6 @@ const props = defineProps({
 });
 
 const { t } = useTranslation();
-
-// TODO on close action of dialog, call cancelClicked
 </script>
 
 <template>
