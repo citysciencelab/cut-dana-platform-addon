@@ -11,7 +11,7 @@ const { loggedIn } = useLogin();
 const { gotoPage } = useDataNarrator();
 
 const createStory = async () => {
-    gotoPage(dataNarratorModes.CREATE_STORY);
+  gotoPage(dataNarratorModes.CREATE_STORY);
 };
 </script>
 

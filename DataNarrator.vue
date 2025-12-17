@@ -9,7 +9,7 @@ import { useLayers } from './hooks/useLayers';
 import * as constants from './store/contantsDataNarrator';
 
 defineOptions({
-    name: 'DataNarrator'
+  name: 'DataNarrator'
 });
 
 const { disableFooter, disableMainMenu, disableSecondaryMenu, toolwindowMode, mode } = useDataNarrator();

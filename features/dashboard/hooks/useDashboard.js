@@ -11,44 +11,44 @@ import { useLogin } from './useLogin';
  *
  */
 export function useDashboard () {
-    const { loggedIn } = useLogin()
-    const dashboardStore = useDashboardStore();
-    const { mode: storiesDisplayMode, open } = storeToRefs(dashboardStore);
+  const { loggedIn } = useLogin()
+  const dashboardStore = useDashboardStore();
+  const { mode: storiesDisplayMode, open } = storeToRefs(dashboardStore);
 
-    // Initialize the fetch composable
-    const { stories, error, loading, fetchStories } = useFetchStories();
+  // Initialize the fetch composable
+  const { stories, error, loading, fetchStories } = useFetchStories();
 
-    const setOpen = () => {
-        open.value = !open.value;
-    }
+  const setOpen = () => {
+    open.value = !open.value;
+  }
 
-    const refetchStories = () => {
-        fetchStories(storiesDisplayMode.value);
-    }
+  const refetchStories = () => {
+    fetchStories(storiesDisplayMode.value);
+  }
 
-    // Initial fetch on component initialization
-    refetchStories();
+  // Initial fetch on component initialization
+  refetchStories();
 
-    // Watch for mode changes and manually trigger fetch
-    watch(storiesDisplayMode, (newMode) => {
-        console.log(`Dashboard mode changed to ${newMode}, triggering fetch`);
-        fetchStories(newMode);
-    });
+  // Watch for mode changes and manually trigger fetch
+  watch(storiesDisplayMode, (newMode) => {
+    console.log(`Dashboard mode changed to ${newMode}, triggering fetch`);
+    fetchStories(newMode);
+  });
 
-    const storyModeLists = computed(() => {
-        return Object.values(availableStoryListModes).filter(mode =>
-            loggedIn.value || mode !== 'my'
-        );
-    });
+  const storyModeLists = computed(() => {
+    return Object.values(availableStoryListModes).filter(mode =>
+      loggedIn.value || mode !== 'my'
+    );
+  });
 
-    return {
-        stories,
-        error,
-        loading,
-        storiesDisplayMode,
-        storyModeLists,
-        open,
-        setOpen,
-        refetchStories
-    };
+  return {
+    stories,
+    error,
+    loading,
+    storiesDisplayMode,
+    storyModeLists,
+    open,
+    setOpen,
+    refetchStories
+  };
 }

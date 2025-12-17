@@ -21,32 +21,32 @@ const { storiesDisplayMode } = useDashboard();
 const emit = defineEmits([ 'deleted', 'published' ]);
 
 const props = defineProps({
-    story: {
-        type: Object,
-        required: true
-    },
-    shareSettings: {
-        type: Boolean,
-        default: false
-    },
+  story: {
+    type: Object,
+    required: true
+  },
+  shareSettings: {
+    type: Boolean,
+    default: false
+  },
 });
 
 function getFileUrl(titleImage) {
-    return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
+  return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
 }
 
 async function playStory() {
-    // count a view
-    try {
-        incrementStoryViews(props.story.id)
-    } catch (_) {
-    }
+  // count a view
+  try {
+    incrementStoryViews(props.story.id)
+  } catch (_) {
+  }
 
-    currentStoryId.value = props.story.id;
-    gotoPage(dataNarratorModes.PLAY_STORY);
+  currentStoryId.value = props.story.id;
+  gotoPage(dataNarratorModes.PLAY_STORY);
 
-    const baseUrl = `${location.origin}/portal/stories/?id=${props.story.id}`;
-    window.history.replaceState({}, '', baseUrl);
+  const baseUrl = `${location.origin}/portal/stories/?id=${props.story.id}`;
+  window.history.replaceState({}, '', baseUrl);
 }
 </script>
 

@@ -11,13 +11,13 @@ const { t } = useTranslation();
 checkLoggedIn();
 
 const loginLogoutAction = () => {
-    console.log('logging in or out', loggedIn.value);
-    if (loggedIn.value) {
-        logout();
-        return;
-    }
+  console.log('logging in or out', loggedIn.value);
+  if (loggedIn.value) {
+    logout();
+    return;
+  }
 
-    openLoginWindow();
+  openLoginWindow();
 }
 </script>
 

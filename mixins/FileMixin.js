@@ -2,11 +2,11 @@
 
 
 export default {
-    mixins: [],
+  mixins: [],
 
-    methods: {
-        getFileUrl(file) {
-            return `${backendUrl}/files/${file.fileContext}/${file.filename}`;
-        }
+  methods: {
+    getFileUrl(file) {
+      return `${backendUrl}/files/${file.fileContext}/${file.filename}`;
     }
+  }
 };

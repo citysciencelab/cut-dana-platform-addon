@@ -7,26 +7,26 @@ import * as labsComponents from 'vuetify/lib/labs';
 import '@mdi/font/css/materialdesignicons.css';
 
 const vuetify = createVuetify({
-    components,
-    labsComponents,
-    directives,
-    theme: {
-        defaultTheme: 'light',
-        themes: {
-            light: {
-                colors: {
-                    primary: '#66afe9'
-                }
-            }
+  components,
+  labsComponents,
+  directives,
+  theme: {
+    defaultTheme: 'light',
+    themes: {
+      light: {
+        colors: {
+          primary: '#66afe9'
         }
-    },
-    icons: {
-        defaultSet: 'mdiSvg',
-        aliases,
-        sets: {
-            mdiSvg: mdi
-        }
+      }
     }
+  },
+  icons: {
+    defaultSet: 'mdiSvg',
+    aliases,
+    sets: {
+      mdiSvg: mdi
+    }
+  }
 });
 
 export default vuetify;

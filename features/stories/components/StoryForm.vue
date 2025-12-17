@@ -19,14 +19,14 @@ const { description, storyId, fetchStory, updateStory, chapterName, chapters, ad
 const notSaving = ref(true);
 
 const hasStoryThenFetch = async () => {
-    console.log('storyId', storyId);
-    if (storyId) {
-        await fetchStory();
-    }
+  console.log('storyId', storyId);
+  if (storyId) {
+    await fetchStory();
+  }
 }
 
 onMounted(async () => {
-    await hasStoryThenFetch();
+  await hasStoryThenFetch();
 })
 </script>
 

@@ -2,30 +2,30 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-    modelValue: { type: Boolean, default: false },
-    title: { type: String, default: 'Confirm' },
-    message: { type: String, default: 'Are you sure?' },
-    confirmText: { type: String, default: 'Yes' },
-    cancelText: { type: String, default: 'Cancel' },
-    destructive: { type: Boolean, default: false },
-    width: { type: [ Number, String ], default: 420 },
+  modelValue: { type: Boolean, default: false },
+  title: { type: String, default: 'Confirm' },
+  message: { type: String, default: 'Are you sure?' },
+  confirmText: { type: String, default: 'Yes' },
+  cancelText: { type: String, default: 'Cancel' },
+  destructive: { type: Boolean, default: false },
+  width: { type: [ Number, String ], default: 420 },
 });
 
 const emit = defineEmits([ 'update:modelValue', 'confirm', 'cancel' ]);
 
 const open = computed({
-    get: () => props.modelValue,
-    set: (v) => emit('update:modelValue', v),
+  get: () => props.modelValue,
+  set: (v) => emit('update:modelValue', v),
 });
 
 function onConfirm() {
-    emit('confirm');
-    open.value = false;
+  emit('confirm');
+  open.value = false;
 }
 
 function onCancel() {
-    emit('cancel');
-    open.value = false;
+  emit('cancel');
+  open.value = false;
 }
 </script>
 

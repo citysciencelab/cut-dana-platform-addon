@@ -3,22 +3,22 @@ import { computed } from 'vue';
 import { VueEditor } from 'vue3-editor';
 
 const props = defineProps({
-    modelValue: {
-        type: String,
-        required: true,
-    }
+  modelValue: {
+    type: String,
+    required: true,
+  }
 });
 const emit = defineEmits([ 'update:modelValue' ]);
 
 const internalValue = computed({
-    get: () => props.modelValue,
-    set: v => emit('update:modelValue', v),
+  get: () => props.modelValue,
+  set: v => emit('update:modelValue', v),
 });
 
 const viewerOptions = {
-    modules: { toolbar: false },
-    readOnly: true,
-    theme: 'bubble',
+  modules: { toolbar: false },
+  readOnly: true,
+  theme: 'bubble',
 };
 </script>
 

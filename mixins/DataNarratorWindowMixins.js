@@ -11,91 +11,91 @@ import getters from '../store/gettersDataNarrator';
 import mutations from '../store/mutationsDataNarrator';
 
 export default {
-    mixins: [],
-    data () {
-        return {
-            isMobile: false,
-            checkMobileInterval: null,
-            checkMobileTimeout: 200,
-            isPreviousMobile: false,
+  mixins: [],
+  data () {
+    return {
+      isMobile: false,
+      checkMobileInterval: null,
+      checkMobileTimeout: 200,
+      isPreviousMobile: false,
 
-            isOpen: true,
+      isOpen: true,
 
-            footerHeight: 0
-        };
+      footerHeight: 0
+    };
+  },
+
+  mounted() {
+    this.checkMobileInterval = setInterval(() => this.updateIsMobile(), this.checkMobileTimeout);
+  },
+  beforeDestroy() {
+    clearInterval(this.checkMobileInterval);
+  },
+
+  methods: {
+    ...mapMutations('Modules/DataNarrator', [ 'setToolwindowMode' ]),
+
+    setToolIsOpen () {
+      this.isOpen = !this.isOpen;
+      this.moveTool();
     },
 
-    mounted() {
-        this.checkMobileInterval = setInterval(() => this.updateIsMobile(), this.checkMobileTimeout);
-    },
-    beforeDestroy() {
-        clearInterval(this.checkMobileInterval);
+    updateIsMobile () {
+      this.isMobile = isMobile();
     },
 
-    methods: {
-        ...mapMutations('Modules/DataNarrator', [ 'setToolwindowMode' ]),
+    disableMainMenu () {
+      const mainMenu = document.querySelector('#mp-menu-mainMenu');
+      const mainMenuToggleButton = document.querySelector('#mainMenu-toggle-button');
 
-        setToolIsOpen () {
-            this.isOpen = !this.isOpen;
-            this.moveTool();
-        },
+      mainMenu.style.cssText = 'display: none !important;';
+      mainMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
+    },
 
-        updateIsMobile () {
-            this.isMobile = isMobile();
-        },
+    disableSecondaryMenu () {
+      const secondaryMenu = document.querySelector('#mp-menu-secondaryMenu');
+      const secondaryMenuToggleButton = document.querySelector('#secondaryMenu-toggle-button');
 
-        disableMainMenu () {
-            const mainMenu = document.querySelector('#mp-menu-mainMenu');
-            const mainMenuToggleButton = document.querySelector('#mainMenu-toggle-button');
+      secondaryMenu.style.cssText = 'display: none !important;';
+      secondaryMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
+    },
 
-            mainMenu.style.cssText = 'display: none !important;';
-            mainMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
-        },
+    disableFooter () {
+      const footer = document.querySelector('#module-portal-footer');
 
-        disableSecondaryMenu () {
-            const secondaryMenu = document.querySelector('#mp-menu-secondaryMenu');
-            const secondaryMenuToggleButton = document.querySelector('#secondaryMenu-toggle-button');
+      footer.style.cssText = 'display: none !important;';
+    },
 
-            secondaryMenu.style.cssText = 'display: none !important;';
-            secondaryMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
-        },
+    async moveTool () {
+      const toolWindows = document.querySelectorAll('#datanarrator-root .toolwindow-container .toolwindow');
 
-        disableFooter () {
-            const footer = document.querySelector('#module-portal-footer');
+      for (const toolWindow of toolWindows) {
+        await nextTick();
 
-            footer.style.cssText = 'display: none !important;';
-        },
+        if (isMobile()) {
+          toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset}px`;
+          this.setToolwindowMode(ToolwindowModes.MOBILE);
+        } else {
+          toolWindow.style.top = '0px';
 
-        async moveTool () {
-            const toolWindows = document.querySelectorAll('#datanarrator-root .toolwindow-container .toolwindow');
-
-            for (const toolWindow of toolWindows) {
-                await nextTick();
-
-                if (isMobile()) {
-                    toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset}px`;
-                    this.setToolwindowMode(ToolwindowModes.MOBILE);
-                } else {
-                    toolWindow.style.top = '0px';
-
-                    if (this.mode === dataNarratorModes.DASHBOARD) {
-                        this.setToolwindowMode(ToolwindowModes.DASHBOARD);
-                    } else {
-                        this.setToolwindowMode(ToolwindowModes.DESKTOP);
-                    }
-                }
-            }
+          if (this.mode === dataNarratorModes.DASHBOARD) {
+            this.setToolwindowMode(ToolwindowModes.DASHBOARD);
+          } else {
+            this.setToolwindowMode(ToolwindowModes.DESKTOP);
+          }
         }
-    },
-    computed: {
-        ...mapGetters('Modules/DataNarrator', Object.keys(getters))
-    },
-    watch: {
-        isMobile () {
-            if (this.isMobile !== this.isPreviousMobile) {
-                this.isPreviousMobile = this.isMobile;
-                this.moveTool();
-            }
-        }
+      }
     }
+  },
+  computed: {
+    ...mapGetters('Modules/DataNarrator', Object.keys(getters))
+  },
+  watch: {
+    isMobile () {
+      if (this.isMobile !== this.isPreviousMobile) {
+        this.isPreviousMobile = this.isMobile;
+        this.moveTool();
+      }
+    }
+  }
 };

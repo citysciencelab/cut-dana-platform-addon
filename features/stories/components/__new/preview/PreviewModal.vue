@@ -4,8 +4,8 @@ import { motion } from 'motion-v';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
-    hasImage: { type: Boolean, default: false },
-    open: { type: Boolean, default: false }
+  hasImage: { type: Boolean, default: false },
+  open: { type: Boolean, default: false }
 });
 const emit = defineEmits([ 'update:open', 'close' ]);
 
@@ -13,18 +13,18 @@ const state = ref(props.open ? 'open' : 'closed');
 watch(() => props.open, (v) => (state.value = v ? 'open' : 'closed'));
 
 function close() {
-    emit('update:open', false);
-    emit('close');
+  emit('update:open', false);
+  emit('close');
 }
 
 const overlay = {
-    closed: { opacity: 0, pointerEvents: 'none', transition: { duration: 0.2 } },
-    open:   { opacity: 1, pointerEvents: 'auto', transition: { duration: 0.2 } }
+  closed: { opacity: 0, pointerEvents: 'none', transition: { duration: 0.2 } },
+  open:   { opacity: 1, pointerEvents: 'auto', transition: { duration: 0.2 } }
 };
 
 const panel = {
-    closed: { opacity: 0, y: 20, scale: 0.98, transition: { duration: 0.18 } },
-    open:   { opacity: 1, y: 0,  scale: 1,   transition: { type: 'spring', stiffness: 420, damping: 32 } }
+  closed: { opacity: 0, y: 20, scale: 0.98, transition: { duration: 0.18 } },
+  open:   { opacity: 1, y: 0,  scale: 1,   transition: { type: 'spring', stiffness: 420, damping: 32 } }
 };
 </script>
 

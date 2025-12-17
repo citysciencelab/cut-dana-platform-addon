@@ -16,32 +16,32 @@ const isDeleting = ref(false);
 const errorMessage = ref('');
 
 const isUsernameValid = computed(() => {
-    return usernameInput.value === username.value;
+  return usernameInput.value === username.value;
 });
 
 const openDeleteDialog = () => {
-    usernameInput.value = '';
-    errorMessage.value = '';
-    showConfirmDialog.value = true;
+  usernameInput.value = '';
+  errorMessage.value = '';
+  showConfirmDialog.value = true;
 }
 
 const deleteAccount = async () => {
-    if (!isUsernameValid.value) return;
+  if (!isUsernameValid.value) return;
 
-    isDeleting.value = true;
-    errorMessage.value = '';
+  isDeleting.value = true;
+  errorMessage.value = '';
 
-    try {
-        await deleteMe();
-        showConfirmDialog.value = false;
-        logout();
-        window.location.reload();
-    } catch (error) {
-        console.error('Error deleting account:', error);
-        errorMessage.value = t('additional:modules.dataNarrator.deleteAccount.error');
-    } finally {
-        isDeleting.value = false;
-    }
+  try {
+    await deleteMe();
+    showConfirmDialog.value = false;
+    logout();
+    window.location.reload();
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    errorMessage.value = t('additional:modules.dataNarrator.deleteAccount.error');
+  } finally {
+    isDeleting.value = false;
+  }
 }
 </script>
 

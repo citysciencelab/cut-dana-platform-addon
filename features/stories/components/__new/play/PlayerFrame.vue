@@ -9,15 +9,15 @@ import { dataNarratorModes, ToolwindowModes } from '../../../../../store/contant
 const { gotoPage } = useDataNarrator();
 const { toolwindowMode } = useDataNarrator();
 const props = defineProps({
-    title: String
+  title: String
 });
 const { t } = useTranslation();
 
 function backToDashboard() {
-    gotoPage(dataNarratorModes.DASHBOARD);
+  gotoPage(dataNarratorModes.DASHBOARD);
 
-    const baseUrl = `${location.origin}/portal/stories`;
-    window.history.replaceState({}, '', baseUrl);
+  const baseUrl = `${location.origin}/portal/stories`;
+  window.history.replaceState({}, '', baseUrl);
 }
 </script>
 

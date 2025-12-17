@@ -6,13 +6,13 @@ import { useBaseLayer } from '../../../hooks/useBaseLayer';
 const { items } = useBaseLayer();
 
 const props = defineProps({
-    modelValue: String
+  modelValue: String
 });
 const emit = defineEmits([ 'update:modelValue' ]);
 
 const inputValue = computed({
-    get: () => props.modelValue,
-    set: v => emit('update:modelValue', v)
+  get: () => props.modelValue,
+  set: v => emit('update:modelValue', v)
 });
 </script>
 

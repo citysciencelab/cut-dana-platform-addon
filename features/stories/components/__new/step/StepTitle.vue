@@ -3,26 +3,26 @@ import { useTranslation } from 'i18next-vue';
 import { computed, onMounted, nextTick, ref } from 'vue';
 
 const props = defineProps({
-    value: String,
+  value: String,
 });
 
 const emit = defineEmits([ 'update:value' ]);
 const inputValue = computed({
-    get() {
-        return props.value
-    },
-    set(v) {
-        emit('update:value', v)
-    }
+  get() {
+    return props.value
+  },
+  set(v) {
+    emit('update:value', v)
+  }
 });
 
 const fieldRef = ref(null);
 
 defineExpose({
-    async focus() {
-        await nextTick();
-        fieldRef.value?.focus?.();
-    },
+  async focus() {
+    await nextTick();
+    fieldRef.value?.focus?.();
+  },
 });
 
 const { t } = useTranslation();

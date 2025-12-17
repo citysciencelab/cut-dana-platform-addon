@@ -3,14 +3,14 @@ import { useTranslation } from 'i18next-vue';
 
 const { t } = useTranslation();
 const props = defineProps({
-    privateStory: {
-        type: Boolean,
-        default: false
-    },
-    sharedWith: {
-        type: Array,
-        default: () => []
-    }
+  privateStory: {
+    type: Boolean,
+    default: false
+  },
+  sharedWith: {
+    type: Array,
+    default: () => []
+  }
 })
 </script>
 

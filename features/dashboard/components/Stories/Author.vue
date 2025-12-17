@@ -3,17 +3,17 @@ import { mdiAccountOutline } from '@mdi/js';
 
 
 const props = defineProps({
-    authorId: {
-        type: String,
-        default: null
-    },
-    author: {
-        type: Object,
-        default: {
-            username: 'Unknown',
-            email: 'Unknown'
-        }
+  authorId: {
+    type: String,
+    default: null
+  },
+  author: {
+    type: Object,
+    default: {
+      username: 'Unknown',
+      email: 'Unknown'
     }
+  }
 });
 const isLoading = false;
 
@@ -23,7 +23,7 @@ fetchAuthor();
  *
  */
 function fetchAuthor () {
-    console.log('fetchAuthor');
+  console.log('fetchAuthor');
 }
 </script>
 
