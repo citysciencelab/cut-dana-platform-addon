@@ -14,19 +14,19 @@ const { refetch } = useDashboard();
 const { t } = useTranslation();
 
 const { mode, active } = defineProps({
-    mode: {
-        type: String,
-        default: 'all'
-    },
-    active: {
-        type: Boolean,
-        default: false
-    }
+  mode: {
+    type: String,
+    default: 'all'
+  },
+  active: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const setMode = () => {
-    console.log('setMode', mode);
-    storiesDisplayMode.value = mode;
+  console.log('setMode', mode);
+  storiesDisplayMode.value = mode;
 };
 </script>
 

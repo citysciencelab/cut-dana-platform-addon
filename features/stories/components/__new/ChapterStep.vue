@@ -16,13 +16,13 @@ import TwoDNavigation from './step/TwoDNavigation.vue';
 
 
 const { step } = defineProps({
-    step: {
-        type: Object,
-        required: true
-    },
-    pillColor: {
-        type: String,
-    }
+  step: {
+    type: Object,
+    required: true
+  },
+  pillColor: {
+    type: String,
+  }
 });
 
 const emit = defineEmits([ 'modelSelected' ]);
@@ -34,26 +34,26 @@ const store = useStore();
 const stepTitleRef = ref(null);
 
 function onWmsSelected(sources) {
-    if (!Array.isArray(step.mapSources)) step.mapSources = [];
-    const existing = new Set(step.mapSources.map((s) => s.id));
-    for (const src of sources) {
-        if (!existing.has(src.id)) {
-            src.showInLayerTree = false;
-            step.mapSources.push(src);
-        }
+  if (!Array.isArray(step.mapSources)) step.mapSources = [];
+  const existing = new Set(step.mapSources.map((s) => s.id));
+  for (const src of sources) {
+    if (!existing.has(src.id)) {
+      src.showInLayerTree = false;
+      step.mapSources.push(src);
     }
+  }
 }
 
 watch(() => step.is3D, (is3DEnabled) => {
-    store.dispatch('Maps/changeMapMode', is3DEnabled ? '3D' : '2D');
+  store.dispatch('Maps/changeMapMode', is3DEnabled ? '3D' : '2D');
 }, { immediate: true });
 
 watch(
-    () => step?.id,
-    async () => {
-        await nextTick();
-        stepTitleRef.value?.focus?.();
-    },
+  () => step?.id,
+  async () => {
+    await nextTick();
+    stepTitleRef.value?.focus?.();
+  },
 );
 </script>
 

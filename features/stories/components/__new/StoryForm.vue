@@ -17,12 +17,12 @@ import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
 
 const props = defineProps({
-    storyId: Number,
-    storyName: String,
-    description: String,
-    chapters: Array,
-    storyLoading: Boolean,
-    coverImageUrl: String,
+  storyId: Number,
+  storyName: String,
+  description: String,
+  chapters: Array,
+  storyLoading: Boolean,
+  coverImageUrl: String,
 });
 const { t } = useTranslation();
 const { toolwindowMode } = useDataNarrator();
@@ -41,80 +41,80 @@ const confirmSaveOpen = ref(false);
 
 let nextChapterId = 1;
 const chapters = ref([
-    {
-        id: 0,
-        sequence: 1,
-        title: '',
-        steps: [],
-    }
+  {
+    id: 0,
+    sequence: 1,
+    title: '',
+    steps: [],
+  }
 ]);
 
 const selectedImage = ref(null);
 const imagePreview = computed(() => {
-    if (selectedImage.value) return URL.createObjectURL(selectedImage.value);
-    return props.coverImageUrl || null;
+  if (selectedImage.value) return URL.createObjectURL(selectedImage.value);
+  return props.coverImageUrl || null;
 });
 
 const canPublish = computed(() => {
-    const chapterList = chapters.value ?? [];
+  const chapterList = chapters.value ?? [];
 
-    const allChaptersHaveSteps =
+  const allChaptersHaveSteps =
         chapterList.length > 0 &&
         chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
 
-    return allChaptersHaveSteps && storyName.value.trim().length > 0;
+  return allChaptersHaveSteps && storyName.value.trim().length > 0;
 });
 
 function handleModelSelected({ step, file }) {
-    if (file) modelFiles.set(step, file);
-    else modelFiles.delete(step);
+  if (file) modelFiles.set(step, file);
+  else modelFiles.delete(step);
 }
 
 function getDefaultStep(id) {
-    return {
-        id,
-        title: '',
-        description: '',
-        mapConfig: {
-            centerCoordinates: initialCenter,
-            zoomLevel: initialZoom,
-            backgroundMapId: null,
-        },
-        informationLayerIds: [],
-        mapSources: [],
-        // 3D
-        is3D: false,
-        modelUrl: '',
-        navigation3D: {
-            coordinates: {
-                easting: null,
-                northing: null,
-            },
-            dimensions: {
-                height: 0,
-                adaptToTerrain: true,
-            },
-            transforms: {
-                rotation: 0,
-                scale: 1,
-            }
-        }
+  return {
+    id,
+    title: '',
+    description: '',
+    mapConfig: {
+      centerCoordinates: initialCenter,
+      zoomLevel: initialZoom,
+      backgroundMapId: null,
+    },
+    informationLayerIds: [],
+    mapSources: [],
+    // 3D
+    is3D: false,
+    modelUrl: '',
+    navigation3D: {
+      coordinates: {
+        easting: null,
+        northing: null,
+      },
+      dimensions: {
+        height: 0,
+        adaptToTerrain: true,
+      },
+      transforms: {
+        rotation: 0,
+        scale: 1,
+      }
+    }
 
-    };
+  };
 }
 
 function addNewChapter() {
-    const newChapter = {
-        id: nextChapterId++,
-        sequence: chapters.value.length + 1,
-        title: '',
-        steps: [],
-    };
+  const newChapter = {
+    id: nextChapterId++,
+    sequence: chapters.value.length + 1,
+    title: '',
+    steps: [],
+  };
 
-    chapters.value.push(newChapter);
+  chapters.value.push(newChapter);
 
-    activeChapterIndex.value = chapters.value.length - 1;
-    activeStepIndex.value = -1;
+  activeChapterIndex.value = chapters.value.length - 1;
+  activeStepIndex.value = -1;
 }
 
 function handleAddNewStep({ chapterIdx }) {
@@ -125,136 +125,136 @@ function handleAddNewStep({ chapterIdx }) {
 }
 
 function handleDeleteStep({ chapterIdx, stepIdx }) {
-    const chapter = chapters.value?.[chapterIdx];
-    if (!chapter) return;
-    if (stepIdx < 0 || stepIdx >= chapter.steps.length) return;
-    chapter.steps.splice(stepIdx, 1);
+  const chapter = chapters.value?.[chapterIdx];
+  if (!chapter) return;
+  if (stepIdx < 0 || stepIdx >= chapter.steps.length) return;
+  chapter.steps.splice(stepIdx, 1);
 }
 
 function handleStepsChange({ chapterIdx, newList }) {
-    const chapter = chapters.value?.[chapterIdx];
-    if (!chapter) return;
-    chapter.steps = [ ...newList ];
+  const chapter = chapters.value?.[chapterIdx];
+  if (!chapter) return;
+  chapter.steps = [ ...newList ];
 }
 
 function handleEditStep({ chapterIdx, stepIdx }) {
-    activeChapterIndex.value = chapterIdx;
-    activeStepIndex.value = stepIdx;
-    previewVisible.value = false;
+  activeChapterIndex.value = chapterIdx;
+  activeStepIndex.value = stepIdx;
+  previewVisible.value = false;
 }
 
 function handleEditChapter({ chapterIdx }) {
-    const chapter = chapters.value?.[chapterIdx];
-    if (!chapter) return;
-    previewVisible.value = false;
-    activeChapterIndex.value = chapterIdx;
-    const stepCount = chapters.value[chapterIdx].steps.length ?? 0;
-    activeStepIndex.value = stepCount ? stepCount - 1 : -1;
+  const chapter = chapters.value?.[chapterIdx];
+  if (!chapter) return;
+  previewVisible.value = false;
+  activeChapterIndex.value = chapterIdx;
+  const stepCount = chapters.value[chapterIdx].steps.length ?? 0;
+  activeStepIndex.value = stepCount ? stepCount - 1 : -1;
 }
 
 function handleDeleteChapter({ chapterIdx }) {
-    if (chapterIdx < 0 || chapterIdx >= chapters.value.length) return;
-    chapters.value.splice(chapterIdx, 1);
-    chapters.value.forEach((ch, i) => (ch.sequence = i + 1));
+  if (chapterIdx < 0 || chapterIdx >= chapters.value.length) return;
+  chapters.value.splice(chapterIdx, 1);
+  chapters.value.forEach((ch, i) => (ch.sequence = i + 1));
 }
 
 function handleChaptersChange(newList) {
-    const newChapters = newList.map((ch, i) => ({
-        ...ch,
-        sequence: i + 1,
-    }));
-    chapters.value = newChapters;
+  const newChapters = newList.map((ch, i) => ({
+    ...ch,
+    sequence: i + 1,
+  }));
+  chapters.value = newChapters;
 }
 
 function prepublish() {
-    confirmSaveOpen.value = true;
+  confirmSaveOpen.value = true;
 }
 
 function publishOk() {
-    confirmSaveOpen.value = false;
-    publish();
+  confirmSaveOpen.value = false;
+  publish();
 }
 
 function publishCancel() {
-    confirmSaveOpen.value = false;
+  confirmSaveOpen.value = false;
 }
 
 async function publish() {
-    isSaving.value = true;
+  isSaving.value = true;
 
-    const payload = {
-        title: String(storyName.value ?? '').trim(),
-        description: String(description.value ?? '').trim(),
-        chapters: chapters.value
-    };
+  const payload = {
+    title: String(storyName.value ?? '').trim(),
+    description: String(description.value ?? '').trim(),
+    chapters: chapters.value
+  };
 
-    let storyId = props.storyId;
-    let createdStory = payload;
-    if (storyId) {
-        const updateResp = await editStory(storyId, payload);
-        const bodyText = await updateResp.text();
-        if (!updateResp.ok) {
-            throw new Error(`Failed to edit story: ${updateResp.status} ${bodyText}`);
-        }
-    } else {
-        const createResp = await createStory(payload);
-        const bodyText = await createResp.text();
-        if (!createResp.ok) {
-            throw new Error(`Failed to create story: ${createResp.status} ${bodyText}`);
-        }
-        createdStory = JSON.parse(bodyText);
-        storyId = createdStory.id;
+  let storyId = props.storyId;
+  let createdStory = payload;
+  if (storyId) {
+    const updateResp = await editStory(storyId, payload);
+    const bodyText = await updateResp.text();
+    if (!updateResp.ok) {
+      throw new Error(`Failed to edit story: ${updateResp.status} ${bodyText}`);
     }
-
-    const uploads = [];
-    for (const ch of chapters.value) {
-        const dbChapter = createdStory.chapters.find((x) => x.sequence === ch.sequence);
-        if (!dbChapter) continue;
-
-        for (let sIdx = 0; sIdx < ch.steps.length; sIdx++) {
-            const uiStep = ch.steps[sIdx];
-            const file = modelFiles.get(uiStep);
-            if (!file) continue;
-
-            const dbStep = dbChapter.StoryStep.find((x) => x.stepNumber === sIdx + 1);
-            if (!dbStep) continue;
-
-            await uploadStepModel(storyId, dbStep.id, file);
-            modelFiles.delete(uiStep);
-        }
+  } else {
+    const createResp = await createStory(payload);
+    const bodyText = await createResp.text();
+    if (!createResp.ok) {
+      throw new Error(`Failed to create story: ${createResp.status} ${bodyText}`);
     }
+    createdStory = JSON.parse(bodyText);
+    storyId = createdStory.id;
+  }
 
-    await Promise.all(uploads);
+  const uploads = [];
+  for (const ch of chapters.value) {
+    const dbChapter = createdStory.chapters.find((x) => x.sequence === ch.sequence);
+    if (!dbChapter) continue;
 
-    if (selectedImage.value) {
-        try {
-            await uploadCoverImage(storyId, selectedImage.value);
-        } catch (err) {
-            console.error(err);
-        }
+    for (let sIdx = 0; sIdx < ch.steps.length; sIdx++) {
+      const uiStep = ch.steps[sIdx];
+      const file = modelFiles.get(uiStep);
+      if (!file) continue;
+
+      const dbStep = dbChapter.StoryStep.find((x) => x.stepNumber === sIdx + 1);
+      if (!dbStep) continue;
+
+      await uploadStepModel(storyId, dbStep.id, file);
+      modelFiles.delete(uiStep);
     }
+  }
 
-    isSaving.value = false;
-    gotoPage(dataNarratorModes.DASHBOARD);
+  await Promise.all(uploads);
+
+  if (selectedImage.value) {
+    try {
+      await uploadCoverImage(storyId, selectedImage.value);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  isSaving.value = false;
+  gotoPage(dataNarratorModes.DASHBOARD);
 }
 
 watch(
-    [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId ],
-    ([ s, d, c, sId ]) => {
-        if (sId) {
-            storyName.value = s ?? '';
-            description.value = d ?? '';
-            chapters.value = c ?? [];
-            previewVisible.value = true;
-        }
-    },
-    { immediate: true }
+  [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId ],
+  ([ s, d, c, sId ]) => {
+    if (sId) {
+      storyName.value = s ?? '';
+      description.value = d ?? '';
+      chapters.value = c ?? [];
+      previewVisible.value = true;
+    }
+  },
+  { immediate: true }
 );
 
 watch(activeStepIndex, (activeStepIndex) => {
-    if (activeStepIndex >= 0) {
-        editStoryVisible.value = false;
-    }
+  if (activeStepIndex >= 0) {
+    editStoryVisible.value = false;
+  }
 });
 </script>
 

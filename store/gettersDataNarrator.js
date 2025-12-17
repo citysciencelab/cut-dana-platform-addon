@@ -3,7 +3,7 @@ import { generateSimpleGetters } from '../../../../src/shared/js/utils/generator
 import commuterDataNarrator from './stateDataNarrator';
 
 const getters = {
-    ...generateSimpleGetters(commuterDataNarrator)
+  ...generateSimpleGetters(commuterDataNarrator)
 };
 
 export default getters;

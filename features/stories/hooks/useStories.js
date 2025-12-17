@@ -8,16 +8,16 @@ import { useStoryForm } from './useStoryForm';
  *
  */
 export function useStories () {
-    const currentStoryId = ref('');
-    const store = useStore();
+  const currentStoryId = ref('');
+  const store = useStore();
 
-    const createStory = () => {
-        console.log('currentStoryId', store.state.Modules.DataNarrator.EditStoryForm.state);
-    }
+  const createStory = () => {
+    console.log('currentStoryId', store.state.Modules.DataNarrator.EditStoryForm.state);
+  }
 
-    return {
-        currentStoryId,
+  return {
+    currentStoryId,
 
-        createStory
-    };
+    createStory
+  };
 }

@@ -7,10 +7,10 @@ import DataNarratorStore from './store/DataNarratorStore';
 FetchInterceptor.register();
 
 export default {
-    component: DataNarratorComponent,
-    store: DataNarratorStore,
-    locales: {
-        de: deLocale,
-        en: enLocale
-    }
+  component: DataNarratorComponent,
+  store: DataNarratorStore,
+  locales: {
+    de: deLocale,
+    en: enLocale
+  }
 };

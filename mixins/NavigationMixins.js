@@ -5,13 +5,13 @@ import getters from '../store/gettersDataNarrator';
 import DataNarratorWindowMixins from './DataNarratorWindowMixins';
 
 export default {
-    mixins: [ DataNarratorWindowMixins ],
+  mixins: [ DataNarratorWindowMixins ],
 
-    methods: {
-        ...mapMutations('Modules/DataNarrator', [ 'setMode' ]),
-        gotoPage(page) {
-            this.setMode(page);
-            this.moveTool();
-        }
+  methods: {
+    ...mapMutations('Modules/DataNarrator', [ 'setMode' ]),
+    gotoPage(page) {
+      this.setMode(page);
+      this.moveTool();
     }
+  }
 };

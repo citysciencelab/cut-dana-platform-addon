@@ -7,23 +7,23 @@ const bottom = ref(0);
 const controls = useDragControls();
 
 const props = defineProps({
-    active: {
-        type: Boolean,
-        required: true,
-    }
+  active: {
+    type: Boolean,
+    required: true,
+  }
 });
 
 function updateHeight() {
-    bottom.value = window.innerHeight - 100;
+  bottom.value = window.innerHeight - 100;
 }
 
 onMounted(() => {
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
+  updateHeight();
+  window.addEventListener('resize', updateHeight);
 });
 
 onBeforeUnmount(() => {
-    window.removeEventListener('resize', updateHeight);
+  window.removeEventListener('resize', updateHeight);
 });
 </script>
 

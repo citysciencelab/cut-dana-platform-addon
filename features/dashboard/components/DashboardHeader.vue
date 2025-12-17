@@ -27,11 +27,11 @@ const { mode: storiesDisplayMode } = storeToRefs(dashboardStore)
 const legendAdded = true;
 
 const toggleLegend = () => {
-    console.log('toggleLegend');
+  console.log('toggleLegend');
 };
 
 const getBackgroundStyle = () => ({
-    backgroundImage: `url(${cutcslDepiction})`
+  backgroundImage: `url(${cutcslDepiction})`
 });
 </script>
 

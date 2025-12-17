@@ -7,21 +7,21 @@ const { t, i18next } = useTranslation();
 const currentLanguage = ref(i18next.language);
 
 function handleLangChanged(lng) {
-    currentLanguage.value = lng
+  currentLanguage.value = lng
 }
 onMounted(() => {
-    i18next.on('languageChanged', handleLangChanged);
+  i18next.on('languageChanged', handleLangChanged);
 })
 
 onBeforeUnmount(() => {
-    i18next.off('languageChanged', handleLangChanged);
+  i18next.off('languageChanged', handleLangChanged);
 })
 
 const languages = [ 'en', 'de' ]
 function changeToNextLanguage() {
-    const idx = languages.indexOf(i18next.language)
-    const next = languages[(idx + 1) % languages.length]
-    i18next.changeLanguage(next)
+  const idx = languages.indexOf(i18next.language)
+  const next = languages[(idx + 1) % languages.length]
+  i18next.changeLanguage(next)
 }
 </script>
 

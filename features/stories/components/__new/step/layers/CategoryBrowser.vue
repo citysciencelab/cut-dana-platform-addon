@@ -4,8 +4,8 @@ import { mdiChevronRight, mdiFileDocumentOutline, mdiFolderOutline } from '@mdi/
 import { ref, computed, h } from 'vue';
 
 const props = defineProps({
-    items: { type: Array, required: true, default: () => [] },
-    loading: { type: Boolean, default: false },
+  items: { type: Array, required: true, default: () => [] },
+  loading: { type: Boolean, default: false },
 });
 
 const emit = defineEmits([ 'select:layer' ]);
@@ -14,26 +14,26 @@ const stack = ref([]);
 const searchQuery = ref('');
 
 const searchResultLayers = computed(() => {
-    if (searchQuery.value.length < 3) return [];
+  if (searchQuery.value.length < 3) return [];
 
-    const query = searchQuery.value.toLowerCase();
-    const matches = [];
+  const query = searchQuery.value.toLowerCase();
+  const matches = [];
 
-    function searchInCategory(cat) {
-        for (const sub of cat.subcategories ?? []) {
-            for (const layer of sub.layers ?? []) {
-                if (layer.name.toLowerCase().includes(query)) {
-                    matches.push({ type: 'layer', cat, sub, layer });
-                }
-            }
+  function searchInCategory(cat) {
+    for (const sub of cat.subcategories ?? []) {
+      for (const layer of sub.layers ?? []) {
+        if (layer.name.toLowerCase().includes(query)) {
+          matches.push({ type: 'layer', cat, sub, layer });
         }
+      }
     }
+  }
 
-    for (const cat of props.items ?? []) {
-        searchInCategory(cat);
-    }
+  for (const cat of props.items ?? []) {
+    searchInCategory(cat);
+  }
 
-    return matches;
+  return matches;
 });
 
 const hasSearchResultLayers = computed(() => searchResultLayers.value.length > 0);
@@ -41,54 +41,54 @@ const hasSearchResultLayers = computed(() => searchResultLayers.value.length > 0
 const level = computed(() => stack.value.at(-1)?.level ?? 'root');
 
 const currentCategory = computed(() => {
-    if (hasSearchResultLayers.value) {
-        return null;
-    }
-    if (level.value === 'category' || level.value === 'subcategory') {
-        return stack.value[0]?.cat;
-    }
+  if (hasSearchResultLayers.value) {
     return null;
+  }
+  if (level.value === 'category' || level.value === 'subcategory') {
+    return stack.value[0]?.cat;
+  }
+  return null;
 });
 
 const currentSubcategory = computed(() => {
-    if (hasSearchResultLayers.value) {
-        return null;
-    }
-    if (level.value === 'subcategory') {
-        return stack.value[1]?.sub;
-    }
+  if (hasSearchResultLayers.value) {
     return null;
+  }
+  if (level.value === 'subcategory') {
+    return stack.value[1]?.sub;
+  }
+  return null;
 });
 
 const rows = computed(() => {
-    if (level.value === 'root') {
-        return (props.items ?? []).map((cat) => ({ type: 'category', cat }));
-    }
+  if (level.value === 'root') {
+    return (props.items ?? []).map((cat) => ({ type: 'category', cat }));
+  }
 
-    if (level.value === 'category') {
-        const cat = currentCategory.value;
-        return (cat?.subcategories ?? []).map((sub) => ({ type: 'subcategory', cat, sub }));
-    }
-
+  if (level.value === 'category') {
     const cat = currentCategory.value;
-    const sub = currentSubcategory.value;
-    return (sub?.layers ?? []).map((layer) => ({ type: 'layer', cat, sub, layer }));
+    return (cat?.subcategories ?? []).map((sub) => ({ type: 'subcategory', cat, sub }));
+  }
+
+  const cat = currentCategory.value;
+  const sub = currentSubcategory.value;
+  return (sub?.layers ?? []).map((layer) => ({ type: 'layer', cat, sub, layer }));
 });
 
 function enterCategory(cat) {
-    stack.value = [ { level: 'category', cat } ];
+  stack.value = [ { level: 'category', cat } ];
 }
 
 function enterSubcategory(cat, sub) {
-    stack.value = [ { level: 'category', cat }, { level: 'subcategory', cat, sub } ];
+  stack.value = [ { level: 'category', cat }, { level: 'subcategory', cat, sub } ];
 }
 
 function goHome() {
-    stack.value = [];
+  stack.value = [];
 }
 
 function onLayerClick(layer) {
-    emit('select:layer', layer);
+  emit('select:layer', layer);
 }
 
 </script>

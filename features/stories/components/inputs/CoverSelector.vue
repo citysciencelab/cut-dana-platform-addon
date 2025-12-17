@@ -19,8 +19,8 @@ const objectFile = ref('');
 const { title, uploadCover } = useStoryForm();
 
 const onCoverChange = async () => {
-    console.log(storyCover.value, storyCover);
-    await uploadCover(storyCover.value);
+  console.log(storyCover.value, storyCover);
+  await uploadCover(storyCover.value);
 }
 </script>
 

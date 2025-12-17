@@ -8,15 +8,15 @@ import ShareDialog from './ShareDialog.vue';
 const { t } = useTranslation();
 
 const props = defineProps({
-    storyId: { type: String, required: true },
-    title: { type: String, default: 'Story' },
+  storyId: { type: String, required: true },
+  title: { type: String, default: 'Story' },
 });
 
 const open = ref(false);
 const btnLabel = computed(() => t('additional:modules.dataNarrator.button.share', 'Share'));
 
 function onClick() {
-    open.value = true;
+  open.value = true;
 }
 </script>
 

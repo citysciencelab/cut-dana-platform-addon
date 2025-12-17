@@ -10,17 +10,17 @@ import { useNavigation } from '../../../steps/hooks/useNavigation';
 import ChapterStep from './ChapterStep.vue';
 
 const props = defineProps({
-    chapter: {
-        type: Object,
-        required: true
-    },
-    activeStepIndex: {
-        type: Number,
-        required: true,
-    },
-    editStoryVisible: {
-        type: Boolean
-    }
+  chapter: {
+    type: Object,
+    required: true
+  },
+  activeStepIndex: {
+    type: Number,
+    required: true,
+  },
+  editStoryVisible: {
+    type: Boolean
+  }
 });
 
 const emits = defineEmits([ 'addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected' ]);
@@ -29,40 +29,40 @@ const { initialZoom, initialCenter } = useNavigation();
 const { t } = useTranslation();
 
 function getDefaultStep(id) {
-    return {
-        id,
-        title: '',
-        description: '',
-        mapConfig: {
-            centerCoordinates: initialCenter,
-            zoomLevel: initialZoom,
-            backgroundMapId: null,
-        },
-        informationLayerIds: [],
-        mapSources: [],
-        // 3D
-        is3D: false,
-        modelUrl: '',
-        navigation3D: {
-            coordinates: {
-                easting: null,
-                northing: null,
-            },
-            dimensions: {
-                height: 0,
-                adaptToTerrain: true,
-            },
-            transforms: {
-                rotation: 0,
-                scale: 1,
-            }
-        }
+  return {
+    id,
+    title: '',
+    description: '',
+    mapConfig: {
+      centerCoordinates: initialCenter,
+      zoomLevel: initialZoom,
+      backgroundMapId: null,
+    },
+    informationLayerIds: [],
+    mapSources: [],
+    // 3D
+    is3D: false,
+    modelUrl: '',
+    navigation3D: {
+      coordinates: {
+        easting: null,
+        northing: null,
+      },
+      dimensions: {
+        height: 0,
+        adaptToTerrain: true,
+      },
+      transforms: {
+        rotation: 0,
+        scale: 1,
+      }
+    }
 
-    };
+  };
 }
 
 function addStep() {
-    emits('addNewStep');
+  emits('addNewStep');
 }
 </script>
 

@@ -9,7 +9,7 @@ import ShareSettings from './ShareSettings.vue';
 const { t, i18next } = useTranslation();
 
 function saveStorySettings() {
-    console.log('saveStorySettings');
+  console.log('saveStorySettings');
 }
 </script>
 
