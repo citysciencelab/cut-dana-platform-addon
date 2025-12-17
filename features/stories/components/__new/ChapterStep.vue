@@ -26,7 +26,7 @@ const { step } = defineProps({
 const emit = defineEmits([ 'modelSelected' ]);
 
 const { t } = useTranslation();
-const { setBaseLayer } = useNavigation();
+const { setBaseLayer, setAnimatedView } = useNavigation();
 const store = useStore();
 
 const stepTitleRef = ref(null);
@@ -55,12 +55,17 @@ watch(
 );
 
 watch(
-  () => step?.mapConfig?.backgroundMapId,
-  (newId) => {
-    setBaseLayer(newId);
+  () => step?.mapConfig,
+  (newMapConfig) => {
+    setBaseLayer(newMapConfig?.backgroundMapId);
+    setAnimatedView({
+      center: newMapConfig.centerCoordinates,
+      zoom: newMapConfig.zoomLevel
+    });
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 );
+
 </script>
 
 <template>

@@ -45,7 +45,6 @@ watch(
       });
       let maxBaselayerZIndex = Math.max(...baseLayers.map(layer => layer.zIndex));
 
-      // TODO: use methods from useNavigation here
       if (added.length) {
           for (const id of added) {
             store.dispatch('addOrReplaceLayer', {
@@ -55,7 +54,6 @@ watch(
           }
       }
 
-      // TODO: use methods from useNavigation here
       for (const id of removed) {
           store.dispatch('Modules/LayerTree/removeLayer', { id });
       }

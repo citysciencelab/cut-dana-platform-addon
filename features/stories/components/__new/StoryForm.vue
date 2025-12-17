@@ -30,7 +30,8 @@ const { gotoPage } = useDataNarrator();
 const {
   initialCenter,
   initialZoom,
-  removeAllVisibleLayers
+  removeAllVisibleLayers,
+  setAnimatedView
 } = useNavigation();
 
 const backConfirmation = ref(false);
@@ -273,6 +274,12 @@ watch(activeStepIndex, (activeStepIndex) => {
 // When the step is change we remove all visible layers and reset to default base layer
 watch([activeStep, previewVisible], () => {
   removeAllVisibleLayers();
+  if (previewVisible.value == true) {
+    setAnimatedView({
+      center: initialCenter.value,
+      zoom: initialZoom.value
+    })
+  }
 });
 
 </script>
