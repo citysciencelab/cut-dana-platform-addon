@@ -1,9 +1,10 @@
 <script setup>
 import { mdiArrowLeft, mdiDotsVertical } from '@mdi/js';
 
+import { useTranslation } from 'i18next-vue';
+
 import { useDataNarrator } from '../../../../../hooks/useDataNarrator';
 import { dataNarratorModes, ToolwindowModes } from '../../../../../store/contantsDataNarrator';
-import { useTranslation } from 'i18next-vue';
 
 const { gotoPage } = useDataNarrator();
 const { toolwindowMode } = useDataNarrator();
@@ -35,8 +36,8 @@ function backToDashboard() {
               :icon="mdiArrowLeft"
               size="compact"
               class="mr-2"
-              @click="backToDashboard"
               v-bind="actv"
+              @click="backToDashboard"
             />
           </template>
           <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>

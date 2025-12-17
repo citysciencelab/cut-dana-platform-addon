@@ -7,20 +7,21 @@ import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import cutcslDepiction from '../../../img/cutcsl_depiction.png';
 import { ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { useDashboard } from '../hooks/useDashboard';
+import { useLogin } from '../hooks/useLogin';
 
 import { useDashboardStore } from '../store/useDashboardStore';
 
 import CreateStoryButton from './Tools/CreateStoryButton.vue';
 import LanguageSwitchButton from './Tools/LanguageSwitchButton.vue';
 import ListButton from './Tools/ListButton.vue';
-
-
 import LoginButton from './Tools/LoginButton.vue';
+import UserMenu from './Tools/UserMenu.vue';
 
 const { t } = useTranslation();
 const { storyModeLists } = useDashboard();
 const dashboardStore = useDashboardStore();
 const { toolwindowMode } = useDataNarrator()
+const { loggedIn } = useLogin();
 
 const { mode: storiesDisplayMode } = storeToRefs(dashboardStore)
 const legendAdded = true;
@@ -43,8 +44,15 @@ const getBackgroundStyle = () => ({
       v-if="toolwindowMode === ToolwindowModes.MOBILE"
       to="body"
     >
-      <div class="login-row-mobile">
-        <div class="d-flex justify-end align-center mt-2 ga-2">
+      <div
+        class="login-row-mobile"
+      >
+        <div
+          class="settings-menu"
+        >
+          <UserMenu v-if="loggedIn" />
+        </div>
+        <div class="d-flex justify-end align-center ga-2">
           <LoginButton />
           <LanguageSwitchButton />
         </div>
@@ -54,7 +62,12 @@ const getBackgroundStyle = () => ({
       v-else
       class="login-row"
     >
-      <div class="d-flex justify-end align-center mt-2 ga-2">
+      <div
+        class="settings-menu"
+      >
+        <UserMenu v-if="loggedIn" />
+      </div>
+      <div class="d-flex justify-end align-center ga-2">
         <LoginButton />
         <LanguageSwitchButton />
       </div>
@@ -127,16 +140,28 @@ const getBackgroundStyle = () => ({
 
 
 <style lang="scss" scoped>
+.login-row-mobile,
+.login-row {
+    display: flex;
+    align-items: center;
+    top: 8px;
+}
+
 .login-row-mobile {
     position: fixed;
-    top: 10px;
-    right: 10px;
+    width: calc(100% - 16px);
+    left: 8px;
     z-index: 2000;
 }
 
 .login-row {
-    top: 10px;
+    margin: 8px 8px 0 8px;
     position: sticky;
+    z-index: 1000;
+}
+
+.settings-menu {
+    flex: 1;
 }
 
 .header-col {

@@ -75,154 +75,154 @@ watch(
 </script>
 
 <template>
-    <div class="chapter-step px-2 pt-1 pb-2">
-        <v-row
-            class="mb-2"
+  <div class="chapter-step px-2 pt-1 pb-2">
+    <v-row
+      class="mb-2"
+    >
+      <v-col
+        cols="1"
+        class="p-0"
+      >
+        <v-btn
+          variant="text"
+          class="pill-button"
         >
-        <v-col
-            cols="1"
-            class="p-0"
-        >
-            <v-btn
-            variant="text"
-            class="pill-button"
-            >
-            {{ step.id }}
-            </v-btn>
-        </v-col>
+          {{ step.id }}
+        </v-btn>
+      </v-col>
 
-        <v-col
-            cols="11"
-            class="p-0"
-        >
-            <StepTitle
-            ref="stepTitleRef"
-            v-model:value="step.title"
-            />
-        </v-col>
-        </v-row>
-
-        <v-row class="mb-2">
-        <v-col
-            cols="12"
-            class="p-0"
-        >
-            <StepDescription v-model:value="step.description" />
-        </v-col>
-        </v-row>
-
-        <v-row>
-        <v-col
-            cols="12"
-            class="p-0"
-        >
-            {{ t("additional:modules.dataNarrator.label.mapDisplay") }}
-        </v-col>
-        </v-row>
-
-        <TwoDNavigation v-model="step.mapConfig" />
-
-        <v-row class="mb-2">
-        <v-col
-            cols="12"
-            class="p-0"
-        >
-            <BackgroundMap
-            v-model="step.mapConfig.backgroundMapId"
-            @update:model-value="setBaseLayer"
-            />
-        </v-col>
-        </v-row>
-
-        <v-row class="mb-1">
-        <v-col
-            cols="12"
-            class="p-0"
-        >
-            Informationsebenen
-        </v-col>
-        </v-row>
-
-        <Layers v-model="step.informationLayerIds" />
-
-        <v-row class="mb-1">
-        <v-col
-            cols="12"
-            class="p-0"
-        >
-            WMS-Ebenen
-        </v-col>
-        </v-row>
-
-        <AddWMS
-        @selected="onWmsSelected"
-        @error="(msg) => console.error(msg)"
+      <v-col
+        cols="11"
+        class="p-0"
+      >
+        <StepTitle
+          ref="stepTitleRef"
+          v-model:value="step.title"
         />
+      </v-col>
+    </v-row>
 
-        <v-list
-        density="comfortable"
+    <v-row class="mb-2">
+      <v-col
+        cols="12"
+        class="p-0"
+      >
+        <StepDescription v-model:value="step.description" />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col
+        cols="12"
+        class="p-0"
+      >
+        {{ t("additional:modules.dataNarrator.label.mapDisplay") }}
+      </v-col>
+    </v-row>
+
+    <TwoDNavigation v-model="step.mapConfig" />
+
+    <v-row class="mb-2">
+      <v-col
+        cols="12"
+        class="p-0"
+      >
+        <BackgroundMap
+          v-model="step.mapConfig.backgroundMapId"
+          @update:model-value="setBaseLayer"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row class="mb-1">
+      <v-col
+        cols="12"
+        class="p-0"
+      >
+        Informationsebenen
+      </v-col>
+    </v-row>
+
+    <Layers v-model="step.informationLayerIds" />
+
+    <v-row class="mb-1">
+    <v-col
+        cols="12"
+        class="p-0"
+    >
+        WMS-Ebenen
+    </v-col>
+    </v-row>
+
+    <AddWMS
+      @selected="onWmsSelected"
+      @error="(msg) => console.error(msg)"
+    />
+
+    <v-list
+    density="comfortable"
+    class="pa-0"
+    >
+        <v-list-item
+        v-for="l in step.mapSources"
+        :key="l.id"
         class="pa-0"
         >
-            <v-list-item
-            v-for="l in step.mapSources"
-            :key="l.id"
-            class="pa-0"
-            >
-            <v-sheet
-                width="100%"
-                rounded
-                class="d-flex align-center px-3 py-2"
-                style="border: 1px solid #e1e1e1"
-            >
-                <v-tooltip location="top">
-                    <template #activator="{ props: actv }">
-                        <v-icon
-                        :icon="mdiEye"
-                        class="mr-2"
-                        @click="loadWmsLayer(l)"
-                        v-bind="actv"
-                        />
-                    </template>
-                    <span> {{ "WMS Layer zu Hintergrundkarten hinzuladen" }} </span>
-                </v-tooltip>
-                <span class="grow">{{ l.name }}</span>
-                <v-icon
-                :icon="mdiTrashCan"
-                class="cursor-pointer"
-                @click="removeWmsLayer(l.id)"
-                />
-            </v-sheet>
-            </v-list-item>
-
-            <div
-            v-if="step.mapSources.length === 0"
-            class="text-medium-emphasis py-2"
-            >
-            Keine WMS-Ebenen ausgewählt.
-            </div>
-        </v-list>
-
-        <div>
-        <div class="mb-2">
-            3D Navigation
-        </div>
-
-        <div class="mb-2">
-            <v-switch
-            v-model="step.is3D"
-            hide-details
-            inset
-            label="Enable 3D for this step"
+        <v-sheet
+            width="100%"
+            rounded
+            class="d-flex align-center px-3 py-2"
+            style="border: 1px solid #e1e1e1"
+        >
+            <v-tooltip location="top">
+                <template #activator="{ props: actv }">
+                    <v-icon
+                    :icon="mdiEye"
+                    class="mr-2"
+                    @click="loadWmsLayer(l)"
+                    v-bind="actv"
+                    />
+                </template>
+                <span> {{ "WMS Layer zu Hintergrundkarten hinzuladen" }} </span>
+            </v-tooltip>
+            <span class="grow">{{ l.name }}</span>
+            <v-icon
+            :icon="mdiTrashCan"
+            class="cursor-pointer"
+            @click="removeWmsLayer(l.id)"
             />
-        </div>
-        </div>
+        </v-sheet>
+        </v-list-item>
 
-        <ThreeDNavigation
-        v-if="step.is3D"
-        v-model="step.navigation3D"
-        @model-selected="(file) => emit('modelSelected', { step, file })"
+        <div
+        v-if="step.mapSources.length === 0"
+        class="text-medium-emphasis py-2"
+        >
+        Keine WMS-Ebenen ausgewählt.
+        </div>
+    </v-list>
+
+    <div>
+      <div class="mb-2">
+        3D Navigation
+      </div>
+
+      <div class="mb-2">
+        <v-switch
+          v-model="step.is3D"
+          hide-details
+          inset
+          label="Enable 3D for this step"
         />
+      </div>
     </div>
+
+    <ThreeDNavigation
+      v-if="step.is3D"
+      v-model="step.navigation3D"
+      @model-selected="(file) => emit('modelSelected', { step, file })"
+    />
+  </div>
 </template>
 
 <style lang="scss">

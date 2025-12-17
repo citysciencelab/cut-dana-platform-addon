@@ -136,7 +136,9 @@
         },
         "createStoryDataProtectionNotice": {
           "title": "Accept Privacy Policy",
-          "description": "By continuing, you agree to our privacy policy. Please read it carefully to understand how we use and protect your data.",
+          "description": "By continuing, you agree to our {termsOfUseLink}. Please read it carefully to understand how we use and protect your data.",
+          "termsOfUseLinkTitle": "Privacy Policy",
+          "termsOfUseLinkHref": "https://cut.io/datenschutz/",
           "confirmButton": "Accept",
           "denyButton": "Do Not Accept"
         },
@@ -166,7 +168,18 @@
         "publish": "Publish",
         "unpublish": "Unpublish"
       },
-      "newChapter": "New Chapter"
+      "newChapter": "New Chapter",
+      "editChapter": "Edit Chapter",
+      "deleteChapter": "Delete Chapter",
+      "deleteAccount": {
+        "title": "Delete Account",
+        "text": "Are you sure you want to delete your account? This action cannot be undone. Deleting your account will permanently remove all your data, including your stories, settings, and personal information. Please note that this action is irreversible.",
+        "confirmPrompt": "To confirm, please enter your username: {{username}}",
+        "usernamePlaceholder": "Enter your username",
+        "confirm": "Delete Account",
+        "cancel": "Cancel",
+        "error": "An error occurred while deleting the account."
+      }
     }
   }
 }

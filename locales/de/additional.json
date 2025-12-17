@@ -1,4 +1,4 @@
-﻿{
+{
   "modules": {
     "dataNarrator": {
       "title": "Data Narrator",
@@ -136,7 +136,9 @@
         },
         "createStoryDataProtectionNotice": {
           "title": "Datenschutzerklärung Akzeptieren",
-          "description": "Indem Sie fortfahren, stimmen Sie unserer Datenschutzerklärung zu. Bitte lesen Sie diese sorgfältig, um zu verstehen, wie wir Ihre Daten verwenden und schützen.",
+          "description": "Indem Sie fortfahren, stimmen Sie unserer {termsOfUseLink} zu. Bitte lesen Sie diese sorgfältig, um zu verstehen, wie wir Ihre Daten verwenden und schützen.",
+          "termsOfUseLinkTitle": "Datenschutzerklärung",
+          "termsOfUseLinkHref": "https://cut.io/datenschutz/",
           "confirmButton": "Akzeptieren",
           "denyButton": "Nicht akzeptieren"
         },
@@ -166,7 +168,18 @@
         "publish": "Veröffentlichen",
         "unpublish": "Veröffentlichung aufheben"
       },
-      "newChapter": "Neues Kapitel"
+      "newChapter": "Neues Kapitel",
+      "editChapter": "Kapitel bearbeiten",
+      "deleteChapter": "Kapitel löschen",
+      "deleteAccount": {
+        "title": "Konto löschen",
+        "text": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Durch das Löschen Ihres Kontos werden alle Ihre Daten dauerhaft entfernt, einschließlich Ihrer Stories, Einstellungen und persönlichen Informationen. Bitte beachten Sie, dass diese Aktion irreversibel ist.",
+        "confirmPrompt": "Zur Bestätigung geben Sie bitte Ihren Benutzernamen ein: {{username}}",
+        "usernamePlaceholder": "Benutzernamen eingeben",
+        "confirm": "Konto löschen",
+        "cancel": "Abbrechen",
+        "error": "Es ist ein Fehler beim Löschen des Kontos aufgetreten."
+      }
     }
   }
 }

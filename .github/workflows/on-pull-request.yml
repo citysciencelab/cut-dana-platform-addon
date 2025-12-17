@@ -27,7 +27,7 @@ jobs:
             ${{ runner.OS }}-
 
       - name: Install dependencies ⏬
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Run typecheck, lint and tests 🧪
         run: npm run lint
