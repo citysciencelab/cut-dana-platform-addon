@@ -150,12 +150,13 @@ function collectStepSources(node, out, baseUrl, ver) {
 
     out.push({
         id: makeId(baseUrl, String(name)),
-        type: 'WMS',
-        serviceUrl: baseUrl,
-        layers: [ String(name) ],
         name: String(title ?? name),
+        url: baseUrl,
+        typ: 'WMS',
+        layers:  [String(name)] ,
         version: ver,
-        visible: true,
+        visibility: true,
+        showInLayerTree: true,
         opacity: 1,
         zIndex: 200,
         legendURL: safeLegendURL(node),

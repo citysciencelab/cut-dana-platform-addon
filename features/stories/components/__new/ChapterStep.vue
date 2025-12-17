@@ -1,4 +1,5 @@
 <script setup>
+import { mdiEye, mdiTrashCan } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, watch, nextTick } from 'vue';
 import { useStore } from 'vuex';
@@ -42,6 +43,22 @@ function onWmsSelected(sources) {
             step.mapSources.push(src);
         }
     }
+    debugger;
+}
+
+function loadWmsLayer(layer) {
+    console.log('load layer', layer);
+    store.dispatch("addLayerToLayerConfig", {
+        layerConfig: layer,
+        parentKey: 'baselayer' // "baselayer" oder "subjectlayer" (analog zu AddWMS aus MP) oder treeBaselayersKey?
+        });
+    debugger;
+}
+
+function removeWmsLayer(id) {
+    console.log('remove layer with id', id);
+    step.mapSources = step.mapSources.filter(v => v.id !== id);
+    debugger;
 }
 
 watch(() => step.is3D, (is3DEnabled) => {
@@ -128,10 +145,62 @@ watch(
 
         <Layers v-model="step.informationLayerIds" />
 
+        <v-row class="mb-1">
+        <v-col
+            cols="12"
+            class="p-0"
+        >
+            WMS-Ebenen
+        </v-col>
+        </v-row>
+
         <AddWMS
         @selected="onWmsSelected"
         @error="(msg) => console.error(msg)"
         />
+
+        <v-list
+        density="comfortable"
+        class="pa-0"
+        >
+            <v-list-item
+            v-for="l in step.mapSources"
+            :key="l.id"
+            class="pa-0"
+            >
+            <v-sheet
+                width="100%"
+                rounded
+                class="d-flex align-center px-3 py-2"
+                style="border: 1px solid #e1e1e1"
+            >
+                <v-tooltip location="top">
+                    <template #activator="{ props: actv }">
+                        <v-icon
+                        :icon="mdiEye"
+                        class="mr-2"
+                        @click="loadWmsLayer(l)"
+                        v-bind="actv"
+                        />
+                    </template>
+                    <span> {{ "WMS Layer zu Hintergrundkarten hinzuladen" }} </span>
+                </v-tooltip>
+                <span class="grow">{{ l.name }}</span>
+                <v-icon
+                :icon="mdiTrashCan"
+                class="cursor-pointer"
+                @click="removeWmsLayer(l.id)"
+                />
+            </v-sheet>
+            </v-list-item>
+
+            <div
+            v-if="step.mapSources.length === 0"
+            class="text-medium-emphasis py-2"
+            >
+            Keine WMS-Ebenen ausgewählt.
+            </div>
+        </v-list>
 
         <div>
         <div class="mb-2">
