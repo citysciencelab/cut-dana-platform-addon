@@ -38,7 +38,7 @@ export function useNavigation() {
     store.dispatch('Modules/BaselayerSwitcher/updateLayerVisibilityAndZIndex', layerId);
   };
 
-  const setInformationLayers = (layerIds = [], removableBlackList = ['19969']) => {
+  const setInformationLayers = (layerIds = [], removableBlackList = [ '19969' ]) => {
     const prev = store.getters.visibleLayerConfigs.map(config => config.id) || [];
 
     const added = layerIds.filter(id => !prev.includes(id));

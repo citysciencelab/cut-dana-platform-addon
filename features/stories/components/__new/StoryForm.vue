@@ -12,6 +12,7 @@ import { createStory } from '../../services/createStory';
 import { editStory } from '../../services/editStory';
 import { uploadStepModel } from '../../services/uploadStepModel';
 import ConfirmSavePopup from '../inputs/ConfirmSavePopup.vue';
+
 import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
 
@@ -72,10 +73,10 @@ const canPublish = computed(() => {
 });
 
 const activeStep = computed(() => {
-    const chapter = chapters.value?.[activeChapterIndex.value];
-    if (!chapter) return null;
-    const step = chapter.steps?.[activeStepIndex.value];
-    return step || null;
+  const chapter = chapters.value?.[activeChapterIndex.value];
+  if (!chapter) return null;
+  const step = chapter.steps?.[activeStepIndex.value];
+  return step || null;
 });
 
 function handleModelSelected({ step, file }) {
@@ -205,19 +206,19 @@ async function publish() {
   let createdStory = payload;
 
   if (storyId) {
-      const updateResp = await editStory(storyId, payload);
-      const bodyText = await updateResp.text();
-      if (!updateResp.ok) {
-          throw new Error(`Failed to edit story: ${updateResp.status} ${bodyText}`);
-      }
+    const updateResp = await editStory(storyId, payload);
+    const bodyText = await updateResp.text();
+    if (!updateResp.ok) {
+      throw new Error(`Failed to edit story: ${updateResp.status} ${bodyText}`);
+    }
   } else {
-      const createResp = await createStory(payload);
-      const bodyText = await createResp.text();
-      if (!createResp.ok) {
-          throw new Error(`Failed to create story: ${createResp.status} ${bodyText}`);
-      }
-      createdStory = JSON.parse(bodyText);
-      storyId = createdStory.id;
+    const createResp = await createStory(payload);
+    const bodyText = await createResp.text();
+    if (!createResp.ok) {
+      throw new Error(`Failed to create story: ${createResp.status} ${bodyText}`);
+    }
+    createdStory = JSON.parse(bodyText);
+    storyId = createdStory.id;
   }
 
   const uploads = [];
@@ -272,7 +273,7 @@ watch(activeStepIndex, (activeStepIndex) => {
 });
 
 // When the step is change we remove all visible layers and reset to default base layer
-watch([activeStep, previewVisible], () => {
+watch([ activeStep, previewVisible ], () => {
   removeAllVisibleLayers();
   if (previewVisible.value == true) {
     setAnimatedView({

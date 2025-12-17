@@ -4,8 +4,8 @@ import { mdiArrowLeft, mdiDotsVertical } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 
 import { useDataNarrator } from '../../../../../hooks/useDataNarrator';
-import { useNavigation } from '../../../../steps/hooks/useNavigation';
 import { dataNarratorModes, ToolwindowModes } from '../../../../../store/contantsDataNarrator';
+import { useNavigation } from '../../../../steps/hooks/useNavigation';
 
 const { gotoPage } = useDataNarrator();
 const { toolwindowMode } = useDataNarrator();
