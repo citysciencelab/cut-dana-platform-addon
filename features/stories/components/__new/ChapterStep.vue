@@ -36,7 +36,8 @@ const allMapSources = ref([])
 
 function onWmsLoad(sources) {
   if (!Array.isArray(step.mapSources)) step.mapSources = [];
-  if (!Array.isArray(allMapSources.value)) allMapSources.value = [];
+  allMapSources.value = [];
+
   const existing = new Set(allMapSources.value.map((s) => s.id));
   for (const src of sources) {
     if (!existing.has(src.id)) {

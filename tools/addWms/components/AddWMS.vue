@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useTranslation } from 'i18next-vue';
 import { intersects as olIntersects } from 'ol/extent';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const props = defineProps({
   projectionCode: { type: String, default: 'EPSG:3857' },
@@ -39,9 +39,11 @@ function isHttpUrl(url) {
 
 function normalizeBaseUrl(raw) {
   const u = new URL(raw);
-  u.searchParams.delete('request');
-  u.searchParams.delete('service');
-  u.searchParams.delete('version');
+  for (const key of [ ...u.searchParams.keys() ]) {
+    if ([ 'request', 'service', 'version' ].includes(key.toLowerCase())) {
+      u.searchParams.delete(key);
+    }
+  }
   return u.toString();
 }
 

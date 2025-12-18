@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
@@ -22,6 +23,7 @@ const {
   setInformationLayers,
   removeAllVisibleLayers
 } = useNavigation();
+const store = useStore();
 
 const story = ref(null);
 const isLoading = ref(true);
@@ -91,9 +93,18 @@ watch(
       zoom: step.zoomLevel
     });
 
-    const bgId = step.backgroundMapId || defaultBaseLayerId;
-    setBaseLayer(bgId);
-    setInformationLayers(step.informationLayerIds ?? [], [ bgId ]);
+    if (step.mapSources.length > 0) {
+      step.mapSources.forEach(layer => {
+        store.dispatch('addLayerToLayerConfig', {
+          layerConfig: layer,
+          parentKey: 'subjectlayer', // analogue to AddWMS in MP
+        });
+      })
+    } else {
+      const bgId = step.backgroundMapId || defaultBaseLayerId;
+      setBaseLayer(bgId);
+      setInformationLayers(step.informationLayerIds ?? [], [ bgId ]);
+    }
   },
   { immediate: true }
 );
