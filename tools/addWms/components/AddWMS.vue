@@ -2,6 +2,7 @@
 import crs from '@masterportal/masterportalapi/src/crs';
 import { mdiCheckCircle } from '@mdi/js';
 import axios from 'axios';
+import { useTranslation } from 'i18next-vue';
 import { intersects as olIntersects } from 'ol/extent';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import { ref, computed, onMounted } from 'vue';
@@ -12,6 +13,8 @@ const props = defineProps({
   autoFocus: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
 });
+
+const { t } = useTranslation();
 
 const emit = defineEmits([ 'selected', 'error' ]);
 
@@ -234,7 +237,6 @@ function onKeydown(e) {
   if (e.key === 'Enter') importLayers();
 }
 
-const btnLabel = computed(() => (loading.value ? 'Loading…' : 'Load'));
 </script>
 
 <template>
@@ -250,7 +252,7 @@ const btnLabel = computed(() => (loading.value ? 'Loading…' : 'Load'));
       <v-text-field
         ref="inputRef"
         v-model="wmsUrl"
-        placeholder="Enter WMS service URL"
+        :placeholder="$t('additional:modules.dataNarrator.label.enterWms')"
         :disabled="loading || disabled"
         density="comfortable"
         variant="outlined"
@@ -274,15 +276,14 @@ const btnLabel = computed(() => (loading.value ? 'Loading…' : 'Load'));
             :disabled="loading || !wmsUrl"
             @click="importLayers"
           >
-            {{ btnLabel }}
+            {{ t("additional:modules.dataNarrator.label.loadWmsBtn") }}
           </v-btn>
         </template>
       </v-text-field>
     </div>
 
     <div class="hint">
-      You can paste either the base WMS service URL or a full
-      GetCapabilities URL.
+      {{ t("additional:modules.dataNarrator.label.wmsHint") }}
     </div>
   </div>
 </template>

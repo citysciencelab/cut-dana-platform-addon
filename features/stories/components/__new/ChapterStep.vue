@@ -151,7 +151,7 @@ watch(
         cols="12"
         class="p-0"
       >
-        WMS-Ebenen
+        {{ t("additional:modules.dataNarrator.label.wmsLayer") }}
       </v-col>
     </v-row>
 
@@ -166,7 +166,7 @@ watch(
     >
       <v-card>
         <v-card-title class="d-flex align-center">
-          WMS Ebenen
+          {{ t("additional:modules.dataNarrator.label.wmsLayer") }}
           <v-spacer />
           <v-btn
             icon
@@ -203,7 +203,7 @@ watch(
                     />
                   </template>
                   <span>
-                    {{ "WMS Layer hinzuladen" }}
+                    {{ t("additional:modules.dataNarrator.label.loadWmsLayer") }}
                   </span>
                 </v-tooltip>
                 <span class="grow">{{ l.name }}</span>
@@ -242,7 +242,7 @@ watch(
       v-if="step.mapSources.length === 0"
       class="text-medium-emphasis py-2"
     >
-      Keine WMS-Ebenen ausgewählt.
+      {{ t("additional:modules.dataNarrator.label.noWmsLayer") }}
     </div>
 
     <div>
