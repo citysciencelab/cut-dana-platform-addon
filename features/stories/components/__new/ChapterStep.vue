@@ -13,8 +13,6 @@ import StepTitle from './step/StepTitle.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 import TwoDNavigation from './step/TwoDNavigation.vue';
 
-
-
 const { step } = defineProps({
   step: {
     type: Object,
@@ -28,7 +26,7 @@ const { step } = defineProps({
 const emit = defineEmits([ 'modelSelected' ]);
 
 const { t } = useTranslation();
-const { setBaseLayer } = useNavigation();
+const { setBaseLayer, setAnimatedView } = useNavigation();
 const store = useStore();
 
 const stepTitleRef = ref(null);
@@ -55,6 +53,19 @@ watch(
     stepTitleRef.value?.focus?.();
   },
 );
+
+watch(
+  () => step?.mapConfig,
+  (newMapConfig) => {
+    setBaseLayer(newMapConfig?.backgroundMapId);
+    setAnimatedView({
+      center: newMapConfig.centerCoordinates,
+      zoom: newMapConfig.zoomLevel
+    });
+  },
+  { immediate: true, deep: true }
+);
+
 </script>
 
 <template>

@@ -27,7 +27,14 @@ const props = defineProps({
 const { t } = useTranslation();
 const { toolwindowMode } = useDataNarrator();
 const { gotoPage } = useDataNarrator();
-const { initialZoom, initialCenter } = useNavigation();
+
+const {
+  initialCenter,
+  initialZoom,
+  removeAllVisibleLayers,
+  setAnimatedView
+} = useNavigation();
+
 const backConfirmation = ref(false);
 const storyName = ref('');
 const description = ref('');
@@ -63,6 +70,13 @@ const canPublish = computed(() => {
         chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
 
   return allChaptersHaveSteps && storyName.value.trim().length > 0;
+});
+
+const activeStep = computed(() => {
+  const chapter = chapters.value?.[activeChapterIndex.value];
+  if (!chapter) return null;
+  const step = chapter.steps?.[activeStepIndex.value];
+  return step || null;
 });
 
 function handleModelSelected({ step, file }) {
@@ -190,6 +204,7 @@ async function publish() {
 
   let storyId = props.storyId;
   let createdStory = payload;
+
   if (storyId) {
     const updateResp = await editStory(storyId, payload);
     const bodyText = await updateResp.text();
@@ -256,6 +271,18 @@ watch(activeStepIndex, (activeStepIndex) => {
     editStoryVisible.value = false;
   }
 });
+
+// When the step is change we remove all visible layers and reset to default base layer
+watch([ activeStep, previewVisible ], () => {
+  removeAllVisibleLayers();
+  if (previewVisible.value == true) {
+    setAnimatedView({
+      center: initialCenter.value,
+      zoom: initialZoom.value
+    })
+  }
+});
+
 </script>
 
 <template>
@@ -331,11 +358,11 @@ watch(activeStepIndex, (activeStepIndex) => {
           location="bottom end"
           offset="4"
         >
-          <template #activator="{ props: actv }">
+          <template #activator="{ props: menuProps }">
             <v-tooltip location="top">
               <template #activator="{ props: tooltipProps }">
                 <v-btn
-                  v-bind="{...actv, ...tooltipProps}"
+                  v-bind="{...menuProps, ...tooltipProps}"
                   variant="text"
                   :icon="mdiDotsVertical"
                   size="compact"
@@ -439,6 +466,7 @@ watch(activeStepIndex, (activeStepIndex) => {
     <v-container class="story-form-footer">
       <v-row justify="center">
         <v-btn
+          v-if="!previewVisible"
           type="button"
           class="mr-2"
           variant="outlined"
@@ -459,7 +487,6 @@ watch(activeStepIndex, (activeStepIndex) => {
         </v-btn>
       </v-row>
     </v-container>
-
     <!--        <Preview-->
     <!--            :chapters="chapters"-->
     <!--            :hasImage="!!selectedImage || !!imagePreview"-->

@@ -5,15 +5,20 @@ import { useTranslation } from 'i18next-vue';
 
 import { useDataNarrator } from '../../../../../hooks/useDataNarrator';
 import { dataNarratorModes, ToolwindowModes } from '../../../../../store/contantsDataNarrator';
+import { useNavigation } from '../../../../steps/hooks/useNavigation';
 
 const { gotoPage } = useDataNarrator();
 const { toolwindowMode } = useDataNarrator();
+const {
+  removeAllVisibleLayers,
+} = useNavigation();
 const props = defineProps({
   title: String
 });
 const { t } = useTranslation();
 
 function backToDashboard() {
+  removeAllVisibleLayers();
   gotoPage(dataNarratorModes.DASHBOARD);
 
   const baseUrl = `${location.origin}/portal/stories`;
