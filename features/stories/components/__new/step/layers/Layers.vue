@@ -14,38 +14,42 @@ const props = defineProps({ modelValue: { type: Array, default: () => [] } });
 const emit = defineEmits([ 'update:modelValue' ]);
 
 const dialogOpen = ref(false);
-const selectedIds = ref([]);
-const nextZIndex = ref(7); // current layer config has highest of 7
 
 const selectedLayers = computed(() =>
-  (selectedIds.value ?? [])
+  (props.modelValue ?? [])
     .map((id) => idToLayerMap.value.get(id))
     .filter(Boolean)
 );
 
 function addLayer(layerId) {
   if (!layerId) return;
-  if (!selectedIds.value.includes(layerId)) {
-    selectedIds.value = [ ...selectedIds.value, layerId ];
+  if (!props.modelValue.includes(layerId)) {
+    emit('update:modelValue', [ ...props.modelValue, layerId ]);
   }
 }
 
 function removeLayer(id) {
-  selectedIds.value = selectedIds.value.filter(v => v !== id);
+  emit('update:modelValue', props.modelValue.filter(v => v !== id));
 }
 
 watch(
-  selectedIds,
+  () => props.modelValue,
   (newIds, oldIds) => {
     const prev = oldIds ?? [];
     const added = newIds.filter(id => !prev.includes(id));
     const removed = prev.filter(id => !newIds.includes(id));
 
+    const baseLayers = store.getters.layerConfigsByAttributes({
+      baselayer: true,
+      showInLayerTree: true
+    });
+    let maxBaselayerZIndex = Math.max(...baseLayers.map(layer => layer.zIndex));
+
     if (added.length) {
       for (const id of added) {
         store.dispatch('addOrReplaceLayer', {
           layerId: id,
-          zIndex: nextZIndex.value++
+          zIndex: ++maxBaselayerZIndex
         });
       }
     }
@@ -54,7 +58,7 @@ watch(
       store.dispatch('Modules/LayerTree/removeLayer', { id });
     }
   },
-  { deep: false }
+  { immediate: true, deep: false }
 );
 </script>
 

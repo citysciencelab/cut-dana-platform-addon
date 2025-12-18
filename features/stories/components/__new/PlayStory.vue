@@ -6,7 +6,6 @@ import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNar
 import { getFileUrl } from '../../../../utils/getFileUrl';
 import ToolWindow from '../../../shared/Toolwindow/ToolWindow.vue';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
-import { useStepOverlays } from '../../hooks/useStepOverlays';
 import { useStory } from '../../hooks/useStory';
 
 import PlayerFrame from './play/PlayerFrame.vue';
@@ -14,8 +13,15 @@ import RichTextViewer from './step/RichTextViewer.vue';
 
 const { gotoPage } = useDataNarrator()
 const { currentStoryId } = useStory();
-const { setAnimatedView, initialZoom, initialCenter, setBaseLayer, defaultBaseLayerId } = useNavigation();
-const { applyForStep, clear: clearOverlays } = useStepOverlays();
+const {
+  defaultBaseLayerId,
+  initialZoom,
+  initialCenter,
+  setAnimatedView,
+  setBaseLayer,
+  setInformationLayers,
+  removeAllVisibleLayers
+} = useNavigation();
 
 const story = ref(null);
 const isLoading = ref(true);
@@ -61,7 +67,6 @@ function resetBaseLayer() {
 
 watch(stage, (currentStage) => {
   if (currentStage === 'overview') {
-    clearOverlays();
     resetBaseLayer();
   }
 });
@@ -86,10 +91,9 @@ watch(
       zoom: step.zoomLevel
     });
 
-    const bgId = step.backgroundMapId ?? defaultBaseLayerId;
+    const bgId = step.backgroundMapId || defaultBaseLayerId;
     setBaseLayer(bgId);
-
-    applyForStep(step);
+    setInformationLayers(step.informationLayerIds ?? [], [ bgId ]);
   },
   { immediate: true }
 );
@@ -111,6 +115,12 @@ function next() {
     stepIndex.value = 0;
   } else {
     gotoPage(dataNarratorModes.DASHBOARD);
+    removeAllVisibleLayers();
+    resetBaseLayer();
+    setAnimatedView({
+      center: initialCenter.value,
+      zoom: initialZoom.value,
+    });
   }
 }
 
@@ -142,7 +152,7 @@ function startFromChapter(idx) {
 }
 
 onBeforeUnmount(() => {
-  clearOverlays();
+  removeAllVisibleLayers();
   resetBaseLayer();
 });
 </script>

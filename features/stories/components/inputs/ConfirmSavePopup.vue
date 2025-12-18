@@ -29,8 +29,8 @@ const { t } = useTranslation();
           >
             <a
               :href="$t('additional:modules.dataNarrator.confirm.createStoryDataProtectionNotice.termsOfUseLinkHref')"
-              target='_blank'
-              rel='noopener'
+              target="_blank"
+              rel="noopener"
             >
               {{ $t('additional:modules.dataNarrator.confirm.createStoryDataProtectionNotice.termsOfUseLinkTitle') }}
             </a>

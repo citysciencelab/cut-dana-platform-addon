@@ -1,7 +1,6 @@
 import { ref } from 'vue';
 
 import { backendUrl } from '../../../store/contantsDataNarrator';
-// useFetchStories.js
 
 export function useFetchStories () {
   const stories = ref([]);
@@ -19,8 +18,7 @@ export function useFetchStories () {
 
     try {
       const response = await fetch(url);
-      const data = await response.json();
-      stories.value = data;
+      stories.value = await response.json();
     } catch (err) {
       error.value = err;
     } finally {
