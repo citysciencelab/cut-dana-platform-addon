@@ -8,7 +8,7 @@ import { useDashboardStore } from '../store/useDashboardStore';
 import { useLogin } from './useLogin';
 
 /**
- *
+ * Dashboard composable for managing stories display and fetching
  */
 export function useDashboard () {
   const { loggedIn } = useLogin()
@@ -26,14 +26,15 @@ export function useDashboard () {
     fetchStories(storiesDisplayMode.value);
   }
 
-  // Initial fetch on component initialization
-  refetchStories();
-
-  // Watch for mode changes and manually trigger fetch
-  watch(storiesDisplayMode, (newMode) => {
-    console.log(`Dashboard mode changed to ${newMode}, triggering fetch`);
-    fetchStories(newMode);
-  });
+  // Watch for mode changes and fetch stories
+  // immediate:  true replaces the separate initial fetch call
+  watch(
+    storiesDisplayMode,
+    (newMode) => {
+      fetchStories(newMode);
+    },
+    { immediate: true }
+  );
 
   const storyModeLists = computed(() => {
     return Object.values(availableStoryListModes).filter(mode =>
