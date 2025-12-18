@@ -9,7 +9,7 @@ import { deleteStory } from '../../../stories/services/deleteStory';
 const { t } = useTranslation();
 const { storyId } = defineProps({
   storyId: {
-    type: String,
+    type: Number,
     required: true
   }
 });

@@ -3,13 +3,11 @@ import { useStore } from 'vuex';
 
 import { backendUrl } from '../../../store/contantsDataNarrator';
 import { isNullOrWhitespace } from '../../../utils/stringUtils';
-import { useDashboard } from '../../dashboard/hooks/useDashboard';
 import { uploadCoverImage } from '../services/addCoverImage';
 import { createChapter } from '../services/chapters';
 
 export function useStoryForm () {
   const store = useStore();
-  const { getAllStories } = useDashboard();
 
   const chapterName = ref('');
 
@@ -146,7 +144,7 @@ export function useStoryForm () {
       method: 'DELETE'
     });
     if (response.ok) {
-      await getAllStories();
+      store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', 'all');
     }
   }
 

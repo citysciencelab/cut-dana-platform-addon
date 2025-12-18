@@ -11,7 +11,7 @@ const { currentStoryId } = useStory();
 const { gotoPage } = useDataNarrator();
 const { storyId } = defineProps({
   storyId: {
-    type: String,
+    type: Number,
     required: true
   }
 });

@@ -1,15 +1,8 @@
 <script setup>
-
 import { useTranslation } from 'i18next-vue';
+import { useStore } from 'vuex';
 
-import { storeToRefs } from 'pinia';
-
-import { useDashboard } from '../../hooks/useDashboard';
-import { useDashboardStore } from '../../store/useDashboardStore';
-
-const dashboardStore = useDashboardStore();
-const { mode:storiesDisplayMode } = storeToRefs(dashboardStore)
-const { refetch } = useDashboard();
+const store = useStore();
 
 const { t } = useTranslation();
 
@@ -25,8 +18,8 @@ const { mode, active } = defineProps({
 });
 
 const setMode = () => {
-  console.log('setMode', mode);
-  storiesDisplayMode.value = mode;
+  store.commit('Modules/DataNarrator/DashboardStore/setMode', mode);
+  store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', mode);
 };
 </script>
 

@@ -1,11 +1,9 @@
 <script setup>
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { ToolwindowModes as toolwindowModes } from '../../../store/contantsDataNarrator';
-import { useDashboard } from '../../dashboard/hooks/useDashboard';
 
 import BottomSheet from './BottomSheet.vue';
 
-const { open } = useDashboard();
 const { toolwindowMode } = useDataNarrator();
 </script>
 
@@ -21,7 +19,7 @@ const { toolwindowMode } = useDataNarrator();
             />
           </header>
           <main
-            :class="[$slots.fixed ? 'slot-fixed' : 'slot', open ? '' : 'removed', { mobile: toolwindowMode === toolwindowModes.MOBILE }]"
+            :class="[$slots.fixed ? 'slot-fixed' : 'slot', { mobile: toolwindowMode === toolwindowModes.MOBILE }]"
           >
             <slot name="default" />
             <slot name="fixed" />
