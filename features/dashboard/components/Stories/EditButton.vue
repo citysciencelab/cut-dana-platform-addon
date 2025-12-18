@@ -10,15 +10,15 @@ const { t } = useTranslation();
 const { currentStoryId } = useStory();
 const { gotoPage } = useDataNarrator();
 const { storyId } = defineProps({
-    storyId: {
-        type: String,
-        required: true
-    }
+  storyId: {
+    type: String,
+    required: true
+  }
 });
 
 function gotoSelectedStory() {
-    currentStoryId.value = storyId;
-    gotoPage(constants.dataNarratorModes.EDIT_STORY);
+  currentStoryId.value = storyId;
+  gotoPage(constants.dataNarratorModes.EDIT_STORY);
 }
 </script>
 

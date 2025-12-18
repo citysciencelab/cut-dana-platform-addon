@@ -1,21 +1,21 @@
 import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../src/shared/js/utils/generators';
 
 export const state = {
-    stories: [],
-    mode: 'all',
+  stories: [],
+  mode: 'all',
 };
 
 export const mutations = {
-    ...generateSimpleMutations(state),
+  ...generateSimpleMutations(state),
 };
 
 export const getters = {
-    ...generateSimpleGetters(state)
+  ...generateSimpleGetters(state)
 };
 
 export default {
-    namespaced: true,
-    state,
-    mutations,
-    getters
+  namespaced: true,
+  state,
+  mutations,
+  getters
 };

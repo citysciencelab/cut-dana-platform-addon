@@ -5,18 +5,18 @@ import { useTranslation } from 'i18next-vue';
 const { t } = useTranslation();
 
 const { tooltip, text, showStoryTitle } = defineProps({
-    tooltip: {
-        type: String,
-        default: 'additional:modules.tools.dataNarrator.button.backToStory'
-    },
-    text: {
-        type: String,
-        default: 'additional:modules.tools.dataNarrator.button.backToStep'
-    },
-    showStoryTitle: {
-        type: Boolean,
-        default: true
-    }
+  tooltip: {
+    type: String,
+    default: 'additional:modules.tools.dataNarrator.button.backToStory'
+  },
+  text: {
+    type: String,
+    default: 'additional:modules.tools.dataNarrator.button.backToStep'
+  },
+  showStoryTitle: {
+    type: Boolean,
+    default: true
+  }
 })
 </script>
 

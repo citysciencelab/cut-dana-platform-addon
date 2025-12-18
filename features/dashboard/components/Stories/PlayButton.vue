@@ -9,14 +9,14 @@ const { t } = useTranslation();
 const { currentStoryId } = useStories();
 const emit = defineEmits([ 'click' ]);
 const { storyId } = defineProps({
-    storyId: {
-        type: String,
-        required: true
-    }
+  storyId: {
+    type: String,
+    required: true
+  }
 });
 
 function onClick() {
-    emit('click');
+  emit('click');
 }
 
 </script>

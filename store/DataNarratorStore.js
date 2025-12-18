@@ -9,15 +9,15 @@ import mutations from './mutationsDataNarrator';
 import state from './stateDataNarrator';
 
 export default {
-    namespaced: true,
-    state,
-    mutations,
-    getters,
-    modules: {
-        EditStoryForm,
-        EditStepForm,
-        DashboardStore,
-        StoryStore,
-        LayersStore
-    }
+  namespaced: true,
+  state,
+  mutations,
+  getters,
+  modules: {
+    EditStoryForm,
+    EditStepForm,
+    DashboardStore,
+    StoryStore,
+    LayersStore
+  }
 };

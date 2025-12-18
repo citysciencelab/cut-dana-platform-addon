@@ -3,8 +3,8 @@ import PreviewModal from './PreviewModal.vue';
 
 const open = defineModel('open', { type: Object, default: false });
 const { chapters, hasImage } = defineProps({
-    hasImage: Boolean,
-    chapters: { type: Object, required: true }
+  hasImage: Boolean,
+  chapters: { type: Object, required: true }
 });
 </script>
 

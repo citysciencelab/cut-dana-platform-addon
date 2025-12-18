@@ -2,27 +2,27 @@ import { getStories } from '../features/stories/services/getStories';
 
 export default {
 
-    data () {
-        return {
-            isLoading: false,
+  data () {
+    return {
+      isLoading: false,
 
-            stories: []
-        };
-    },
+      stories: []
+    };
+  },
 
-    computed: {
-    },
+  computed: {
+  },
 
-    methods: {
-        async getAllStories() {
-            this.isLoading = true;
-            const response = await getStories();
-            if (response.ok) {
-                this.isLoading = false;
-                this.stories = await response.json();
-            } else {
-                this.isLoading = false;
-            }
-        }
+  methods: {
+    async getAllStories() {
+      this.isLoading = true;
+      const response = await getStories();
+      if (response.ok) {
+        this.isLoading = false;
+        this.stories = await response.json();
+      } else {
+        this.isLoading = false;
+      }
     }
+  }
 };

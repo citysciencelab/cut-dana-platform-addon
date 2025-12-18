@@ -8,27 +8,27 @@ const store = useStore();
 const importedModels = computed(() => store.getters['Modules/Modeler3D/importedModels']);
 
 function changeVisibility(model) {
-    const entities = mapCollection.getMap('3D').getDataSourceDisplay().defaultDataSource.entities,
-        entity = entities.getById(model.id);
+  const entities = mapCollection.getMap('3D').getDataSourceDisplay().defaultDataSource.entities,
+    entity = entities.getById(model.id);
 
-    entity.show = !model.show;
-    model.show = entity.show;
+  entity.show = !model.show;
+  model.show = entity.show;
 }
 
 function zoomTo(id) {
-    const scene = mapCollection.getMap('3D').getCesiumScene(),
-        entities = mapCollection.getMap('3D').getDataSourceDisplay().defaultDataSource.entities,
-        entity = entities.getById(id),
-        entityPosition = entity.position.getValue(),
-        destination = Cesium.Cartographic.fromCartesian(entityPosition);
+  const scene = mapCollection.getMap('3D').getCesiumScene(),
+    entities = mapCollection.getMap('3D').getDataSourceDisplay().defaultDataSource.entities,
+    entity = entities.getById(id),
+    entityPosition = entity.position.getValue(),
+    destination = Cesium.Cartographic.fromCartesian(entityPosition);
 
-    scene.camera.flyTo({
-        destination: Cesium.Cartesian3.fromRadians(destination.longitude, destination.latitude, destination.height + 250)
-    });
+  scene.camera.flyTo({
+    destination: Cesium.Cartesian3.fromRadians(destination.longitude, destination.latitude, destination.height + 250)
+  });
 }
 
 function deleteModel(id) {
-    store.dispatch('Modules/Modeler3D/deleteEntity', id);
+  store.dispatch('Modules/Modeler3D/deleteEntity', id);
 }
 </script>
 

@@ -1,3 +1,3 @@
 export function numberToLetter(n) {
-    return String.fromCharCode(64 + n);
+  return String.fromCharCode(64 + n);
 }

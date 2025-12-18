@@ -15,46 +15,46 @@ import { numberToLetter } from '../../../../utils/numberToLetter';
 const { t } = useTranslation();
 
 const emits = defineEmits([
-    'addNewChapter',
-    'addNewStep',
-    'editStep',
-    'deleteStep',
-    'stepsChange',
-    'editChapter',
-    'deleteChapter',
-    'chaptersChange',
-    'editStoryVisible',
+  'addNewChapter',
+  'addNewStep',
+  'editStep',
+  'deleteStep',
+  'stepsChange',
+  'editChapter',
+  'deleteChapter',
+  'chaptersChange',
+  'editStoryVisible',
 ]);
 
 const props = defineProps({
-    chapters: {
-        type: Array,
-        default: () => [],
-    },
-    editStoryVisible: {
-        type: Boolean,
-    }
+  chapters: {
+    type: Array,
+    default: () => [],
+  },
+  editStoryVisible: {
+    type: Boolean,
+  }
 });
 
 
 const onEditStepClick = (chapterIdx, stepIdx) => {
-    emits('editStep', { chapterIdx, stepIdx });
+  emits('editStep', { chapterIdx, stepIdx });
 };
 const onDeleteStepClick = (chapterIdx, stepIdx) => {
-    emits('deleteStep', { chapterIdx, stepIdx });
+  emits('deleteStep', { chapterIdx, stepIdx });
 };
 const onStepsChange = (chapterIdx, newList) => {
-    emits('stepsChange', { chapterIdx, newList });
+  emits('stepsChange', { chapterIdx, newList });
 }
 
 const onEditChapterClick = (chapterIdx) => {
-    emits('editChapter', { chapterIdx });
+  emits('editChapter', { chapterIdx });
 }
 const onDeleteChapterClick = (chapterIdx) => {
-    emits('deleteChapter', { chapterIdx });
+  emits('deleteChapter', { chapterIdx });
 }
 const onReorderChapters = (newList) => {
-    emits('chaptersChange', newList);
+  emits('chaptersChange', newList);
 }
 </script>
 

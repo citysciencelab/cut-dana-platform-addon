@@ -8,7 +8,7 @@ const { t } = useTranslation();
  *
  */
 function toggleSharedSettings () {
-    console.log('toggleSharedSettings');
+  console.log('toggleSharedSettings');
 }
 </script>
 

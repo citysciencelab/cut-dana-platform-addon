@@ -17,11 +17,11 @@ import TwoDNavigation from './step/TwoDNavigation.vue';
 const { step } = defineProps({
   step: {
     type: Object,
-    required: true,
+    required: true
   },
   pillColor: {
     type: String,
-  },
+  }
 });
 
 const emit = defineEmits([ 'modelSelected' ]);

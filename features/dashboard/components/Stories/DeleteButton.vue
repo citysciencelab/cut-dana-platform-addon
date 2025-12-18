@@ -8,25 +8,25 @@ import { deleteStory } from '../../../stories/services/deleteStory';
 
 const { t } = useTranslation();
 const { storyId } = defineProps({
-    storyId: {
-        type: String,
-        required: true
-    }
+  storyId: {
+    type: String,
+    required: true
+  }
 });
 const emit = defineEmits([ 'deleted' ]);
 const isLoading = ref(false);
 const deleteStoryDialogVisible = ref(false);
 
 async function deleteStoryWithConfirm() {
-    isLoading.value = true;
-    try {
-        await deleteStory(storyId);
-        emit('deleted');
-    } catch (error) {
-        console.error(error);
-    } finally {
-        isLoading.value = false;
-    }
+  isLoading.value = true;
+  try {
+    await deleteStory(storyId);
+    emit('deleted');
+  } catch (error) {
+    console.error(error);
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 

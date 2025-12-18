@@ -2,17 +2,17 @@
 import { ref, watch, computed } from 'vue';
 
 const props = defineProps({
-    modelValue: { type: Boolean, default: false },
-    title: { type: String, default: 'Share story' },
-    storyId: { type: String, required: true },
+  modelValue: { type: Boolean, default: false },
+  title: { type: String, default: 'Share story' },
+  storyId: { type: String, required: true },
 });
 
 const emit = defineEmits([ 'update:modelValue' ]);
 
 const open = ref(props.modelValue);
 watch(
-    () => props.modelValue,
-    (v) => (open.value = v)
+  () => props.modelValue,
+  (v) => (open.value = v)
 );
 watch(open, (v) => emit('update:modelValue', v));
 
@@ -22,26 +22,26 @@ const snackbar = ref(false);
 const msg = ref('');
 
 async function copy() {
-    try {
-        if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(url.value);
-        } else {
-            const el = document.createElement('textarea');
-            el.value = url.value;
-            el.setAttribute('readonly', '');
-            el.style.position = 'absolute';
-            el.style.left = '-9999px';
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-        }
-        msg.value = 'Link copied';
-    } catch {
-        msg.value = 'Couldn’t copy link';
-    } finally {
-        snackbar.value = true;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url.value);
+    } else {
+      const el = document.createElement('textarea');
+      el.value = url.value;
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
     }
+    msg.value = 'Link copied';
+  } catch {
+    msg.value = 'Couldn’t copy link';
+  } finally {
+    snackbar.value = true;
+  }
 }
 </script>
 

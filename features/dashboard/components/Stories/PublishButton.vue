@@ -8,12 +8,12 @@ import { publishStory } from '../../services/publishStory';
 const { t } = useTranslation();
 
 const props = defineProps({
-    storyId: { type: Number, required: true },
-    isDraft: { type: Boolean, required: true },
+  storyId: { type: Number, required: true },
+  isDraft: { type: Boolean, required: true },
 });
 
 const emit = defineEmits([
-    'success'
+  'success'
 ]);
 
 const loading = ref(false);
@@ -21,27 +21,27 @@ const loading = ref(false);
 const isDraft = computed(() => props.isDraft);
 const icon = computed(() => (isDraft.value ? mdiCloudUploadOutline : mdiCloudOffOutline));
 const btnLabel = computed(() =>
-    isDraft.value
-        ? t('additional:modules.dataNarrator.button.publish', 'Publish')
-        : t('additional:modules.dataNarrator.button.unpublish', 'Unpublish')
+  isDraft.value
+    ? t('additional:modules.dataNarrator.button.publish', 'Publish')
+    : t('additional:modules.dataNarrator.button.unpublish', 'Unpublish')
 );
 
 async function onClick() {
-    if (loading.value) return;
-    loading.value = true;
-    try {
-        if (isDraft.value) {
-            await publishStory(props.storyId, false);
-            emit('success');
-        } else {
-            await publishStory(props.storyId, true);
-            emit('success');
-        }
-    } catch (err) {
-        console.error('Failed to toggle publish state', err);
-    } finally {
-        loading.value = false;
+  if (loading.value) return;
+  loading.value = true;
+  try {
+    if (isDraft.value) {
+      await publishStory(props.storyId, false);
+      emit('success');
+    } else {
+      await publishStory(props.storyId, true);
+      emit('success');
     }
+  } catch (err) {
+    console.error('Failed to toggle publish state', err);
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 

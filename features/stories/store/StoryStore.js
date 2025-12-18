@@ -1,24 +1,24 @@
 import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../src/shared/js/utils/generators';
 
 export const state = {
-    selectedStoryId: null,
+  selectedStoryId: null,
 };
 
 export const mutations = {
-    ...generateSimpleMutations(state),
+  ...generateSimpleMutations(state),
 
-    setSelectedStoryId (state, selectedStoryId) {
-        state.selectedStoryId = selectedStoryId;
-    },
+  setSelectedStoryId (state, selectedStoryId) {
+    state.selectedStoryId = selectedStoryId;
+  },
 };
 
 export const getters = {
-    ...generateSimpleGetters(state)
+  ...generateSimpleGetters(state)
 };
 
 export default {
-    namespaced: true,
-    state,
-    mutations,
-    getters,
+  namespaced: true,
+  state,
+  mutations,
+  getters,
 };

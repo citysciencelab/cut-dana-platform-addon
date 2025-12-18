@@ -9,10 +9,10 @@ const { t } = useTranslation();
 const { zoom, center, zoomIn, zoomOut, canZoomIn, canZoomOut } = useNavigation();
 
 const props = defineProps({
-    modelValue: {
-        type: Object,
-        required: true,
-    }
+  modelValue: {
+    type: Object,
+    required: true,
+  }
 });
 const emit = defineEmits([ 'update:modelValue' ]);
 
@@ -23,11 +23,11 @@ const zoomUpdated = computed(() => zoomLevel.value !== zoom.value);
 const centerUpdated = computed(() => centerCoordinates.value !== center.value);
 
 watch([ centerCoordinates, zoomLevel ], () => {
-    emit('update:modelValue', {
-        ...props.modelValue,
-        centerCoordinates: (centerCoordinates.value ?? []).map(Number),
-        zoomLevel: Number(zoomLevel.value)
-    });
+  emit('update:modelValue', {
+    ...props.modelValue,
+    centerCoordinates: (centerCoordinates.value ?? []).map(Number),
+    zoomLevel: Number(zoomLevel.value)
+  });
 });
 </script>
 

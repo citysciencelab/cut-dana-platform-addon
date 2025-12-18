@@ -8,36 +8,36 @@ import { toggleFeatured } from '../../services/toggleFeatured';
 const { t } = useTranslation();
 
 const props = defineProps({
-    storyId: {
-        type: Number,
-        required: true
-    },
-    isFeatured: {
-        type: Boolean,
-        required: true
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false
-    }
+  storyId: {
+    type: Number,
+    required: true
+  },
+  isFeatured: {
+    type: Boolean,
+    required: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const featured = ref(props.isFeatured);
 
 async function makeItFeatured() {
-    if (!props.isAdmin) return;
+  if (!props.isAdmin) return;
 
-    try {
-        const res = await toggleFeatured(props.storyId, !featured.value);
+  try {
+    const res = await toggleFeatured(props.storyId, !featured.value);
 
-        if (res.ok) {
-            featured.value = !featured.value;
-        } else {
-            console.error('Failed to toggle featured', await res.json());
-        }
-    } catch (error) {
-        console.error('Failed to toggle featured', error);
+    if (res.ok) {
+      featured.value = !featured.value;
+    } else {
+      console.error('Failed to toggle featured', await res.json());
     }
+  } catch (error) {
+    console.error('Failed to toggle featured', error);
+  }
 }
 </script>
 

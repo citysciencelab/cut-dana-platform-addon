@@ -18,40 +18,40 @@ const chapters = ref([]);
 const coverImageUrl = ref(null);
 
 function getFileUrl(titleImage) {
-    return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
+  return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
 }
 
 async function loadStory() {
-    if (!currentStoryId?.value) return;
+  if (!currentStoryId?.value) return;
 
-    isLoading.value = true;
+  isLoading.value = true;
 
-    try {
-        const data = await getStory(currentStoryId.value);
-        storyName.value = data.title ?? '';
-        description.value = data.description ?? '';
-        coverImageUrl.value = data.titleImage ? getFileUrl(data.titleImage) : null;
-        chapters.value = (data.chapters ?? []).map((c, idx) => ({
-            id: idx,
-            sequence: c.sequence,
-            title: c.name,
-            steps: (c.steps ?? []).map((s, i) => ({
-                id: i + 1,
-                title: s.title,
-                description: s.html,
-                mapConfig: {
-                    centerCoordinates: s.centerCoordinate,
-                    zoomLevel: s.zoomLevel,
-                    backgroundMapId: s.backgroundMapId,
-                },
-                informationLayerIds: s.informationLayerIds,
-            })),
-        }));
-    } catch (err) {
-        console.error(err);
-    } finally {
-        isLoading.value = false;
-    }
+  try {
+    const data = await getStory(currentStoryId.value);
+    storyName.value = data.title ?? '';
+    description.value = data.description ?? '';
+    coverImageUrl.value = data.titleImage ? getFileUrl(data.titleImage) : null;
+    chapters.value = (data.chapters ?? []).map((c, idx) => ({
+      id: idx,
+      sequence: c.sequence,
+      title: c.name,
+      steps: (c.steps ?? []).map((s, i) => ({
+        id: i + 1,
+        title: s.title,
+        description: s.html,
+        mapConfig: {
+          centerCoordinates: s.centerCoordinate,
+          zoomLevel: s.zoomLevel,
+          backgroundMapId: s.backgroundMapId,
+        },
+        informationLayerIds: s.informationLayerIds,
+      })),
+    }));
+  } catch (err) {
+    console.error(err);
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 onMounted(loadStory);
