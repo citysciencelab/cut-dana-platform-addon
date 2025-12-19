@@ -32,7 +32,8 @@ const {
   initialCenter,
   initialZoom,
   removeAllVisibleLayers,
-  setAnimatedView
+  setAnimatedView,
+  defaultBaseLayerId
 } = useNavigation();
 
 const backConfirmation = ref(false);
@@ -92,7 +93,7 @@ function getDefaultStep(id) {
     mapConfig: {
       centerCoordinates: initialCenter,
       zoomLevel: initialZoom,
-      backgroundMapId: null,
+      backgroundMapId: defaultBaseLayerId,
     },
     informationLayerIds: [],
     mapSources: [],
