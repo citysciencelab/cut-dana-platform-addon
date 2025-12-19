@@ -1,5 +1,5 @@
 <script setup>
-import { useDragControls } from 'motion-v';
+import { motion, useDragControls } from 'motion-v';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 const sheet = ref(null);
@@ -56,33 +56,33 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .overlay {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    z-index: 1000;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 1000;
 }
 
 .sheet {
-    width: 100%;
+  width: 100%;
 }
 
 .drag-handle-container {
-    padding: 20px;
-    position: absolute;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    touch-action: none;
-    pointer-events: auto;
+  padding: 20px;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  touch-action: none;
+  pointer-events: auto;
 
-    .drag-handle {
-        width: 40px;
-        height: 4px;
-        background: #ccc;
-        border-radius: 2px;
-        margin: 0 auto 8px;
-    }
+  .drag-handle {
+    width: 40px;
+    height: 4px;
+    background: #ccc;
+    border-radius: 2px;
+    margin: 0 auto 8px;
+  }
 }
 </style>
