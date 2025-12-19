@@ -179,10 +179,6 @@ function handleChaptersChange(newList) {
   }));
 }
 
-// function prepublish() {
-//   confirmSaveOpen.value = true;
-// }
-
 function publishOk() {
   confirmSaveOpen.value = false;
   publish();
