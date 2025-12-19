@@ -1,9 +1,12 @@
 <script setup>
 import { useTranslation } from 'i18next-vue';
-import { computed, onMounted, nextTick, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 const props = defineProps({
-  value: String,
+  value: {
+    type: String,
+    default: ''
+  }
 });
 
 const emit = defineEmits([ 'update:value' ]);

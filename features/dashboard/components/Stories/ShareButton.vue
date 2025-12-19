@@ -44,6 +44,6 @@ function onClick() {
   <ShareDialog
     v-model="open"
     :title="title"
-    :story-id="storyId"
+    :story-id="props.storyId"
   />
 </template>

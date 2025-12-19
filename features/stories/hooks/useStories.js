@@ -1,8 +1,5 @@
 import { ref } from 'vue';
-
 import { useStore } from 'vuex';
-
-import { useStoryForm } from './useStoryForm';
 
 /**
  *
@@ -17,7 +14,6 @@ export function useStories () {
 
   return {
     currentStoryId,
-
     createStory
   };
 }

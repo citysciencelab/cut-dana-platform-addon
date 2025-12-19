@@ -56,6 +56,11 @@ const onDeleteChapterClick = (chapterIdx) => {
 const onReorderChapters = (newList) => {
   emits('chaptersChange', newList);
 }
+
+const getColor = (idx) => {
+  return getStoryColor(idx);
+}
+
 </script>
 
 <template>
@@ -66,7 +71,7 @@ const onReorderChapters = (newList) => {
       </div>
 
       <v-menu
-        v-if="!editStoryVisible"
+        v-if="!props.editStoryVisible"
         location="bottom end"
         offset="4"
       >
@@ -117,7 +122,7 @@ const onReorderChapters = (newList) => {
             <div class="step-content d-flex flex-row align-center rounded-xl ml-2 p-2 flex-1-0">
               <span
                 class="chapter-label"
-                :style="{ backgroundColor: getStoryColor(idx).primary }"
+                :style="{ backgroundColor: getColor(idx).primary }"
               >
                 {{ numberToLetter(idx + 1) }}
               </span>

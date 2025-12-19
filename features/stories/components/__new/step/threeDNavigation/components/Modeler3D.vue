@@ -21,7 +21,7 @@ const hideObjects = computed(() => store.getters['Modules/Modeler3D/hideObjects'
 const highlightStyle = computed(() => store.getters['Modules/Modeler3D/highlightStyle']);
 const isDragging = computed(() => store.getters['Modules/Modeler3D/isDragging']);
 const isDrawing = computed(() => store.getters['Modules/Modeler3D/isDrawing']);
-const isLoading = computed(() => store.getters['Modules/Modeler3D/isLoading']);
+// const isLoading = computed(() => store.getters['Modules/Modeler3D/isLoading']);
 const movingEntity = computed(() => store.getters['Modules/Modeler3D/movingEntity']);
 const povActive = computed(() => store.getters['Modules/Modeler3D/povActive']);
 const projections = computed(() => store.getters['Modules/Modeler3D/projections']);

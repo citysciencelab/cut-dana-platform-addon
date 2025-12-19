@@ -1,7 +1,7 @@
 <!-- CategoryBrowser.vue -->
 <script setup>
 import { mdiChevronRight, mdiFileDocumentOutline, mdiFolderOutline } from '@mdi/js';
-import { ref, computed, h } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
   items: { type: Array, required: true, default: () => [] },

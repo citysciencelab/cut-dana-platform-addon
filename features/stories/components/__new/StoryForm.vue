@@ -1,16 +1,16 @@
 <script setup>
-import { mdiDotsVertical, mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan, mdiPencilOutline } from '@mdi/js';
-import { useTranslation } from 'i18next-vue';
-import { computed, ref, watch } from 'vue';
+import {mdiArrowLeft, mdiDotsVertical, mdiImagePlusOutline, mdiPencilOutline, mdiTrashCan} from '@mdi/js';
+import {useTranslation} from 'i18next-vue';
+import {computed, ref, watch} from 'vue';
 
-import { useDataNarrator } from '../../../../hooks/useDataNarrator';
-import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
+import {useDataNarrator} from '../../../../hooks/useDataNarrator';
+import {dataNarratorModes, ToolwindowModes} from '../../../../store/contantsDataNarrator';
 import ConfirmationDialog from '../../../shared/ConfirmationDialog.vue';
-import { useNavigation } from '../../../steps/hooks/useNavigation';
-import { uploadCoverImage } from '../../services/addCoverImage';
-import { createStory } from '../../services/createStory';
-import { editStory } from '../../services/editStory';
-import { uploadStepModel } from '../../services/uploadStepModel';
+import {useNavigation} from '../../../steps/hooks/useNavigation';
+import {uploadCoverImage} from '../../services/addCoverImage';
+import {createStory} from '../../services/createStory';
+import {editStory} from '../../services/editStory';
+import {uploadStepModel} from '../../services/uploadStepModel';
 import ConfirmSavePopup from '../inputs/ConfirmSavePopup.vue';
 
 import Chapter from './Chapter.vue';
@@ -173,16 +173,15 @@ function handleDeleteChapter({ chapterIdx }) {
 }
 
 function handleChaptersChange(newList) {
-  const newChapters = newList.map((ch, i) => ({
+  chapters.value = newList.map((ch, i) => ({
     ...ch,
     sequence: i + 1,
   }));
-  chapters.value = newChapters;
 }
 
-function prepublish() {
-  confirmSaveOpen.value = true;
-}
+// function prepublish() {
+//   confirmSaveOpen.value = true;
+// }
 
 function publishOk() {
   confirmSaveOpen.value = false;
