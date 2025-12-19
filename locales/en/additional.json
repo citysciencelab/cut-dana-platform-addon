@@ -71,7 +71,9 @@
         "backToDashboard": "Back to the dashboard",
         "openStoryMenu": "Open story menu",
         "removeLogoImage": "Remove the image for the story logo",
-        "openChapterMenu": "Open chapter menu"
+        "openChapterMenu": "Open chapter menu",
+        "openTransparencySlider": "Open the transparency slider",
+        "closeTransparencySlider": "Close the transparency slider"
       },
       "storyList": {
         "all": "All Stories",

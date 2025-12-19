@@ -71,7 +71,9 @@
         "backToDashboard": "Zurück zum Dashboard",
         "openStoryMenu": "Story-Menü öffnen",
         "removeLogoImage": "Bild für das Story-Logo entfernen",
-        "openChapterMenu": "Kapitel-Menü öffnen"
+        "openChapterMenu": "Kapitel-Menü öffnen",
+        "openTransparencySlider": "Transparenz Einstellungen öffnen",
+        "closeTransparencySlider": "Transparenz Einstellungen schließen"
       },
       "storyList": {
         "all": "Alle Stories",
