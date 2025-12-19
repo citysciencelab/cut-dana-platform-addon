@@ -13,7 +13,10 @@ const {
   removeAllVisibleLayers,
 } = useNavigation();
 const props = defineProps({
-  title: String
+  title: {
+    type: String,
+    required: true
+  }
 });
 const { t } = useTranslation();
 

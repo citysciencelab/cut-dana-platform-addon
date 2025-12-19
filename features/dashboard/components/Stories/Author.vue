@@ -1,38 +1,50 @@
 ﻿<script setup>
 import { mdiAccountOutline } from '@mdi/js';
 
-const props = defineProps({
+import { onMounted, ref } from 'vue';
+
+import { backendUrl } from '../../../../store/contantsDataNarrator.js';
+
+const { authorId } = defineProps({
   authorId: {
     type: String,
     default: null
   }
 });
-const isLoading = false;
 
-fetchAuthor();
+const author = ref(null);
+const isLoading = ref(false);
 
-/**
- *
- */
-function fetchAuthor () {
-  console.log(`TODO: fetchAuthor by id ${props.authorId}`);
+async function fetchAuthor(id) {
+  if (!id) return;
+  isLoading.value = true;
+  try {
+    const res = await fetch(`${backendUrl}/users/${id}`);
+    author.value = await res.json();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    isLoading.value = false;
+  }
 }
 
-const author = {
-  username: 'Loading',
-  email: ''
-};
+onMounted(() => {
+  fetchAuthor(authorId);
+});
 
 </script>
 
 <template>
-  <div v-if="isLoading">
+  <div v-if="isLoading || !author">
     Loading...
   </div>
   <div v-else>
-    <v-tooltip top>
-      <template>
-        <v-card-subtitle class="card-subtitle">
+    <v-tooltip location="left">
+      <template #activator="{ props }">
+        <v-card-subtitle
+          v-bind="props"
+          class="card-subtitle author-display"
+        >
           <v-icon small>
             {{ mdiAccountOutline }}
           </v-icon>
@@ -47,3 +59,10 @@ const author = {
     </v-tooltip>
   </div>
 </template>
+
+<style scoped>
+.author-display {
+  padding: 2px 0;
+  font-size: 0.8rem;
+}
+</style>

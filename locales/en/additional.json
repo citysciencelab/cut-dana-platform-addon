@@ -3,7 +3,10 @@
     "dataNarrator": {
       "title": "Data Narrator",
       "create": "Create Story",
-      "play": "Start Story",
+      "play": {
+        "start": "Start Story",
+        "storyOverviewTitle": "Story overview"
+      },
       "dashboard": "Story Dashboard",
       "tableOfContents": "Table of Contents",
       "createStory": "Create Story",

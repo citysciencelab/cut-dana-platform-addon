@@ -5,7 +5,6 @@ import { onMounted, ref } from 'vue';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { dataNarratorModes } from '../../../store/contantsDataNarrator';
-import * as contantsDataNarrator from '../../../store/contantsDataNarrator';
 import { useStoryForm } from '../hooks/useStoryForm';
 
 import CoverSelector from './inputs/CoverSelector.vue';
@@ -14,7 +13,6 @@ const { t } = useTranslation();
 
 const { gotoPage } = useDataNarrator();
 const { description, storyId, fetchStory, updateStory, chapterName, chapters, addChapter } = useStoryForm();
-// const {chapterName, chapters, addChapter} = useChapter();
 
 const notSaving = ref(true);
 
@@ -168,7 +166,7 @@ onMounted(async () => {
               variant="plain"
               icon
               class=""
-              @click="gotoPage(contantsDataNarrator.dataNarratorModes.DASHBOARD)"
+              @click="gotoPage(dataNarratorModes.DASHBOARD)"
             >
               <v-icon size="24px">
                 {{ mdiCancel }}
