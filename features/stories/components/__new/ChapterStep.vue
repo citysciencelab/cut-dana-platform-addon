@@ -139,12 +139,12 @@ watch(
 
     <Layers v-model="step.informationLayerIds" />
 
-    <AddWMS
+    <!-- <AddWMS
       @selected="onWmsSelected"
       @error="(msg) => console.error(msg)"
-    />
+    /> -->
 
-    <div>
+    <!-- <div>
       <div class="mb-2">
         3D Navigation
       </div>
@@ -157,7 +157,7 @@ watch(
           label="Enable 3D for this step"
         />
       </div>
-    </div>
+    </div> -->
 
     <ThreeDNavigation
       v-if="step.is3D"
