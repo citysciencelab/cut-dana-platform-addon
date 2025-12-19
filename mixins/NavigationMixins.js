@@ -1,6 +1,4 @@
-import { mapGetters, mapMutations } from 'vuex';
-
-import getters from '../store/gettersDataNarrator';
+import { mapMutations } from 'vuex';
 
 import DataNarratorWindowMixins from './DataNarratorWindowMixins';
 

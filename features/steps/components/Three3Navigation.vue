@@ -81,11 +81,11 @@
 <!--    </v-row>-->
 </template>
 <script setup>
-import { mdiPinOutline } from '@mdi/js';
-import { useTranslation } from 'i18next-vue';
-
-import { useStepForm } from '../hooks/useStepForm';
-
-const { t } = useTranslation();
-const { step, cesiumEnabled, get3DMapCenter, mapMovedPosition, is3d } = useStepForm();
+// import { mdiPinOutline } from '@mdi/js';
+// import { useTranslation } from 'i18next-vue';
+// import { useStepForm } from '../hooks/useStepForm';
+//
+// const { t } = useTranslation();
+// const { step, cesiumEnabled, get3DMapCenter, mapMovedPosition, is3d } = useStepForm();
+// const { step } = useStepForm();
 </script>

@@ -1,12 +1,10 @@
-
 <script setup>
 import { mdiCancel, mdiCheck } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 
 import ShareSettings from './ShareSettings.vue';
 
-
-const { t, i18next } = useTranslation();
+const { t } = useTranslation();
 
 function saveStorySettings() {
   console.log('saveStorySettings');

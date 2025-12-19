@@ -1,29 +1,34 @@
 <script setup>
 import { mdiMapLegend } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import cutcslDepiction from '../../../img/cutcsl_depiction.png';
-import { ToolwindowModes } from '../../../store/contantsDataNarrator';
-import { useDashboard } from '../hooks/useDashboard';
+import { availableStoryListModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { useLogin } from '../hooks/useLogin';
 
-import { useDashboardStore } from '../store/useDashboardStore';
-
 import CreateStoryButton from './Tools/CreateStoryButton.vue';
+
 import LanguageSwitchButton from './Tools/LanguageSwitchButton.vue';
 import ListButton from './Tools/ListButton.vue';
 import LoginButton from './Tools/LoginButton.vue';
 import UserMenu from './Tools/UserMenu.vue';
 
+const store = useStore();
+
 const { t } = useTranslation();
-const { storyModeLists } = useDashboard();
-const dashboardStore = useDashboardStore();
+
+const storiesDisplayMode = computed(() => store.state.Modules.DataNarrator.DashboardStore.mode);
 const { toolwindowMode } = useDataNarrator()
 const { loggedIn } = useLogin();
+const storyModeLists = computed(() => {
+  return Object.values(availableStoryListModes).filter(mode =>
+    loggedIn.value || mode !== 'my'
+  );
+});
 
-const { mode: storiesDisplayMode } = storeToRefs(dashboardStore)
 const legendAdded = true;
 
 const toggleLegend = () => {

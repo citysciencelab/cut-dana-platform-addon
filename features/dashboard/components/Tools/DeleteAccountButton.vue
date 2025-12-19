@@ -4,7 +4,7 @@ import { mdiDelete } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, computed } from 'vue';
 
-import { deleteMe } from '../../../me/hooks/useDeleteMe';
+import { backendUrl } from '../../../../store/contantsDataNarrator.js';
 import { useLogin } from '../../hooks/useLogin';
 
 const { t } = useTranslation();
@@ -32,7 +32,9 @@ const deleteAccount = async () => {
   errorMessage.value = '';
 
   try {
-    await deleteMe();
+    await fetch(`${backendUrl}/me`, {
+      method: 'DELETE'
+    });
     showConfirmDialog.value = false;
     logout();
     window.location.reload();

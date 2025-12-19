@@ -6,9 +6,7 @@ import isMobile from '../../../../src/shared/js/utils/isMobile';
 import * as constants from '../store/contantsDataNarrator';
 import { dataNarratorModes, ToolwindowModes } from '../store/contantsDataNarrator';
 
-
 import getters from '../store/gettersDataNarrator';
-import mutations from '../store/mutationsDataNarrator';
 
 export default {
   mixins: [],

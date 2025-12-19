@@ -37,7 +37,7 @@ export default {
       });
 
       if (response.ok) {
-        let coverImageData = await this.uploadCoverImage(this.selectedStoryId);
+        await this.uploadCoverImage(this.selectedStoryId);
       }
     },
 
@@ -59,7 +59,7 @@ export default {
 
       if (response.ok) {
         data = await response.json();
-        let coverImageData = await this.uploadCoverImage(data.id);
+        await this.uploadCoverImage(data.id);
       }
     },
 

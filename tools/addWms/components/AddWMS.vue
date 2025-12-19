@@ -2,9 +2,10 @@
 import crs from '@masterportal/masterportalapi/src/crs';
 import { mdiCheckCircle } from '@mdi/js';
 import axios from 'axios';
+import { useTranslation } from 'i18next-vue';
 import { intersects as olIntersects } from 'ol/extent';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const props = defineProps({
   projectionCode: { type: String, default: 'EPSG:3857' },
@@ -12,6 +13,8 @@ const props = defineProps({
   autoFocus: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
 });
+
+const { t } = useTranslation();
 
 const emit = defineEmits([ 'selected', 'error' ]);
 
@@ -36,9 +39,11 @@ function isHttpUrl(url) {
 
 function normalizeBaseUrl(raw) {
   const u = new URL(raw);
-  u.searchParams.delete('request');
-  u.searchParams.delete('service');
-  u.searchParams.delete('version');
+  for (const key of [ ...u.searchParams.keys() ]) {
+    if ([ 'request', 'service', 'version' ].includes(key.toLowerCase())) {
+      u.searchParams.delete(key);
+    }
+  }
   return u.toString();
 }
 
@@ -150,12 +155,13 @@ function collectStepSources(node, out, baseUrl, ver) {
 
   out.push({
     id: makeId(baseUrl, String(name)),
-    type: 'WMS',
-    serviceUrl: baseUrl,
-    layers: [ String(name) ],
     name: String(title ?? name),
+    url: baseUrl,
+    typ: 'WMS',
+    layers:  [ String(name) ] ,
     version: ver,
-    visible: true,
+    visibility: true,
+    showInLayerTree: true,
     opacity: 1,
     zIndex: 200,
     legendURL: safeLegendURL(node),
@@ -219,10 +225,10 @@ async function importLayers() {
 
     emit('selected', sources);
     loaded.value = true;
-  } catch (e) {
+  } catch (err) {
     emit(
       'error',
-      'Failed to load WMS capabilities. The server might block CORS or the URL is invalid.',
+      `Failed to load WMS capabilities. The server might block CORS or the URL is invalid. Error: ${err.message}`,
     );
   } finally {
     loading.value = false;
@@ -233,7 +239,6 @@ function onKeydown(e) {
   if (e.key === 'Enter') importLayers();
 }
 
-const btnLabel = computed(() => (loading.value ? 'Loading…' : 'Load'));
 </script>
 
 <template>
@@ -249,7 +254,7 @@ const btnLabel = computed(() => (loading.value ? 'Loading…' : 'Load'));
       <v-text-field
         ref="inputRef"
         v-model="wmsUrl"
-        placeholder="Enter WMS service URL"
+        :placeholder="$t('additional:modules.dataNarrator.label.enterWms')"
         :disabled="loading || disabled"
         density="comfortable"
         variant="outlined"
@@ -273,15 +278,14 @@ const btnLabel = computed(() => (loading.value ? 'Loading…' : 'Load'));
             :disabled="loading || !wmsUrl"
             @click="importLayers"
           >
-            {{ btnLabel }}
+            {{ t("additional:modules.dataNarrator.label.loadWmsBtn") }}
           </v-btn>
         </template>
       </v-text-field>
     </div>
 
     <div class="hint">
-      You can paste either the base WMS service URL or a full
-      GetCapabilities URL.
+      {{ t("additional:modules.dataNarrator.label.wmsHint") }}
     </div>
   </div>
 </template>
