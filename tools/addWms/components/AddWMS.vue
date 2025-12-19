@@ -219,10 +219,10 @@ async function importLayers() {
 
     emit('selected', sources);
     loaded.value = true;
-  } catch (e) {
+  } catch (err) {
     emit(
       'error',
-      'Failed to load WMS capabilities. The server might block CORS or the URL is invalid.',
+      `Failed to load WMS capabilities. The server might block CORS or the URL is invalid. Error: ${err.message}`,
     );
   } finally {
     loading.value = false;

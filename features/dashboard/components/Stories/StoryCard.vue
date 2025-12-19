@@ -7,7 +7,6 @@ import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
 import { useStory } from '../../../stories/hooks/useStory';
 import { useLogin } from '../../hooks/useLogin';
-import { incrementStoryViews } from '../../services/incrementStoryViews';
 
 import AuthorDisplay from './Author.vue';
 import DeleteButton from './DeleteButton.vue';
@@ -45,8 +44,11 @@ function getFileUrl(titleImage) {
 async function playStory() {
   // count a view
   try {
-    incrementStoryViews(props.story.id)
-  } catch (_) {
+    await fetch(`${backendUrl}/stories/${props.story.id}/play`, {
+      method: 'POST'
+    });
+  } catch (error) {
+    console.error('Error counting story view:', error);
   }
 
   currentStoryId.value = props.story.id;

@@ -47,18 +47,6 @@ export default {
       return this.loggedIn;
     },
 
-    /**
-         * Logs out the user by removing all cookies and clearing the store
-         * @param {Boolean} [reload = false] if true, the window will be reloaded after logout
-         *
-         * @return {void}
-         */
-    logoutButton (reload = false) {
-      this.logout();
-      this.moveTool();
-    },
-
-
     async openLoginWindow () {
       if (!this.loggedIn) {
         const params = 'width=500,height=500,status=no,location=no,menubar=no,' +

@@ -10,16 +10,13 @@ export const state = {
   storyChapters: [],
 };
 
- 
 export const mutations = {
   ...generateSimpleMutations(state),
 
-     
   setSelectedStoryId (state, selectedStoryId) {
     state.selectedStoryId = selectedStoryId;
   },
 
-     
   setStoryData (state, storyData) {
     console.log('storyData',storyData);
     state.storyTitle = storyData.title;
@@ -27,7 +24,6 @@ export const mutations = {
     state.storyChapters = storyData.chapters;
   },
 
-     
   resetStoryForm (state) {
     state.storyTitle = '';
     state.storyDescription = '';

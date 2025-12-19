@@ -23,7 +23,6 @@ export default [
       // -----------------------------------------
       // TODO: Change to 'error' or remove this block later
       'no-console': 'warn',
-      'no-unused-vars': 'warn',
       'no-undef': 'warn',
       'no-empty': 'warn',
       'vue/valid-template-root': 'warn',

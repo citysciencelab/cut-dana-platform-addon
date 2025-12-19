@@ -3,7 +3,7 @@ import { mdiStar, mdiStarOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref } from 'vue';
 
-import { toggleFeatured } from '../../services/toggleFeatured';
+import { backendUrl } from '../../../../store/contantsDataNarrator.js';
 
 const { t } = useTranslation();
 
@@ -28,8 +28,9 @@ async function makeItFeatured() {
   if (!props.isAdmin) return;
 
   try {
-    const res = await toggleFeatured(props.storyId, !featured.value);
-
+    const res = await fetch(`${backendUrl}/stories/${props.storyId}/featured/${!featured.value}`, {
+      method: 'POST'
+    });
     if (res.ok) {
       featured.value = !featured.value;
     } else {

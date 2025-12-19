@@ -1,5 +1,5 @@
 <script setup>
-import { mdiPencil, mdiShareVariant, mdiTrashCanOutline } from '@mdi/js';
+import { mdiPencil } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
