@@ -1,16 +1,16 @@
 <script setup>
-import {mdiArrowLeft, mdiDotsVertical, mdiImagePlusOutline, mdiPencilOutline, mdiTrashCan} from '@mdi/js';
-import {useTranslation} from 'i18next-vue';
-import {computed, ref, watch} from 'vue';
+import { mdiArrowLeft, mdiDotsVertical, mdiImagePlusOutline, mdiPencilOutline, mdiTrashCan } from '@mdi/js';
+import { useTranslation } from 'i18next-vue';
+import { computed, ref, watch } from 'vue';
 
-import {useDataNarrator} from '../../../../hooks/useDataNarrator';
-import {dataNarratorModes, ToolwindowModes} from '../../../../store/contantsDataNarrator';
+import { useDataNarrator } from '../../../../hooks/useDataNarrator';
+import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
 import ConfirmationDialog from '../../../shared/ConfirmationDialog.vue';
-import {useNavigation} from '../../../steps/hooks/useNavigation';
-import {uploadCoverImage} from '../../services/addCoverImage';
-import {createStory} from '../../services/createStory';
-import {editStory} from '../../services/editStory';
-import {uploadStepModel} from '../../services/uploadStepModel';
+import { useNavigation } from '../../../steps/hooks/useNavigation';
+import { uploadCoverImage } from '../../services/addCoverImage';
+import { createStory } from '../../services/createStory';
+import { editStory } from '../../services/editStory';
+import { uploadStepModel } from '../../services/uploadStepModel';
 import ConfirmSavePopup from '../inputs/ConfirmSavePopup.vue';
 
 import Chapter from './Chapter.vue';
