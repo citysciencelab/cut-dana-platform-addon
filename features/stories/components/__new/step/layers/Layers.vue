@@ -5,10 +5,14 @@ import { useStore } from 'vuex';
 
 import { useLayers } from '../../../../../../hooks/useLayers';
 
+import AddWMS from '../../../../../../tools/addWms/components/AddWMS.vue';
+
 import CategoryBrowser from './CategoryBrowser.vue';
 
 const store = useStore();
 const { layersTree, idToLayerMap, loading } = useLayers();
+
+const currentTab = ref(0);
 
 const props = defineProps({ modelValue: { type: Array, default: () => [] } });
 const emit = defineEmits([ 'update:modelValue' ]);
@@ -143,11 +147,59 @@ watch(
         </v-btn>
       </v-card-title>
 
-      <CategoryBrowser
-        :items="layersTree"
-        :loading="loading"
-        @select:layer="(l) => addLayer(l.id)"
-      />
+      <v-tabs
+        v-model="currentTab"
+        bg-color="transparent"
+      >
+        <v-tab value="0">
+          Ebenen
+        </v-tab>
+        <v-tab value="1">
+          WMS
+        </v-tab>
+        <v-tab value="2">
+          GeoJSON
+        </v-tab>
+        <v-tab value="3">
+          3D Daten
+        </v-tab>
+      </v-tabs>
+
+      <v-divider />
+
+      <v-tabs-window
+        v-model="currentTab"
+        style="height: 60dvh; overflow-y: auto;"
+      >
+        <v-tabs-window-item value="0">
+          <CategoryBrowser
+            :items="layersTree"
+            :loading="loading"
+            @select:layer="(l) => addLayer(l.id)"
+          />
+        </v-tabs-window-item>
+
+        <v-tabs-window-item value="1">
+          <v-card-text>
+            <AddWMS
+              @selected="onWmsSelected"
+              @error="(msg) => console.error(msg)"
+            />
+          </v-card-text>
+        </v-tabs-window-item>
+
+        <v-tabs-window-item value="2">
+          <v-card-text>
+            GeoJSON Importer coming soon...
+          </v-card-text>
+        </v-tabs-window-item>
+
+        <v-tabs-window-item value="3">
+          <v-card-text>
+            3D Daten Importer coming soon...
+          </v-card-text>
+        </v-tabs-window-item>
+      </v-tabs-window>
 
       <v-card-actions>
         <v-spacer />
