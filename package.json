@@ -4,7 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "lint": "eslint --quiet -c eslint.config.js ./",
+    "lint": "eslint -c eslint.config.js ./",
+    "lint:errorsOnly": "eslint --quiet -c eslint.config.js ./",
     "lint:fix": "npm run lint -- --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "noLegacyInstall": "npm install --legacy-peer-deps"
