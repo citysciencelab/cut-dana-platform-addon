@@ -3,17 +3,8 @@
 import { mdiPlayOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 
-import { useStories } from '../../../stories/hooks/useStories';
-
 const { t } = useTranslation();
-const { currentStoryId } = useStories();
 const emit = defineEmits([ 'click' ]);
-const { storyId } = defineProps({
-  storyId: {
-    type: String,
-    required: true
-  }
-});
 
 function onClick() {
   emit('click');

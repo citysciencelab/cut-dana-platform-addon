@@ -1,8 +1,11 @@
 <script setup>
+import { computed } from 'vue';
+
+import { useStore } from 'vuex';
+
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
 import { useStory } from '../../../stories/hooks/useStory';
-import { useDashboard } from '../../hooks/useDashboard';
 import { useLogin } from '../../hooks/useLogin';
 import { incrementStoryViews } from '../../services/incrementStoryViews';
 
@@ -14,10 +17,14 @@ import PlayButton from './PlayButton.vue';
 import PublishButton from './PublishButton.vue';
 import ShareButton from './ShareButton.vue';
 
+const store = useStore();
+const storiesDisplayMode = computed(() => {
+  return store.state.Modules.DataNarrator.DashboardStore.mode
+});
+
 const { userId } = useLogin();
 const { gotoPage } = useDataNarrator();
 const { currentStoryId } = useStory();
-const { storiesDisplayMode } = useDashboard();
 const emit = defineEmits([ 'deleted', 'published' ]);
 
 const props = defineProps({

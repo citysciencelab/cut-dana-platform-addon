@@ -8,7 +8,7 @@ import ShareDialog from './ShareDialog.vue';
 const { t } = useTranslation();
 
 const props = defineProps({
-  storyId: { type: String, required: true },
+  storyId: { type: Number, required: true },
   title: { type: String, default: 'Story' },
 });
 
