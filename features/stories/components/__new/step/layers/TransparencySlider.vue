@@ -1,21 +1,26 @@
 <script setup>
-import { ref, watch, defineProps } from 'vue';
+import { ref, watch, defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
-  initialOpacity: {
+  initialTransparency: {
     type: Number,
-    default: 100,
+    default: 0,
   },
 });
 
-const opacityValue = ref(props.initialOpacity);
+const emit = defineEmits([ 'update' ]);
+const transparencyValue = ref(props.initialTransparency);
 
 watch(
-  () => props.initialOpacity,
+  () => props.initialTransparency,
   (newVal) => {
-    opacityValue.value = newVal;
+    transparencyValue.value = newVal;
   }
 );
+
+watch(transparencyValue, (val) => {
+  emit('update', val);
+});
 
 </script>
 
@@ -32,7 +37,7 @@ watch(
     <v-card-text>
       <div class="d-flex flex-column">
         <v-slider
-          v-model="opacityValue"
+          v-model="transparencyValue"
           min="0"
           max="100"
           step="1"

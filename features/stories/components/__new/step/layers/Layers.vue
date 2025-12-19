@@ -40,7 +40,25 @@ function removeLayer(id) {
 function toggleTransparencySlider(layer) {
   transparencyDialog.value = !transparencyDialog.value;
   activeLayerId.value = activeLayerId.value === layer.id ? null : layer.id;
-  console.log('open transparency slider for', layer.name, layer.transparency);
+  console.log('open transparency slider for', layer.name, layer.id, layer.transparency);
+}
+
+function onTransparencyChange(layer, transparency) {
+  console.log('transparency changed', layer.id, transparency);
+  layer.transparency = transparency;
+
+  // TODO: check layer in store/config
+  // store.dispatch('addOrReplaceLayer', {
+  //   layerId: layer.id,
+  //   transparency: transparency/100
+  // });
+
+  const opacity = 1 - (transparency/100);
+  const mapLayer = store.getters['Maps/getLayerById'](layer.id);
+  if (mapLayer) {
+    mapLayer.setOpacity(opacity);
+    mapLayer.changed();
+  }
 }
 
 watch(
@@ -125,8 +143,8 @@ watch(
             class="mt-2"
           >
             <TransparencySlider
-              :initial-opacity="l.transparency"
-              @update="l.transparency = $event"
+              :initial-transparency="l.transparency"
+              @update="onTransparencyChange(l, $event)"
             />
           </div>
         </v-list-item>
