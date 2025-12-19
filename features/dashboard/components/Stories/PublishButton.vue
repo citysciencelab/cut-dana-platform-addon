@@ -3,7 +3,7 @@ import { mdiCloudUploadOutline, mdiCloudOffOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, computed } from 'vue';
 
-import { publishStory } from '../../services/publishStory';
+import { backendUrl } from '../../../../store/contantsDataNarrator.js';
 
 const { t } = useTranslation();
 
@@ -30,13 +30,11 @@ async function onClick() {
   if (loading.value) return;
   loading.value = true;
   try {
-    if (isDraft.value) {
-      await publishStory(props.storyId, false);
-      emit('success');
-    } else {
-      await publishStory(props.storyId, true);
-      emit('success');
-    }
+    await fetch(`${backendUrl}/stories/new/${props.storyId}/publish-state`, {
+      method: 'PUT',
+      body: JSON.stringify({ isDraft: !isDraft.value }),
+    });
+    emit('success');
   } catch (err) {
     console.error('Failed to toggle publish state', err);
   } finally {

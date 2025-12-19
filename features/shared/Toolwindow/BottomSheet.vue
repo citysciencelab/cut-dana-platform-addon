@@ -1,6 +1,6 @@
 <script setup>
-import { motion, useDragControls } from 'motion-v';
-import { ref, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { useDragControls } from 'motion-v';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 const sheet = ref(null);
 const bottom = ref(0);

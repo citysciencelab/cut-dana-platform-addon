@@ -72,6 +72,12 @@
         "openStoryMenu": "Open story menu",
         "removeLogoImage": "Remove the image for the story logo",
         "openChapterMenu": "Open chapter menu",
+        "wmsLayer": "WMS Layer",
+        "loadWmsLayer": "load WMS layer",
+        "noWmsLayer": "No WMS layer selected",
+        "wmsHint": "You can paste either the base WMS service URL or a full GetCapabilities URL.",
+        "enterWms": "Enter WMS service URL",
+        "loadWmsBtn": "Load",
         "openTransparencySlider": "Open the transparency slider",
         "closeTransparencySlider": "Close the transparency slider"
       },

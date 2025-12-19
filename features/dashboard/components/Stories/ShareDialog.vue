@@ -4,7 +4,7 @@ import { ref, watch, computed } from 'vue';
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
   title: { type: String, default: 'Share story' },
-  storyId: { type: String, required: true },
+  storyId: { type: Number, required: true },
 });
 
 const emit = defineEmits([ 'update:modelValue' ]);

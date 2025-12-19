@@ -3,7 +3,7 @@ import { mdiWeb } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
-const { t, i18next } = useTranslation();
+const { i18next } = useTranslation();
 const currentLanguage = ref(i18next.language);
 
 function handleLangChanged(lng) {
