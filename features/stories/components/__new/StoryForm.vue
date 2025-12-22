@@ -11,7 +11,6 @@ import { uploadCoverImage } from '../../services/addCoverImage';
 import { createStory } from '../../services/createStory';
 import { editStory } from '../../services/editStory';
 import { uploadStepModel } from '../../services/uploadStepModel';
-import ConfirmSavePopup from '../inputs/ConfirmSavePopup.vue';
 
 import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
@@ -45,7 +44,6 @@ const activeChapterIndex = ref(0);
 const activeStepIndex = ref(-1);
 const editStoryVisible = ref(true);
 const modelFiles = new WeakMap();
-const confirmSaveOpen = ref(false);
 
 let nextChapterId = 1;
 const chapters = ref([
@@ -180,16 +178,7 @@ function handleChaptersChange(newList) {
   }));
 }
 
-function publishOk() {
-  confirmSaveOpen.value = false;
-  publish();
-}
-
-function publishCancel() {
-  confirmSaveOpen.value = false;
-}
-
-async function publish() {
+async function save() {
   isSaving.value = true;
 
   const payload = {
@@ -477,7 +466,7 @@ watch([ activeStep, previewVisible ], () => {
           color="black"
           :loading="isSaving"
           :disabled="!canPublish"
-          @click="confirmSaveOpen = true"
+          @click="save"
         >
           SPEICHERN
         </v-btn>
@@ -489,12 +478,6 @@ watch([ activeStep, previewVisible ], () => {
     <!--            v-model:open="previewModal"-->
     <!--        />-->
   </form>
-  <ConfirmSavePopup
-    :dialog-open="confirmSaveOpen"
-    :ok-clicked="publishOk"
-    :cancel-clicked="publishCancel"
-  />
-
   <ConfirmationDialog
     v-model="backConfirmation"
     :title="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.title')"
