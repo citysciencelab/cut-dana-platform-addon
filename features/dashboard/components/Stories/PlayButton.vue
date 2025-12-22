@@ -31,7 +31,7 @@ function onClick() {
         </v-icon>
       </v-btn>
     </template>
-    {{ t("additional:modules.dataNarrator.play") }}
+    {{ t("additional:modules.dataNarrator.play.start") }}
   </v-tooltip>
 </template>
 

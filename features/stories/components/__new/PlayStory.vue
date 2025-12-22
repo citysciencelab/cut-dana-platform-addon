@@ -1,4 +1,5 @@
 <script setup>
+import { useTranslation } from 'i18next-vue';
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
@@ -12,6 +13,7 @@ import { useStory } from '../../hooks/useStory';
 import PlayerFrame from './play/PlayerFrame.vue';
 import RichTextViewer from './step/RichTextViewer.vue';
 
+const { t } = useTranslation();
 const { gotoPage } = useDataNarrator()
 const { currentStoryId } = useStory();
 const {
@@ -171,7 +173,7 @@ onBeforeUnmount(() => {
 <template>
   <ToolWindow>
     <template #fixed>
-      <PlayerFrame :title="stage === 'play' ? story.title : undefined">
+      <PlayerFrame :title="stage === 'play' ? story.title : t('additional:modules.dataNarrator.play.storyOverviewTitle')">
         <template #default>
           <div v-if="isLoading">
             Loading...
