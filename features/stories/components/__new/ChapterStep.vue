@@ -13,6 +13,7 @@ import StepDescription from './step/StepDescription.vue';
 import StepTitle from './step/StepTitle.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 import TwoDNavigation from './step/TwoDNavigation.vue';
+import GeoJSONPanel from '../GeoJSON/GeoJSONPanel.vue';
 
 const { step } = defineProps({
   step: {
@@ -88,6 +89,8 @@ watch(
   },
   { immediate: true, deep: true }
 );
+
+console.log('GeoJSON', step);
 
 </script>
 
@@ -241,8 +244,8 @@ watch(
           rounded
           class="d-flex align-center px-3 py-2"
           style="border: 1px solid #e1e1e1"
-        >                
-          <span class="flex-grow-1">{{ l.name }}</span>              
+        >
+          <span class="flex-grow-1">{{ l.name }}</span>
           <v-icon
             :icon="mdiTrashCan"
             class="cursor-pointer"
@@ -251,8 +254,11 @@ watch(
         </v-sheet>
       </v-list-item>
     </v-list>
+
+    <GeoJSONPanel v-model="step.geoJsonAssets" />
+
     <div
-      v-if="step.mapSources.length === 0"
+      v-if="step.mapSources?.length === 0"
       class="text-medium-emphasis py-2"
     >
       {{ t("additional:modules.dataNarrator.label.noWmsLayer") }}

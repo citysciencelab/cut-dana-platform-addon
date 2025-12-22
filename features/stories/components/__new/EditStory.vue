@@ -45,6 +45,7 @@ async function loadStory() {
           backgroundMapId: s.backgroundMapId,
         },
         informationLayerIds: s.informationLayerIds,
+        geoJsonAssets: s.geoJsonAssets,
       })),
     }));
   } catch (err) {
