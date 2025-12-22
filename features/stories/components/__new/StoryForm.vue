@@ -14,6 +14,7 @@ import { uploadStepModel } from '../../services/uploadStepModel';
 
 import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
+import { clearGeoJSON } from '../../../../utils/geoJSON';
 
 const props = defineProps({
   storyId: Number,
@@ -260,6 +261,7 @@ watch(activeStepIndex, (activeStepIndex) => {
 // When the step is change we remove all visible layers and reset to default base layer
 watch([ activeStep, previewVisible ], () => {
   removeAllVisibleLayers();
+  clearGeoJSON();
   if (previewVisible.value == true) {
     setAnimatedView({
       center: initialCenter.value,

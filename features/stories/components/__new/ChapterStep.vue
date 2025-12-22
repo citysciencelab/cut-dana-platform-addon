@@ -14,6 +14,7 @@ import StepTitle from './step/StepTitle.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 import TwoDNavigation from './step/TwoDNavigation.vue';
 import GeoJSONPanel from '../GeoJSON/GeoJSONPanel.vue';
+import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
 
 const { step } = defineProps({
   step: {
@@ -90,7 +91,14 @@ watch(
   { immediate: true, deep: true }
 );
 
-console.log('GeoJSON', step);
+watch(
+  () => step?.geoJsonAssets,
+  (newGeoJsonAssets) => {
+    clearGeoJSON();
+    addGeoJSON(newGeoJsonAssets);
+  },
+  { immediate: true, deep: true }
+);
 
 </script>
 

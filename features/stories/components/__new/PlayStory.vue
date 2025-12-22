@@ -12,6 +12,7 @@ import { useStory } from '../../hooks/useStory';
 
 import PlayerFrame from './play/PlayerFrame.vue';
 import RichTextViewer from './step/RichTextViewer.vue';
+import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
 
 const { t } = useTranslation();
 const { gotoPage } = useDataNarrator()
@@ -107,6 +108,9 @@ watch(
       setBaseLayer(bgId);
       setInformationLayers(step.informationLayerIds ?? [], [ bgId ]);
     }
+
+    clearGeoJSON();
+    addGeoJSON(step.geoJsonAssets);
   },
   { immediate: true }
 );
@@ -130,6 +134,7 @@ function next() {
     gotoPage(dataNarratorModes.DASHBOARD);
     removeAllVisibleLayers();
     resetBaseLayer();
+    clearGeoJSON();
     setAnimatedView({
       center: initialCenter.value,
       zoom: initialZoom.value,
@@ -148,6 +153,9 @@ function back() {
     stepIndex.value = story.value.chapters[chapterIndex.value].steps.length - 1;
   } else {
     stage.value = 'overview';
+    removeAllVisibleLayers();
+    resetBaseLayer();
+    clearGeoJSON();
     setAnimatedView({
       center: initialCenter.value,
       zoom: initialZoom.value,
