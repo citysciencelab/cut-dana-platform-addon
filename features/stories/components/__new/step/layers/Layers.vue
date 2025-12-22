@@ -1,5 +1,5 @@
 <script setup>
-import { mdiChevronRight, mdiEye, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose } from '@mdi/js';
+import { mdiChevronRight, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose } from '@mdi/js';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 

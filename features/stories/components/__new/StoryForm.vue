@@ -5,6 +5,7 @@ import { computed, ref, watch } from 'vue';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
+import { clearGeoJSON } from '../../../../utils/geoJSON';
 import ConfirmationDialog from '../../../shared/ConfirmationDialog.vue';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
 import { uploadCoverImage } from '../../services/addCoverImage';
@@ -14,7 +15,6 @@ import { uploadStepModel } from '../../services/uploadStepModel';
 
 import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
-import { clearGeoJSON } from '../../../../utils/geoJSON';
 
 const props = defineProps({
   storyId: Number,

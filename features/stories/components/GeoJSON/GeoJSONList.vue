@@ -1,14 +1,14 @@
 <script setup>
-  import { mdiTrashCan, mdiPencil } from '@mdi/js';
+import { mdiTrashCan, mdiPencil } from '@mdi/js';
 
-  const props = defineProps({
-    modelValue: {
-      type: Array,
-      default: () => ([])
-    }
-  });
+const props = defineProps({
+  modelValue: {
+    type: Array,
+    default: () => ([])
+  }
+});
 
-  const emit = defineEmits([ 'editAsset', 'removeAsset' ]);
+const emit = defineEmits([ 'editAsset', 'removeAsset' ]);
 
 </script>
 
@@ -18,7 +18,7 @@
     class="pa-0"
   >
     <v-list-item
-      v-for="asset in modelValue"
+      v-for="asset in props.modelValue"
       :key="asset.id"
       class="pa-0"
     >

@@ -5,7 +5,10 @@ import { ref, watch, nextTick } from 'vue';
 import { useStore } from 'vuex';
 
 import AddWMS from '../../../../tools/addWms/components/AddWMS.vue';
+import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
+
+import GeoJSONPanel from '../GeoJSON/GeoJSONPanel.vue';
 
 import BackgroundMap from './step/BackgroundMap.vue';
 import Layers from './step/layers/Layers.vue';
@@ -13,8 +16,6 @@ import StepDescription from './step/StepDescription.vue';
 import StepTitle from './step/StepTitle.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 import TwoDNavigation from './step/TwoDNavigation.vue';
-import GeoJSONPanel from '../GeoJSON/GeoJSONPanel.vue';
-import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
 
 const { step } = defineProps({
   step: {

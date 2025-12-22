@@ -5,6 +5,7 @@ import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
+import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
 import { getFileUrl } from '../../../../utils/getFileUrl';
 import ToolWindow from '../../../shared/Toolwindow/ToolWindow.vue';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
@@ -12,7 +13,6 @@ import { useStory } from '../../hooks/useStory';
 
 import PlayerFrame from './play/PlayerFrame.vue';
 import RichTextViewer from './step/RichTextViewer.vue';
-import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
 
 const { t } = useTranslation();
 const { gotoPage } = useDataNarrator()

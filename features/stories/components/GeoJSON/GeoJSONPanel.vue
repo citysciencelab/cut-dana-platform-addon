@@ -2,8 +2,9 @@
 import { mdiMapMarkerPlusOutline, mdiChevronRight } from '@mdi/js';
 
 import { computed, ref } from 'vue';
-import GeoJSONList from './GeoJSONList.vue';
+
 import GeoJSONDialog from './GeoJSONDialog.vue';
+import GeoJSONList from './GeoJSONList.vue';
 
 // type GeoJSONAsset = {
 //   id: string;
@@ -67,14 +68,14 @@ function onAssetSave(asset) {
   </v-row>
   <GeoJSONList
     :model-value="modelValue"
-    @removeAsset="removeAsset"
-    @editAsset="editAsset"
+    @remove-asset="removeAsset"
+    @edit-asset="editAsset"
   />
   <GeoJSONDialog
     :open="geoJsonDialogOpen"
     :asset="selectedAsset"
-    @closeClicked="onDialogClose"
-    @assetSaved="onAssetSave"
+    @close-clicked="onDialogClose"
+    @asset-saved="onAssetSave"
   />
   <v-row
     class="mb-2"
