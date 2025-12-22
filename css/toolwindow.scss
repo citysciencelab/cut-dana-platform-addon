@@ -1,103 +1,113 @@
 .toolwindow-container {
-    width: 100vw;
-    height: 100%;
-    padding: 0 min(100px, 6vw);
-    display: flex;
-    align-items: center;
+  width: 100vw;
+  height: 100%;
+  padding: 0 min(100px, 6vw);
+  display: flex;
+  align-items: center;
 
-    &.desktop {
-        grid-column: 1 / 2;
-    }
+  &.desktop {
+    grid-column: 1 / 2;
+  }
 
-    .toolwindow-between {
-        .toolwindow {
-            pointer-events: auto;
-            background-color: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.30);
-            overflow: hidden;
-            transition: height 1s ease-in;
+  .toolwindow-between {
+    .toolwindow {
+      pointer-events: auto;
+      background-color: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.30);
+      overflow: hidden;
+      transition: height 1s ease-in;
 
-            .slot {
-                overflow: hidden;
-                padding: 0 1rem !important;
-                max-width: 100%;
+      .slot {
+        overflow: hidden;
+        padding: 0 1rem !important;
+        max-width: 100%;
 
-                &.removed {
-                    opacity: 0;
-                    height: 0;
-                    padding: 0; /* Ensure padding collapse for height reduction */
-                    margin: 0;
-                    //transition: opacity 0.3s ease-in, height 0.1s ease, padding 0.1s ease, margin 0.1s ease;
-                }
-            }
-
-            .slot-fixed {
-                position: fixed;
-                left: 0;
-                top: 0;
-                height: 100%;
-                width: 460px;
-
-                &.mobile {
-                    width: 100%;
-                }
-            }
-
-            &.with-top-border-radius {
-                border-top-left-radius: 1.5rem;
-                border-top-right-radius: 1.5rem;
-            }
+        &.removed {
+          opacity: 0;
+          height: 0;
+          padding: 0; /* Ensure padding collapse for height reduction */
+          margin: 0;
+          //transition: opacity 0.3s ease-in, height 0.1s ease, padding 0.1s ease, margin 0.1s ease;
         }
+      }
 
-        &.desktop {
-            display: flex;
-            overflow-y: auto;
-
-            .toolwindow {
-                background-color: rgb(246, 246, 246);
-            }
-        }
-
-        &.dashboard {
-            display: flex;
-
-            .toolwindow {
-                max-height: 80vh;
-                height: 100%;
-                overflow-y: auto;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-            }
-        }
+      .slot-fixed {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 460px;
 
         &.mobile {
-            .toolwindow {
-                background-color: rgb(246, 246, 246);
-                height: 100vh;
-                overflow-y: auto;
-                padding-top: 30px;
-
-                @media screen and (max-width: 768px) {
-                    padding-top: 0;
-                }
-            }
+          width: 100%;
         }
+      }
+
+      &.with-top-border-radius {
+        border-top-left-radius: 1.5rem;
+        border-top-right-radius: 1.5rem;
+      }
     }
 
-    &.left {
-        grid-column: 1;
+    &.desktop {
+      display: flex;
+      overflow-y: auto;
+
+      .toolwindow {
+        background-color: rgb(246, 246, 246);
+      }
     }
 
-    &.right {
-        grid-column: 3;
+    &.dashboard {
+      display: flex;
+
+      .toolwindow {
+        max-height: 80vh;
+        height: 100%;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
     }
 
-    .header {
-        padding: 0;
-    }
+    &.mobile {
+      .overlay {
+        padding: 0 10px 0 10px;
+        flex-direction: column;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
 
-    .footer {
-        padding: 1rem;
+        .toolwindow {
+          background-color: rgb(246, 246, 246);
+          height: calc(100vh - 20px);
+          overflow-y: auto;
+          padding-top: 30px;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+
+          @media screen and (max-width: 768px) {
+            padding-top: 0;
+          }
+        }
+      }
     }
+  }
+
+  &.left {
+    grid-column: 1;
+  }
+
+  &.right {
+    grid-column: 3;
+  }
+
+  .header {
+    padding: 0;
+  }
+
+  .footer {
+    padding: 1rem;
+  }
 }
