@@ -5,10 +5,13 @@ import { useTranslation } from 'i18next-vue';
 import { ref, computed } from 'vue';
 
 import { backendUrl } from '../../../../store/contantsDataNarrator.js';
+import { createLogger } from '../../../../utils/logger.js';
 import { useLogin } from '../../hooks/useLogin';
 
 const { t } = useTranslation();
 const { username, logout } = useLogin();
+
+const logger = createLogger('DeleteAccountButton.vue');
 
 const showConfirmDialog = ref(false);
 const usernameInput = ref('');
@@ -39,7 +42,7 @@ const deleteAccount = async () => {
     logout();
     window.location.reload();
   } catch (error) {
-    console.error('Error deleting account:', error);
+    logger.error('Error deleting account:', error);
     errorMessage.value = t('additional:modules.dataNarrator.deleteAccount.error');
   } finally {
     isDeleting.value = false;

@@ -1,15 +1,17 @@
 ﻿<script setup>
-
-
 import { mdiAlphaXCircle, mdiImageRemoveOutline, mdiPanoramaVariantOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref } from 'vue';
 
+import { createLogger } from '../../../../utils/logger';
 import { useStoryForm } from '../../hooks/useStoryForm';
 
 import BackButton from './BackButton.vue';
 
+const logger = createLogger('CoverSelector');
 const { t } = useTranslation();
+
+const emit = defineEmits([ 'back-click' ])
 
 const hasCover = ref(false);
 const showIcon = ref(false);
@@ -19,7 +21,7 @@ const objectFile = ref('');
 const { title, uploadCover } = useStoryForm();
 
 const onCoverChange = async () => {
-  console.log(storyCover.value, storyCover);
+  logger.debug('onCoverChange', storyCover.value, storyCover);
   await uploadCover(storyCover.value);
 }
 </script>
@@ -69,7 +71,7 @@ const onCoverChange = async () => {
           <BackButton
             tooltip="hi"
             :show-story-title="false"
-            @click="$emit('back-click')"
+            @click="emit('back-click')"
           />
         </v-col>
         <v-col

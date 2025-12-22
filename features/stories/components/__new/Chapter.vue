@@ -22,7 +22,7 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits([ 'addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected' ]);
+const emits = defineEmits([ 'addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'updateChapterTitle' ]);
 
 const { t } = useTranslation();
 
@@ -48,10 +48,11 @@ function addStep() {
         </div>
         <div class="chapter-title">
           <input
-            v-model="props.chapter.title"
+            :value="props.chapter.title"
             type="text"
             placeholder="A Unbenanntes Kapitel"
             required
+            @input="emits('updateChapterTitle', $event.target.value)"
           >
         </div>
         <v-tooltip location="top">

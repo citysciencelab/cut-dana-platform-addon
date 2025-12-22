@@ -4,11 +4,13 @@ import { useTranslation } from 'i18next-vue';
 import { ref, computed } from 'vue';
 
 import { backendUrl } from '../../../../store/contantsDataNarrator.js';
+import { createLogger } from '../../../../utils/logger.js';
 
 import ConfirmPublishPopup from './ConfirmPublishPopup.vue';
 
 const { t } = useTranslation();
 
+const logger = createLogger('PublishButton.vue');
 const props = defineProps({
   storyId: { type: Number, required: true },
   isDraft: { type: Boolean, required: true },
@@ -39,7 +41,7 @@ async function publish() {
     });
     emit('success');
   } catch (err) {
-    console.error('Failed to toggle publish state', err);
+    logger.error('Failed to toggle publish state', err);
   } finally {
     loading.value = false;
   }

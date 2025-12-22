@@ -239,10 +239,13 @@ function selectObject(event) {
     setCurrentModelId(entity.id);
     setCylinderId(null);
   } else if (hideObjects.value && picked[0] instanceof Cesium.Cesium3DTileFeature) {
+    // eslint-disable-next-line no-undef
     const features = getGfiFeatures.getGfiFeaturesByTileFeature(picked[0]);
     const gmlId = features[0]?.getProperties()[gmlIdPath.value];
     const tileSetLayers = updateAllLayers.value
+      // eslint-disable-next-line no-undef
       ? layerCollection.getLayers().filter(layer => layer.get('typ') === 'TileSet3D')
+      // eslint-disable-next-line no-undef
       : layerCollection.getLayers().filter(layer => layer.get('typ') === 'TileSet3D' && layer.get('id') === picked[0].tileset.layerReferenceId);
 
     tileSetLayers.forEach(layer => layer.addToHiddenObjects([ gmlId ], updateAllLayers.value));
@@ -614,6 +617,7 @@ function togglePovInteraction() {
     createCylinder(payload);
     povCylinder = entities.getById(cylinderId.value);
     povCylinder.position = new Cesium.CallbackProperty(
+      // eslint-disable-next-line no-undef
       () => adaptCylinderUnclamped(povCylinder, currentCartesian.value),
       false
     );
@@ -664,5 +668,5 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<template>
-</template>
+<!--<template>-->
+<!--</template>-->

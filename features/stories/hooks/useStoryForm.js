@@ -2,9 +2,11 @@ import { customRef, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import { backendUrl } from '../../../store/contantsDataNarrator';
+import { createLogger } from '../../../utils/logger';
 import { isNullOrWhitespace } from '../../../utils/stringUtils';
 import { uploadCoverImage } from '../services/addCoverImage';
 import { createChapter } from '../services/chapters';
+const logger = createLogger('useStoryForm');
 
 export function useStoryForm() {
   const store = useStore();
@@ -135,7 +137,7 @@ export function useStoryForm() {
 
     if (response.ok) {
       const coverUrl = await response.json();
-      console.log(coverUrl);
+      logger.info('Cover uploaded, URL:', coverUrl);
       store.commit('Modules/DataNarrator/EditStoryForm/setCoverUrl', coverUrl);
     }
   }

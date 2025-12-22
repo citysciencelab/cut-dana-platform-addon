@@ -1,7 +1,7 @@
 <script setup>
 import { mdiTrashCan, mdiClose, mdiFileDocumentOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { ref, watch, nextTick } from 'vue';
+import { ref, watch, nextTick, computed } from 'vue';
 import { useStore } from 'vuex';
 
 import AddWMS from '../../../../tools/addWms/components/AddWMS.vue';
@@ -17,17 +17,18 @@ import StepTitle from './step/StepTitle.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 import TwoDNavigation from './step/TwoDNavigation.vue';
 
-const { step } = defineProps({
+const props = defineProps({
   step: {
     type: Object,
     required: true
   },
   pillColor: {
     type: String,
+    default: '#000000',
   }
 });
 
-const emit = defineEmits([ 'modelSelected' ]);
+const emit = defineEmits([ 'update:step', 'modelSelected' ]);
 
 const { t } = useTranslation();
 const { setBaseLayer, setAnimatedView } = useNavigation();
@@ -35,10 +36,15 @@ const store = useStore();
 
 const stepTitleRef = ref(null);
 const wmsDialogOpen = ref(false);
-const allMapSources = ref([])
+const allMapSources = ref([]);
+
+function updateStep(updates) {
+  emit('update:step', { ...props.step, ...updates });
+}
 
 function onWmsLoad(sources) {
-  if (!Array.isArray(step.mapSources)) step.mapSources = [];
+  const mapSources = Array.isArray(props.step.mapSources) ? props.step.mapSources : [];
+  updateStep({ mapSources });
   allMapSources.value = [];
 
   const existing = new Set(allMapSources.value.map((s) => s.id));
@@ -52,20 +58,57 @@ function onWmsLoad(sources) {
 }
 
 function loadWmsLayer(layer) {
-  step.mapSources.push(layer);
+  const mapSources = [ ...(props.step.mapSources || []), layer ];
+  updateStep({ mapSources });
   store.dispatch('addLayerToLayerConfig', {
     layerConfig: layer,
-    parentKey: 'subjectlayer', // analogue to AddWMS in MP
+    parentKey: 'subjectlayer',
   });
 }
 
 function removeWmsLayer(id) {
-  step.mapSources = step.mapSources.filter((v) => v.id !== id);
+  const mapSources = props.step.mapSources.filter((v) => v.id !== id);
+  updateStep({ mapSources });
   store.dispatch('Modules/LayerTree/removeLayer', { id });
 }
 
+const stepTitle = computed({
+  get: () => props.step.title,
+  set: (value) => updateStep({ title: value })
+});
+
+const stepDescription = computed({
+  get: () => props.step.description,
+  set: (value) => updateStep({ description: value })
+});
+
+const stepMapConfig = computed({
+  get: () => props.step.mapConfig,
+  set: (value) => updateStep({ mapConfig: value })
+});
+
+const backgroundMapId = computed({
+  get: () => props.step.mapConfig?.backgroundMapId,
+  set: (value) => updateStep({ mapConfig: { ...props.step.mapConfig, backgroundMapId: value } })
+});
+
+const informationLayerIds = computed({
+  get: () => props.step.informationLayerIds,
+  set: (value) => updateStep({ informationLayerIds: value })
+});
+
+const is3D = computed({
+  get: () => props.step.is3D,
+  set: (value) => updateStep({ is3D: value })
+});
+
+const navigation3D = computed({
+  get: () => props.step.navigation3D,
+  set: (value) => updateStep({ navigation3D: value })
+});
+
 watch(
-  () => step.is3D,
+  () => props.step.is3D,
   (is3DEnabled) => {
     store.dispatch('Maps/changeMapMode', is3DEnabled ? '3D' : '2D');
   },
@@ -73,7 +116,7 @@ watch(
 );
 
 watch(
-  () => step?.id,
+  () => props.step?.id,
   async () => {
     await nextTick();
     stepTitleRef.value?.focus?.();
@@ -81,7 +124,7 @@ watch(
 );
 
 watch(
-  () => step?.mapConfig,
+  () => props.step?.mapConfig,
   (newMapConfig) => {
     setBaseLayer(newMapConfig?.backgroundMapId);
     setAnimatedView({
@@ -124,7 +167,7 @@ watch(
       >
         <StepTitle
           ref="stepTitleRef"
-          v-model:value="step.title"
+          v-model:value="stepTitle"
         />
       </v-col>
     </v-row>
@@ -134,7 +177,7 @@ watch(
         cols="12"
         class="p-0"
       >
-        <StepDescription v-model:value="step.description" />
+        <StepDescription v-model:value="stepDescription" />
       </v-col>
     </v-row>
 
@@ -147,7 +190,7 @@ watch(
       </v-col>
     </v-row>
 
-    <TwoDNavigation v-model="step.mapConfig" />
+    <TwoDNavigation v-model="stepMapConfig" />
 
     <v-row class="mb-2">
       <v-col
@@ -155,7 +198,7 @@ watch(
         class="p-0"
       >
         <BackgroundMap
-          v-model="step.mapConfig.backgroundMapId"
+          v-model="backgroundMapId"
           @update:model-value="setBaseLayer"
         />
       </v-col>
@@ -170,7 +213,7 @@ watch(
       </v-col>
     </v-row>
 
-    <Layers v-model="step.informationLayerIds" />
+    <Layers v-model="informationLayerIds" />
 
     <v-row class="mb-1">
       <v-col
@@ -280,7 +323,7 @@ watch(
 
       <div class="mb-2">
         <v-switch
-          v-model="step.is3D"
+          v-model="is3D"
           hide-details
           inset
           label="Enable 3D for this step"
@@ -290,25 +333,8 @@ watch(
 
     <ThreeDNavigation
       v-if="step.is3D"
-      v-model="step.navigation3D"
+      v-model="navigation3D"
       @model-selected="(file) => emit('modelSelected', { step, file })"
     />
   </div>
 </template>
-
-<style lang="scss">
-.chapter-step {
-  background-color: white;
-  border-radius: 15px;
-  margin-top: 10px;
-
-  .pill-button {
-    .v-btn__content {
-      width: 20px !important;
-      border: 2px solid var(--pill-color);
-      color: var(--pill-color);
-      font-weight: bold;
-    }
-  }
-}
-</style>

@@ -1,5 +1,6 @@
 <script setup>
 import { useTranslation } from 'i18next-vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   dialogOpen: { type: Boolean, required: true },
@@ -7,12 +8,19 @@ const props = defineProps({
   cancelClicked: { type: Function, required: true },
 });
 
+const emit = defineEmits([ 'update:dialogOpen' ]);
+
 const { t } = useTranslation();
+
+const dialogModel = computed({
+  get: () => props.dialogOpen,
+  set: (value) => emit('update:dialogOpen', value),
+});
 </script>
 
 <template>
   <v-dialog
-    v-model="props.dialogOpen"
+    v-model="dialogModel"
     max-width="520"
   >
     <v-card>

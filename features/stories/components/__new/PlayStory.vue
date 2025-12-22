@@ -7,6 +7,7 @@ import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
 import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
 import { getFileUrl } from '../../../../utils/getFileUrl';
+import { createLogger } from '../../../../utils/logger.js';
 import ToolWindow from '../../../shared/Toolwindow/ToolWindow.vue';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
 import { useStory } from '../../hooks/useStory';
@@ -14,6 +15,7 @@ import { useStory } from '../../hooks/useStory';
 import PlayerFrame from './play/PlayerFrame.vue';
 import RichTextViewer from './step/RichTextViewer.vue';
 
+const logger = createLogger('PlayStory.vue');
 const { t } = useTranslation();
 const { gotoPage } = useDataNarrator()
 const { currentStoryId } = useStory();
@@ -60,7 +62,7 @@ async function loadStory(id) {
     const res = await fetch(`${backendUrl}/stories/new/${id}`);
     story.value = await res.json();
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   } finally {
     isLoading.value = false;
   }

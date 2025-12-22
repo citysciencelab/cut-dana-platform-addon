@@ -5,6 +5,7 @@ import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
+import { createLogger } from '../../../../utils/logger.js';
 import { useStory } from '../../../stories/hooks/useStory';
 import { useLogin } from '../../hooks/useLogin';
 
@@ -25,6 +26,8 @@ const { userId } = useLogin();
 const { gotoPage } = useDataNarrator();
 const { currentStoryId } = useStory();
 const emit = defineEmits([ 'deleted', 'published' ]);
+
+const logger = createLogger('StoryCard.vue');
 
 const props = defineProps({
   story: {
@@ -48,7 +51,7 @@ async function playStory() {
       method: 'POST'
     });
   } catch (error) {
-    console.error('Error counting story view:', error);
+    logger.error('Error counting story view:', error);
   }
 
   currentStoryId.value = props.story.id;
@@ -160,18 +163,19 @@ async function playStory() {
         display: flex;
         align-items: center;
     }
-}
-
-.card-text {
+  .card-text {
     padding: 0 12px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
+    line-clamp: 4;
     overflow: hidden;
     white-space: normal;
     overflow-wrap: anywhere;
     color: #4c4c4c;
+  }
 }
+
 
 .card-actions {
     padding: 0;
