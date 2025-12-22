@@ -1,19 +1,24 @@
 <script setup>
 import { mdiChevronRight, mdiEye, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose } from '@mdi/js';
+import { useTranslation } from 'i18next-vue';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { useLayers } from '../../../../../../hooks/useLayers';
 
 import CategoryBrowser from './CategoryBrowser.vue';
+import TransparencySlider from './TransparencySlider.vue';
 
 const store = useStore();
 const { layersTree, idToLayerMap, loading } = useLayers();
+const { t } = useTranslation();
 
 const props = defineProps({ modelValue: { type: Array, default: () => [] } });
 const emit = defineEmits([ 'update:modelValue' ]);
 
 const dialogOpen = ref(false);
+const transparencyDialog = ref(false);
+const activeLayerId = ref(null);
 
 const selectedLayers = computed(() =>
   (props.modelValue ?? [])
@@ -30,6 +35,30 @@ function addLayer(layerId) {
 
 function removeLayer(id) {
   emit('update:modelValue', props.modelValue.filter(v => v !== id));
+}
+
+function toggleTransparencySlider(layer) {
+  transparencyDialog.value = !transparencyDialog.value;
+  activeLayerId.value = activeLayerId.value === layer.id ? null : layer.id;
+  console.log('open transparency slider for', layer.name, layer.id, layer.transparency);
+}
+
+function onTransparencyChange(layer, transparency) {
+  console.log('transparency changed', layer.id, transparency);
+  layer.transparency = transparency;
+
+  // TODO: check layer in store/config
+  // store.dispatch('addOrReplaceLayer', {
+  //   layerId: layer.id,
+  //   transparency: transparency/100
+  // });
+
+  const opacity = 1 - (transparency/100);
+  const mapLayer = store.getters['Maps/getLayerById'](layer.id);
+  if (mapLayer) {
+    mapLayer.setOpacity(opacity);
+    mapLayer.changed();
+  }
 }
 
 watch(
@@ -83,20 +112,41 @@ watch(
           <v-sheet
             width="100%"
             rounded
-            class="d-flex align-center px-3 py-2"
+            class="d-flex align-center px-3 py-2 justify-space-between"
             style="border: 1px solid #e1e1e1"
           >
-            <v-icon
-              :icon="mdiEye"
-              class="mr-2"
-            />
-            <span class="grow">{{ l.name }}</span>
-            <v-icon
-              :icon="mdiTrashCan"
-              class="cursor-pointer"
-              @click="removeLayer(l.id)"
-            />
+            <span class="grow-flex-1">{{ l.name }}</span>
+            <div class="d-flex align-center">
+              <v-tooltip location="top">
+                <template #activator="{ props: actv }">
+                  <v-icon
+                    :icon="mdiEye"
+                    class="mr-2"
+                    v-bind="actv"
+                    @click="toggleTransparencySlider(l)"
+                  />
+                </template>
+                <span>{{ transparencyDialog ? 
+                  t("additional:modules.dataNarrator.label.closeTransparencySlider") : 
+                  t("additional:modules.dataNarrator.label.openTransparencySlider") }}
+                </span>
+              </v-tooltip>
+              <v-icon
+                :icon="mdiTrashCan"
+                class="cursor-pointer"
+                @click="removeLayer(l.id)"
+              />
+            </div>
           </v-sheet>
+          <div
+            v-if="activeLayerId === l.id"
+            class="mt-2"
+          >
+            <TransparencySlider
+              :initial-transparency="l.transparency"
+              @update="onTransparencyChange(l, $event)"
+            />
+          </div>
         </v-list-item>
 
         <div
@@ -106,6 +156,16 @@ watch(
           Keine Ebenen ausgewählt.
         </div>
       </v-list>
+      <!-- <div
+        v-if="transparencyDialog"
+        class="mt-2"
+      >
+        <TransparencySlider
+          v-model="transparencyDialog"
+          :initial-opacity="currentLayerOpacity"
+          @save="saveTransparency"
+        />
+      </div> -->
     </v-col>
   </v-row>
 

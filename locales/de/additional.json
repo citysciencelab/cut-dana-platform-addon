@@ -80,7 +80,9 @@
         "noWmsLayer": "Keine WMS-Ebenen ausgewählt",
         "wmsHint": "Sie können entweder die WMS URL angeben oder eine komplette GetCapabilities URL.",
         "enterWms": "WMS URL eingeben",
-        "loadWmsBtn": "Laden"
+        "loadWmsBtn": "Laden",
+        "openTransparencySlider": "Transparenz Einstellungen öffnen",
+        "closeTransparencySlider": "Transparenz Einstellungen schließen"
       },
       "storyList": {
         "all": "Alle Stories",
