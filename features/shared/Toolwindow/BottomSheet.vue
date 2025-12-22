@@ -1,9 +1,18 @@
 <script setup>
 import { motion, useDragControls } from 'motion-v';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
+import { useStore } from 'vuex';
 
+import * as constants from '../../../store/contantsDataNarrator.js';
+const store = useStore();
+const storiesDisplayMode = computed(() => store.state.Modules.DataNarrator.mode);
+
+// 44: offset of login button (8px) times 2 (top and bottom) + login button height (28px)
+const topOffset = 44;
 const sheet = ref(null);
+const top = ref(topOffset);
 const bottom = ref(0);
+const y = ref('33%');
 const controls = useDragControls();
 
 const props = defineProps({
@@ -13,12 +22,26 @@ const props = defineProps({
   }
 });
 
-function updateHeight() {
-  bottom.value = window.innerHeight - 100;
+function updateHeight(topValue) {
+  const viewportHeight = window.innerHeight;
+  if (window.screen.height === window.outerHeight) {
+    // Fullscreen mode
+    top.value = topValue ?? topOffset;
+    bottom.value = viewportHeight - 100;
+    return;
+  }
+  const browserChromeHeight = window.screen.height - window.innerHeight;
+  bottom.value = viewportHeight - 100 + topOffset;
+  top.value = topValue ?? browserChromeHeight;
 }
 
 onMounted(() => {
-  updateHeight();
+  const isDashBoardMode = storiesDisplayMode.value === constants.dataNarratorModes.DASHBOARD;
+  if (!isDashBoardMode) {
+    // maximize tooltip window
+    y.value = 5;
+  }
+  updateHeight(isDashBoardMode ? undefined : 5);
   window.addEventListener('resize', updateHeight);
 });
 
@@ -39,8 +62,9 @@ onBeforeUnmount(() => {
       drag="y"
       :drag-controls="controls"
       :drag-listener="false"
-      :drag-constraints="{ top: 0, bottom }"
-      :initial="{ y: '33%' }"
+      :drag-constraints="{ top, bottom }"
+      :drag-elastic="0.1"
+      :initial="{ y }"
     >
       <motion.div
         class="drag-handle-container"

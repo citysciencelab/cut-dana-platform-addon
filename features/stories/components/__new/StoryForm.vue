@@ -37,8 +37,6 @@ const {
 } = useNavigation();
 
 const backConfirmation = ref(false);
-const storyName = ref('');
-const description = ref('');
 const isSaving = ref(false);
 const previewVisible = ref(false);
 const activeChapterIndex = ref(0);
@@ -47,6 +45,8 @@ const editStoryVisible = ref(true);
 const modelFiles = new WeakMap();
 
 let nextChapterId = 1;
+const storyName = ref('');
+const description = ref('');
 const chapters = ref([
   {
     id: 0,
@@ -66,8 +66,8 @@ const canPublish = computed(() => {
   const chapterList = chapters.value ?? [];
 
   const allChaptersHaveSteps =
-        chapterList.length > 0 &&
-        chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
+    chapterList.length > 0 &&
+    chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
 
   return allChaptersHaveSteps && storyName.value.trim().length > 0;
 });
@@ -262,7 +262,7 @@ watch(activeStepIndex, (activeStepIndex) => {
 watch([ activeStep, previewVisible ], () => {
   removeAllVisibleLayers();
   clearGeoJSON();
-  if (previewVisible.value == true) {
+  if (previewVisible.value === true) {
     setAnimatedView({
       center: initialCenter.value,
       zoom: initialZoom.value
@@ -492,76 +492,78 @@ watch([ activeStep, previewVisible ], () => {
 
 <style lang="scss">
 .story-form {
-    position: absolute;
-    top: 90px;
-    bottom: 90px;
-    left: 20px;
-    right: 0;
+  position: absolute;
+  top: 90px;
+  bottom: 90px;
+  left: 20px;
+  right: 0;
+  background-color: #f6f6f6;
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.30);
+  border-radius: .8rem;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+
+  &.mobile {
+    background-color: transparent;
+    box-shadow: none;
+    top: 30px;
+    bottom: 0;
+    right: 10px;
+    left: 10px;
+  }
+
+  .v-toolbar__content {
+    height: 40px !important;
+  }
+
+  &-top {
+    height: auto;
+    margin-top: 8px;
+    margin-bottom: 6px;
+    position: relative;
+
+    &.with-image {
+      height: 260px;
+      padding: 10px;
+    }
+
+    .image-preview {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+    }
+
+    .remove-image-btn {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+    }
+  }
+
+  &-content {
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #c1c1c1 transparent;
+
+    .add-chapter-button-icon {
+      border: 2px solid #584560;
+      padding: 0 10px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #584560;
+      cursor: pointer;
+    }
+  }
+
+  &-footer {
+    margin-top: auto;
     background-color: #f6f6f6;
-    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.30);
-    border-radius: .8rem;
-    padding: 0 10px;
-    display: flex;
-    flex-direction: column;
-
-    &.mobile {
-        background-color: transparent;
-        box-shadow: none;
-        top: 30px;
-        bottom: 10px;
-        right: 10px;
-        left: 10px;
-    }
-
-    .v-toolbar__content {
-        height: 40px !important;
-    }
-
-    &-top {
-        height: auto;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        position: relative;
-
-        &.with-image {
-            height: 260px;
-            padding: 10px;
-        }
-
-        .image-preview {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 20px;
-        }
-
-        .remove-image-btn {
-            position: absolute;
-            right: 10px;
-            bottom: 10px;
-        }
-    }
-
-    &-content {
-        height: 100%;
-        overflow-y: auto;
-
-        .add-chapter-button-icon {
-            border: 2px solid #584560;
-            padding: 0 10px;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #584560;
-            cursor: pointer;
-        }
-    }
-
-    &-footer {
-        margin-top: auto;
-        background-color: #f6f6f6;
-    }
+  }
 }
 </style>
