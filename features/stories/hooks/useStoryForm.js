@@ -6,29 +6,11 @@ import { isNullOrWhitespace } from '../../../utils/stringUtils';
 import { uploadCoverImage } from '../services/addCoverImage';
 import { createChapter } from '../services/chapters';
 
-export function useStoryForm () {
+export function useStoryForm() {
   const store = useStore();
 
   const chapterName = ref('');
 
-  const createStory = async () => {
-    // TODO: create valid story object and send to backend using service (or just move service method here?)
-    const storyState = store.state.Modules.DataNarrator.EditStoryForm;
-
-    const story = {
-      title: storyState.storyTitle,
-      description: storyState.storyDescription,
-    }
-
-    if (isValidStory(story)){
-      await fetch(`${backendUrl}/stories`, {
-        method: 'POST',
-        body: JSON.stringify({
-          ...story
-        })
-      });
-    }
-  }
   const updateStory = async () => {
     await createDraftStory();
 
@@ -39,7 +21,7 @@ export function useStoryForm () {
       description: storyState.storyDescription,
     }
 
-    if (isValidStory(story)){
+    if (isValidStory(story)) {
       await fetch(`${backendUrl}/stories/${storyState.selectedStoryId}`, {
         method: 'PUT',
         body: JSON.stringify({

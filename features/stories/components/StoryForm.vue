@@ -12,7 +12,15 @@ import CoverSelector from './inputs/CoverSelector.vue';
 const { t } = useTranslation();
 
 const { gotoPage } = useDataNarrator();
-const { description, storyId, fetchStory, updateStory, chapterName, chapters, addChapter } = useStoryForm();
+const {
+  addChapter,
+  chapterName,
+  chapters,
+  description,
+  fetchStory,
+  storyId,
+  updateStory,
+} = useStoryForm();
 
 const notSaving = ref(true);
 
