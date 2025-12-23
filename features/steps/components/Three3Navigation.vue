@@ -1,4 +1,4 @@
-<template>
+<!--<template>-->
 <!--    <v-row-->
 <!--        v-if="is3d && cesiumEnabled"-->
 <!--        class="mb-2"-->
@@ -79,7 +79,7 @@
 <!--            </v-btn>-->
 <!--        </v-col>-->
 <!--    </v-row>-->
-</template>
+<!--</template>-->
 <script setup>
 // import { mdiPinOutline } from '@mdi/js';
 // import { useTranslation } from 'i18next-vue';

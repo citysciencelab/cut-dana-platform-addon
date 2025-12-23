@@ -2,19 +2,23 @@
 import { mdiEyeSettings } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 
+import { createLogger } from '../../../../utils/logger.js';
+
 const { t } = useTranslation();
+
+const logger = createLogger('ShareSettingsButton.vue');
 
 /**
  *
  */
 function toggleSharedSettings () {
-  console.log('toggleSharedSettings');
+  logger.debug('toggleSharedSettings');
 }
 </script>
 
 <template>
   <v-tooltip top>
-    <template>
+    <template #activator="">
       <v-icon
         id="share-button"
         color="green"

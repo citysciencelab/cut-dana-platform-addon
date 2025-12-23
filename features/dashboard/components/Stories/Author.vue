@@ -4,6 +4,7 @@ import { mdiAccountOutline } from '@mdi/js';
 import { onMounted, ref } from 'vue';
 
 import { backendUrl } from '../../../../store/contantsDataNarrator.js';
+import { createLogger } from '../../../../utils/logger.js';
 
 const { authorId } = defineProps({
   authorId: {
@@ -11,6 +12,7 @@ const { authorId } = defineProps({
     default: null
   }
 });
+const logger = createLogger('Author.vue');
 
 const author = ref(null);
 const isLoading = ref(false);
@@ -22,7 +24,7 @@ async function fetchAuthor(id) {
     const res = await fetch(`${backendUrl}/users/${id}`);
     author.value = await res.json();
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   } finally {
     isLoading.value = false;
   }

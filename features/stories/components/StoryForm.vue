@@ -5,6 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { dataNarratorModes } from '../../../store/contantsDataNarrator';
+import { createLogger } from '../../../utils/logger.js';
 import { useStoryForm } from '../hooks/useStoryForm';
 
 import CoverSelector from './inputs/CoverSelector.vue';
@@ -12,6 +13,7 @@ import CoverSelector from './inputs/CoverSelector.vue';
 const { t } = useTranslation();
 
 const { gotoPage } = useDataNarrator();
+const logger = createLogger('StoryForm.vue');
 const {
   addChapter,
   chapterName,
@@ -25,7 +27,7 @@ const {
 const notSaving = ref(true);
 
 const hasStoryThenFetch = async () => {
-  console.log('storyId', storyId);
+  logger.debug('storyId', storyId);
   if (storyId) {
     await fetchStory();
   }

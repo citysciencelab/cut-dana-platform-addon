@@ -7,6 +7,9 @@ import { intersects as olIntersects } from 'ol/extent';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import { ref, onMounted } from 'vue';
 
+import { createLogger } from '../../../utils/logger';
+const logger = createLogger('AddWMS');
+
 const props = defineProps({
   projectionCode: { type: String, default: 'EPSG:3857' },
   currentExtent: { type: Array, default: null },
@@ -139,7 +142,9 @@ function makeId(serviceUrl, layerName) {
   let host = 'wms';
   try {
     host = new URL(serviceUrl).host;
-  } catch {}
+  } catch (err) {
+    logger.error('Failed to parse service URL for ID generation:', serviceUrl, `${err.message}`);
+  }
   return `ext-wms:${host}:${layerName}`;
 }
 

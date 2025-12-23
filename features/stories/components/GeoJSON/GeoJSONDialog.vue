@@ -34,8 +34,12 @@ watch(() => [ props.asset ], () => {
   };
 }, { immediate: true });
 
-const emit = defineEmits([ 'closeClicked', 'assetSaved' ]);
+const emit = defineEmits([ 'closeClicked', 'assetSaved', 'update:open' ]);
 const editMode = computed(() => !!props.asset?.id);
+const isOpen = computed({
+  get: () => props.open,
+  set: (value) => emit('update:open', value)
+});
 const dialogTitle = computed(() =>
   editMode.value
     ? t('additional:modules.dataNarrator.geojson.editAssetTitle')
@@ -51,7 +55,6 @@ const onFileSelectionChanged = (file) => {
         if (!json.type || json.type !== 'FeatureCollection') {
           workingCopy.value.geoJson = null;
           jsonError.value = 'Invalid GeoJSON: Type must be "FeatureCollection"';
-          return;
         } else {
           workingCopy.value.geoJson = JSON.stringify(json, null, 2);
           if (!workingCopy.value.title) {
@@ -85,7 +88,7 @@ const onAssetSave = () => {
 
 <template>
   <v-dialog
-    v-model="props.open"
+    v-model="isOpen"
     max-width="480"
   >
     <v-card>

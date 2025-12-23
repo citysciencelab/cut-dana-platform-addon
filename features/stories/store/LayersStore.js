@@ -1,5 +1,8 @@
 import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../src/shared/js/utils/generators';
 
+import { createLogger } from '../../../utils/logger';
+const logger = createLogger('LayerStore');
+
 export const state = {
   layersTree: [],
   loading: false,
@@ -90,7 +93,7 @@ export const actions = {
 
       commit('setLayersTree', layersTree);
     } catch (err) {
-      console.log('error', err);
+      logger.error('Error fetching or processing services:', err);
       commit('setError', err instanceof Error ? err.message : String(err));
       commit('setLayersTree', []);
     } finally {

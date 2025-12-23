@@ -1,5 +1,7 @@
 import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../src/shared/js/utils/generators';
 
+import { createLogger } from '../../../utils/logger';
+const logger = createLogger('EditStoryForm');
 
 export const state = {
   isLoading: false,
@@ -18,7 +20,7 @@ export const mutations = {
   },
 
   setStoryData (state, storyData) {
-    console.log('storyData',storyData);
+    logger.info('storyData', storyData);
     state.storyTitle = storyData.title;
     state.storyDescription = storyData.description;
     state.storyChapters = storyData.chapters;

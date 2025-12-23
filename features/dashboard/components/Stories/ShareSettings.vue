@@ -12,6 +12,11 @@ defineProps({
     default: () => []
   }
 })
+
+const emit = defineEmits([
+  'update:private-story',
+  'update:shared-with'
+]);
 </script>
 
 <template>
@@ -22,7 +27,7 @@ defineProps({
         :value="privateStory"
         :label="t('additional:modules.dataNarrator.label.private')"
         hide-details="auto"
-        @change="$emit('update:private-story', $event)"
+        @change="emit('update:private-story', $event)"
       />
     </div>
 
@@ -43,7 +48,7 @@ defineProps({
         :placeholder="t('additional:modules.dataNarrator.label.sharedWithPlaceholder')"
         :add-button-text="t('additional:modules.dataNarrator.button.addSharedWith')"
         :duplicate-tag-text="t('additional:modules.dataNarrator.label.sharedWithDuplicate')"
-        @input="value => $emit('update:shared-with', value)"
+        @input="value => emit('update:shared-with', value)"
       />
     </div>
   </div>

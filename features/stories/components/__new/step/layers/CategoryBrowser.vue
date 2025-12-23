@@ -4,7 +4,7 @@ import { mdiChevronRight, mdiFileDocumentOutline, mdiFolderOutline } from '@mdi/
 import { ref, computed } from 'vue';
 
 const props = defineProps({
-  items: { type: Array, required: true, default: () => [] },
+  items: { type: Array, required: false, default: () => [] },
   loading: { type: Boolean, default: false },
 });
 

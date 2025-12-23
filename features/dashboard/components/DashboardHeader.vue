@@ -7,16 +7,18 @@ import { useStore } from 'vuex';
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import cutcslDepiction from '../../../img/cutcsl_depiction.png';
 import { availableStoryListModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
+import { createLogger } from '../../../utils/logger.js';
 import { useLogin } from '../hooks/useLogin';
 
 import CreateStoryButton from './Tools/CreateStoryButton.vue';
-
 import LanguageSwitchButton from './Tools/LanguageSwitchButton.vue';
 import ListButton from './Tools/ListButton.vue';
 import LoginButton from './Tools/LoginButton.vue';
 import UserMenu from './Tools/UserMenu.vue';
 
 const store = useStore();
+
+const logger = createLogger('DashboardHeader');
 
 const { t } = useTranslation();
 
@@ -31,14 +33,12 @@ const storyModeLists = computed(() => {
 
 const legendAdded = true;
 
-const toggleLegend = () => {
-  console.log('toggleLegend');
-};
+const toggleLegend = () => logger.debug('toggleLegend');
 
 const getBackgroundStyle = () => ({
   backgroundImage: `url(${cutcslDepiction})`
 });
-</script>
+</script>-
 
 <template>
   <div

@@ -6,6 +6,7 @@ import { computed, ref, watch } from 'vue';
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
 import { clearGeoJSON } from '../../../../utils/geoJSON';
+import { createLogger } from '../../../../utils/logger.js';
 import ConfirmationDialog from '../../../shared/ConfirmationDialog.vue';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
 import { uploadCoverImage } from '../../services/addCoverImage';
@@ -16,13 +17,33 @@ import { uploadStepModel } from '../../services/uploadStepModel';
 import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
 
+const logger = createLogger('StoryForm.vue');
+
 const props = defineProps({
-  storyId: Number,
-  storyName: String,
-  description: String,
-  chapters: Array,
-  storyLoading: Boolean,
-  coverImageUrl: String,
+  storyId: {
+    type: Number,
+    default: null
+  },
+  storyName: {
+    type: String,
+    default: ''
+  },
+  description: {
+    type: String,
+    default: ''
+  },
+  chapters: {
+    type: Array,
+    default: () => []
+  },
+  storyLoading: {
+    type: Boolean,
+    default: false
+  },
+  coverImageUrl: {
+    type: String,
+    default: ''
+  }
 });
 const { t } = useTranslation();
 const { toolwindowMode } = useDataNarrator();
@@ -37,6 +58,8 @@ const {
 } = useNavigation();
 
 const backConfirmation = ref(false);
+const storyNameInput = ref('');
+const descriptionInput = ref('');
 const isSaving = ref(false);
 const previewVisible = ref(false);
 const activeChapterIndex = ref(0);
@@ -45,9 +68,7 @@ const editStoryVisible = ref(true);
 const modelFiles = new WeakMap();
 
 let nextChapterId = 1;
-const storyName = ref('');
-const description = ref('');
-const chapters = ref([
+const chaptersData = ref([
   {
     id: 0,
     sequence: 1,
@@ -63,17 +84,17 @@ const imagePreview = computed(() => {
 });
 
 const canPublish = computed(() => {
-  const chapterList = chapters.value ?? [];
+  const chapterList = chaptersData.value ?? [];
 
   const allChaptersHaveSteps =
     chapterList.length > 0 &&
     chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
 
-  return allChaptersHaveSteps && storyName.value.trim().length > 0;
+  return allChaptersHaveSteps && storyNameInput.value.trim().length > 0;
 });
 
 const activeStep = computed(() => {
-  const chapter = chapters.value?.[activeChapterIndex.value];
+  const chapter = chaptersData.value?.[activeChapterIndex.value];
   if (!chapter) return null;
   const step = chapter.steps?.[activeStepIndex.value];
   return step || null;
@@ -120,33 +141,33 @@ function getDefaultStep(id) {
 function addNewChapter() {
   const newChapter = {
     id: nextChapterId++,
-    sequence: chapters.value.length + 1,
+    sequence: chaptersData.value.length + 1,
     title: '',
     steps: [],
   };
 
-  chapters.value.push(newChapter);
+  chaptersData.value.push(newChapter);
 
-  activeChapterIndex.value = chapters.value.length - 1;
+  activeChapterIndex.value = chaptersData.value.length - 1;
   activeStepIndex.value = -1;
 }
 
 function handleAddNewStep({ chapterIdx }) {
-  const chapter = chapters.value[chapterIdx];
+  const chapter = chaptersData.value[chapterIdx];
   chapter.steps.push(getDefaultStep(chapter.steps.length + 1));
   activeChapterIndex.value = chapterIdx;
   activeStepIndex.value = chapter.steps.length - 1;
 }
 
 function handleDeleteStep({ chapterIdx, stepIdx }) {
-  const chapter = chapters.value?.[chapterIdx];
+  const chapter = chaptersData.value?.[chapterIdx];
   if (!chapter) return;
   if (stepIdx < 0 || stepIdx >= chapter.steps.length) return;
   chapter.steps.splice(stepIdx, 1);
 }
 
 function handleStepsChange({ chapterIdx, newList }) {
-  const chapter = chapters.value?.[chapterIdx];
+  const chapter = chaptersData.value?.[chapterIdx];
   if (!chapter) return;
   chapter.steps = [ ...newList ];
 }
@@ -158,22 +179,29 @@ function handleEditStep({ chapterIdx, stepIdx }) {
 }
 
 function handleEditChapter({ chapterIdx }) {
-  const chapter = chapters.value?.[chapterIdx];
+  const chapter = chaptersData.value?.[chapterIdx];
   if (!chapter) return;
   previewVisible.value = false;
   activeChapterIndex.value = chapterIdx;
-  const stepCount = chapters.value[chapterIdx].steps.length ?? 0;
+  const stepCount = chaptersData.value[chapterIdx].steps.length ?? 0;
   activeStepIndex.value = stepCount ? stepCount - 1 : -1;
 }
 
+function handleChapterUpdate(updatedChapter) {
+  if (!updatedChapter) {
+    return;
+  }
+  chaptersData.value[activeChapterIndex.value] = updatedChapter;
+}
+
 function handleDeleteChapter({ chapterIdx }) {
-  if (chapterIdx < 0 || chapterIdx >= chapters.value.length) return;
-  chapters.value.splice(chapterIdx, 1);
-  chapters.value.forEach((ch, i) => (ch.sequence = i + 1));
+  if (chapterIdx < 0 || chapterIdx >= chaptersData.value.length) return;
+  chaptersData.value.splice(chapterIdx, 1);
+  chaptersData.value.forEach((ch, i) => (ch.sequence = i + 1));
 }
 
 function handleChaptersChange(newList) {
-  chapters.value = newList.map((ch, i) => ({
+  chaptersData.value = newList.map((ch, i) => ({
     ...ch,
     sequence: i + 1,
   }));
@@ -183,9 +211,9 @@ async function save() {
   isSaving.value = true;
 
   const payload = {
-    title: String(storyName.value ?? '').trim(),
-    description: String(description.value ?? '').trim(),
-    chapters: chapters.value
+    title: String(storyNameInput.value ?? '').trim(),
+    description: String(descriptionInput.value ?? '').trim(),
+    chapters: chaptersData.value
   };
 
   let storyId = props.storyId;
@@ -208,7 +236,7 @@ async function save() {
   }
 
   const uploads = [];
-  for (const ch of chapters.value) {
+  for (const ch of chaptersData.value) {
     const dbChapter = createdStory.chapters.find((x) => x.sequence === ch.sequence);
     if (!dbChapter) continue;
 
@@ -231,7 +259,7 @@ async function save() {
     try {
       await uploadCoverImage(storyId, selectedImage.value);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   }
 
@@ -243,9 +271,9 @@ watch(
   [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId ],
   ([ s, d, c, sId ]) => {
     if (sId) {
-      storyName.value = s ?? '';
-      description.value = d ?? '';
-      chapters.value = c ?? [];
+      storyNameInput.value = s ?? '';
+      descriptionInput.value = d ?? '';
+      chaptersData.value = c ?? [];
       previewVisible.value = true;
     }
   },
@@ -319,7 +347,7 @@ watch([ activeStep, previewVisible ], () => {
 
           <v-text-field
             id="title"
-            v-model="storyName"
+            v-model="storyNameInput"
             width="200"
             variant="underlined"
             placeholder="Story name"
@@ -402,7 +430,7 @@ watch([ activeStep, previewVisible ], () => {
       <v-textarea
         v-if="editStoryVisible"
         id="description"
-        v-model="description"
+        v-model="descriptionInput"
         variant="outlined"
         hide-details="true"
         rows="3"
@@ -427,6 +455,7 @@ watch([ activeStep, previewVisible ], () => {
         }"
         @edit-story-visible="editStoryVisible = true"
         @model-selected="handleModelSelected"
+        @update:chapter="handleChapterUpdate"
       />
     </div>
     <StoryOverview

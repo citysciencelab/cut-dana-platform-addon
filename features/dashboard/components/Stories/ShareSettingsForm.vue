@@ -2,12 +2,20 @@
 import { mdiCancel, mdiCheck } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 
+import { createLogger } from '../../../../utils/logger.js';
+
 import ShareSettings from './ShareSettings.vue';
 
 const { t } = useTranslation();
 
+const logger = createLogger('ShareSettingsForm.vue');
+
+const emit = defineEmits([
+  'close:shared-settings'
+]);
+
 function saveStorySettings() {
-  console.log('saveStorySettings');
+  logger.debug('saveStorySettings');
 }
 </script>
 
@@ -31,7 +39,7 @@ function saveStorySettings() {
             <v-btn
               class="pill-button"
               icon
-              @click="$emit('close:shared-settings')"
+              @click="emit('close:shared-settings')"
             >
               <v-icon size="24px">{{ mdiCancel }}</v-icon>
             </v-btn>

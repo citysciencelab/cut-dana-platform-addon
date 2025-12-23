@@ -4,6 +4,8 @@ import { useTranslation } from 'i18next-vue';
 
 const { t } = useTranslation();
 
+const emit = defineEmits([ 'click' ])
+
 const { tooltip, text, showStoryTitle } = defineProps({
   tooltip: {
     type: String,
@@ -31,8 +33,8 @@ const { tooltip, text, showStoryTitle } = defineProps({
           <v-icon
             v-bind="attrs"
             v-on="on"
-            @click="$emit('click')"
-            @keydown="$emit('click')"
+            @click="emit('click')"
+            @keydown="emit('click')"
           >
             {{ mdiArrowLeft }}
             ></v-icon>
@@ -60,8 +62,5 @@ const { tooltip, text, showStoryTitle } = defineProps({
     font-weight: bold;
     font-size: 1.2em;
     margin-left: 10px;
-}
-
-.story-title, .chapter-title {
 }
 </style>
