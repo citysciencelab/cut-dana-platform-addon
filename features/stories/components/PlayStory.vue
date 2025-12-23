@@ -3,14 +3,14 @@ import { useTranslation } from 'i18next-vue';
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
-import { useDataNarrator } from '../../../../hooks/useDataNarrator';
-import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
-import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
-import { getFileUrl } from '../../../../utils/getFileUrl';
-import { createLogger } from '../../../../utils/logger.js';
-import ToolWindow from '../../../shared/Toolwindow/ToolWindow.vue';
-import { useNavigation } from '../../../steps/hooks/useNavigation';
-import { useStory } from '../../hooks/useStory';
+import { useDataNarrator } from '../../../hooks/useDataNarrator';
+import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrator';
+import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
+import { getFileUrl } from '../../../utils/getFileUrl';
+import { createLogger } from '../../../utils/logger.js';
+import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
+import { useNavigation } from '../../steps/hooks/useNavigation';
+import { useStory } from '../hooks/useStory';
 
 import PlayerFrame from './play/PlayerFrame.vue';
 import RichTextViewer from './step/RichTextViewer.vue';

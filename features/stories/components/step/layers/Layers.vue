@@ -3,7 +3,7 @@ import { mdiChevronRight, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose } from 
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
-import { useLayers } from '../../../../../../hooks/useLayers';
+import { useLayers } from '../../../../../hooks/useLayers';
 
 import CategoryBrowser from './CategoryBrowser.vue';
 
