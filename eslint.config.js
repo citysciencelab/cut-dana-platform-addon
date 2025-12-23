@@ -19,6 +19,7 @@ export default [
     },
     rules: {
       'indent': [ 'error', 2 ],
+      'no-console': 'error',
       'no-debugger': 'error',
       'vue/multi-word-component-names': 'off',
       '@stylistic/js/object-curly-spacing': [ 'warn', 'always' ],

@@ -136,7 +136,7 @@ watch(
 );
 
 watch(
-  () => step?.geoJsonAssets,
+  () => props.step?.geoJsonAssets,
   (newGeoJsonAssets) => {
     clearGeoJSON();
     addGeoJSON(newGeoJsonAssets);
@@ -307,7 +307,10 @@ watch(
       </v-list-item>
     </v-list>
 
-    <GeoJSONPanel v-model="step.geoJsonAssets" />
+    <GeoJSONPanel
+      :model-value="step.geoJsonAssets"
+      @update:model-value="(value) => updateStep({ geoJsonAssets: value })"
+    />
 
     <div
       v-if="step.mapSources?.length === 0"
