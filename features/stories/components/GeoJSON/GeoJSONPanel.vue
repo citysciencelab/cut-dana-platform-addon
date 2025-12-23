@@ -6,11 +6,6 @@ import { computed, ref } from 'vue';
 import GeoJSONDialog from './GeoJSONDialog.vue';
 import GeoJSONList from './GeoJSONList.vue';
 
-// type GeoJSONAsset = {
-//   id: string;
-//   title: string;
-//   geoJson: JsonValue;
-// }
 
 const props = defineProps({
   modelValue: {
