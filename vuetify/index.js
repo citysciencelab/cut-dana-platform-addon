@@ -4,10 +4,14 @@ import * as components from 'vuetify/lib/components';
 import * as directives from 'vuetify/lib/directives';
 import { aliases, mdi } from 'vuetify/lib/iconsets/mdi-svg';
 import * as labsComponents from 'vuetify/lib/labs';
+import { VFileUpload } from 'vuetify/lib/labs/VFileUpload'
 import '@mdi/font/css/materialdesignicons.css';
 
 const vuetify = createVuetify({
-  components,
+  components: {
+    ...components,
+    VFileUpload
+  },
   labsComponents,
   directives,
   theme: {

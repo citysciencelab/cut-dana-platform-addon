@@ -5,6 +5,7 @@ import { useTranslation } from 'i18next-vue';
 
 import { useDataNarrator } from '../../../../../hooks/useDataNarrator';
 import { dataNarratorModes, ToolwindowModes } from '../../../../../store/contantsDataNarrator';
+import { clearGeoJSON } from '../../../../../utils/geoJSON';
 import { useNavigation } from '../../../../steps/hooks/useNavigation';
 
 const { gotoPage } = useDataNarrator();
@@ -23,6 +24,7 @@ const { t } = useTranslation();
 function backToDashboard() {
   removeAllVisibleLayers();
   gotoPage(dataNarratorModes.DASHBOARD);
+  clearGeoJSON();
 
   const baseUrl = `${location.origin}/portal/stories`;
   window.history.replaceState({}, '', baseUrl);

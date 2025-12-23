@@ -82,6 +82,12 @@
         "enterWms": "Enter WMS service URL",
         "loadWmsBtn": "Load"
       },
+      "geojson": {
+        "panelTitle": "GeoJSON Data Sources",
+        "newAssetTitle": "Add GeoJSON Data Source",
+        "editAssetTitle": "Edit GeoJSON Data Source",
+        "uploadFile": "Select file or drag & drop"
+      },
       "storyList": {
         "all": "All Stories",
         "my": "My Stories",

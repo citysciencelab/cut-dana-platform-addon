@@ -5,7 +5,10 @@ import { ref, watch, nextTick } from 'vue';
 import { useStore } from 'vuex';
 
 import AddWMS from '../../../../tools/addWms/components/AddWMS.vue';
+import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
+
+import GeoJSONPanel from '../GeoJSON/GeoJSONPanel.vue';
 
 import BackgroundMap from './step/BackgroundMap.vue';
 import Layers from './step/layers/Layers.vue';
@@ -85,6 +88,15 @@ watch(
       center: newMapConfig.centerCoordinates,
       zoom: newMapConfig.zoomLevel
     });
+  },
+  { immediate: true, deep: true }
+);
+
+watch(
+  () => step?.geoJsonAssets,
+  (newGeoJsonAssets) => {
+    clearGeoJSON();
+    addGeoJSON(newGeoJsonAssets);
   },
   { immediate: true, deep: true }
 );
@@ -241,8 +253,8 @@ watch(
           rounded
           class="d-flex align-center px-3 py-2"
           style="border: 1px solid #e1e1e1"
-        >                
-          <span class="flex-grow-1">{{ l.name }}</span>              
+        >
+          <span class="flex-grow-1">{{ l.name }}</span>
           <v-icon
             :icon="mdiTrashCan"
             class="cursor-pointer"
@@ -251,8 +263,11 @@ watch(
         </v-sheet>
       </v-list-item>
     </v-list>
+
+    <GeoJSONPanel v-model="step.geoJsonAssets" />
+
     <div
-      v-if="step.mapSources.length === 0"
+      v-if="step.mapSources?.length === 0"
       class="text-medium-emphasis py-2"
     >
       {{ t("additional:modules.dataNarrator.label.noWmsLayer") }}

@@ -5,6 +5,7 @@ import { computed, ref, watch } from 'vue';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
+import { clearGeoJSON } from '../../../../utils/geoJSON';
 import ConfirmationDialog from '../../../shared/ConfirmationDialog.vue';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
 import { uploadCoverImage } from '../../services/addCoverImage';
@@ -260,6 +261,7 @@ watch(activeStepIndex, (activeStepIndex) => {
 // When the step is change we remove all visible layers and reset to default base layer
 watch([ activeStep, previewVisible ], () => {
   removeAllVisibleLayers();
+  clearGeoJSON();
   if (previewVisible.value == true) {
     setAnimatedView({
       center: initialCenter.value,

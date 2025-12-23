@@ -1,5 +1,5 @@
 <script setup>
-import { mdiChevronRight, mdiEye, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose } from '@mdi/js';
+import { mdiChevronRight, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose } from '@mdi/js';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
@@ -86,11 +86,7 @@ watch(
             class="d-flex align-center px-3 py-2"
             style="border: 1px solid #e1e1e1"
           >
-            <v-icon
-              :icon="mdiEye"
-              class="mr-2"
-            />
-            <span class="grow">{{ l.name }}</span>
+            <span class="flex-grow-1">{{ l.name }}</span>
             <v-icon
               :icon="mdiTrashCan"
               class="cursor-pointer"

@@ -5,6 +5,7 @@ import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
+import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
 import { getFileUrl } from '../../../../utils/getFileUrl';
 import ToolWindow from '../../../shared/Toolwindow/ToolWindow.vue';
 import { useNavigation } from '../../../steps/hooks/useNavigation';
@@ -107,6 +108,9 @@ watch(
       setBaseLayer(bgId);
       setInformationLayers(step.informationLayerIds ?? [], [ bgId ]);
     }
+
+    clearGeoJSON();
+    addGeoJSON(step.geoJsonAssets);
   },
   { immediate: true }
 );
@@ -130,6 +134,7 @@ function next() {
     gotoPage(dataNarratorModes.DASHBOARD);
     removeAllVisibleLayers();
     resetBaseLayer();
+    clearGeoJSON();
     setAnimatedView({
       center: initialCenter.value,
       zoom: initialZoom.value,
@@ -148,6 +153,9 @@ function back() {
     stepIndex.value = story.value.chapters[chapterIndex.value].steps.length - 1;
   } else {
     stage.value = 'overview';
+    removeAllVisibleLayers();
+    resetBaseLayer();
+    clearGeoJSON();
     setAnimatedView({
       center: initialCenter.value,
       zoom: initialZoom.value,
