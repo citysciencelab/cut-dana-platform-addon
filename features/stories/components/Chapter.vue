@@ -3,8 +3,8 @@ import { mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus } fro
 
 import { useTranslation } from 'i18next-vue';
 
-import { getStoryColor } from '../../../../utils/getStoryColor';
-import { numberToLetter } from '../../../../utils/numberToLetter';
+import { getStoryColor } from '../../../utils/getStoryColor';
+import { numberToLetter } from '../../../utils/numberToLetter';
 
 import ChapterStep from './ChapterStep.vue';
 

@@ -3,7 +3,7 @@ import crs from '@masterportal/masterportalapi/src/crs';
 import { ref, computed, toRef, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useStore } from 'vuex';
 
-import initProjections from '../../../../../../../../../../src/shared/js/utils/initProjections';
+import initProjections from '../../../../../../../../../src/shared/js/utils/initProjections';
 
 const store = useStore();
 

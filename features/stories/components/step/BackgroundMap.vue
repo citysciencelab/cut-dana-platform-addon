@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 
-import { useBaseLayer } from '../../../hooks/useBaseLayer';
+import { useBaseLayer } from '../../hooks/useBaseLayer';
 
 const { items } = useBaseLayer();
 

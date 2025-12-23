@@ -4,8 +4,8 @@ import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import Modeler3DEntityModel
-  from '../../../../../../../../../../src/modules/modeler3D/components/Modeler3DEntityModel.vue';
-import { createLogger } from '../../../../../../../utils/logger.js';
+  from '../../../../../../../../../src/modules/modeler3D/components/Modeler3DEntityModel.vue';
+import { createLogger } from '../../../../../../utils/logger.js';
 
 import EntityList from './EntityList.vue';
 import Modeler3D from './Modeler3D.vue';

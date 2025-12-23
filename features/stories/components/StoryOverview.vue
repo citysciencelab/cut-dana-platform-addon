@@ -9,8 +9,8 @@ import {
 import { useTranslation } from 'i18next-vue';
 import Draggable from 'vuedraggable';
 
-import { getStoryColor } from '../../../../utils/getStoryColor';
-import { numberToLetter } from '../../../../utils/numberToLetter';
+import { getStoryColor } from '../../../utils/getStoryColor';
+import { numberToLetter } from '../../../utils/numberToLetter';
 
 const { t } = useTranslation();
 

@@ -4,11 +4,11 @@ import { useTranslation } from 'i18next-vue';
 import { ref, watch, nextTick, computed } from 'vue';
 import { useStore } from 'vuex';
 
-import AddWMS from '../../../../tools/addWms/components/AddWMS.vue';
-import { addGeoJSON, clearGeoJSON } from '../../../../utils/geoJSON';
-import { useNavigation } from '../../../steps/hooks/useNavigation';
+import AddWMS from '../../../tools/addWms/components/AddWMS.vue';
+import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
+import { useNavigation } from '../../steps/hooks/useNavigation';
 
-import GeoJSONPanel from '../GeoJSON/GeoJSONPanel.vue';
+import GeoJSONPanel from './GeoJSON/GeoJSONPanel.vue';
 
 import BackgroundMap from './step/BackgroundMap.vue';
 import Layers from './step/layers/Layers.vue';

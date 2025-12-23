@@ -3,16 +3,16 @@ import { mdiArrowLeft, mdiDotsVertical, mdiImagePlusOutline, mdiPencilOutline, m
 import { useTranslation } from 'i18next-vue';
 import { computed, ref, watch } from 'vue';
 
-import { useDataNarrator } from '../../../../hooks/useDataNarrator';
-import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
-import { clearGeoJSON } from '../../../../utils/geoJSON';
-import { createLogger } from '../../../../utils/logger.js';
-import ConfirmationDialog from '../../../shared/ConfirmationDialog.vue';
-import { useNavigation } from '../../../steps/hooks/useNavigation';
-import { uploadCoverImage } from '../../services/addCoverImage';
-import { createStory } from '../../services/createStory';
-import { editStory } from '../../services/editStory';
-import { uploadStepModel } from '../../services/uploadStepModel';
+import { useDataNarrator } from '../../../hooks/useDataNarrator';
+import { dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
+import { clearGeoJSON } from '../../../utils/geoJSON';
+import { createLogger } from '../../../utils/logger.js';
+import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
+import { useNavigation } from '../../steps/hooks/useNavigation';
+import { uploadCoverImage } from '../services/addCoverImage';
+import { createStory } from '../services/createStory';
+import { editStory } from '../services/editStory';
+import { uploadStepModel } from '../services/uploadStepModel';
 
 import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
