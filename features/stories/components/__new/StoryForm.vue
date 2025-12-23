@@ -187,6 +187,13 @@ function handleEditChapter({ chapterIdx }) {
   activeStepIndex.value = stepCount ? stepCount - 1 : -1;
 }
 
+function handleChapterUpdate(updatedChapter) {
+  if (!updatedChapter) {
+    return;
+  }
+  chaptersData.value[activeChapterIndex.value] = updatedChapter;
+}
+
 function handleDeleteChapter({ chapterIdx }) {
   if (chapterIdx < 0 || chapterIdx >= chaptersData.value.length) return;
   chaptersData.value.splice(chapterIdx, 1);
@@ -448,6 +455,7 @@ watch([ activeStep, previewVisible ], () => {
         }"
         @edit-story-visible="editStoryVisible = true"
         @model-selected="handleModelSelected"
+        @update:chapter="handleChapterUpdate"
       />
     </div>
     <StoryOverview

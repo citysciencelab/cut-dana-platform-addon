@@ -148,7 +148,6 @@ export function useStoryForm() {
     chapters,
     storyId,
     chapterName,
-    createStory,
     updateStory,
     createDraftStory,
     fetchStory,

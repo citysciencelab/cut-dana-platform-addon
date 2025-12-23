@@ -38,11 +38,9 @@ const stepTitleRef = ref(null);
 const wmsDialogOpen = ref(false);
 const allMapSources = ref([]);
 
-function updateStep(updates) {
-  emit('update:step', { ...props.step, ...updates });
-}
+const updateStep = (updates) => emit('update:step', { ...props.step, ...updates });
 
-function onWmsLoad(sources) {
+const onWmsLoad = (sources) => {
   const mapSources = Array.isArray(props.step.mapSources) ? props.step.mapSources : [];
   updateStep({ mapSources });
   allMapSources.value = [];

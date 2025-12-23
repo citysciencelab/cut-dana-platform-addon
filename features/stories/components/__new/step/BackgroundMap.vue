@@ -8,7 +8,7 @@ const { items } = useBaseLayer();
 const props = defineProps({
   modelValue: {
     type: String,
-    default: 'osm',
+    default: '',
   }
 });
 const emit = defineEmits([ 'update:modelValue' ]);
