@@ -1,6 +1,10 @@
 import { customRef, ref } from 'vue';
 import { useStore } from 'vuex';
 
+import { createLogger } from '../../../utils/logger.js';
+
+const logger = createLogger('useStepForm');
+
 export function useStepForm () {
   const store = useStore();
 
@@ -153,19 +157,19 @@ export function useStepForm () {
   const isValid = ref(false);
 
   const onSubmit = () => {
-    console.log('Submit step form');
+    logger.debug('Submit step form');
   }
 
   const onAddImage = () => {
-    console.log('Add image');
+    logger.debug('Add image');
   }
 
   const onRemoveImage = () => {
-    console.log('Remove image');
+    logger.debug('Remove image');
   }
 
   const onDeleteStep = () => {
-    console.log('delete step');
+    logger.debug('delete step');
   }
 
   return {

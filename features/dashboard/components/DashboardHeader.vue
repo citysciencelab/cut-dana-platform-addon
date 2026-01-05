@@ -7,16 +7,18 @@ import { useStore } from 'vuex';
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import cutcslDepiction from '../../../img/cutcsl_depiction.png';
 import { availableStoryListModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
+import { createLogger } from '../../../utils/logger.js';
 import { useLogin } from '../hooks/useLogin';
 
 import CreateStoryButton from './Tools/CreateStoryButton.vue';
-
 import LanguageSwitchButton from './Tools/LanguageSwitchButton.vue';
 import ListButton from './Tools/ListButton.vue';
 import LoginButton from './Tools/LoginButton.vue';
 import UserMenu from './Tools/UserMenu.vue';
 
 const store = useStore();
+
+const logger = createLogger('DashboardHeader');
 
 const { t } = useTranslation();
 
@@ -31,14 +33,12 @@ const storyModeLists = computed(() => {
 
 const legendAdded = true;
 
-const toggleLegend = () => {
-  console.log('toggleLegend');
-};
+const toggleLegend = () => logger.debug('toggleLegend');
 
 const getBackgroundStyle = () => ({
   backgroundImage: `url(${cutcslDepiction})`
 });
-</script>
+</script>-
 
 <template>
   <div
@@ -147,81 +147,82 @@ const getBackgroundStyle = () => ({
 <style lang="scss" scoped>
 .login-row-mobile,
 .login-row {
-    display: flex;
-    align-items: center;
-    top: 8px;
+  display: flex;
+  align-items: center;
+  top: 8px;
 }
 
 .login-row-mobile {
-    position: fixed;
-    width: calc(100% - 16px);
-    left: 8px;
-    z-index: 2000;
+  position: fixed;
+  width: calc(100% - 16px);
+  left: 8px;
+  z-index: 2000;
 }
 
 .login-row {
-    margin: 8px 8px 0 8px;
-    position: sticky;
-    z-index: 1000;
+  margin: 8px 8px 0 8px;
+  position: sticky;
+  z-index: 1000;
 }
 
 .settings-menu {
-    flex: 1;
+  flex: 1;
 }
 
 .header-col {
-    padding-top: 6rem;
-    padding-bottom: 3rem;
-    background-color: rgba(255, 255, 255, 0.5);
+  padding-top: 6rem;
+  padding-bottom: 3rem;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 #dana-legend-icon {
-    background-color: white;
-    padding: 0.37rem;
-    border-radius: 0.25rem;
+  background-color: white;
+  padding: 0.37rem;
+  border-radius: 0.25rem;
 }
 
 .with-fancy-background {
-    background-position: -50% -50%;
+  background-position: -50% -50%;
 
-    @media (min-width: 768px) {
-        background-position: 80%;
-        background-size: 50%;
-    }
+  @media (min-width: 768px) {
+    background-position: 80%;
+    background-size: 50%;
+  }
 }
 
 .list-buttons {
-    margin-top: 0.5rem !important;
+  margin-top: 0.5rem !important;
 }
 
 .header-h1 {
-    position: relative;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: black;
-    margin-top: 0.25rem;
+  position: relative;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: black;
+  margin-top: 0.25rem;
 
-    img {
-        position: absolute;
-        height: 1em;
-        top: -1.2em;
+  img {
+    position: absolute;
+    height: 1em;
+    top: -1.2em;
 
-        @media (min-width: 768px) {
-            left: -1.5em;
-            top: unset;
-        }
+    @media (min-width: 768px) {
+      left: -1.5em;
+      top: unset;
     }
+  }
 }
 
 .header-h4 {
-    margin-bottom: 1rem;
-    font-size: 16px;
-    font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .header-body {
-    font-size: 14px;
-    line-height: 16px;
-    font-weight: 500;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  text-align: justify;
 }
 </style>

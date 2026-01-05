@@ -3,7 +3,7 @@ import { mdiChevronDown, mdiChevronUp, mdiPinOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, watch, computed } from 'vue';
 
-import { useNavigation } from '../../../../steps/hooks/useNavigation';
+import { useNavigation } from '../../../steps/hooks/useNavigation';
 
 const { t } = useTranslation();
 const { zoom, center, zoomIn, zoomOut, canZoomIn, canZoomOut } = useNavigation();

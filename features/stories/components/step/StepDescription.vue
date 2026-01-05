@@ -3,12 +3,14 @@ import { useTranslation } from 'i18next-vue';
 import { computed } from 'vue';
 import { VueEditor } from 'vue3-editor';
 
-import * as constants from '../../../../../store/contantsDataNarrator';
-import { fixLinksInHTMLString } from '../../../../../utils/stringUtils';
-
+import * as constants from '../../../../store/contantsDataNarrator';
+import { fixLinksInHTMLString } from '../../../../utils/stringUtils';
 
 const props = defineProps({
-  value: String,
+  value: {
+    type: String,
+    default: '',
+  }
 });
 const emit = defineEmits([ 'update:value' ]);
 const inputValue = computed({

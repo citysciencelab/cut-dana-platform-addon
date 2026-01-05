@@ -1,12 +1,15 @@
 <script setup>
 import { computed } from 'vue';
 
-import { useBaseLayer } from '../../../hooks/useBaseLayer';
+import { useBaseLayer } from '../../hooks/useBaseLayer';
 
 const { items } = useBaseLayer();
 
 const props = defineProps({
-  modelValue: String
+  modelValue: {
+    type: String,
+    default: '',
+  }
 });
 const emit = defineEmits([ 'update:modelValue' ]);
 

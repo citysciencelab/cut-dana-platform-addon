@@ -3,15 +3,17 @@
 import { mdiLogin, mdiLogout } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 
+import { createLogger } from '../../../../utils/logger.js';
 import { useLogin } from '../../hooks/useLogin';
 
 const { loggedIn, openLoginWindow, checkLoggedIn, logout } = useLogin();
 const { t } = useTranslation();
 
 checkLoggedIn();
+const logger = createLogger('CoverSelector');
 
 const loginLogoutAction = () => {
-  console.log('logging in or out', loggedIn.value);
+  logger.debug('logging in or out', loggedIn.value);
   if (loggedIn.value) {
     logout();
     return;

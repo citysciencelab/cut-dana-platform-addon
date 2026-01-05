@@ -19,19 +19,8 @@ export default [
     },
     rules: {
       'indent': [ 'error', 2 ],
+      'no-console': 'error',
       'no-debugger': 'error',
-      // -----------------------------------------
-      // TODO: Change to 'error' or remove this block later
-      'no-console': 'warn',
-      'no-undef': 'warn',
-      'no-empty': 'warn',
-      'vue/valid-template-root': 'warn',
-      'vue/require-explicit-emits': 'warn',
-      'vue/no-dupe-keys': 'warn',
-      'vue/no-mutating-props': 'warn',
-      'vue/no-unused-vars': 'warn',
-      'vue/require-valid-default-prop': 'warn',
-      // -----------------------------------------
       'vue/multi-word-component-names': 'off',
       '@stylistic/js/object-curly-spacing': [ 'warn', 'always' ],
       '@stylistic/js/array-bracket-spacing': [ 'warn', 'always' ],

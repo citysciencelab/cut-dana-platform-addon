@@ -9,8 +9,8 @@ import {
 import { useTranslation } from 'i18next-vue';
 import Draggable from 'vuedraggable';
 
-import { getStoryColor } from '../../../../utils/getStoryColor';
-import { numberToLetter } from '../../../../utils/numberToLetter';
+import { getStoryColor } from '../../../utils/getStoryColor';
+import { numberToLetter } from '../../../utils/numberToLetter';
 
 const { t } = useTranslation();
 
@@ -75,7 +75,7 @@ const getColor = (idx) => {
         location="bottom end"
         offset="4"
       >
-        <template #activator="{ props }">
+        <template #activator="">
           <v-tooltip location="top">
             <template #activator="{ props: tooltipProps}">
               <v-btn

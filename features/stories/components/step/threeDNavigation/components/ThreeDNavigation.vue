@@ -4,7 +4,8 @@ import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import Modeler3DEntityModel
-  from '../../../../../../../../../../src/modules/modeler3D/components/Modeler3DEntityModel.vue';
+  from '../../../../../../../../../src/modules/modeler3D/components/Modeler3DEntityModel.vue';
+import { createLogger } from '../../../../../../utils/logger.js';
 
 import EntityList from './EntityList.vue';
 import Modeler3D from './Modeler3D.vue';
@@ -15,6 +16,7 @@ const props = defineProps({
     required: true,
   }
 });
+const logger = createLogger('ThreeDNavigation');
 
 const emit = defineEmits([ 'update:modelValue', 'modelSelected' ]);
 
@@ -110,7 +112,7 @@ function onFileChange(file) {
   };
 
   reader.onerror = (e) => {
-    console.error('Error reading the file:', e.target.error);
+    logger.error('Error reading the file:', e.target.error);
     fileLoading.value = false;
   };
 

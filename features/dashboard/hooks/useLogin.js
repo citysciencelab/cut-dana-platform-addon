@@ -3,12 +3,16 @@ import { useStore } from 'vuex';
 
 import Cookie from '../../../../../../src/modules/login/js/utilsCookies';
 import OIDC from '../../../../../../src/modules/login/js/utilsOIDC';
+
 import { FetchInterceptor } from '../../../api/FetchInterceptor';
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { backendUrl } from '../../../store/contantsDataNarrator';
+import { createLogger } from '../../../utils/logger.js';
 import { getRedirectUrl } from '../../login/services/loginService';
 
 let tokenRenewalTimer = null;
+
+const logger = createLogger('useLogin');
 
 export function useLogin() {
   const { moveTool } = useDataNarrator();
@@ -73,7 +77,7 @@ export function useLogin() {
       // Redirect to Keycloak logout.
       window.location.href = `${logoutUri}?${logoutParams.toString()}`;
     } catch (error) {
-      console.error('Error during logout: ', error);
+      logger.error('Error during logout: ', error);
     }
   }
 

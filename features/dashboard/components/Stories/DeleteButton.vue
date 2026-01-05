@@ -3,9 +3,11 @@ import { mdiTrashCanOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref } from 'vue';
 
+import { createLogger } from '../../../../utils/logger.js';
 import ConfirmationDialog from '../../../shared/ConfirmationDialog.vue';
 import { deleteStory } from '../../../stories/services/deleteStory';
 
+const logger = createLogger('DeleteButton.vue');
 const { t } = useTranslation();
 const { storyId } = defineProps({
   storyId: {
@@ -23,7 +25,7 @@ async function deleteStoryWithConfirm() {
     await deleteStory(storyId);
     emit('deleted');
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   } finally {
     isLoading.value = false;
   }

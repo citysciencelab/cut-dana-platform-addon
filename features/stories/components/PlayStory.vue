@@ -1,17 +1,22 @@
 <script setup>
+import { useTranslation } from 'i18next-vue';
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
-import { useDataNarrator } from '../../../../hooks/useDataNarrator';
-import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
-import { getFileUrl } from '../../../../utils/getFileUrl';
-import ToolWindow from '../../../shared/Toolwindow/ToolWindow.vue';
-import { useNavigation } from '../../../steps/hooks/useNavigation';
-import { useStory } from '../../hooks/useStory';
+import { useDataNarrator } from '../../../hooks/useDataNarrator';
+import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrator';
+import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
+import { getFileUrl } from '../../../utils/getFileUrl';
+import { createLogger } from '../../../utils/logger.js';
+import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
+import { useNavigation } from '../../steps/hooks/useNavigation';
+import { useStory } from '../hooks/useStory';
 
 import PlayerFrame from './play/PlayerFrame.vue';
 import RichTextViewer from './step/RichTextViewer.vue';
 
+const logger = createLogger('PlayStory.vue');
+const { t } = useTranslation();
 const { gotoPage } = useDataNarrator()
 const { currentStoryId } = useStory();
 const {
@@ -57,7 +62,7 @@ async function loadStory(id) {
     const res = await fetch(`${backendUrl}/stories/new/${id}`);
     story.value = await res.json();
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   } finally {
     isLoading.value = false;
   }
@@ -105,6 +110,9 @@ watch(
       setBaseLayer(bgId);
       setInformationLayers(step.informationLayerIds ?? [], [ bgId ]);
     }
+
+    clearGeoJSON();
+    addGeoJSON(step.geoJsonAssets);
   },
   { immediate: true }
 );
@@ -128,6 +136,7 @@ function next() {
     gotoPage(dataNarratorModes.DASHBOARD);
     removeAllVisibleLayers();
     resetBaseLayer();
+    clearGeoJSON();
     setAnimatedView({
       center: initialCenter.value,
       zoom: initialZoom.value,
@@ -146,6 +155,9 @@ function back() {
     stepIndex.value = story.value.chapters[chapterIndex.value].steps.length - 1;
   } else {
     stage.value = 'overview';
+    removeAllVisibleLayers();
+    resetBaseLayer();
+    clearGeoJSON();
     setAnimatedView({
       center: initialCenter.value,
       zoom: initialZoom.value,
@@ -171,7 +183,7 @@ onBeforeUnmount(() => {
 <template>
   <ToolWindow>
     <template #fixed>
-      <PlayerFrame :title="stage === 'play' ? story.title : undefined">
+      <PlayerFrame :title="stage === 'play' ? story.title : t('additional:modules.dataNarrator.play.storyOverviewTitle')">
         <template #default>
           <div v-if="isLoading">
             Loading...

@@ -1,10 +1,10 @@
 <script setup>
-import { mdiChevronRight, mdiEye, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose } from '@mdi/js';
+import { mdiChevronRight, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose, mdiEye } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
-import { useLayers } from '../../../../../../hooks/useLayers';
+import { useLayers } from '../../../../../hooks/useLayers';
 
 import CategoryBrowser from './CategoryBrowser.vue';
 import TransparencySlider from './TransparencySlider.vue';
@@ -115,7 +115,7 @@ watch(
             class="d-flex align-center px-3 py-2 justify-space-between"
             style="border: 1px solid #e1e1e1"
           >
-            <span class="grow-flex-1">{{ l.name }}</span>
+            <span class="flex-grow-1">{{ l.name }}</span>
             <div class="d-flex align-center">
               <v-tooltip location="top">
                 <template #activator="{ props: actv }">

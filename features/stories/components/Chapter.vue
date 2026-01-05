@@ -3,8 +3,8 @@ import { mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus } fro
 
 import { useTranslation } from 'i18next-vue';
 
-import { getStoryColor } from '../../../../utils/getStoryColor';
-import { numberToLetter } from '../../../../utils/numberToLetter';
+import { getStoryColor } from '../../../utils/getStoryColor';
+import { numberToLetter } from '../../../utils/numberToLetter';
 
 import ChapterStep from './ChapterStep.vue';
 
@@ -22,13 +22,28 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits([ 'addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected' ]);
+const emits = defineEmits([ 'addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'update:chapter' ]);
 
 const { t } = useTranslation();
 
-function addStep() {
-  emits('addNewStep');
+const updateChapter = (updates) => {
+  const updatedChapter = {
+    ...props.chapter,
+    ... updates
+  };
+  emits('update:chapter', updatedChapter);
 }
+
+const updateStepInChapter = (updatedStep) => {
+  const updatedSteps = props.chapter.steps.map((step, idx) =>
+    idx === props.activeStepIndex ? updatedStep : step
+  );
+  updateChapter({ steps: updatedSteps });
+}
+
+const updateTitle = (event) => updateChapter({ title: event.target.value });
+
+const addStep = () => emits('addNewStep');
 </script>
 
 <template>
@@ -48,10 +63,11 @@ function addStep() {
         </div>
         <div class="chapter-title">
           <input
-            v-model="props.chapter.title"
+            :value="props.chapter.title"
             type="text"
             placeholder="A Unbenanntes Kapitel"
             required
+            @input="updateTitle"
           >
         </div>
         <v-tooltip location="top">
@@ -102,6 +118,7 @@ function addStep() {
       :step="props.chapter.steps[props.activeStepIndex]"
       :pill-color="getStoryColor(chapter.id).primary"
       @model-selected="(p) => emits('modelSelected', p)"
+      @update:step="updateStepInChapter"
     />
 
     <v-row justify="center">

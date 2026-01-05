@@ -2,33 +2,17 @@ import { customRef, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import { backendUrl } from '../../../store/contantsDataNarrator';
+import { createLogger } from '../../../utils/logger';
 import { isNullOrWhitespace } from '../../../utils/stringUtils';
 import { uploadCoverImage } from '../services/addCoverImage';
 import { createChapter } from '../services/chapters';
+const logger = createLogger('useStoryForm');
 
-export function useStoryForm () {
+export function useStoryForm() {
   const store = useStore();
 
   const chapterName = ref('');
 
-  const createStory = async () => {
-    // TODO: create valid story object and send to backend using service (or just move service method here?)
-    const storyState = store.state.Modules.DataNarrator.EditStoryForm;
-
-    const story = {
-      title: storyState.storyTitle,
-      description: storyState.storyDescription,
-    }
-
-    if (isValidStory(story)){
-      await fetch(`${backendUrl}/stories`, {
-        method: 'POST',
-        body: JSON.stringify({
-          ...story
-        })
-      });
-    }
-  }
   const updateStory = async () => {
     await createDraftStory();
 
@@ -39,7 +23,7 @@ export function useStoryForm () {
       description: storyState.storyDescription,
     }
 
-    if (isValidStory(story)){
+    if (isValidStory(story)) {
       await fetch(`${backendUrl}/stories/${storyState.selectedStoryId}`, {
         method: 'PUT',
         body: JSON.stringify({
@@ -153,7 +137,7 @@ export function useStoryForm () {
 
     if (response.ok) {
       const coverUrl = await response.json();
-      console.log(coverUrl);
+      logger.info('Cover uploaded, URL:', coverUrl);
       store.commit('Modules/DataNarrator/EditStoryForm/setCoverUrl', coverUrl);
     }
   }
@@ -164,7 +148,6 @@ export function useStoryForm () {
     chapters,
     storyId,
     chapterName,
-    createStory,
     updateStory,
     createDraftStory,
     fetchStory,

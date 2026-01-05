@@ -14,6 +14,11 @@ const { t } = useTranslation();
 const { openLayerEditor } = useDataNarrator();
 const { chapterId, stepNumber, is3d, onSubmit, onDeleteStep, isValid } = useStepForm();
 const { isMobile } = useDataNarrator();
+
+const emit = defineEmits([
+  'return'
+]);
+
 </script>
 
 <template>
@@ -541,7 +546,7 @@ const { isMobile } = useDataNarrator();
                   <v-btn
                     class=""
                     icon
-                    @click="$emit('return')"
+                    @click="emit('return')"
                   >
                     <v-icon size="24px">{{ mdiCancel }}</v-icon>
                   </v-btn>
@@ -614,7 +619,7 @@ const { isMobile } = useDataNarrator();
                 small
                 color="red"
                 min-width="100%"
-                @click="$emit('return')"
+                @click="emit('return')"
               >
                 <span>
                   {{ t("additional:modules.dataNarrator.button.cancel") }}
@@ -711,17 +716,16 @@ const { isMobile } = useDataNarrator();
     }
 
     &::v-deep {
-        .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
-        > .v-input__control
+        .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded),
+        > .v-input__control,
         > .v-input__slot {
             margin: 0;
             padding: 0 0 0 0.3125rem;
         }
 
-        .v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)
-        > .v-input__control
-        > .v-input__slot {
-            height: 34px;
+      .v-text-field.v-text-field--solo:not(.v-text-field--solo-flat),
+      > .v-input__control,
+      > .v-input__slot {
             height: 34px;
             font-size: 14px;
             border: 1px solid #ccc;
@@ -730,7 +734,7 @@ const { isMobile } = useDataNarrator();
         }
 
         .v-text-field.v-text-field--solo.v-input--is-focused:not(.v-text-field--solo-flat)
-        > .v-input__control
+        > .v-input__control,
         > .v-input__slot {
             border-color: #66afe9;
             outline: 0;

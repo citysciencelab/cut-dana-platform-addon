@@ -3,7 +3,10 @@
     "dataNarrator": {
       "title": "Data Narrator",
       "create": "Story erstellen",
-      "play": "Story starten",
+      "play": {
+        "start": "Story starten",
+        "storyOverviewTitle": "Story Übersicht"
+      },
       "dashboard": "Story Dashboard",
       "tableOfContents": "Inhaltsverzeichnis",
       "createStory": "Story erstellen",
@@ -80,6 +83,12 @@
         "loadWmsBtn": "Laden",
         "openTransparencySlider": "Transparenz Einstellungen öffnen",
         "closeTransparencySlider": "Transparenz Einstellungen schließen"
+      },
+      "geojson": {
+        "panelTitle": "GeoJSON Datenquellen",
+        "newAssetTitle": "GeoJSON Datenquelle hinzufügen",
+        "editAssetTitle": "GeoJSON Datenquelle bearbeiten",
+        "uploadFile": "Datei auswählen oder Drag & Drop"
       },
       "storyList": {
         "all": "Alle Stories",

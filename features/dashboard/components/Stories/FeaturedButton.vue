@@ -4,8 +4,11 @@ import { useTranslation } from 'i18next-vue';
 import { ref } from 'vue';
 
 import { backendUrl } from '../../../../store/contantsDataNarrator.js';
+import { createLogger } from '../../../../utils/logger.js';
 
 const { t } = useTranslation();
+
+const logger = createLogger('FeaturedButton.vue');
 
 const props = defineProps({
   storyId: {
@@ -34,10 +37,10 @@ async function makeItFeatured() {
     if (res.ok) {
       featured.value = !featured.value;
     } else {
-      console.error('Failed to toggle featured', await res.json());
+      logger.error('Failed to toggle featured', await res.json());
     }
   } catch (error) {
-    console.error('Failed to toggle featured', error);
+    logger.error('Failed to toggle featured', error);
   }
 }
 </script>

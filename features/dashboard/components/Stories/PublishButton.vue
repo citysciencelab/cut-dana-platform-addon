@@ -4,9 +4,13 @@ import { useTranslation } from 'i18next-vue';
 import { ref, computed } from 'vue';
 
 import { backendUrl } from '../../../../store/contantsDataNarrator.js';
+import { createLogger } from '../../../../utils/logger.js';
+
+import ConfirmPublishPopup from './ConfirmPublishPopup.vue';
 
 const { t } = useTranslation();
 
+const logger = createLogger('PublishButton.vue');
 const props = defineProps({
   storyId: { type: Number, required: true },
   isDraft: { type: Boolean, required: true },
@@ -17,6 +21,7 @@ const emit = defineEmits([
 ]);
 
 const loading = ref(false);
+const confirmPublishOpen = ref(false);
 
 const isDraft = computed(() => props.isDraft);
 const icon = computed(() => (isDraft.value ? mdiCloudUploadOutline : mdiCloudOffOutline));
@@ -26,7 +31,7 @@ const btnLabel = computed(() =>
     : t('additional:modules.dataNarrator.button.unpublish', 'Unpublish')
 );
 
-async function onClick() {
+async function publish() {
   if (loading.value) return;
   loading.value = true;
   try {
@@ -36,16 +41,29 @@ async function onClick() {
     });
     emit('success');
   } catch (err) {
-    console.error('Failed to toggle publish state', err);
+    logger.error('Failed to toggle publish state', err);
   } finally {
     loading.value = false;
   }
 }
+
+function publishOk() {
+  confirmPublishOpen.value = false;
+  publish();
+}
+
+function publishCancel() {
+  confirmPublishOpen.value = false;
+}
 </script>
 
 <template>
-  <v-tooltip location="top">
-    <template #activator="{ props: actv }">
+  <v-tooltip
+    location="top"
+  >
+    <template
+      #activator="{ props: actv }"
+    >
       <v-btn
         v-bind="actv"
         variant="text"
@@ -53,7 +71,7 @@ async function onClick() {
         icon
         :loading="loading"
         :aria-label="btnLabel"
-        @click.stop="onClick"
+        @click="isDraft ? confirmPublishOpen = true : publish()"
       >
         <v-icon
           size="20"
@@ -63,4 +81,10 @@ async function onClick() {
     </template>
     <span>{{ btnLabel }}</span>
   </v-tooltip>
+
+  <ConfirmPublishPopup
+    :dialog-open="confirmPublishOpen"
+    :ok-clicked="publishOk"
+    :cancel-clicked="publishCancel"
+  />
 </template>

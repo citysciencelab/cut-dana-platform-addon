@@ -100,14 +100,16 @@ import { mdiPinOutline } from '@mdi/js';
 
 import { useTranslation } from 'i18next-vue';
 
+import { createLogger } from '../../../utils/logger.js';
 import { useNavigation } from '../hooks/useNavigation';
 import { useStepForm } from '../hooks/useStepForm';
 
+const logger = createLogger('TwoDNavigation.vue');
 const { t } = useTranslation();
 const { is3d, zoomLevel, centerCoordinates } = useStepForm();
 const { zoom, center } = useNavigation();
-console.log('zoom', zoom, 'center', center)
-console.log('zoomLevel', zoomLevel !== zoom, 'centerCoordinates', centerCoordinates !== center)
+logger.debug('zoom', zoom, 'center', center)
+logger.debug('zoomLevel', zoomLevel !== zoom, 'centerCoordinates', centerCoordinates !== center)
 </script>
 
 <style scoped lang="scss">

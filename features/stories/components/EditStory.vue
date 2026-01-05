@@ -1,14 +1,16 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 
-import { backendUrl } from '../../../../store/contantsDataNarrator';
-import ToolWindow from '../../../shared/Toolwindow/ToolWindow.vue';
+import { backendUrl } from '../../../store/contantsDataNarrator';
+import { createLogger } from '../../../utils/logger.js';
+import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 
-import { useStory } from '../../hooks/useStory';
-import { getStory } from '../../services/getStory';
+import { useStory } from '../hooks/useStory';
+import { getStory } from '../services/getStory';
 
 import StoryForm from './StoryForm.vue';
 
+const logger = createLogger('EditStory.vue');
 const { currentStoryId } = useStory();
 
 const isLoading = ref(false);
@@ -45,10 +47,11 @@ async function loadStory() {
           backgroundMapId: s.backgroundMapId,
         },
         informationLayerIds: s.informationLayerIds,
+        geoJsonAssets: s.geoJsonAssets,
       })),
     }));
   } catch (err) {
-    console.error(err);
+    logger.error(err);
   } finally {
     isLoading.value = false;
   }
