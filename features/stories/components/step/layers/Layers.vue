@@ -47,18 +47,21 @@ function onTransparencyChange(layer, transparency) {
   console.log('transparency changed', layer.id, transparency);
   layer.transparency = transparency;
 
-  // TODO: check layer in store/config
-  // store.dispatch('addOrReplaceLayer', {
-  //   layerId: layer.id,
-  //   transparency: transparency/100
-  // });
-
   const opacity = 1 - (transparency/100);
   const mapLayer = store.getters['Maps/getLayerById'](layer.id);
   if (mapLayer) {
     mapLayer.setOpacity(opacity);
     mapLayer.changed();
   }
+}
+
+function onTransparencyFinalChange(layer, transparency) {
+  console.log('final transparency', layer.id, transparency);
+
+  store.dispatch('Modules/LayerTree/updateTransparency', {
+    layerConf: layer,
+    transparency: transparency
+  });
 }
 
 watch(
@@ -145,6 +148,7 @@ watch(
             <TransparencySlider
               :initial-transparency="l.transparency"
               @update="onTransparencyChange(l, $event)"
+              @final="onTransparencyFinalChange(l, $event)"
             />
           </div>
         </v-list-item>

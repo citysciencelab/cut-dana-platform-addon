@@ -8,7 +8,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits([ 'update' ]);
+const emit = defineEmits([ 'update', 'final' ]);
 const transparencyValue = ref(props.initialTransparency);
 
 watch(
@@ -22,6 +22,9 @@ watch(transparencyValue, (val) => {
   emit('update', val);
 });
 
+function onSliderEnd(val) {
+  emit('final', val);
+}
 </script>
 
 <template>
@@ -42,6 +45,7 @@ watch(transparencyValue, (val) => {
           max="100"
           step="1"
           thumb-label="always"
+          @end="onSliderEnd"
         >
           <template #thumb-label="{ modelValue }">
             {{ String(modelValue) + "%" }}
