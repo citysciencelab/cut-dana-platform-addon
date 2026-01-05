@@ -444,8 +444,8 @@ watch([ activeStep, previewVisible ], () => {
       class="story-form-content"
     >
       <Chapter
-        :key="chapters[activeChapterIndex]?.id ?? activeChapterIndex"
-        :chapter="chapters[activeChapterIndex]"
+        :key="chaptersData[activeChapterIndex]?.id ?? activeChapterIndex"
+        :chapter="chaptersData[activeChapterIndex]"
         :active-step-index="activeStepIndex"
         :edit-story-visible="editStoryVisible"
         @add-new-chapter="addNewChapter"
