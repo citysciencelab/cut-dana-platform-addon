@@ -83,7 +83,8 @@
         "loadWmsBtn": "Laden"
       },
       "categoryBrowser": {
-        "searchLayers": "Ebenen durchsuchen...",
+        "searchLayers": "Ebenen durchsuchen…",
+
         "dataSources": "Datenquellen",
         "noResultsFound": "Keine Ergebnisse gefunden für \"{{query}}\".",
         "noCategoriesAvailable": "Keine Kategorien verfügbar.",

@@ -83,7 +83,8 @@
         "loadWmsBtn": "Load"
       },
       "categoryBrowser": {
-        "searchLayers": "Search Layers...",
+        "searchLayers": "Search Layers…",
+
         "dataSources": "Data Sources",
         "noResultsFound": "No results found for \"{{query}}\".",
         "noCategoriesAvailable": "No categories available.",
