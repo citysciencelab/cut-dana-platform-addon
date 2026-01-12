@@ -82,6 +82,14 @@
         "enterWms": "WMS URL eingeben",
         "loadWmsBtn": "Laden"
       },
+      "categoryBrowser": {
+        "searchLayers": "Ebenen durchsuchen...",
+        "dataSources": "Datenquellen",
+        "noResultsFound": "Keine Ergebnisse gefunden für \"{{query}}\".",
+        "noCategoriesAvailable": "Keine Kategorien verfügbar.",
+        "noSubcategoriesInFolder": "Keine Unterkategorien in diesem Ordner.",
+        "noLayersInFolder": "Keine Ebenen in diesem Ordner."
+      },
       "geojson": {
         "panelTitle": "GeoJSON Datenquellen",
         "newAssetTitle": "GeoJSON Datenquelle hinzufügen",
