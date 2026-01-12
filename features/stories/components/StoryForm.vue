@@ -93,13 +93,6 @@ const canPublish = computed(() => {
   return allChaptersHaveSteps && storyNameInput.value.trim().length > 0;
 });
 
-const activeStep = computed(() => {
-  const chapter = chaptersData.value?.[activeChapterIndex.value];
-  if (!chapter) return null;
-  const step = chapter.steps?.[activeStepIndex.value];
-  return step || null;
-});
-
 function handleModelSelected({ step, file }) {
   if (file) modelFiles.set(step, file);
   else modelFiles.delete(step);
