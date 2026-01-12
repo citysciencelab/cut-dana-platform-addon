@@ -18,18 +18,12 @@ const props = defineProps({
   isFeatured: {
     type: Boolean,
     required: true
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false
   }
 });
 
 const featured = ref(props.isFeatured);
 
 async function makeItFeatured() {
-  if (!props.isAdmin) return;
-
   try {
     const res = await fetch(`${backendUrl}/stories/${props.storyId}/featured/${!featured.value}`, {
       method: 'POST'
@@ -54,7 +48,6 @@ async function makeItFeatured() {
         variant="text"
         density="compact"
         icon
-        :disabled="!isAdmin"
         @click.stop="makeItFeatured"
       >
         <v-icon
@@ -68,4 +61,3 @@ async function makeItFeatured() {
     </span>
   </v-tooltip>
 </template>
-
