@@ -95,13 +95,6 @@ const canPublish = computed(() => {
   return allChaptersHaveSteps && storyNameInput.value.trim().length > 0;
 });
 
-const activeStep = computed(() => {
-  const chapter = chaptersData.value?.[activeChapterIndex.value];
-  if (!chapter) return null;
-  const step = chapter.steps?.[activeStepIndex.value];
-  return step || null;
-});
-
 function handleModelSelected({ step, file }) {
   if (file) modelFiles.set(step, file);
   else modelFiles.delete(step);
@@ -304,7 +297,7 @@ watch(activeStepIndex, (activeStepIndex) => {
 });
 
 // When the step is change we remove all visible layers and reset to default base layer
-watch([ activeStep, previewVisible ], () => {
+watch([ activeStepIndex, previewVisible ], () => {
   removeAllVisibleLayers();
   clearGeoJSON();
   if (previewVisible.value === true) {
