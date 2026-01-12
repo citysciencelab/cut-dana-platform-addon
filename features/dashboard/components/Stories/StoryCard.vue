@@ -145,35 +145,36 @@ async function playStory() {
 }
 
 .card-header {
-    padding: 10px 12px 8px 12px;
-    display: flex;
-    align-items: flex-start;
+  padding: 10px 12px 8px 12px;
+  display: flex;
+  align-items: flex-start;
 
-    .card-header-title {
-        flex: 1;
+  .card-header-title {
+      flex: 1;
 
-        &-text {
-            font-weight: bold;
-            text-transform: capitalize;
-            font-size: 18px;
-        }
-    }
-
-    .card-header-actions {
-        display: flex;
-        align-items: center;
-    }
-  .card-text {
-    padding: 0 12px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-    overflow: hidden;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    color: #4c4c4c;
+      &-text {
+          font-weight: bold;
+          text-transform: capitalize;
+          font-size: 18px;
+      }
   }
+
+  .card-header-actions {
+      display: flex;
+      align-items: center;
+  }
+}
+
+.card-text {
+  padding: 0 12px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: #4c4c4c;
 }
 
 
