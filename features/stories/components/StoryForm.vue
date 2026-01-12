@@ -397,32 +397,28 @@ watch([ activeStep, previewVisible ], () => {
         </v-menu>
       </v-toolbar>
 
-      <img
-        v-if="imagePreview"
-        :src="imagePreview"
-        alt="Selected preview"
-        class="image-preview"
-      >
-
       <div
         v-if="imagePreview"
-        class="remove-image-btn"
+        class="image-preview"
       >
-        <v-tooltip
-          v-if="imagePreview"
-          location="top"
+        <img
+          :src="imagePreview"
+          alt="Selected preview"
         >
-          <template #activator="{ props: actv}">
-            <v-btn
-              v-bind="actv"
-              :icon="mdiTrashCan"
-              variant="flat"
-              density="comfortable"
-              @click="selectedImage = null"
-            />
-          </template>
-          <span>{{ t('additional:modules.dataNarrator.label.removeLogoImage') }}</span>
-        </v-tooltip>
+        <div class="remove-image-btn">
+          <v-tooltip location="top">
+            <template #activator="{ props: actv}">
+              <v-btn
+                v-bind="actv"
+                :icon="mdiTrashCan"
+                variant="flat"
+                density="comfortable"
+                @click="selectedImage = null"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.removeLogoImage') }}</span>
+          </v-tooltip>
+        </div>
       </div>
     </div>
 
@@ -553,24 +549,29 @@ watch([ activeStep, previewVisible ], () => {
     position: relative;
 
     &.with-image {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       height: 260px;
       padding: 10px;
     }
 
     .image-preview {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 20px;
+      position: relative;
+
+      img {
+        height: 180px;
+        aspect-ratio: 16/9;
+        border-radius: 20px;
+      }
+
+      .remove-image-btn {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+      }
     }
 
-    .remove-image-btn {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-    }
   }
 
   &-content {
