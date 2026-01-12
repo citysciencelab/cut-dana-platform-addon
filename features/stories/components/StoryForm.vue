@@ -287,7 +287,7 @@ watch(activeStepIndex, (activeStepIndex) => {
 });
 
 // When the step is change we remove all visible layers and reset to default base layer
-watch([ activeStep, previewVisible ], () => {
+watch([ activeStepIndex, previewVisible ], () => {
   removeAllVisibleLayers();
   clearGeoJSON();
   if (previewVisible.value === true) {
