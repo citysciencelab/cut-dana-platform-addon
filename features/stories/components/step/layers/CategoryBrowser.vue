@@ -1,6 +1,7 @@
 <!-- CategoryBrowser.vue -->
 <script setup>
 import { mdiChevronRight, mdiFileDocumentOutline, mdiFolderOutline } from '@mdi/js';
+import { useTranslation } from 'i18next-vue';
 import { ref, computed } from 'vue';
 
 const props = defineProps({
@@ -8,15 +9,18 @@ const props = defineProps({
   loading: { type: Boolean, default: false },
 });
 
+const { t } = useTranslation();
+
 const emit = defineEmits([ 'select:layer' ]);
 
 const stack = ref([]);
-const searchQuery = ref('');
+const searchQuery = ref();
 
 const searchResultLayers = computed(() => {
-  if (searchQuery.value.length < 3) return [];
+  const queryString = searchQuery.value;
+  if (!queryString || queryString.length < 3) return [];
 
-  const query = searchQuery.value.toLowerCase();
+  const query = queryString.toLowerCase();
   const matches = [];
 
   function searchInCategory(cat) {
@@ -101,14 +105,15 @@ function onLayerClick(layer) {
     v-else
     class="nav px-4"
   >
-    <div class="nav-header mb-2">
+    <div class="nav-header mb-2 w-100">
       <div class="search">
-        <input
+        <v-text-field
+          id="search-layers"
           v-model="searchQuery"
-          type="text"
-          placeholder="Ebenen durchsuchen..."
-          class="w-full mb-2 p-2 border border-gray-300 rounded"
-        >
+          :label="t('additional:modules.dataNarrator.categoryBrowser.searchLayers')"
+          variant="outlined"
+          clearable
+        />
       </div>
       <div class="crumbs">
         <button
@@ -116,7 +121,7 @@ function onLayerClick(layer) {
           :disabled="level==='root'"
           @click="goHome"
         >
-          Datenquellen
+          {{ t('additional:modules.dataNarrator.categoryBrowser.dataSources') }}
         </button>
         <template v-if="!hasSearchResultLayers">
           <span
@@ -142,7 +147,12 @@ function onLayerClick(layer) {
       class="panel"
       role="list"
     >
-      <template v-if="hasSearchResultLayers">
+      <template v-if="searchQuery?.length > 3 && !hasSearchResultLayers">
+        <p class="empty">
+          {{ t('additional:modules.dataNarrator.categoryBrowser.noResultsFound', { query: searchQuery }) }}
+        </p>
+      </template>
+      <template v-else-if="hasSearchResultLayers">
         <button
           v-for="(match, i) in searchResultLayers"
           :key="'search-' + i"
@@ -215,9 +225,9 @@ function onLayerClick(layer) {
         v-if="rows.length === 0 && !hasSearchResultLayers"
         class="empty"
       >
-        <span v-if="level==='root'">No categories available.</span>
-        <span v-else-if="level==='category'">No subcategories in this folder.</span>
-        <span v-else>No layers in this folder.</span>
+        <span v-if="level==='root'">{{ t('additional:modules.dataNarrator.categoryBrowser.noCategoriesAvailable') }}</span>
+        <span v-else-if="level==='category'">{{ t('additional:modules.dataNarrator.categoryBrowser.noSubcategoriesInFolder') }}</span>
+        <span v-else>{{ t('additional:modules.dataNarrator.categoryBrowser.noLayersInFolder') }}</span>
       </p>
     </div>
   </div>
