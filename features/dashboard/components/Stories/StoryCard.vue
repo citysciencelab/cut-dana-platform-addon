@@ -22,7 +22,7 @@ const storiesDisplayMode = computed(() => {
   return store.state.Modules.DataNarrator.DashboardStore.mode
 });
 
-const { userId } = useLogin();
+const { userId, isAdmin } = useLogin();
 const { gotoPage } = useDataNarrator();
 const { currentStoryId } = useStory();
 const emit = defineEmits([ 'deleted', 'published' ]);
@@ -60,6 +60,7 @@ async function playStory() {
   const baseUrl = `${location.origin}/portal/stories/?id=${props.story.id}`;
   window.history.replaceState({}, '', baseUrl);
 }
+
 </script>
 
 <template>
@@ -85,11 +86,12 @@ async function playStory() {
         <ShareButton
           :story-id="story.id"
         />
-        <FeaturedButton
-          :story-id="story.id"
-          :is-featured="story.featured"
-          :is-admin="userId === story.owner"
-        />
+        <template v-if="isAdmin">
+          <FeaturedButton
+            :story-id="story.id"
+            :is-featured="story.featured"
+          />
+        </template>
         <PublishButton
           v-if="storiesDisplayMode === 'my' && userId === story.owner"
           :is-draft="story.isDraft"
