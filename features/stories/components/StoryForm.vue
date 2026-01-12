@@ -9,7 +9,7 @@ import { clearGeoJSON } from '../../../utils/geoJSON';
 import { createLogger } from '../../../utils/logger.js';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import { useNavigation } from '../../steps/hooks/useNavigation';
-import { uploadCoverImage } from '../services/addCoverImage';
+import { deleteCoverImage, uploadCoverImage } from '../services/coverImage';
 import { createStory } from '../services/createStory';
 import { editStory } from '../services/editStory';
 import { uploadStepModel } from '../services/uploadStepModel';
@@ -65,6 +65,7 @@ const previewVisible = ref(false);
 const activeChapterIndex = ref(0);
 const activeStepIndex = ref(-1);
 const editStoryVisible = ref(true);
+const imageDeleted = ref(false);
 const modelFiles = new WeakMap();
 
 let nextChapterId = 1;
@@ -79,6 +80,7 @@ const chaptersData = ref([
 
 const selectedImage = ref(null);
 const imagePreview = computed(() => {
+  if (imageDeleted.value) return null;
   if (selectedImage.value) return URL.createObjectURL(selectedImage.value);
   return props.coverImageUrl || null;
 });
@@ -261,10 +263,25 @@ async function save() {
     } catch (err) {
       logger.error(err);
     }
+  } else if (props.coverImageUrl && imageDeleted.value) {
+    try {
+      const response = await deleteCoverImage(props.storyId);
+      if (!response.ok) {
+        throw new Error(`Failed to delete cover image: ${response.status} ${await response.text()}`);
+      }
+      selectedImage.value = null;
+    } catch (err) {
+      logger.error(err);
+    }
   }
 
   isSaving.value = false;
   gotoPage(dataNarratorModes.DASHBOARD);
+}
+
+function onDeleteImage() {
+  selectedImage.value = null;
+  imageDeleted.value = true;
 }
 
 watch(
@@ -362,6 +379,7 @@ watch([ activeStep, previewVisible ], () => {
                 hide-input
                 accept="image/png, image/jpeg"
                 v-bind="actv"
+                @change="imageDeleted = false"
               />
             </template>
             <span>{{ t('additional:modules.dataNarrator.label.imageUpload') }}</span>
@@ -413,7 +431,7 @@ watch([ activeStep, previewVisible ], () => {
                 :icon="mdiTrashCan"
                 variant="flat"
                 density="comfortable"
-                @click="selectedImage = null"
+                @click="onDeleteImage"
               />
             </template>
             <span>{{ t('additional:modules.dataNarrator.label.removeLogoImage') }}</span>

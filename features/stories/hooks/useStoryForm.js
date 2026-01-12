@@ -4,8 +4,8 @@ import { useStore } from 'vuex';
 import { backendUrl } from '../../../store/contantsDataNarrator';
 import { createLogger } from '../../../utils/logger';
 import { isNullOrWhitespace } from '../../../utils/stringUtils';
-import { uploadCoverImage } from '../services/addCoverImage';
 import { createChapter } from '../services/chapters';
+import { uploadCoverImage } from '../services/coverImage';
 const logger = createLogger('useStoryForm');
 
 export function useStoryForm() {
