@@ -269,6 +269,8 @@ async function save() {
   }
 
   isSaving.value = false;
+  removeAllVisibleLayers();
+  clearGeoJSON();
   gotoPage(dataNarratorModes.DASHBOARD);
 }
 
