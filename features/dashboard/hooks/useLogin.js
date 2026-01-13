@@ -15,6 +15,7 @@ let tokenRenewalTimer = null;
 const logger = createLogger('useLogin');
 
 const ADMIN_ROLE = 'admin';
+const CLIENT_NAME = 'masterportal-client';
 
 function decodeJwt(token) {
   const payload = token.split('.')[1];
@@ -37,7 +38,12 @@ export function useLogin() {
     const token = accessToken.value;
     if (!token) return false;
     const decoded = decodeJwt(token);
-    const roles = decoded?.realm_access?.roles;
+    const realm_roles = decoded?.realm_access?.roles || [];
+    const client_roles = decoded?.resource_access?.[CLIENT_NAME]?.roles || [];
+    const roles = [
+      ...realm_roles,
+      ...client_roles
+    ];
     return roles.includes(ADMIN_ROLE);
   });
 
