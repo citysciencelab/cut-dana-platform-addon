@@ -38,7 +38,7 @@ const toggleLegend = () => logger.debug('toggleLegend');
 const getBackgroundStyle = () => ({
   backgroundImage: `url(${cutcslDepiction})`
 });
-</script>-
+</script>
 
 <template>
   <div
