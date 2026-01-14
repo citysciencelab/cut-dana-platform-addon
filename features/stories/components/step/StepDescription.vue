@@ -52,7 +52,7 @@ const { t } = useTranslation();
       min-height: 80px;
     }
 
-    .ql-tooltip.ql-editing {
+    .ql-tooltip {
       // override computed left style from thirdparty lib
       left: 15px !important;
     }
