@@ -109,11 +109,11 @@ async function playStory() {
       <v-row>
         <v-col>
           <EditButton
-            v-if="userId === story.owner"
+            v-if="userId === story.owner || isAdmin"
             :story-id="story.id"
           />
           <DeleteButton
-            v-if="userId === story.owner"
+            v-if="userId === story.owner || isAdmin"
             :story-id="story.id"
             @deleted="() => emit('deleted')"
           />
