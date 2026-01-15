@@ -14,6 +14,15 @@ let tokenRenewalTimer = null;
 
 const logger = createLogger('useLogin');
 
+const ADMIN_ROLE = 'admin';
+const CLIENT_NAME = 'masterportal-client';
+
+function decodeJwt(token) {
+  const payload = token.split('.')[1];
+  const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+  return decoded;
+}
+
 export function useLogin() {
   const { moveTool } = useDataNarrator();
 
@@ -25,6 +34,18 @@ export function useLogin() {
   const screenName = computed(() => store.state.Modules.Login.screenName);
   const username = computed(() => store.state.Modules.Login.username);
   const userId = computed(() => store.state.Modules.Login.userId);
+  const isAdmin = computed(() => {
+    const token = accessToken.value;
+    if (!token) return false;
+    const decoded = decodeJwt(token);
+    const realm_roles = decoded?.realm_access?.roles || [];
+    const client_roles = decoded?.resource_access?.[CLIENT_NAME]?.roles || [];
+    const roles = [
+      ...realm_roles,
+      ...client_roles
+    ];
+    return roles.includes(ADMIN_ROLE);
+  });
 
   const getAuthCodeUrl = async () => {
     return getRedirectUrl();
@@ -191,5 +212,6 @@ export function useLogin() {
     logout,
     checkLoggedIn,
     userId,
+    isAdmin
   }
 }

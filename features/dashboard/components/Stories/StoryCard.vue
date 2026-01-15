@@ -22,7 +22,7 @@ const storiesDisplayMode = computed(() => {
   return store.state.Modules.DataNarrator.DashboardStore.mode
 });
 
-const { userId } = useLogin();
+const { userId, isAdmin } = useLogin();
 const { gotoPage } = useDataNarrator();
 const { currentStoryId } = useStory();
 const emit = defineEmits([ 'deleted', 'published' ]);
@@ -60,6 +60,7 @@ async function playStory() {
   const baseUrl = `${location.origin}/portal/stories/?id=${props.story.id}`;
   window.history.replaceState({}, '', baseUrl);
 }
+
 </script>
 
 <template>
@@ -85,11 +86,12 @@ async function playStory() {
         <ShareButton
           :story-id="story.id"
         />
-        <FeaturedButton
-          :story-id="story.id"
-          :is-featured="story.featured"
-          :is-admin="userId === story.owner"
-        />
+        <template v-if="isAdmin">
+          <FeaturedButton
+            :story-id="story.id"
+            :is-featured="story.featured"
+          />
+        </template>
         <PublishButton
           v-if="storiesDisplayMode === 'my' && userId === story.owner"
           :is-draft="story.isDraft"
@@ -107,11 +109,11 @@ async function playStory() {
       <v-row>
         <v-col>
           <EditButton
-            v-if="userId === story.owner"
+            v-if="userId === story.owner || isAdmin"
             :story-id="story.id"
           />
           <DeleteButton
-            v-if="userId === story.owner"
+            v-if="userId === story.owner || isAdmin"
             :story-id="story.id"
             @deleted="() => emit('deleted')"
           />
@@ -145,35 +147,36 @@ async function playStory() {
 }
 
 .card-header {
-    padding: 10px 12px 8px 12px;
-    display: flex;
-    align-items: flex-start;
+  padding: 10px 12px 8px 12px;
+  display: flex;
+  align-items: flex-start;
 
-    .card-header-title {
-        flex: 1;
+  .card-header-title {
+      flex: 1;
 
-        &-text {
-            font-weight: bold;
-            text-transform: capitalize;
-            font-size: 18px;
-        }
-    }
-
-    .card-header-actions {
-        display: flex;
-        align-items: center;
-    }
-  .card-text {
-    padding: 0 12px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-    overflow: hidden;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    color: #4c4c4c;
+      &-text {
+          font-weight: bold;
+          text-transform: capitalize;
+          font-size: 18px;
+      }
   }
+
+  .card-header-actions {
+      display: flex;
+      align-items: center;
+  }
+}
+
+.card-text {
+  padding: 0 12px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: #4c4c4c;
 }
 
 

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import StoryCard from './Stories/StoryCard.vue';
@@ -13,6 +13,10 @@ const err = computed(() => store.state.Modules.DataNarrator.StoryStore.error);
 const fetchStories = () => {
   store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', storiesDisplayMode.value);
 };
+
+watch(storiesDisplayMode, () => {
+  fetchStories();
+}, { immediate: true });
 
 </script>
 

@@ -9,7 +9,7 @@ import { clearGeoJSON } from '../../../utils/geoJSON';
 import { createLogger } from '../../../utils/logger.js';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import { useNavigation } from '../../steps/hooks/useNavigation';
-import { uploadCoverImage } from '../services/addCoverImage';
+import { deleteCoverImage, uploadCoverImage } from '../services/coverImage';
 import { createStory } from '../services/createStory';
 import { editStory } from '../services/editStory';
 import { uploadStepModel } from '../services/uploadStepModel';
@@ -65,6 +65,7 @@ const previewVisible = ref(false);
 const activeChapterIndex = ref(0);
 const activeStepIndex = ref(-1);
 const editStoryVisible = ref(true);
+const imageDeleted = ref(false);
 const modelFiles = new WeakMap();
 
 let nextChapterId = 1;
@@ -79,6 +80,7 @@ const chaptersData = ref([
 
 const selectedImage = ref(null);
 const imagePreview = computed(() => {
+  if (imageDeleted.value) return null;
   if (selectedImage.value) return URL.createObjectURL(selectedImage.value);
   return props.coverImageUrl || null;
 });
@@ -91,13 +93,6 @@ const canPublish = computed(() => {
     chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
 
   return allChaptersHaveSteps && storyNameInput.value.trim().length > 0;
-});
-
-const activeStep = computed(() => {
-  const chapter = chaptersData.value?.[activeChapterIndex.value];
-  if (!chapter) return null;
-  const step = chapter.steps?.[activeStepIndex.value];
-  return step || null;
 });
 
 function handleModelSelected({ step, file }) {
@@ -261,10 +256,27 @@ async function save() {
     } catch (err) {
       logger.error(err);
     }
+  } else if (props.coverImageUrl && imageDeleted.value) {
+    try {
+      const response = await deleteCoverImage(props.storyId);
+      if (!response.ok) {
+        throw new Error(`Failed to delete cover image: ${response.status} ${await response.text()}`);
+      }
+      selectedImage.value = null;
+    } catch (err) {
+      logger.error(err);
+    }
   }
 
   isSaving.value = false;
+  removeAllVisibleLayers();
+  clearGeoJSON();
   gotoPage(dataNarratorModes.DASHBOARD);
+}
+
+function onDeleteImage() {
+  selectedImage.value = null;
+  imageDeleted.value = true;
 }
 
 watch(
@@ -287,7 +299,7 @@ watch(activeStepIndex, (activeStepIndex) => {
 });
 
 // When the step is change we remove all visible layers and reset to default base layer
-watch([ activeStep, previewVisible ], () => {
+watch([ activeStepIndex, previewVisible ], () => {
   removeAllVisibleLayers();
   clearGeoJSON();
   if (previewVisible.value === true) {
@@ -362,6 +374,7 @@ watch([ activeStep, previewVisible ], () => {
                 hide-input
                 accept="image/png, image/jpeg"
                 v-bind="actv"
+                @change="imageDeleted = false"
               />
             </template>
             <span>{{ t('additional:modules.dataNarrator.label.imageUpload') }}</span>
@@ -397,32 +410,28 @@ watch([ activeStep, previewVisible ], () => {
         </v-menu>
       </v-toolbar>
 
-      <img
-        v-if="imagePreview"
-        :src="imagePreview"
-        alt="Selected preview"
-        class="image-preview"
-      >
-
       <div
         v-if="imagePreview"
-        class="remove-image-btn"
+        class="image-preview"
       >
-        <v-tooltip
-          v-if="imagePreview"
-          location="top"
+        <img
+          :src="imagePreview"
+          alt="Selected preview"
         >
-          <template #activator="{ props: actv}">
-            <v-btn
-              v-bind="actv"
-              :icon="mdiTrashCan"
-              variant="flat"
-              density="comfortable"
-              @click="selectedImage = null"
-            />
-          </template>
-          <span>{{ t('additional:modules.dataNarrator.label.removeLogoImage') }}</span>
-        </v-tooltip>
+        <div class="remove-image-btn">
+          <v-tooltip location="top">
+            <template #activator="{ props: actv}">
+              <v-btn
+                v-bind="actv"
+                :icon="mdiTrashCan"
+                variant="flat"
+                density="comfortable"
+                @click="onDeleteImage"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.removeLogoImage') }}</span>
+          </v-tooltip>
+        </div>
       </div>
     </div>
 
@@ -553,24 +562,29 @@ watch([ activeStep, previewVisible ], () => {
     position: relative;
 
     &.with-image {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       height: 260px;
       padding: 10px;
     }
 
     .image-preview {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 20px;
+      position: relative;
+
+      img {
+        height: 180px;
+        aspect-ratio: 16/9;
+        border-radius: 20px;
+      }
+
+      .remove-image-btn {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+      }
     }
 
-    .remove-image-btn {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-    }
   }
 
   &-content {
