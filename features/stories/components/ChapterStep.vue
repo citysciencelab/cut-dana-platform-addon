@@ -1,5 +1,5 @@
 <script setup>
-import { mdiTrashCan, mdiClose, mdiFileDocumentOutline } from '@mdi/js';
+import { mdiTrashCan, mdiClose, mdiFileDocumentPlusOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, watch, nextTick, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
@@ -258,7 +258,9 @@ onMounted(() => {
             <v-icon :icon="mdiClose" />
           </v-btn>
         </v-card-title>
-
+        <v-card-subtitle class="d-flex align-left">
+          {{ t("additional:modules.dataNarrator.label.selectWmsLayer") }}
+        </v-card-subtitle>
         <v-list
           density="comfortable"
           class="pa-0"
@@ -277,7 +279,7 @@ onMounted(() => {
                 <v-tooltip location="top">
                   <template #activator="{ props: actv }">
                     <v-icon
-                      :icon="mdiFileDocumentOutline"
+                      :icon="mdiFileDocumentPlusOutline"
                       class="mr-2"
                       v-bind="actv"
                       @click="loadWmsLayer(l)"
