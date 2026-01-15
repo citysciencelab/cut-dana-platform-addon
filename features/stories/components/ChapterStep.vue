@@ -1,7 +1,7 @@
 <script setup>
-import { mdiTrashCan, mdiClose, mdiFileDocumentOutline } from '@mdi/js';
+import { mdiTrashCan, mdiClose, mdiFileDocumentPlusOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { ref, watch, nextTick, computed } from 'vue';
+import { ref, watch, nextTick, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 import AddWMS from '../../../tools/addWms/components/AddWMS.vue';
@@ -105,6 +105,10 @@ const navigation3D = computed({
   set: (value) => updateStep({ navigation3D: value })
 });
 
+const mapSources = computed({
+  get: () => props.step.mapSources
+});
+
 watch(
   () => props.step.is3D,
   (is3DEnabled) => {
@@ -142,6 +146,17 @@ watch(
   { immediate: true, deep: true }
 );
 
+// load existing WMS layers into layer config on mount
+onMounted(() => {
+  if (mapSources.value.length > 0) {
+    for (const layer of mapSources.value) {
+      store.dispatch('addLayerToLayerConfig', {
+        layerConfig: layer,
+        parentKey: 'subjectlayer',
+      });
+    }
+  }
+});
 </script>
 
 <template>
@@ -243,7 +258,9 @@ watch(
             <v-icon :icon="mdiClose" />
           </v-btn>
         </v-card-title>
-
+        <v-card-subtitle class="d-flex align-left">
+          {{ t("additional:modules.dataNarrator.label.selectWmsLayer") }}
+        </v-card-subtitle>
         <v-list
           density="comfortable"
           class="pa-0"
@@ -262,7 +279,7 @@ watch(
                 <v-tooltip location="top">
                   <template #activator="{ props: actv }">
                     <v-icon
-                      :icon="mdiFileDocumentOutline"
+                      :icon="mdiFileDocumentPlusOutline"
                       class="mr-2"
                       v-bind="actv"
                       @click="loadWmsLayer(l)"
@@ -285,7 +302,7 @@ watch(
       class="pa-0"
     >
       <v-list-item
-        v-for="l in step.mapSources"
+        v-for="l in mapSources"
         :key="l.id"
         class="pa-0"
       >

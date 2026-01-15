@@ -61,8 +61,7 @@ function isVersionEnabled(v) {
   if (!v) return false;
   const p = v.split('.').map((n) => parseInt(n, 10));
   if (p[0] < 1) return false;
-  if (p[0] === 1 && (p[1] ?? 0) < 3) return false;
-  return true;
+  return !(p[0] === 1 && (p[1] ?? 0) < 3);
 }
 
 function reversedDataForOldSpec(xml) {
