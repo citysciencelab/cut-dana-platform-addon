@@ -75,6 +75,7 @@
         "openStoryMenu": "Story-Menü öffnen",
         "removeLogoImage": "Bild für das Story-Logo entfernen",
         "openChapterMenu": "Kapitel-Menü öffnen",
+        "selectWmsLayer": "Bitte wählen Sie einen WMS-Layer aus der Liste aus.",
         "wmsLayer": "WMS Ebenen",
         "loadWmsLayer": "WMS Layer hinzuladen",
         "noWmsLayer": "Keine WMS-Ebenen ausgewählt",

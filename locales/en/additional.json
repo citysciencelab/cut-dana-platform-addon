@@ -76,6 +76,7 @@
         "removeLogoImage": "Remove the image for the story logo",
         "openChapterMenu": "Open chapter menu",
         "wmsLayer": "WMS Layer",
+        "selectWmsLayer": "Please select a WMS Layer from the list.",
         "loadWmsLayer": "load WMS layer",
         "noWmsLayer": "No WMS layer selected",
         "wmsHint": "You can paste either the base WMS service URL or a full GetCapabilities URL.",

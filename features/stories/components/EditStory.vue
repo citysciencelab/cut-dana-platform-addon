@@ -48,6 +48,7 @@ async function loadStory() {
         },
         informationLayers: s.informationLayers,
         geoJsonAssets: s.geoJsonAssets,
+        mapSources: s.mapSources
       })),
     }));
   } catch (err) {
