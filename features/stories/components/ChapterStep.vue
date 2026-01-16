@@ -76,13 +76,12 @@ function removeWmsLayer(id) {
 function toggleTransparencySlider(layer) {
   transparencyDialog.value = !transparencyDialog.value;
   activeLayerId.value = activeLayerId.value === layer.id ? null : layer.id;
-  console.log('open transparency slider for', layer.name, layer.id, layer.transparency);
 }
 
 function onTransparencyChange(layer, transparency) {
-  console.log('transparency changed', layer.id, transparency);
   layer.transparency = transparency;
   const opacity = 1 - (transparency/100);
+  layer.opacity = opacity;
   const mapLayer = store.getters['Maps/getLayerById'](layer.id);
   if (mapLayer) {
     mapLayer.setOpacity(opacity);
@@ -91,12 +90,10 @@ function onTransparencyChange(layer, transparency) {
 }
 
 function onTransparencyFinalChange(layer, transparency) {
-  console.log('final transparency', layer.id, transparency);
   store.dispatch('Modules/LayerTree/updateTransparency', {
     layerConf: layer,
     transparency: transparency
   });
-  // TODO: also adjust opacity value
 }
 const stepTitle = computed({
   get: () => props.step.title,
@@ -118,9 +115,9 @@ const backgroundMapId = computed({
   set: (value) => updateStep({ mapConfig: { ...props.step.mapConfig, backgroundMapId: value } })
 });
 
-const informationLayerIds = computed({
-  get: () => props.step.informationLayerIds,
-  set: (value) => updateStep({ informationLayerIds: value })
+const informationLayers = computed({
+  get: () => props.step.informationLayers,
+  set: (value) => updateStep({ informationLayers: value })
 });
 
 const is3D = computed({
@@ -239,7 +236,7 @@ watch(
       </v-col>
     </v-row>
 
-    <Layers v-model="informationLayerIds" />
+    <Layers v-model="informationLayers" />
 
     <v-row class="mb-1">
       <v-col

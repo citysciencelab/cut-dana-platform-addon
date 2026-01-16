@@ -108,7 +108,7 @@ watch(
     } else {
       const bgId = step.backgroundMapId || defaultBaseLayerId;
       setBaseLayer(bgId);
-      setInformationLayers(step.informationLayerIds ?? [], [ bgId ]);
+      setInformationLayers(step.informationLayers ?? [], [ bgId ]);
     }
 
     clearGeoJSON();

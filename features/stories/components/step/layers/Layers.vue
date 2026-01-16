@@ -22,29 +22,27 @@ const activeLayerId = ref(null);
 
 const selectedLayers = computed(() =>
   (props.modelValue ?? [])
-    .map((id) => idToLayerMap.value.get(id))
+    .map(({ id, transparency }) => idToLayerMap.value.get(id))
     .filter(Boolean)
 );
 
 function addLayer(layerId) {
   if (!layerId) return;
   if (!props.modelValue.includes(layerId)) {
-    emit('update:modelValue', [ ...props.modelValue, layerId ]);
+    emit('update:modelValue', [ ...props.modelValue, { id: layerId, transparency: 0 } ]);
   }
 }
 
 function removeLayer(id) {
-  emit('update:modelValue', props.modelValue.filter(v => v !== id));
+  emit('update:modelValue', props.modelValue.filter(v => v.id !== id));
 }
 
 function toggleTransparencySlider(layer) {
   transparencyDialog.value = !transparencyDialog.value;
   activeLayerId.value = activeLayerId.value === layer.id ? null : layer.id;
-  console.log('open transparency slider for', layer.name, layer.id, layer.transparency);
 }
 
 function onTransparencyChange(layer, transparency) {
-  console.log('transparency changed', layer.id, transparency);
   layer.transparency = transparency;
 
   const opacity = 1 - (transparency/100);
@@ -56,12 +54,15 @@ function onTransparencyChange(layer, transparency) {
 }
 
 function onTransparencyFinalChange(layer, transparency) {
-  console.log('final transparency', layer.id, transparency);
-
   store.dispatch('Modules/LayerTree/updateTransparency', {
     layerConf: layer,
     transparency: transparency
   });
+
+  const item = props.modelValue.find(item => item.id === layer.id);
+  if (item) {
+    item.transparency = transparency;
+  }
 }
 
 watch(
@@ -78,10 +79,11 @@ watch(
     let maxBaselayerZIndex = Math.max(...baseLayers.map(layer => layer.zIndex));
 
     if (added.length) {
-      for (const id of added) {
+      for (const  { id, transparency } of added) {
         store.dispatch('addOrReplaceLayer', {
           layerId: id,
-          zIndex: ++maxBaselayerZIndex
+          zIndex: ++maxBaselayerZIndex,
+          transparency: transparency
         });
       }
     }

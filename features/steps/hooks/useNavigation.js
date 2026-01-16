@@ -38,7 +38,8 @@ export function useNavigation() {
     store.dispatch('Modules/BaselayerSwitcher/updateLayerVisibilityAndZIndex', layerId);
   };
 
-  const setInformationLayers = (layerIds = [], removableBlackList = [ '19969' ]) => {
+  const setInformationLayers = (layers = [], removableBlackList = [ '19969' ]) => {
+    const layerIds = layers.map(({ id, transparency }) => id);
     const prev = store.getters.visibleLayerConfigs.map(config => config.id) || [];
 
     const added = layerIds.filter(id => !prev.includes(id));
@@ -47,7 +48,8 @@ export function useNavigation() {
     for (const id of added) {
       store.dispatch('addOrReplaceLayer', {
         layerId: id,
-        isBaseLayer: false
+        isBaseLayer: false,
+        transparency: layers.find(item => item.id === id)?.transparency
       });
     }
 

@@ -47,7 +47,7 @@ const { chapters, hasImage } = defineProps({
                 <li>Hintergrundkarte: {{ step.mapConfig?.backgroundMapId ?? "—" }}</li>
                 <li>
                   Informationsebenen: {{
-                    (step.informationLayerIds ?? []).length
+                    (step.informationLayers ?? []).length
                   }}
                 </li>
               </ul>
