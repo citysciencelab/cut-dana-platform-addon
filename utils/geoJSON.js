@@ -6,7 +6,7 @@ import { Circle, Fill, Stroke, Style } from 'ol/style.js';
 function createGeoJSONLayer() {
   // Colors from design concept of Data Narrator
   const fill = new Fill({
-    color: 'rgba(163,196,255,0.7)',
+    color: 'rgba(163,196,255)',
   });
   const stroke = new Stroke({
     color: 'rgb(70, 81, 102)',
@@ -30,7 +30,7 @@ function createGeoJSONLayer() {
   return layer;
 };
 
-function getGeoJSONLayer() {
+export function getGeoJSONLayer() {
   //TODO: add support for 3D map
   const map = mapCollection.getMap('2D');
   const layers = map.getLayers();
@@ -52,6 +52,7 @@ export function addGeoJSON(geoJSONAssets) {
   const map = mapCollection.getMap('2D');
   const mapProjection = map.getView().getProjection().getCode();
   const parser = new GeoJSON();
+  let transparency_layer = 0;
   const layer = getGeoJSONLayer();
   const source = layer.getSource();
   geoJSONAssets?.forEach(asset => {
@@ -60,8 +61,13 @@ export function addGeoJSON(geoJSONAssets) {
       featureProjection: mapProjection,
     });
     source.addFeatures(features);
+    transparency_layer = asset.transparency ?? transparency_layer;
   });
   updateGeoJSONZIndex();
+  const opacity = 1 - (transparency_layer/100);
+  layer.opacity = opacity;
+  layer.setOpacity(opacity);
+  layer.changed();
 };
 
 export function updateGeoJSONZIndex() {

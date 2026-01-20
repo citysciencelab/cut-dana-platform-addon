@@ -22,7 +22,7 @@ const activeLayerId = ref(null);
 
 const selectedLayers = computed(() =>
   (props.modelValue ?? [])
-    .map(({ id, transparency }) => idToLayerMap.value.get(id))
+    .map(({ id }) => idToLayerMap.value.get(id))
     .filter(Boolean)
 );
 

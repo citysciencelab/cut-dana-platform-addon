@@ -39,7 +39,7 @@ export function useNavigation() {
   };
 
   const setInformationLayers = (layers = [], removableBlackList = [ '19969' ]) => {
-    const layerIds = layers.map(({ id, transparency }) => id);
+    const layerIds = layers.map(({ id }) => id);
     const prev = store.getters.visibleLayerConfigs.map(config => config.id) || [];
 
     const added = layerIds.filter(id => !prev.includes(id));
