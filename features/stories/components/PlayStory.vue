@@ -99,6 +99,7 @@ watch(
     });
 
     if (step.mapSources.length > 0) {
+      setInformationLayers([]);
       step.mapSources.forEach(layer => {
         store.dispatch('addLayerToLayerConfig', {
           layerConfig: layer,
