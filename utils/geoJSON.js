@@ -52,7 +52,7 @@ export function addGeoJSON(geoJSONAssets) {
   const map = mapCollection.getMap('2D');
   const mapProjection = map.getView().getProjection().getCode();
   const parser = new GeoJSON();
-  let transparency_layer = 0;
+  let transparency = 0;
   const layer = getGeoJSONLayer();
   const source = layer.getSource();
   geoJSONAssets?.forEach(asset => {
@@ -61,11 +61,10 @@ export function addGeoJSON(geoJSONAssets) {
       featureProjection: mapProjection,
     });
     source.addFeatures(features);
-    transparency_layer = asset.transparency ?? transparency_layer;
+    transparency = asset.transparency ?? transparency;
   });
   updateGeoJSONZIndex();
-  const opacity = 1 - (transparency_layer/100);
-  layer.opacity = opacity;
+  const opacity = 1 - (transparency/100);
   layer.setOpacity(opacity);
   layer.changed();
 };

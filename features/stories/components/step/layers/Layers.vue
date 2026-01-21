@@ -162,16 +162,6 @@ watch(
           Keine Ebenen ausgewählt.
         </div>
       </v-list>
-      <!-- <div
-        v-if="transparencyDialog"
-        class="mt-2"
-      >
-        <TransparencySlider
-          v-model="transparencyDialog"
-          :initial-opacity="currentLayerOpacity"
-          @save="saveTransparency"
-        />
-      </div> -->
     </v-col>
   </v-row>
 

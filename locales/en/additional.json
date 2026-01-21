@@ -83,7 +83,8 @@
         "enterWms": "Enter WMS service URL",
         "loadWmsBtn": "Load",
         "openTransparencySlider": "Open the transparency slider",
-        "closeTransparencySlider": "Close the transparency slider"
+        "closeTransparencySlider": "Close the transparency slider",
+        "changeTransparency": "Set the transparency"
       },
       "categoryBrowser": {
         "searchLayers": "Search Layers…",

@@ -1,4 +1,5 @@
 <script setup>
+import { useTranslation } from 'i18next-vue';
 import { ref, watch, defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
@@ -7,6 +8,8 @@ const props = defineProps({
     default: 0,
   },
 });
+
+const { t } = useTranslation();
 
 const emit = defineEmits([ 'update', 'final' ]);
 const transparencyValue = ref(props.initialTransparency);
@@ -35,7 +38,7 @@ function onSliderEnd(val) {
     <v-card-title
       style="line-height: 0.1;"
     >
-      Transparenz einstellen
+      {{ t("additional:modules.dataNarrator.label.changeTransparency") }}
     </v-card-title>
     <v-card-text>
       <div class="d-flex flex-column">
