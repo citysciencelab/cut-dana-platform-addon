@@ -46,7 +46,7 @@ async function loadStory() {
           zoomLevel: s.zoomLevel,
           backgroundMapId: s.backgroundMapId,
         },
-        informationLayerIds: s.informationLayerIds,
+        informationLayers: s.informationLayers,
         geoJsonAssets: s.geoJsonAssets,
         mapSources: s.mapSources
       })),

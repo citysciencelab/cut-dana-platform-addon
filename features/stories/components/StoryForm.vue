@@ -110,7 +110,7 @@ function getDefaultStep(id) {
       zoomLevel: initialZoom,
       backgroundMapId: defaultBaseLayerId,
     },
-    informationLayerIds: [],
+    informationLayers: [],
     mapSources: [],
     // 3D
     is3D: false,

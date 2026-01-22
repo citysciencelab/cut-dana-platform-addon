@@ -99,6 +99,7 @@ watch(
     });
 
     if (step.mapSources.length > 0) {
+      setInformationLayers([]);
       step.mapSources.forEach(layer => {
         store.dispatch('addLayerToLayerConfig', {
           layerConfig: layer,
@@ -108,7 +109,7 @@ watch(
     } else {
       const bgId = step.backgroundMapId || defaultBaseLayerId;
       setBaseLayer(bgId);
-      setInformationLayers(step.informationLayerIds ?? [], [ bgId ]);
+      setInformationLayers(step.informationLayers ?? [], [ bgId ]);
     }
 
     clearGeoJSON();

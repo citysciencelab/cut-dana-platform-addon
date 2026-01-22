@@ -1,5 +1,5 @@
 <script setup>
-import { mdiTrashCan, mdiClose, mdiFileDocumentPlusOutline } from '@mdi/js';
+import { mdiTrashCan, mdiClose, mdiFileDocumentPlusOutline, mdiEye } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, watch, nextTick, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
@@ -12,6 +12,7 @@ import GeoJSONPanel from './GeoJSON/GeoJSONPanel.vue';
 
 import BackgroundMap from './step/BackgroundMap.vue';
 import Layers from './step/layers/Layers.vue';
+import TransparencySlider from './step/layers/TransparencySlider.vue';
 import StepDescription from './step/StepDescription.vue';
 import StepTitle from './step/StepTitle.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
@@ -34,6 +35,8 @@ const { t } = useTranslation();
 const { setBaseLayer, setAnimatedView } = useNavigation();
 const store = useStore();
 
+const transparencyDialog = ref(false);
+const activeLayerId = ref(null);
 const stepTitleRef = ref(null);
 const wmsDialogOpen = ref(false);
 const allMapSources = ref([]);
@@ -70,6 +73,28 @@ function removeWmsLayer(id) {
   store.dispatch('Modules/LayerTree/removeLayer', { id });
 }
 
+function toggleTransparencySlider(layer) {
+  transparencyDialog.value = !transparencyDialog.value;
+  activeLayerId.value = activeLayerId.value === layer.id ? null : layer.id;
+}
+
+function onTransparencyChange(layer, transparency) {
+  layer.transparency = transparency;
+  const opacity = 1 - (transparency/100);
+  layer.opacity = opacity;
+  const mapLayer = store.getters['Maps/getLayerById'](layer.id);
+  if (mapLayer) {
+    mapLayer.setOpacity(opacity);
+    mapLayer.changed();
+  }
+}
+
+function onTransparencyFinalChange(layer, transparency) {
+  store.dispatch('Modules/LayerTree/updateTransparency', {
+    layerConf: layer,
+    transparency: transparency
+  });
+}
 const stepTitle = computed({
   get: () => props.step.title,
   set: (value) => updateStep({ title: value })
@@ -90,9 +115,9 @@ const backgroundMapId = computed({
   set: (value) => updateStep({ mapConfig: { ...props.step.mapConfig, backgroundMapId: value } })
 });
 
-const informationLayerIds = computed({
-  get: () => props.step.informationLayerIds,
-  set: (value) => updateStep({ informationLayerIds: value })
+const informationLayers = computed({
+  get: () => props.step.informationLayers,
+  set: (value) => updateStep({ informationLayers: value })
 });
 
 const is3D = computed({
@@ -226,7 +251,7 @@ onMounted(() => {
       </v-col>
     </v-row>
 
-    <Layers v-model="informationLayerIds" />
+    <Layers v-model="informationLayers" />
 
     <v-row class="mb-1">
       <v-col
@@ -313,12 +338,38 @@ onMounted(() => {
           style="border: 1px solid #e1e1e1"
         >
           <span class="flex-grow-1">{{ l.name }}</span>
-          <v-icon
-            :icon="mdiTrashCan"
-            class="cursor-pointer"
-            @click="removeWmsLayer(l.id)"
-          />
+          <div class="d-flex align-center">
+            <v-tooltip location="top">
+              <template #activator="{ props: actv }">
+                <v-icon
+                  :icon="mdiEye"
+                  class="mr-2"
+                  v-bind="actv"
+                  @click="toggleTransparencySlider(l)"
+                />
+              </template>
+              <span>{{ transparencyDialog ? 
+                t("additional:modules.dataNarrator.label.closeTransparencySlider") : 
+                t("additional:modules.dataNarrator.label.openTransparencySlider") }}
+              </span>
+            </v-tooltip>
+            <v-icon
+              :icon="mdiTrashCan"
+              class="cursor-pointer"
+              @click="removeWmsLayer(l.id)"
+            />
+          </div>
         </v-sheet>
+        <div
+          v-if="activeLayerId === l.id"
+          class="mt-2"
+        >
+          <TransparencySlider
+            :initial-transparency="l.transparency"
+            @update="onTransparencyChange(l, $event)"
+            @final="onTransparencyFinalChange(l, $event)"
+          />
+        </div>
       </v-list-item>
     </v-list>
 
