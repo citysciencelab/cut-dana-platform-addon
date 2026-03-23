@@ -154,10 +154,13 @@ watch(
   () => props.step?.mapConfig,
   (newMapConfig) => {
     setBaseLayer(newMapConfig?.backgroundMapId);
+    /**
+     * not supposed to animate all the time
     setAnimatedView({
       center: newMapConfig.centerCoordinates,
       zoom: newMapConfig.zoomLevel
     });
+      **/
   },
   { immediate: true, deep: true }
 );
@@ -348,8 +351,8 @@ onMounted(() => {
                   @click="toggleTransparencySlider(l)"
                 />
               </template>
-              <span>{{ transparencyDialog ? 
-                t("additional:modules.dataNarrator.label.closeTransparencySlider") : 
+              <span>{{ transparencyDialog ?
+                t("additional:modules.dataNarrator.label.closeTransparencySlider") :
                 t("additional:modules.dataNarrator.label.openTransparencySlider") }}
               </span>
             </v-tooltip>
