@@ -25,7 +25,8 @@ const { t } = useTranslation();
 
 const storiesDisplayMode = computed(() => store.state.Modules.DataNarrator.DashboardStore.mode);
 const { toolwindowMode } = useDataNarrator()
-const { loggedIn } = useLogin();
+const { loggedIn, screenName, email } = useLogin();
+const loggedInPersonLabel = computed(() => screenName.value || email.value || '');
 const storyModeLists = computed(() => {
   return Object.values(availableStoryListModes).filter(mode =>
     loggedIn.value || mode !== 'my'
@@ -59,6 +60,12 @@ const getBackgroundStyle = () => ({
           <UserMenu v-if="loggedIn" />
         </div>
         <div class="d-flex justify-end align-center ga-2">
+          <span
+            v-if="loggedIn && loggedInPersonLabel"
+            class="logged-in-person"
+          >
+            {{ loggedInPersonLabel }}
+          </span>
           <LoginButton />
           <LanguageSwitchButton />
         </div>
@@ -74,6 +81,12 @@ const getBackgroundStyle = () => ({
         <UserMenu v-if="loggedIn" />
       </div>
       <div class="d-flex justify-end align-center ga-2">
+        <span
+          v-if="loggedIn && loggedInPersonLabel"
+          class="logged-in-person"
+        >
+          {{ loggedInPersonLabel }}
+        </span>
         <LoginButton />
         <LanguageSwitchButton />
       </div>
@@ -168,6 +181,14 @@ const getBackgroundStyle = () => ({
 
 .settings-menu {
   flex: 1;
+}
+
+.logged-in-person {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .header-col {
