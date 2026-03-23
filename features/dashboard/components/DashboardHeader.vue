@@ -6,6 +6,7 @@ import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import cutcslDepiction from '../../../img/cutcsl_depiction.png';
+import logonotextXs from '../../../img/logonotext-xs.png';
 import { availableStoryListModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { createLogger } from '../../../utils/logger.js';
 import { useLogin } from '../hooks/useLogin';
@@ -107,7 +108,7 @@ const getBackgroundStyle = () => ({
       >
         <h1 class="header-h1">
           <img
-            src="../../../img/logonotext-xs.png"
+            :src="logonotextXs"
             alt="logo"
             class="header-logo"
           >
