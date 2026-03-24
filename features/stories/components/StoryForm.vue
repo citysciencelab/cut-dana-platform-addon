@@ -1,5 +1,5 @@
 <script setup>
-import { mdiArrowLeft, mdiDotsVertical, mdiImagePlusOutline, mdiPencilOutline, mdiTrashCan } from '@mdi/js';
+import { mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { computed, ref, watch } from 'vue';
 
@@ -337,79 +337,6 @@ watch([ activeStepIndex, previewVisible ], () => {
       v-if="editStoryVisible"
       :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]"
     >
-      <v-toolbar
-        :color="selectedImage ? 'white' : 'transparent'"
-        size="compact"
-        class="sticky-top"
-        style="border-radius: 100px;padding: 0;"
-      >
-        <template #prepend>
-          <v-tooltip location="top">
-            <template #activator="{ props: actv}">
-              <v-btn
-                v-bind="actv"
-                :icon="mdiArrowLeft"
-                size="compact"
-                class="mr-2"
-                @click="backConfirmation = true"
-              />
-            </template>
-            <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
-          </v-tooltip>
-
-          <v-text-field
-            id="title"
-            v-model="storyNameInput"
-            width="200"
-            variant="underlined"
-            placeholder="Story name"
-            required
-          />
-          <v-tooltip location="top">
-            <template #activator="{ props: actv }">
-              <v-file-input
-                v-model="selectedImage"
-                class="ml-2"
-                :prepend-icon="mdiImagePlusOutline"
-                hide-input
-                accept="image/png, image/jpeg"
-                v-bind="actv"
-                @change="imageDeleted = false"
-              />
-            </template>
-            <span>{{ t('additional:modules.dataNarrator.label.imageUpload') }}</span>
-          </v-tooltip>
-        </template>
-
-        <v-menu
-          v-if="editStoryVisible"
-          location="bottom end"
-          offset="4"
-        >
-          <template #activator="{ props: menuProps }">
-            <v-tooltip location="top">
-              <template #activator="{ props: tooltipProps }">
-                <v-btn
-                  v-bind="{...menuProps, ...tooltipProps}"
-                  variant="text"
-                  :icon="mdiDotsVertical"
-                  size="compact"
-                />
-              </template>
-              <span>{{ t('additional:modules.dataNarrator.label.openStoryMenu') }}</span>
-            </v-tooltip>
-          </template>
-          <v-list density="compact">
-            <v-list-item @click.stop="editStoryVisible = false">
-              <template #prepend>
-                <v-icon :icon="mdiPencilOutline" />
-              </template>
-              <v-list-item-title>Close Panel</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-toolbar>
-
       <div
         v-if="imagePreview"
         class="image-preview"
@@ -433,6 +360,54 @@ watch([ activeStepIndex, previewVisible ], () => {
           </v-tooltip>
         </div>
       </div>
+
+      <v-toolbar
+        :color="selectedImage ? 'white' : 'transparent'"
+        size="compact"
+        class="sticky-top"
+        style="border-radius: 100px;padding: 0;"
+      >
+        <template #prepend>
+          <v-tooltip location="top">
+            <template #activator="{ props: actv}">
+              <v-btn
+                v-bind="actv"
+                :icon="mdiArrowLeft"
+                size="compact"
+                class="mr-2"
+                @click="backConfirmation = true"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
+          </v-tooltip>
+        </template>
+
+        <v-text-field
+          id="title"
+          v-model="storyNameInput"
+          class="story-title-input"
+          variant="underlined"
+          placeholder="Story name"
+          required
+        />
+
+        <template #append>
+          <v-tooltip location="top">
+            <template #activator="{ props: actv }">
+              <v-file-input
+                v-model="selectedImage"
+                class="mr-2"
+                :prepend-icon="mdiImagePlusOutline"
+                hide-input
+                accept="image/png, image/jpeg"
+                v-bind="actv"
+                @change="imageDeleted = false"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.imageUpload') }}</span>
+          </v-tooltip>
+        </template>
+      </v-toolbar>
     </div>
 
     <div class="mb-2">
@@ -562,20 +537,19 @@ watch([ activeStepIndex, previewVisible ], () => {
     position: relative;
 
     &.with-image {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      height: 260px;
-      padding: 10px;
+      padding: 10px 0;
     }
 
     .image-preview {
       position: relative;
+      width: 100%;
+      margin-bottom: 10px;
 
       img {
+        width: 100%;
         height: 180px;
-        aspect-ratio: 16/9;
         border-radius: 20px;
+        object-fit: cover;
       }
 
       .remove-image-btn {
@@ -583,6 +557,11 @@ watch([ activeStepIndex, previewVisible ], () => {
         right: 10px;
         bottom: 10px;
       }
+    }
+
+    .story-title-input {
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
   }
