@@ -1,10 +1,10 @@
 <script setup>
-import { mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus } from '@mdi/js';
+import {mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus} from '@mdi/js';
 
-import { useTranslation } from 'i18next-vue';
+import {useTranslation} from 'i18next-vue';
 
-import { getStoryColor } from '../../../utils/getStoryColor';
-import { numberToLetter } from '../../../utils/numberToLetter';
+import {getStoryColor} from '../../../utils/getStoryColor';
+import {numberToLetter} from '../../../utils/numberToLetter';
 
 import ChapterStep from './ChapterStep.vue';
 
@@ -22,14 +22,14 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits([ 'addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'update:chapter' ]);
+const emits = defineEmits(['addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'update:chapter']);
 
-const { t } = useTranslation();
+const {t} = useTranslation();
 
 const updateChapter = (updates) => {
   const updatedChapter = {
     ...props.chapter,
-    ... updates
+    ...updates
   };
   emits('update:chapter', updatedChapter);
 }
@@ -38,10 +38,10 @@ const updateStepInChapter = (updatedStep) => {
   const updatedSteps = props.chapter.steps.map((step, idx) =>
     idx === props.activeStepIndex ? updatedStep : step
   );
-  updateChapter({ steps: updatedSteps });
+  updateChapter({steps: updatedSteps});
 }
 
-const updateTitle = (event) => updateChapter({ title: event.target.value });
+const updateTitle = (event) => updateChapter({title: event.target.value});
 
 const addStep = () => emits('addNewStep');
 </script>
@@ -57,31 +57,18 @@ const addStep = () => emits('addNewStep');
   >
     <div class="d-flex align-center ga-2">
       <div class="chapter flex-1-0">
-        <v-icon>{{ mdiFormatListBulleted }}</v-icon>
         <div class="chapter-label">
           {{ numberToLetter(props.chapter.sequence) }}
         </div>
         <div class="chapter-title">
           <input
             :value="props.chapter.title"
+            :placeholder="t('additional:modules.dataNarrator.creator.unnamed')"
             type="text"
-            placeholder="A Unbenanntes Kapitel"
             required
             @input="updateTitle"
           >
         </div>
-        <v-tooltip location="top">
-          <template #activator="{ props: actv }">
-            <div
-              class="chapter-step-add"
-              v-bind="actv"
-              @click="emits('addNewChapter')"
-            >
-              <v-icon>{{ mdiPlus }}</v-icon>
-            </div>
-          </template>
-          <span>{{ t('additional:modules.dataNarrator.label.addChapter') }}</span>
-        </v-tooltip>
       </div>
 
       <v-menu
@@ -105,13 +92,14 @@ const addStep = () => emits('addNewStep');
         <v-list density="compact">
           <v-list-item @click.stop="emits('editStoryVisible')">
             <template #prepend>
-              <v-icon :icon="mdiPencilOutline" />
+              <v-icon :icon="mdiPencilOutline"/>
             </template>
             <v-list-item-title>Edit Story</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
     </div>
+
 
     <ChapterStep
       v-if="props.activeStepIndex > -1 && props.activeStepIndex < props.chapter.steps.length"
@@ -121,7 +109,8 @@ const addStep = () => emits('addNewStep');
       @update:step="updateStepInChapter"
     />
 
-    <v-row justify="center">
+    <span v-else>
+          <v-row justify="center">
       <v-btn
         variant="plain"
         class="mt-2"
@@ -135,64 +124,81 @@ const addStep = () => emits('addNewStep');
         SCHRITT HINZUFÜGEN
       </v-btn>
     </v-row>
+
+    <v-row justify="center">
+      <v-btn
+        variant="plain"
+        class="mt-2"
+        @click="emits('addNewChapter')"
+      >
+        <template #prepend>
+          <div class="add-chapter-button-icon">
+            <v-icon>{{ mdiPlus }}</v-icon>
+          </div>
+        </template>
+        Kapitel HINZUFÜGEN
+      </v-btn>
+    </v-row>
+    </span>
+
   </div>
 </template>
 
 <style lang="scss" scoped>
 .chapter-container {
-    .chapter {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        background-color: white;
-        border-radius: 50px;
-        padding: 8px;
+  .chapter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: white;
+    border-radius: 50px;
+    padding: 8px;
 
-        &-label {
-            background-color: var(--pill-color);
-            padding: 2px 16px;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
-        }
-
-        &-title {
-            flex: 1;
-
-            input[type="text"] {
-                border: none;
-                border-bottom: 1px solid #e1e1e1;
-                outline: none;
-                font-size: 16px;
-                font-weight: bold;
-                width: 80%;
-
-                &:focus {
-                    border-bottom: 1px solid #a1a1a1;
-                }
-            }
-        }
-
-        &-step-add {
-            border: 2px solid #883d06;
-            padding: 0 10px;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #883d06;
-            cursor: pointer;
-        }
+    &-label {
+      background-color: var(--pill-color);
+      padding: 2px 16px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
     }
 
-    .add-chapter-button-icon {
-        border: 2px solid var(--pill-color);
-        padding: 0 10px;
-        border-radius: 20px;
+    &-title {
+      flex: 1;
+
+      input[type="text"] {
+        border: none;
+        border-bottom: 1px solid #e1e1e1;
+        outline: none;
         font-size: 16px;
         font-weight: bold;
-        color: var(--pill-color);
-        cursor: pointer;
+        width: 80%;
+
+        &:focus {
+          border-bottom: 1px solid #a1a1a1;
+        }
+      }
     }
+
+    &-step-add {
+      border: 2px solid #883d06;
+      padding: 0 10px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #883d06;
+      cursor: pointer;
+    }
+  }
+
+  .add-chapter-button-icon {
+    border: 2px solid var(--pill-color);
+    padding: 0 10px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--pill-color);
+    cursor: pointer;
+  }
 }
 </style>
