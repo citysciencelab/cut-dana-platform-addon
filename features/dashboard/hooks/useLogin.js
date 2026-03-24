@@ -16,6 +16,7 @@ const logger = createLogger('useLogin');
 
 const ADMIN_ROLE = 'admin';
 const CLIENT_NAME = 'masterportal-client';
+const isDebugAuthBypass = Boolean(Config.debugAuthBypass);
 
 function decodeJwt(token) {
   const payload = token.split('.')[1];
@@ -160,6 +161,17 @@ export function useLogin() {
   }
 
   const checkLoggedIn = async () => {
+    if (isDebugAuthBypass) {
+      store.commit('Modules/Login/setAccessToken', 'debug-token');
+      store.commit('Modules/Login/setRefreshToken', 'debug-refresh-token');
+      store.commit('Modules/Login/setLoggedIn', true);
+      store.commit('Modules/Login/setScreenName', 'Debug User');
+      store.commit('Modules/Login/setUsername', 'debug-user');
+      store.commit('Modules/Login/setEmail', 'testuser@example.com');
+      store.commit('Modules/Login/setUserId', '69');
+      return true;
+    }
+
     const config = Config.login,
       token = Cookie.get('token'),
       refreshToken = Cookie.get('refresh_token');

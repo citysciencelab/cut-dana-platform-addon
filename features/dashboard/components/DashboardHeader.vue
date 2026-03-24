@@ -58,14 +58,14 @@ const getBackgroundStyle = () => ({
           class="settings-menu"
         >
           <UserMenu v-if="loggedIn" />
-        </div>
-        <div class="d-flex justify-end align-center ga-2">
           <span
             v-if="loggedIn && loggedInPersonLabel"
             class="logged-in-person"
           >
             {{ loggedInPersonLabel }}
           </span>
+        </div>
+        <div class="d-flex justify-end align-center ga-2">
           <LoginButton />
           <LanguageSwitchButton />
         </div>
@@ -79,14 +79,14 @@ const getBackgroundStyle = () => ({
         class="settings-menu"
       >
         <UserMenu v-if="loggedIn" />
-      </div>
-      <div class="d-flex justify-end align-center ga-2">
         <span
           v-if="loggedIn && loggedInPersonLabel"
           class="logged-in-person"
         >
           {{ loggedInPersonLabel }}
         </span>
+      </div>
+      <div class="d-flex justify-end align-center ga-2">
         <LoginButton />
         <LanguageSwitchButton />
       </div>
@@ -181,6 +181,9 @@ const getBackgroundStyle = () => ({
 
 .settings-menu {
   flex: 1;
+  display: flex;
+  align-items: center;
+  //gap: 8px;
 }
 
 .logged-in-person {
@@ -189,6 +192,8 @@ const getBackgroundStyle = () => ({
   color: #333;
   line-height: 1;
   white-space: nowrap;
+  margin-top: 3px;
+  font: inherit;
 }
 
 .header-col {
