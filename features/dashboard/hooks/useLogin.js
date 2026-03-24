@@ -6,7 +6,7 @@ import OIDC from '../../../../../../src/modules/login/js/utilsOIDC';
 
 import { FetchInterceptor } from '../../../api/FetchInterceptor';
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
-import { backendUrl } from '../../../store/contantsDataNarrator';
+import { backendUrl, debugAuthBypass } from '../../../store/contantsDataNarrator';
 import { createLogger } from '../../../utils/logger.js';
 import { getRedirectUrl } from '../../login/services/loginService';
 
@@ -16,7 +16,7 @@ const logger = createLogger('useLogin');
 
 const ADMIN_ROLE = 'admin';
 const CLIENT_NAME = 'masterportal-client';
-const isDebugAuthBypass = Boolean(Config.debugAuthBypass);
+const isDebugAuthBypass = Boolean(debugAuthBypass);
 
 function decodeJwt(token) {
   const payload = token.split('.')[1];

@@ -1,4 +1,4 @@
-﻿const dataNarratorModes = {
+const dataNarratorModes = {
   DASHBOARD: 'dashboard',
   CREATE_STORY: 'create-story',
   CREATE_STEP: 'create-step',
@@ -40,12 +40,14 @@ const htmlEditorToolbar = [
 ];
 
 const backendUrl = Config.backendUrl || 'https://staging-dana-backend.elie.de';
+const debugAuthBypass = true;
 
 export {
   dataNarratorModes,
   dataNarratorToolSettings,
   ToolwindowModes,
   backendUrl,
+  debugAuthBypass,
   htmlEditorToolbar,
   availableStoryListModes
 }
