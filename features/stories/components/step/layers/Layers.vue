@@ -155,13 +155,13 @@ watch(
           </div>
         </v-list-item>
 
-        <div
-          v-if="selectedLayers.length === 0"
-          class="text-medium-emphasis py-2"
-        >
+<!--        <div-->
+<!--          v-if="selectedLayers.length === 0"-->
+<!--          class="text-medium-emphasis py-2"-->
+<!--        >-->
 
-          {{ t("additional:modules.dataNarrator.layer.nonSelected") }}
-        </div>
+<!--          {{ t("additional:modules.dataNarrator.layer.nonSelected") }}-->
+<!--        </div>-->
       </v-list>
     </v-col>
   </v-row>
