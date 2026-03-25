@@ -1,5 +1,5 @@
 <script setup>
-import {mdiDotsVertical, mdiFormatListBulleted, mdiPencilOutline, mdiPlus} from '@mdi/js';
+import {mdiDotsVertical, mdiPencilOutline, mdiPlus} from '@mdi/js';
 
 import {useTranslation} from 'i18next-vue';
 

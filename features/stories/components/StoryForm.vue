@@ -195,8 +195,7 @@ function addNewChapter() {
 
   chaptersData.value.push(newChapter);
 
-  const newChapterIdx = chaptersData.value.length - 1;
-  activeChapterIndex.value = newChapterIdx;
+  activeChapterIndex.value = chaptersData.value.length - 1;
   activeStepIndex.value = 0;
   newStepDraft.value = {
     chapterId: newChapterId,
@@ -547,7 +546,7 @@ watch([ activeStepIndex, previewVisible ], () => {
       />
 
     <StoryOverview
-      v-if="activeStepIndex == -1"
+      v-if="activeStepIndex === -1"
       :chapters="chaptersData"
       :edit-story-visible="editStoryVisible"
       @edit-story-visible="editStoryVisible = true"
