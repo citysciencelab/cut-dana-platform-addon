@@ -58,6 +58,7 @@ const {
 } = useNavigation();
 
 const backConfirmation = ref(false);
+const discardNewStepConfirmation = ref(false);
 const storyNameInput = ref('');
 const descriptionInput = ref('');
 const isSaving = ref(false);
@@ -67,16 +68,10 @@ const activeStepIndex = ref(-1);
 const editStoryVisible = ref(true);
 const imageDeleted = ref(false);
 const modelFiles = new WeakMap();
+const newStepDraft = ref(null);
 
 let nextChapterId = 1;
-const chaptersData = ref([
-  {
-    id: 0,
-    sequence: 1,
-    title: '',
-    steps: [],
-  }
-]);
+const chaptersData = ref([]);
 
 const selectedImage = ref(null);
 const imagePreview = computed(() => {
@@ -85,7 +80,40 @@ const imagePreview = computed(() => {
   return props.coverImageUrl || null;
 });
 
-const canPublish = computed(() => {
+function hasTextContent(value) {
+  const normalizedValue = String(value ?? '').trim();
+
+  if (!normalizedValue) {
+    return false;
+  }
+
+  const doc = new DOMParser().parseFromString(normalizedValue, 'text/html');
+  const textContent = doc.body.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+
+  return textContent.length > 0;
+}
+
+const activeChapter = computed(() => chaptersData.value?.[activeChapterIndex.value] ?? null);
+const activeStep = computed(() => activeChapter.value?.steps?.[activeStepIndex.value] ?? null);
+const isCreatingNewStep = computed(() => {
+  const draft = newStepDraft.value;
+
+  if (!draft || !activeChapter.value || !activeStep.value) {
+    return false;
+  }
+
+  return activeChapter.value.id === draft.chapterId && activeStep.value.id === draft.stepId;
+});
+
+const canSaveStep = computed(() => {
+  return Boolean(
+    activeChapter.value?.title?.trim() &&
+    activeStep.value?.title?.trim() &&
+    hasTextContent(activeStep.value?.description)
+  );
+});
+
+const canSaveStory = computed(() => {
   const chapterList = chaptersData.value ?? [];
 
   const allChaptersHaveSteps =
@@ -93,6 +121,16 @@ const canPublish = computed(() => {
     chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
 
   return allChaptersHaveSteps && storyNameInput.value.trim().length > 0;
+});
+
+const isEditingStep = computed(() => activeStepIndex.value >= 0 && !previewVisible.value);
+
+const canPublish = computed(() => {
+  if (isEditingStep.value) {
+    return canSaveStep.value;
+  }
+
+  return canSaveStory.value;
 });
 
 function handleModelSelected({ step, file }) {
@@ -133,32 +171,69 @@ function getDefaultStep(id) {
   };
 }
 
+function getNextStepId(chapter) {
+  return (chapter?.steps ?? []).reduce((maxId, step) => {
+    return Number.isInteger(step?.id) ? Math.max(maxId, step.id) : maxId;
+  }, 0) + 1;
+}
+
+function resetToStoryForm() {
+  activeStepIndex.value = -1;
+  previewVisible.value = false;
+  editStoryVisible.value = true;
+}
+
 function addNewChapter() {
+  const newChapterId = nextChapterId++;
+  const newStep = getDefaultStep(1);
   const newChapter = {
-    id: nextChapterId++,
+    id: newChapterId,
     sequence: chaptersData.value.length + 1,
     title: '',
-    steps: [],
+    steps: [newStep],
   };
 
   chaptersData.value.push(newChapter);
 
-  activeChapterIndex.value = chaptersData.value.length - 1;
-  activeStepIndex.value = -1;
+  const newChapterIdx = chaptersData.value.length - 1;
+  activeChapterIndex.value = newChapterIdx;
+  activeStepIndex.value = 0;
+  newStepDraft.value = {
+    chapterId: newChapterId,
+    stepId: newStep.id,
+  };
 }
 
 function handleAddNewStep({ chapterIdx }) {
   const chapter = chaptersData.value[chapterIdx];
-  chapter.steps.push(getDefaultStep(chapter.steps.length + 1));
+  if (!chapter) return;
+
+  const newStep = getDefaultStep(getNextStepId(chapter));
+
+  chapter.steps.push(newStep);
   activeChapterIndex.value = chapterIdx;
   activeStepIndex.value = chapter.steps.length - 1;
+  newStepDraft.value = {
+    chapterId: chapter.id,
+    stepId: newStep.id,
+  };
 }
 
 function handleDeleteStep({ chapterIdx, stepIdx }) {
   const chapter = chaptersData.value?.[chapterIdx];
   if (!chapter) return;
   if (stepIdx < 0 || stepIdx >= chapter.steps.length) return;
+
+  const deletedStep = chapter.steps[stepIdx];
   chapter.steps.splice(stepIdx, 1);
+
+  if (
+    newStepDraft.value?.chapterId === chapter.id &&
+    newStepDraft.value?.stepId === deletedStep?.id
+  ) {
+    newStepDraft.value = null;
+    resetToStoryForm();
+  }
 }
 
 function handleStepsChange({ chapterIdx, newList }) {
@@ -168,6 +243,7 @@ function handleStepsChange({ chapterIdx, newList }) {
 }
 
 function handleEditStep({ chapterIdx, stepIdx }) {
+  newStepDraft.value = null;
   activeChapterIndex.value = chapterIdx;
   activeStepIndex.value = stepIdx;
   previewVisible.value = false;
@@ -176,6 +252,7 @@ function handleEditStep({ chapterIdx, stepIdx }) {
 function handleEditChapter({ chapterIdx }) {
   const chapter = chaptersData.value?.[chapterIdx];
   if (!chapter) return;
+  newStepDraft.value = null;
   previewVisible.value = false;
   activeChapterIndex.value = chapterIdx;
   const stepCount = chaptersData.value[chapterIdx].steps.length ?? 0;
@@ -191,8 +268,15 @@ function handleChapterUpdate(updatedChapter) {
 
 function handleDeleteChapter({ chapterIdx }) {
   if (chapterIdx < 0 || chapterIdx >= chaptersData.value.length) return;
+
+  const deletedChapter = chaptersData.value[chapterIdx];
   chaptersData.value.splice(chapterIdx, 1);
   chaptersData.value.forEach((ch, i) => (ch.sequence = i + 1));
+
+  if (newStepDraft.value?.chapterId === deletedChapter?.id) {
+    newStepDraft.value = null;
+    resetToStoryForm();
+  }
 }
 
 function handleChaptersChange(newList) {
@@ -200,6 +284,12 @@ function handleChaptersChange(newList) {
     ...ch,
     sequence: i + 1,
   }));
+}
+
+function saveStep() {
+  newStepDraft.value = null;
+  activeStepIndex.value = -1;
+  previewVisible.value = true;
 }
 
 async function save() {
@@ -269,9 +359,26 @@ async function save() {
   }
 
   isSaving.value = false;
+  newStepDraft.value = null;
   removeAllVisibleLayers();
   clearGeoJSON();
   gotoPage(dataNarratorModes.DASHBOARD);
+}
+
+function discardNewStep() {
+  const draft = newStepDraft.value;
+
+  if (draft) {
+    const chapter = chaptersData.value.find((entry) => entry?.id === draft.chapterId);
+    const stepIdx = chapter?.steps?.findIndex((step) => step?.id === draft.stepId) ?? -1;
+
+    if (chapter && stepIdx >= 0) {
+      chapter.steps.splice(stepIdx, 1);
+    }
+  }
+
+  newStepDraft.value = null;
+  resetToStoryForm();
 }
 
 function onDeleteImage() {
@@ -287,15 +394,15 @@ watch(
       descriptionInput.value = d ?? '';
       chaptersData.value = c ?? [];
       previewVisible.value = true;
+      activeStepIndex.value = -1;
+      editStoryVisible.value = true;
     }
   },
   { immediate: true }
 );
 
-watch(activeStepIndex, (activeStepIndex) => {
-  if (activeStepIndex >= 0) {
-    editStoryVisible.value = false;
-  }
+watch(activeStepIndex, (val) => {
+  editStoryVisible.value = val < 0;
 });
 
 // When the step is change we remove all visible layers and reset to default base layer
@@ -423,11 +530,8 @@ watch([ activeStepIndex, previewVisible ], () => {
       />
     </div>
 
-    <div
-      v-if="!previewVisible"
-      class="story-form-content"
-    >
       <Chapter
+        v-if="activeStepIndex >= 0"
         :key="chaptersData[activeChapterIndex]?.id ?? activeChapterIndex"
         :chapter="chaptersData[activeChapterIndex]"
         :active-step-index="activeStepIndex"
@@ -441,10 +545,10 @@ watch([ activeStepIndex, previewVisible ], () => {
         @model-selected="handleModelSelected"
         @update:chapter="handleChapterUpdate"
       />
-    </div>
+
     <StoryOverview
-      v-else
-      :chapters="chapters"
+      v-if="activeStepIndex == -1"
+      :chapters="chaptersData"
       :edit-story-visible="editStoryVisible"
       @edit-story-visible="editStoryVisible = true"
       @add-new-chapter="() => {
@@ -466,14 +570,24 @@ watch([ activeStepIndex, previewVisible ], () => {
     <v-container class="story-form-footer">
       <v-row justify="center">
         <v-btn
-          v-if="!previewVisible"
+          v-if="isCreatingNewStep"
+          type="button"
+          class="mr-2"
+          variant="outlined"
+          color="black"
+          @click="discardNewStepConfirmation = true"
+        >
+          {{ t('additional:modules.dataNarrator.button.cancel') }}
+        </v-btn>
+        <v-btn
+          v-else-if="!previewVisible"
           type="button"
           class="mr-2"
           variant="outlined"
           color="black"
           @click="previewVisible = !previewVisible"
         >
-          ÜBERSICHT
+          {{ t('additional:modules.dataNarrator.creator.overview') }}
         </v-btn>
         <v-btn
           type="submit"
@@ -481,12 +595,16 @@ watch([ activeStepIndex, previewVisible ], () => {
           color="black"
           :loading="isSaving"
           :disabled="!canPublish"
-          @click="save"
+          @click="isEditingStep ? saveStep() : save()"
         >
-          SPEICHERN
+          {{ isEditingStep ? t('additional:modules.dataNarrator.creator.saveStep') : t('additional:modules.dataNarrator.creator.saveStory') }}
         </v-btn>
       </v-row>
     </v-container>
+
+
+
+
     <!--        <Preview-->
     <!--            :chapters="chapters"-->
     <!--            :hasImage="!!selectedImage || !!imagePreview"-->
@@ -500,6 +618,14 @@ watch([ activeStepIndex, previewVisible ], () => {
     :cancel-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.denyButton')"
     :confirm-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.confirmButton')"
     @confirm="() => gotoPage(dataNarratorModes.DASHBOARD)"
+  />
+  <ConfirmationDialog
+    v-model="discardNewStepConfirmation"
+    :title="t('additional:modules.dataNarrator.confirm.discardNewStep.title')"
+    :message="t('additional:modules.dataNarrator.confirm.discardNewStep.description')"
+    :cancel-text="t('additional:modules.dataNarrator.confirm.discardNewStep.denyButton')"
+    :confirm-text="t('additional:modules.dataNarrator.confirm.discardNewStep.confirmButton')"
+    @confirm="discardNewStep"
   />
 </template>
 
@@ -516,6 +642,7 @@ watch([ activeStepIndex, previewVisible ], () => {
   padding: 0 10px;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 
   &.mobile {
     background-color: transparent;

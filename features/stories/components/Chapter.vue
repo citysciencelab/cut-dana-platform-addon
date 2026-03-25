@@ -125,20 +125,20 @@ const addStep = () => emits('addNewStep');
       </v-btn>
     </v-row>
 
-    <v-row justify="center">
-      <v-btn
-        variant="plain"
-        class="mt-2"
-        @click="emits('addNewChapter')"
-      >
-        <template #prepend>
-          <div class="add-chapter-button-icon">
-            <v-icon>{{ mdiPlus }}</v-icon>
-          </div>
-        </template>
-        Kapitel HINZUFÜGEN
-      </v-btn>
-    </v-row>
+<!--    <v-row justify="center">-->
+<!--      <v-btn-->
+<!--        variant="plain"-->
+<!--        class="mt-2"-->
+<!--        @click="emits('addNewChapter')"-->
+<!--      >-->
+<!--        <template #prepend>-->
+<!--          <div class="add-chapter-button-icon">-->
+<!--            <v-icon>{{ mdiPlus }}</v-icon>-->
+<!--          </div>-->
+<!--        </template>-->
+<!--        Kapitel HINZUFÜGEN-->
+<!--      </v-btn>-->
+<!--    </v-row>-->
     </span>
 
   </div>

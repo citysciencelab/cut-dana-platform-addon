@@ -114,7 +114,12 @@
         "deleteStep": "Delete Step",
         "overview": "Overview",
         "save": "Save",
+        "saveStep": "Save Step",
+        "saveStory": "Save Story",
         "unnamed": "Unnamed chapter"
+      },
+      "overview":{
+        "structure": "Story content"
       },
       "dashboardView": {
         "title": "Data Narrator",
@@ -172,6 +177,12 @@
           "termsOfUseLinkHref": "https://cut.io/datenschutz/",
           "confirmButton": "Accept",
           "denyButton": "Do Not Accept"
+        },
+        "deleteChapter": {
+          "title": "Delete Chapter",
+          "description": "Are you sure you want to delete this chapter? All steps within it will be lost. This cannot be undone.",
+          "confirmButton": "Delete",
+          "denyButton": "Cancel"
         },
         "leaveWithoutSaving": {
           "title": "Leave without Saving?",

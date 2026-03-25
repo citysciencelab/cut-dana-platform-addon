@@ -114,7 +114,12 @@
         "deleteStep": "Schritt Löschen",
         "overview": "Übersicht",
         "save": "Speichern",
+        "saveStep": "Schritt Speichern",
+        "saveStory": "Story Speichern",
         "unnamed": "Unbenanntes Kapitel"
+      },
+      "overview":{
+        "structure": "Inhalt der Story"
       },
       "dashboardView": {
         "title": "Data Narrator",
@@ -172,6 +177,12 @@
           "termsOfUseLinkHref": "https://cut.io/datenschutz/",
           "confirmButton": "Akzeptieren",
           "denyButton": "Nicht akzeptieren"
+        },
+        "deleteChapter": {
+          "title": "Kapitel löschen",
+          "description": "Sind Sie sicher, dass Sie dieses Kapitel löschen möchten? Alle darin enthaltenen Schritte gehen verloren. Dies kann nicht rückgängig gemacht werden.",
+          "confirmButton": "Löschen",
+          "denyButton": "Abbrechen"
         },
         "leaveWithoutSaving": {
           "title": "Ohne Speichern verlassen?",

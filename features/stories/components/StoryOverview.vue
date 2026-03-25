@@ -6,11 +6,13 @@ import {
   mdiDeleteForeverOutline,
   mdiPencilOutline
 } from '@mdi/js';
+import { ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 import Draggable from 'vuedraggable';
 
 import { getStoryColor } from '../../../utils/getStoryColor';
 import { numberToLetter } from '../../../utils/numberToLetter';
+import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 
 const { t } = useTranslation();
 
@@ -36,13 +38,22 @@ const props = defineProps({
   }
 });
 
+const pendingDeleteStep = ref(null);    // { chapterIdx, stepIdx }
+const pendingDeleteChapter = ref(null); // { chapterIdx }
 
 const onEditStepClick = (chapterIdx, stepIdx) => {
   emits('editStep', { chapterIdx, stepIdx });
 };
 const onDeleteStepClick = (chapterIdx, stepIdx) => {
-  emits('deleteStep', { chapterIdx, stepIdx });
+  pendingDeleteStep.value = { chapterIdx, stepIdx };
 };
+const confirmDeleteStep = () => {
+  if (pendingDeleteStep.value) {
+    emits('deleteStep', pendingDeleteStep.value);
+    pendingDeleteStep.value = null;
+  }
+};
+
 const onStepsChange = (chapterIdx, newList) => {
   emits('stepsChange', { chapterIdx, newList });
 }
@@ -51,8 +62,15 @@ const onEditChapterClick = (chapterIdx) => {
   emits('editChapter', { chapterIdx });
 }
 const onDeleteChapterClick = (chapterIdx) => {
-  emits('deleteChapter', { chapterIdx });
+  pendingDeleteChapter.value = { chapterIdx };
 }
+const confirmDeleteChapter = () => {
+  if (pendingDeleteChapter.value) {
+    emits('deleteChapter', pendingDeleteChapter.value);
+    pendingDeleteChapter.value = null;
+  }
+};
+
 const onReorderChapters = (newList) => {
   emits('chaptersChange', newList);
 }
@@ -67,7 +85,7 @@ const getColor = (idx) => {
   <div class="px-2 overflow-auto mt-2">
     <div class="d-flex">
       <div class="flex-1-0 font-bold">
-        STRUKTUR
+        {{ t('additional:modules.dataNarrator.overview.structure') }}
       </div>
 
       <v-menu
@@ -105,7 +123,7 @@ const getColor = (idx) => {
       handle=".chapter-handle"
       ghost-class="drag-ghost"
       chosen-class="drag-chosen"
-      class="chapter-container d-flex flex-column gap-4"
+      class="chapter-container d-flex flex-column gap-2"
       :animation="180"
       @update:model-value="val => onReorderChapters(val)"
     >
@@ -212,7 +230,7 @@ const getColor = (idx) => {
           </Draggable>
           <v-btn
             variant="plain"
-            class="text-capitalize ml-12 mt-2 px-0"
+            class="text-capitalize ml-5 mt-1 px-0"
             @click="emits('addNewStep', { chapterIdx: idx })"
           >
             <template #prepend>
@@ -220,24 +238,45 @@ const getColor = (idx) => {
                 <v-icon>{{ mdiPlus }}</v-icon>
               </div>
             </template>
-            Neuer Schritt
+            {{ t('additional:modules.dataNarrator.button.addStep') }}
           </v-btn>
         </div>
       </template>
     </Draggable>
-    <v-btn
-      variant="plain"
-      class="text-capitalize mt-4 px-0"
-      @click="emits('addNewChapter')"
-    >
-      <template #prepend>
-        <div class="add-chapter-button-icon">
-          <v-icon>{{ mdiPlus }}</v-icon>
-        </div>
-      </template>
-      Neues Kapitel
-    </v-btn>
+    <v-row justify="center">
+      <v-btn
+        variant="plain"
+        class="text-capitalize mt-1 px-0"
+        @click="emits('addNewChapter')"
+      >
+        <template #prepend>
+          <div class="add-chapter-button-icon">
+            <v-icon>{{ mdiPlus }}</v-icon>
+          </div>
+        </template>
+        {{ t('additional:modules.dataNarrator.newChapter') }}
+      </v-btn>
+    </v-row>
   </div>
+
+  <ConfirmationDialog
+    :model-value="!!pendingDeleteStep"
+    :title="t('additional:modules.dataNarrator.confirm.deleteStep.title')"
+    :message="t('additional:modules.dataNarrator.confirm.deleteStep.description')"
+    :cancel-text="t('additional:modules.dataNarrator.confirm.deleteStep.denyButton')"
+    :confirm-text="t('additional:modules.dataNarrator.confirm.deleteStep.confirmButton')"
+    @update:model-value="(v) => { if (!v) pendingDeleteStep.value = null; }"
+    @confirm="confirmDeleteStep"
+  />
+  <ConfirmationDialog
+    :model-value="!!pendingDeleteChapter"
+    :title="t('additional:modules.dataNarrator.confirm.deleteChapter.title')"
+    :message="t('additional:modules.dataNarrator.confirm.deleteChapter.description')"
+    :cancel-text="t('additional:modules.dataNarrator.confirm.deleteChapter.denyButton')"
+    :confirm-text="t('additional:modules.dataNarrator.confirm.deleteChapter.confirmButton')"
+    @update:model-value="(v) => { if (!v) pendingDeleteChapter.value = null; }"
+    @confirm="confirmDeleteChapter"
+  />
 </template>
 
 <style lang="scss">
