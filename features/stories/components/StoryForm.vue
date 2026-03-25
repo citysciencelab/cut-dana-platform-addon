@@ -16,6 +16,9 @@ import { uploadStepModel } from '../services/uploadStepModel';
 
 import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
+import GeoJSONPanel from './GeoJSON/GeoJSONPanel.vue';
+import Layers from './step/layers/Layers.vue';
+import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 
 const logger = createLogger('StoryForm.vue');
 
@@ -69,6 +72,7 @@ const editStoryVisible = ref(true);
 const imageDeleted = ref(false);
 const modelFiles = new WeakMap();
 const newStepDraft = ref(null);
+const activePanel = ref(null); // null | '3d' | 'layers' | 'geojson'
 
 let nextChapterId = 1;
 const chaptersData = ref([]);
@@ -385,6 +389,34 @@ function onDeleteImage() {
   imageDeleted.value = true;
 }
 
+function updateActiveStepNavigation3D(val) {
+  const chapter = chaptersData.value[activeChapterIndex.value];
+  if (!chapter) return;
+  const step = chapter.steps[activeStepIndex.value];
+  if (!step) return;
+  step.navigation3D = val;
+}
+
+function updateActiveStepInformationLayers(val) {
+  const chapter = chaptersData.value[activeChapterIndex.value];
+  if (!chapter) return;
+  const step = chapter.steps[activeStepIndex.value];
+  if (!step) return;
+  step.informationLayers = val;
+}
+
+function updateActiveStepGeoJsonAssets(val) {
+  const chapter = chaptersData.value[activeChapterIndex.value];
+  if (!chapter) return;
+  const step = chapter.steps[activeStepIndex.value];
+  if (!step) return;
+  step.geoJsonAssets = val;
+}
+
+watch(activeStepIndex, () => {
+  activePanel.value = null;
+});
+
 watch(
   [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId ],
   ([ s, d, c, sId ]) => {
@@ -439,19 +471,60 @@ watch([ activeStepIndex, previewVisible ], () => {
     :class="{ 'story-form': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }"
     @submit.prevent="true"
   >
+    <!-- Side panels replace all editor content -->
     <div
-      v-if="editStoryVisible"
-      :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]"
+      v-if="activePanel"
+      class="side-panel"
     >
+      <div class="d-flex align-center mb-3 pt-2">
+        <v-btn
+          :icon="mdiArrowLeft"
+          variant="text"
+          size="compact"
+          class="mr-2"
+          @click="activePanel = null"
+        />
+        <span class="text-body-1 font-weight-medium">
+          <template v-if="activePanel === '3d'">{{ t('additional:modules.dataNarrator.3dForm') }}</template>
+          <template v-else-if="activePanel === 'layers'">Informationsebenen</template>
+          <template v-else-if="activePanel === 'geojson'">GeoJSON</template>
+        </span>
+      </div>
+
+      <ThreeDNavigation
+        v-if="activePanel === '3d'"
+        :model-value="activeStep?.navigation3D ?? {}"
+        @update:model-value="updateActiveStepNavigation3D"
+        @model-selected="(file) => handleModelSelected({ step: activeStep, file })"
+      />
+
+      <Layers
+        v-else-if="activePanel === 'layers'"
+        :model-value="activeStep?.informationLayers ?? []"
+        @update:model-value="updateActiveStepInformationLayers"
+      />
+
+      <GeoJSONPanel
+        v-else-if="activePanel === 'geojson'"
+        :model-value="activeStep?.geoJsonAssets ?? []"
+        @update:model-value="updateActiveStepGeoJsonAssets"
+      />
+    </div>
+
+    <template v-else>
       <div
-        v-if="imagePreview"
-        class="image-preview"
+        v-if="editStoryVisible"
+        :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]"
       >
-        <img
-          :src="imagePreview"
-          alt="Selected preview"
+        <div
+          v-if="imagePreview"
+          class="image-preview"
         >
-        <div class="remove-image-btn">
+          <img
+            :src="imagePreview"
+            alt="Selected preview"
+          >
+          <div class="remove-image-btn">
           <v-tooltip location="top">
             <template #activator="{ props: actv}">
               <v-btn
@@ -542,6 +615,9 @@ watch([ activeStepIndex, previewVisible ], () => {
         }"
         @edit-story-visible="editStoryVisible = true"
         @model-selected="handleModelSelected"
+        @open3D="activePanel = '3d'"
+        @open-layers="activePanel = 'layers'"
+        @open-geo-j-s-o-n="activePanel = 'geojson'"
         @update:chapter="handleChapterUpdate"
       />
 
@@ -608,7 +684,8 @@ watch([ activeStepIndex, previewVisible ], () => {
     <!--            :chapters="chapters"-->
     <!--            :hasImage="!!selectedImage || !!imagePreview"-->
     <!--            v-model:open="previewModal"-->
-    <!--        />-->
+    <!--        -->
+    </template>
   </form>
   <ConfirmationDialog
     v-model="backConfirmation"
@@ -713,5 +790,11 @@ watch([ activeStepIndex, previewVisible ], () => {
     margin-top: auto;
     background-color: #f6f6f6;
   }
+}
+
+.side-panel {
+  padding: 0 4px;
+  overflow-y: auto;
+  flex: 1;
 }
 </style>

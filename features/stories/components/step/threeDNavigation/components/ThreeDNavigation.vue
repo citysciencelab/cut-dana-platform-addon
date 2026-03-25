@@ -22,6 +22,18 @@ const emit = defineEmits([ 'update:modelValue', 'modelSelected' ]);
 
 const store = useStore();
 const fileLoading = ref(false);
+const editingModelId = ref(null);
+const selectedFile = ref(null);
+
+function handleEditModel(modelId) {
+  if (editingModelId.value === modelId) {
+    editingModelId.value = null;
+    store.commit('Modules/Modeler3D/setCurrentModelId', null);
+  } else {
+    editingModelId.value = modelId;
+    store.commit('Modules/Modeler3D/setCurrentModelId', modelId);
+  }
+}
 
 const importedModels = computed(() => store.getters['Modules/Modeler3D/importedModels']);
 const coordinateEasting = computed(() => store.getters['Modules/Modeler3D/coordinateEasting']);
@@ -103,21 +115,32 @@ function onFileChange(file) {
   fileLoading.value = true;
 
   if (fileExtension === 'gltf' || fileExtension === 'glb') {
-    handleGltfFile(file, fileName);
+    handleGltfFile(file, fileName).then(() => {
+      selectedFile.value = null;
+    });
     return;
   }
 
   reader.onload = () => {
     fileLoading.value = false;
+    selectedFile.value = null;
   };
 
   reader.onerror = (e) => {
     logger.error('Error reading the file:', e.target.error);
     fileLoading.value = false;
+    selectedFile.value = null;
   };
 
   reader.readAsText(file);
 }
+
+watch(importedModels, (models) => {
+  if (editingModelId.value !== null && !models.find(m => m.id === editingModelId.value)) {
+    editingModelId.value = null;
+    store.commit('Modules/Modeler3D/setCurrentModelId', null);
+  }
+});
 
 watch([
   coordinateEasting,
@@ -151,20 +174,93 @@ watch([
 <template>
   <div class="mb-2">
     <v-file-input
+      v-model="selectedFile"
       variant="outlined"
       label="Upload model (.glb, .gltf)"
       accept=".glb,.gltf"
       show-size
+      density="compact"
       :prepend-icon="mdiCubeScan"
       @update:model-value="onFileChange"
     />
 
-    <EntityList />
+    <EntityList
+      :editing-model-id="editingModelId"
+      @edit="handleEditModel"
+    />
 
-    <div class="mt-2">
-      <Modeler3DEntityModel v-if="importedModels.length > 0" />
+    <div
+      v-if="editingModelId !== null && importedModels.length > 0"
+      class="mt-2 entity-model-compact"
+    >
+      <Modeler3DEntityModel />
     </div>
   </div>
 
   <Modeler3D />
 </template>
+
+<style scoped lang="scss">
+.entity-model-compact {
+  :deep(.accordion-button) {
+    padding: 4px 0 !important;
+    font-size: 0.85rem;
+  }
+
+  :deep(.accordion-body) {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  :deep(.container) {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  :deep(.row) {
+    margin-bottom: 2px !important;
+  }
+
+  :deep(.form-group) {
+    margin-bottom: 4px !important;
+  }
+
+  :deep(.pt-4) {
+    padding-top: 8px !important;
+  }
+
+  :deep(label.col-form-label) {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 0.8rem;
+  }
+
+  :deep(.bi) {
+    font-size: 0.85rem;
+  }
+
+  :deep(.btn) {
+    padding: 2px 6px;
+    font-size: 0.8rem;
+  }
+
+  :deep(select.form-select) {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 0.8rem;
+  }
+
+  :deep(input.form-control) {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 0.8rem;
+  }
+
+  :deep(.slider-container),
+  :deep(.entity-attribute-slider) {
+    margin-bottom: 4px !important;
+  }
+}
+</style>

@@ -22,7 +22,7 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits(['addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'update:chapter']);
+const emits = defineEmits(['addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'update:chapter', 'open3D', 'openLayers', 'openGeoJSON']);
 
 const {t} = useTranslation();
 
@@ -106,6 +106,9 @@ const addStep = () => emits('addNewStep');
       :step="props.chapter.steps[props.activeStepIndex]"
       :pill-color="getStoryColor(chapter.id).primary"
       @model-selected="(p) => emits('modelSelected', p)"
+      @open3D="emits('open3D')"
+      @open-layers="emits('openLayers')"
+      @open-geo-j-s-o-n="emits('openGeoJSON')"
       @update:step="updateStepInChapter"
     />
 
@@ -150,7 +153,7 @@ const addStep = () => emits('addNewStep');
     display: flex;
     align-items: center;
     gap: 6px;
-    background-color: white;
+    //background-color: white;
     border-radius: 50px;
     padding: 8px;
 
@@ -172,7 +175,8 @@ const addStep = () => emits('addNewStep');
         outline: none;
         font-size: 16px;
         font-weight: bold;
-        width: 80%;
+        width: 90%;
+        margin-left: 2px;
 
         &:focus {
           border-bottom: 1px solid #a1a1a1;

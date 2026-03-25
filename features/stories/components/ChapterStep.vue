@@ -1,5 +1,5 @@
 <script setup>
-import { mdiTrashCan, mdiClose, mdiFileDocumentPlusOutline, mdiEye } from '@mdi/js';
+import { mdiTrashCan, mdiClose, mdiFileDocumentPlusOutline, mdiEye, mdiCubeScan, mdiChevronRight, mdiMapMarkerPlusOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, watch, nextTick, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
@@ -8,14 +8,10 @@ import AddWMS from '../../../tools/addWms/components/AddWMS.vue';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
 import { useNavigation } from '../../steps/hooks/useNavigation';
 
-import GeoJSONPanel from './GeoJSON/GeoJSONPanel.vue';
-
 import BackgroundMap from './step/BackgroundMap.vue';
-import Layers from './step/layers/Layers.vue';
 import TransparencySlider from './step/layers/TransparencySlider.vue';
 import StepDescription from './step/StepDescription.vue';
 import StepTitle from './step/StepTitle.vue';
-import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 import TwoDNavigation from './step/TwoDNavigation.vue';
 
 const props = defineProps({
@@ -29,7 +25,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits([ 'update:step', 'modelSelected' ]);
+const emit = defineEmits([ 'update:step', 'modelSelected', 'open3D', 'openLayers', 'openGeoJSON' ]);
 
 const { t } = useTranslation();
 const { setBaseLayer, setAnimatedView } = useNavigation();
@@ -115,19 +111,9 @@ const backgroundMapId = computed({
   set: (value) => updateStep({ mapConfig: { ...props.step.mapConfig, backgroundMapId: value } })
 });
 
-const informationLayers = computed({
-  get: () => props.step.informationLayers,
-  set: (value) => updateStep({ informationLayers: value })
-});
-
 const is3D = computed({
   get: () => props.step.is3D,
   set: (value) => updateStep({ is3D: value })
-});
-
-const navigation3D = computed({
-  get: () => props.step.navigation3D,
-  set: (value) => updateStep({ navigation3D: value })
 });
 
 const mapSources = computed({
@@ -189,38 +175,42 @@ onMounted(() => {
 
 <template>
   <div class="chapter-step px-2 pt-1 pb-2">
-    <v-row class="mb-2">
-      <v-col
-        cols="1"
-        class="p-0"
-      >
-        <v-btn
-          variant="text"
-          class="pill-button"
+    <div class="mb-2">
+      <v-row>
+        <v-col
+          cols="1"
+          class="p-0"
         >
-          {{ step.id }}
-        </v-btn>
-      </v-col>
+          <v-btn
+            variant="text"
+            class="pill-button"
+          >
+            {{ step.id }}
+          </v-btn>
+        </v-col>
 
-      <v-col
-        cols="11"
-        class="p-0"
-      >
-        <StepTitle
-          ref="stepTitleRef"
-          v-model:value="stepTitle"
-        />
-      </v-col>
-    </v-row>
+        <v-col
+          cols="11"
+          class="p-0"
+        >
+          <StepTitle
+            ref="stepTitleRef"
+            v-model:value="stepTitle"
+          />
+        </v-col>
+      </v-row>
+    </div>
 
-    <v-row class="mb-2">
-      <v-col
-        cols="12"
-        class="p-0"
-      >
-        <StepDescription v-model:value="stepDescription" />
-      </v-col>
-    </v-row>
+    <div class="mb-2">
+      <v-row>
+        <v-col
+          cols="12"
+          class="p-0"
+        >
+          <StepDescription v-model:value="stepDescription" />
+        </v-col>
+      </v-row>
+    </div>
 
     <v-row>
       <v-col
@@ -233,37 +223,44 @@ onMounted(() => {
 
     <TwoDNavigation v-model="stepMapConfig" />
 
-    <v-row class="mb-2">
-      <v-col
-        cols="12"
-        class="p-0"
-      >
-        <BackgroundMap
-          v-model="backgroundMapId"
-          @update:model-value="setBaseLayer"
-        />
-      </v-col>
-    </v-row>
+    <div class="mb-2">
+      <v-row>
+        <v-col
+          cols="12"
+          class="p-0"
+        >
+          <BackgroundMap
+            v-model="backgroundMapId"
+            @update:model-value="setBaseLayer"
+          />
+        </v-col>
+      </v-row>
+    </div>
 
-    <v-row class="mb-1">
-      <v-col
-        cols="12"
-        class="p-0"
+    <div class="mb-2 d-flex justify-center">
+      <v-btn
+        variant="flat"
+        size="small"
+        class="layers-btn"
+        :prepend-icon="mdiMapMarkerPlusOutline"
+        :append-icon="mdiChevronRight"
+        rounded
+        @click="emit('openLayers')"
       >
         Informationsebenen
-      </v-col>
-    </v-row>
+      </v-btn>
+    </div>
 
-    <Layers v-model="informationLayers" />
-
-    <v-row class="mb-1">
-      <v-col
-        cols="12"
-        class="p-0"
-      >
-        {{ t("additional:modules.dataNarrator.label.wmsLayer") }}
-      </v-col>
-    </v-row>
+    <div class="mb-1">
+      <v-row>
+        <v-col
+          cols="12"
+          class="p-0"
+        >
+          {{ t("additional:modules.dataNarrator.label.wmsLayer") }}
+        </v-col>
+      </v-row>
+    </div>
 
     <AddWMS
       @selected="onWmsLoad"
@@ -376,37 +373,54 @@ onMounted(() => {
       </v-list-item>
     </v-list>
 
-    <GeoJSONPanel
-      :model-value="step.geoJsonAssets"
-      @update:model-value="(value) => updateStep({ geoJsonAssets: value })"
-    />
+    <div class="mb-2 d-flex justify-center">
+      <v-btn
+        variant="flat"
+        size="small"
+        class="geojson-btn"
+        :prepend-icon="mdiMapMarkerPlusOutline"
+        :append-icon="mdiChevronRight"
+        rounded
+        @click="emit('openGeoJSON')"
+      >
+        GeoJSON
+      </v-btn>
+    </div>
+
+    <div class="d-flex align-center my-2">
+      <span class="text-body-2 flex-1-0">
+        {{ t('additional:modules.dataNarrator.label.is3D') }}
+      </span>
+      <v-switch
+        :model-value="is3D"
+        hide-details
+        inset
+        density="compact"
+        @update:model-value="is3D = $event"
+      />
+    </div>
 
     <div
-      v-if="step.mapSources?.length === 0"
-      class="text-medium-emphasis py-2"
+      v-if="is3D"
+      class="mb-2 mt-1 d-flex justify-center"
     >
-      {{ t("additional:modules.dataNarrator.label.noWmsLayer") }}
+      <v-btn
+        variant="flat"
+        size="small"
+        class="threed-btn"
+        :prepend-icon="mdiCubeScan"
+        :append-icon="mdiChevronRight"
+        rounded
+        @click="emit('open3D')"
+      >
+        {{ t('additional:modules.dataNarrator.label.threeDFiles') }}
+      </v-btn>
     </div>
-
-    <div>
-      <div class="mb-2">
-        3D Navigation
-      </div>
-
-      <div class="mb-2">
-        <v-switch
-          v-model="is3D"
-          hide-details
-          inset
-          label="Enable 3D for this step"
-        />
-      </div>
-    </div>
-
-    <ThreeDNavigation
-      v-if="step.is3D"
-      v-model="navigation3D"
-      @model-selected="(file) => emit('modelSelected', { step, file })"
-    />
   </div>
 </template>
+
+<style scoped lang="scss">
+.threed-btn, .layers-btn, .geojson-btn {
+  background-color: var(--pill-color-secondary, #e8e0ee);
+}
+</style>

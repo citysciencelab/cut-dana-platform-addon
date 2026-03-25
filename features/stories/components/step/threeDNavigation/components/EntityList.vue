@@ -1,7 +1,16 @@
 <script setup>
-import { mdiDelete, mdiEye, mdiEyeOff, mdiMapMarker } from '@mdi/js';
+import { mdiDelete, mdiEye, mdiEyeOff, mdiMapMarker, mdiPencil } from '@mdi/js';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+
+const props = defineProps({
+  editingModelId: {
+    type: [String, Number],
+    default: null,
+  },
+});
+
+const emit = defineEmits(['edit']);
 
 const store = useStore();
 
@@ -43,8 +52,9 @@ function deleteModel(id) {
         v-for="model in importedModels"
         :key="model.id"
         class="d-flex border py-2 px-3 rounded"
+        :class="{ 'border-primary': editingModelId === model.id }"
       >
-        <div class="flex-1-0">
+        <div class="flex-1-0 d-flex align-center">
           {{ model.name }}
         </div>
         <div>
@@ -52,22 +62,29 @@ function deleteModel(id) {
             variant="flat"
             :icon="mdiMapMarker"
             size="compact"
-            class="mr-2"
+            class="mr-1"
             @click="zoomTo(model.id)"
           />
           <v-btn
             variant="flat"
             :icon="model.show ? mdiEye : mdiEyeOff"
             size="compact"
-            class="mr-2"
+            class="mr-1"
             @click="changeVisibility(model)"
           />
           <v-btn
             variant="flat"
             :icon="mdiDelete"
             size="compact"
-            class="mr-2"
+            class="mr-1"
             @click="deleteModel(model.id)"
+          />
+          <v-btn
+            :variant="editingModelId === model.id ? 'tonal' : 'flat'"
+            :icon="mdiPencil"
+            size="compact"
+            :color="editingModelId === model.id ? 'primary' : undefined"
+            @click="emit('edit', model.id)"
           />
         </div>
       </div>

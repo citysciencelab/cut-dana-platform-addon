@@ -1,5 +1,5 @@
 <script setup>
-import { mdiChevronRight, mdiMapMarkerPlusOutline, mdiTrashCan, mdiClose, mdiEye } from '@mdi/js';
+import { mdiTrashCan, mdiEye } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
@@ -16,7 +16,6 @@ const { t } = useTranslation();
 const props = defineProps({ modelValue: { type: Array, default: () => [] } });
 const emit = defineEmits([ 'update:modelValue' ]);
 
-const dialogOpen = ref(false);
 const transparencyDialog = ref(false);
 const activeLayerId = ref(null);
 
@@ -28,7 +27,7 @@ const selectedLayers = computed(() =>
 
 function addLayer(layerId) {
   if (!layerId) return;
-  if (!props.modelValue.includes(layerId)) {
+  if (!props.modelValue.find(l => l.id === layerId)) {
     emit('update:modelValue', [ ...props.modelValue, { id: layerId, transparency: 0 } ]);
   }
 }
@@ -44,8 +43,7 @@ function toggleTransparencySlider(layer) {
 
 function onTransparencyChange(layer, transparency) {
   layer.transparency = transparency;
-
-  const opacity = 1 - (transparency/100);
+  const opacity = 1 - (transparency / 100);
   const mapLayer = store.getters['Maps/getLayerById'](layer.id);
   if (mapLayer) {
     mapLayer.setOpacity(opacity);
@@ -58,11 +56,8 @@ function onTransparencyFinalChange(layer, transparency) {
     layerConf: layer,
     transparency: transparency
   });
-
   const item = props.modelValue.find(item => item.id === layer.id);
-  if (item) {
-    item.transparency = transparency;
-  }
+  if (item) item.transparency = transparency;
 }
 
 watch(
@@ -79,7 +74,7 @@ watch(
     let maxBaselayerZIndex = Math.max(...baseLayers.map(layer => layer.zIndex));
 
     if (added.length) {
-      for (const  { id, transparency } of added) {
+      for (const { id, transparency } of added) {
         store.dispatch('addOrReplaceLayer', {
           layerId: id,
           zIndex: ++maxBaselayerZIndex,
@@ -97,130 +92,68 @@ watch(
 </script>
 
 <template>
-  <v-row
-    class="mb-2"
-    style="margin-top: 0!important;"
+  <!-- Added layers (compact) -->
+  <v-list
+    v-if="selectedLayers.length"
+    density="comfortable"
+    class="pa-0 mb-2"
   >
-    <v-col
-      cols="12"
-      class="p-0"
+    <v-list-item
+      v-for="l in selectedLayers"
+      :key="l.id"
+      class="pa-0 mb-1"
     >
-      <v-list
-        density="comfortable"
-        class="pa-0"
+      <v-sheet
+        width="100%"
+        rounded
+        class="d-flex align-center px-3 py-2 justify-space-between"
+        style="border: 1px solid #e1e1e1"
       >
-        <v-list-item
-          v-for="l in selectedLayers"
-          :key="l.id"
-          class="pa-0"
-        >
-          <v-sheet
-            width="100%"
-            rounded
-            class="d-flex align-center px-3 py-2 justify-space-between"
-            style="border: 1px solid #e1e1e1"
-          >
-            <span class="flex-grow-1">{{ l.name }}</span>
-            <div class="d-flex align-center">
-              <v-tooltip location="top">
-                <template #activator="{ props: actv }">
-                  <v-icon
-                    :icon="mdiEye"
-                    class="mr-2"
-                    v-bind="actv"
-                    @click="toggleTransparencySlider(l)"
-                  />
-                </template>
-                <span>{{ transparencyDialog ?
-                  t("additional:modules.dataNarrator.label.closeTransparencySlider") :
-                  t("additional:modules.dataNarrator.label.openTransparencySlider") }}
-                </span>
-              </v-tooltip>
+        <span class="flex-grow-1 text-body-2">{{ l.name }}</span>
+        <div class="d-flex align-center">
+          <v-tooltip location="top">
+            <template #activator="{ props: actv }">
               <v-icon
-                :icon="mdiTrashCan"
-                class="cursor-pointer"
-                @click="removeLayer(l.id)"
+                size="small"
+                :icon="mdiEye"
+                class="mr-2"
+                v-bind="actv"
+                @click="toggleTransparencySlider(l)"
               />
-            </div>
-          </v-sheet>
-          <div
-            v-if="activeLayerId === l.id"
-            class="mt-2"
-          >
-            <TransparencySlider
-              :initial-transparency="l.transparency"
-              @update="onTransparencyChange(l, $event)"
-              @final="onTransparencyFinalChange(l, $event)"
-            />
-          </div>
-        </v-list-item>
+            </template>
+            <span>{{ transparencyDialog
+              ? t('additional:modules.dataNarrator.label.closeTransparencySlider')
+              : t('additional:modules.dataNarrator.label.openTransparencySlider') }}
+            </span>
+          </v-tooltip>
+          <v-icon
+            size="small"
+            :icon="mdiTrashCan"
+            class="cursor-pointer"
+            @click="removeLayer(l.id)"
+          />
+        </div>
+      </v-sheet>
+      <div
+        v-if="activeLayerId === l.id"
+        class="mt-1"
+      >
+        <TransparencySlider
+          :initial-transparency="l.transparency"
+          @update="onTransparencyChange(l, $event)"
+          @final="onTransparencyFinalChange(l, $event)"
+        />
+      </div>
+    </v-list-item>
+  </v-list>
 
-<!--        <div-->
-<!--          v-if="selectedLayers.length === 0"-->
-<!--          class="text-medium-emphasis py-2"-->
-<!--        >-->
-
-<!--          {{ t("additional:modules.dataNarrator.layer.nonSelected") }}-->
-<!--        </div>-->
-      </v-list>
-    </v-col>
-  </v-row>
-
-  <v-row
-    class="mb-2"
-    justify="center"
-  >
-    <v-btn
-      variant="flat"
-      size="small"
-      class="information-btn"
-      :prepend-icon="mdiMapMarkerPlusOutline"
-      :append-icon="mdiChevronRight"
-      rounded
-      @click="dialogOpen = true"
-    >
-      {{ t("additional:modules.dataNarrator.layer.addInformationLayer") }}
-    </v-btn>
-  </v-row>
-
-  <v-dialog
-    v-model="dialogOpen"
-    max-width="520"
-  >
-    <v-card>
-      <v-card-title class="d-flex align-center">
-        {{ t("additional:modules.dataNarrator.layer.informationLayer") }}
-        <v-spacer />
-        <v-btn
-          icon
-          variant="text"
-          @click="dialogOpen = false"
-        >
-          <v-icon :icon="mdiClose" />
-        </v-btn>
-      </v-card-title>
-
-      <CategoryBrowser
-        :items="layersTree"
-        :loading="loading"
-        @select:layer="(l) => addLayer(l.id)"
-      />
-
-      <v-card-actions>
-        <v-spacer />
-        <v-btn
-          variant="text"
-          @click="dialogOpen = false"
-        >
-          {{ t("additional:modules.dataNarrator.button.close") }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <!-- CategoryBrowser always visible -->
+  <CategoryBrowser
+    :items="layersTree"
+    :loading="loading"
+    @select:layer="(l) => addLayer(l.id)"
+  />
 </template>
 
 <style scoped lang="scss">
-.information-btn {
-    background-color: var(--pill-color-secondary);
-}
 </style>
