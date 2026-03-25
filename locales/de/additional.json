@@ -111,7 +111,10 @@
         "edit": "Bearbeiten",
         "delete": "Löschen",
         "editStep": "Schritt Bearbeiten",
-        "deleteStep": "Schritt Löschen"
+        "deleteStep": "Schritt Löschen",
+        "overview": "Übersicht",
+        "save": "Speichern",
+        "unnamed": "Unbenanntes Kapitel"
       },
       "dashboardView": {
         "title": "Data Narrator",
@@ -175,6 +178,12 @@
           "description": "Sie haben ungespeicherte Änderungen in dieser Story. Wenn Sie jetzt zurückgehen, gehen alle Änderungen verloren. Möchten Sie fortfahren?",
           "confirmButton": "Verlassen",
           "denyButton": "Bleiben"
+        },
+        "discardNewStep": {
+          "title": "Schritt verwerfen?",
+          "description": "Möchten Sie diesen neuen Schritt wirklich verwerfen? Nicht gespeicherte Änderungen in diesem Schritt gehen verloren.",
+          "confirmButton": "Verwerfen",
+          "denyButton": "Weiter bearbeiten"
         }
       },
       "button": {
@@ -194,7 +203,8 @@
         "previous": "Zurück",
         "next": "Weiter",
         "publish": "Veröffentlichen",
-        "unpublish": "Veröffentlichung aufheben"
+        "unpublish": "Veröffentlichung aufheben",
+        "close": "Schließen"
       },
       "newChapter": "Neues Kapitel",
       "editChapter": "Kapitel bearbeiten",
@@ -207,6 +217,11 @@
         "confirm": "Konto löschen",
         "cancel": "Abbrechen",
         "error": "Es ist ein Fehler beim Löschen des Kontos aufgetreten."
+      },
+      "layer" : {
+        "informationLayer": "Informationsebene",
+        "addInformationLayer": "Informationsebene hinzufügen",
+        "nonSelected": "Keine Ebenen ausgewählt"
       }
     }
   }

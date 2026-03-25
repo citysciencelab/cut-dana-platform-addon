@@ -111,7 +111,10 @@
         "edit": "Edit",
         "delete": "Delete",
         "editStep": "Edit Step",
-        "deleteStep": "Delete Step"
+        "deleteStep": "Delete Step",
+        "overview": "Overview",
+        "save": "Save",
+        "unnamed": "Unnamed chapter"
       },
       "dashboardView": {
         "title": "Data Narrator",
@@ -175,6 +178,12 @@
           "description": "You have unsaved changes in this story. If you go back now, your progress will be lost. Do you want to continue?",
           "confirmButton": "Leave",
           "denyButton": "Stay"
+        },
+        "discardNewStep": {
+          "title": "Discard step?",
+          "description": "Do you really want to discard this new step? Unsaved changes in this step will be lost.",
+          "confirmButton": "Discard",
+          "denyButton": "Keep editing"
         }
       },
       "button": {
@@ -194,7 +203,8 @@
         "previous": "Previous",
         "next": "Next",
         "publish": "Publish",
-        "unpublish": "Unpublish"
+        "unpublish": "Unpublish",
+        "close": "Close"
       },
       "newChapter": "New Chapter",
       "editChapter": "Edit Chapter",
@@ -207,6 +217,11 @@
         "confirm": "Delete Account",
         "cancel": "Cancel",
         "error": "An error occurred while deleting the account."
+      },
+      "layer" : {
+        "informationLayer": "Data Layer",
+        "addInformationLayer": "Add Data Layer",
+        "nonSelected": "No layer selected"
       }
     }
   }

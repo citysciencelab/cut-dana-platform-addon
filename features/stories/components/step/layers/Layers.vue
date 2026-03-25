@@ -131,8 +131,8 @@ watch(
                     @click="toggleTransparencySlider(l)"
                   />
                 </template>
-                <span>{{ transparencyDialog ? 
-                  t("additional:modules.dataNarrator.label.closeTransparencySlider") : 
+                <span>{{ transparencyDialog ?
+                  t("additional:modules.dataNarrator.label.closeTransparencySlider") :
                   t("additional:modules.dataNarrator.label.openTransparencySlider") }}
                 </span>
               </v-tooltip>
@@ -159,7 +159,8 @@ watch(
           v-if="selectedLayers.length === 0"
           class="text-medium-emphasis py-2"
         >
-          Keine Ebenen ausgewählt.
+
+          {{ t("additional:modules.dataNarrator.layer.nonSelected") }}
         </div>
       </v-list>
     </v-col>
@@ -178,7 +179,7 @@ watch(
       rounded
       @click="dialogOpen = true"
     >
-      Informationsebene hinzufügen
+      {{ t("additional:modules.dataNarrator.layer.addInformationLayer") }}
     </v-btn>
   </v-row>
 
@@ -188,7 +189,7 @@ watch(
   >
     <v-card>
       <v-card-title class="d-flex align-center">
-        Informationsebene
+        {{ t("additional:modules.dataNarrator.layer.informationLayer") }}
         <v-spacer />
         <v-btn
           icon
@@ -211,7 +212,7 @@ watch(
           variant="text"
           @click="dialogOpen = false"
         >
-          Schließen
+          {{ t("additional:modules.dataNarrator.button.close") }}
         </v-btn>
       </v-card-actions>
     </v-card>
