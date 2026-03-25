@@ -32,7 +32,7 @@ watch([ centerCoordinates, zoomLevel ], () => {
 </script>
 
 <template>
-  <div class="navigation-container mb-2 mt-1">
+  <div class="navigation-container mb-3">
     <div class="field">
       <div class="position-container">
         <div class="position-label">

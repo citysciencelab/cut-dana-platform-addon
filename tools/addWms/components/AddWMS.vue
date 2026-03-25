@@ -246,7 +246,7 @@ function onKeydown(e) {
 </script>
 
 <template>
-  <div class="add-wms my-4">
+  <div class="add-wms my-1">
     <div
       v-if="invalidUrl"
       class="error"
