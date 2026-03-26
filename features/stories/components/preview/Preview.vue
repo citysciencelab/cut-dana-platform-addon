@@ -1,6 +1,9 @@
 <script setup>
+import { useTranslation } from 'i18next-vue';
+
 import PreviewModal from './PreviewModal.vue';
 
+const { t } = useTranslation();
 const open = defineModel('open', { type: Object, default: false });
 const { chapters, hasImage } = defineProps({
   hasImage: Boolean,
@@ -20,33 +23,36 @@ const { chapters, hasImage } = defineProps({
           :key="chapter.id"
         >
           <div>
-            <strong>Kapitel {{ cIdx + 1 }}:</strong>
+            <strong>{{ t('additional:modules.dataNarrator.preview.chapter') }} {{ cIdx + 1 }}:</strong>
             {{ chapter.title }}
           </div>
 
           <ol>
             <li v-if="!chapter.steps?.length">
-              Keine Schritte
+              {{ t('additional:modules.dataNarrator.preview.noSteps') }}
             </li>
 
             <li
               v-for="(step, sIdx) in chapter.steps"
               :key="step.id"
             >
-              <div><strong>Schritt {{ sIdx + 1 }}:</strong> {{ step.title || "Ohne Titel" }}</div>
+              <div>
+                <strong>{{ t('additional:modules.dataNarrator.preview.step') }} {{ sIdx + 1 }}:</strong>
+                {{ step.title || t('additional:modules.dataNarrator.preview.noTitle') }}
+              </div>
               <ul>
                 <li v-if="step.description">
                   {{ step.description }}
                 </li>
-                <li>Zoom: {{ step.mapConfig?.zoomLevel ?? 0 }}</li>
+                <li>{{ t('additional:modules.dataNarrator.preview.zoom') }}: {{ step.mapConfig?.zoomLevel ?? 0 }}</li>
                 <li>
-                  Center: {{
+                  {{ t('additional:modules.dataNarrator.preview.center') }}: {{
                     (step.mapConfig?.centerCoordinates ?? []).join(", ")
                   }}
                 </li>
-                <li>Hintergrundkarte: {{ step.mapConfig?.backgroundMapId ?? "—" }}</li>
+                <li>{{ t('additional:modules.dataNarrator.preview.backgroundMap') }}: {{ step.mapConfig?.backgroundMapId ?? "—" }}</li>
                 <li>
-                  Informationsebenen: {{
+                  {{ t('additional:modules.dataNarrator.preview.informationLayers') }}: {{
                     (step.informationLayers ?? []).length
                   }}
                 </li>

@@ -1,5 +1,6 @@
 <script setup>
 import { mdiCubeScan } from '@mdi/js';
+import { useTranslation } from 'i18next-vue';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
@@ -10,6 +11,7 @@ import { createLogger } from '../../../../../../utils/logger.js';
 import EntityList from './EntityList.vue';
 import Modeler3D from './Modeler3D.vue';
 
+const { t } = useTranslation();
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -176,7 +178,7 @@ watch([
     <v-file-input
       v-model="selectedFile"
       variant="outlined"
-      label="Upload model (.glb, .gltf)"
+      :label="t('additional:modules.dataNarrator.label.uploadModel')"
       accept=".glb,.gltf"
       show-size
       density="compact"

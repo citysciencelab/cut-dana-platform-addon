@@ -63,17 +63,17 @@ function onFileSelectionChanged(file) {
         const json = JSON.parse(e.target.result);
         if (!json.type || json.type !== 'FeatureCollection') {
           workingCopy.value.geoJson = null;
-          jsonError.value = 'Invalid GeoJSON: Type must be "FeatureCollection"';
+      jsonError.value = t('additional:modules.dataNarrator.geojson.invalidGeoJSON');
         } else {
           workingCopy.value.geoJson = JSON.stringify(json, null, 2);
           if (!workingCopy.value.title) workingCopy.value.title = file.name;
           jsonError.value = null;
         }
       } catch {
-        jsonError.value = 'Invalid JSON file';
+        jsonError.value = t('additional:modules.dataNarrator.geojson.invalidJSON');
       }
     };
-    reader.onerror = () => { jsonError.value = 'Error reading file'; };
+    reader.onerror = () => { jsonError.value = t('additional:modules.dataNarrator.geojson.errorReadingFile'); };
     reader.readAsText(file);
   } else {
     workingCopy.value.geoJson = null;
@@ -130,7 +130,7 @@ function onAssetSave() {
 
     <v-text-field
       v-model="workingCopy.title"
-      label="Title"
+      :label="t('additional:modules.dataNarrator.geojson.titleLabel')"
       variant="outlined"
       density="compact"
       class="mb-1"
@@ -138,7 +138,7 @@ function onAssetSave() {
 
     <v-textarea
       v-model="workingCopy.geoJson"
-      label="GeoJSON"
+      :label="t('additional:modules.dataNarrator.geojson.geoJSONLabel')"
       variant="outlined"
       density="compact"
       rows="5"
@@ -170,7 +170,7 @@ function onAssetSave() {
       >
         {{ editMode
           ? t('additional:modules.dataNarrator.button.submitEditStep')
-          : 'GeoJSON hinzufügen' }}
+          : t('additional:modules.dataNarrator.geojson.addGeoJSON') }}
       </v-btn>
     </div>
   </div>

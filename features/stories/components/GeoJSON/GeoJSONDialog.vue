@@ -22,7 +22,6 @@ const workingCopy = ref({
 const jsonError = ref(null);
 
 watch(() => [ props.asset ], () => {
-  // format geoJson with indentation
   const geoJson = props.asset?.geoJson
     ? JSON.stringify(JSON.parse(props.asset.geoJson), null, 2)
     : null;
@@ -54,7 +53,7 @@ const onFileSelectionChanged = (file) => {
         const json = JSON.parse(e.target.result);
         if (!json.type || json.type !== 'FeatureCollection') {
           workingCopy.value.geoJson = null;
-          jsonError.value = 'Invalid GeoJSON: Type must be "FeatureCollection"';
+          jsonError.value = t('additional:modules.dataNarrator.geojson.invalidGeoJSON');
         } else {
           workingCopy.value.geoJson = JSON.stringify(json, null, 2);
           if (!workingCopy.value.title) {
@@ -62,12 +61,12 @@ const onFileSelectionChanged = (file) => {
           }
         }
       } catch {
-        jsonError.value = 'Invalid JSON file';
+        jsonError.value = t('additional:modules.dataNarrator.geojson.invalidJSON');
       }
     };
     reader.onerror = () => {
-      jsonError.value = 'Error reading file';
-    }
+      jsonError.value = t('additional:modules.dataNarrator.geojson.errorReadingFile');
+    };
     reader.readAsText(file);
   } else {
     workingCopy.value.geoJson = null;
@@ -76,7 +75,6 @@ const onFileSelectionChanged = (file) => {
 };
 
 const onAssetSave = () => {
-  // remove whitespaces from geoJson
   if (workingCopy.value.geoJson) {
     workingCopy.value.geoJson = JSON.stringify(
       JSON.parse(workingCopy.value.geoJson)
@@ -113,7 +111,7 @@ const onAssetSave = () => {
         <v-col cols="12">
           <v-text-field
             v-model="workingCopy.title"
-            label="Title"
+            :label="t('additional:modules.dataNarrator.geojson.titleLabel')"
             variant="outlined"
           />
         </v-col>
@@ -122,7 +120,7 @@ const onAssetSave = () => {
         <v-col cols="12">
           <v-textarea
             v-model="workingCopy.geoJson"
-            label="GeoJSON"
+            :label="t('additional:modules.dataNarrator.geojson.geoJSONLabel')"
             variant="outlined"
           />
         </v-col>
@@ -130,13 +128,13 @@ const onAssetSave = () => {
       <v-card-actions>
         <v-spacer />
         <v-btn
-          text="Close Dialog"
+          :text="t('additional:modules.dataNarrator.button.close')"
           variant="text"
           @click="$emit('closeClicked')"
         />
         <v-btn
           color="primary"
-          text="Save"
+          :text="t('additional:modules.dataNarrator.button.submitEditStep')"
           variant="tonal"
           @click="onAssetSave"
         />

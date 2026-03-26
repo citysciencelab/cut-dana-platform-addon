@@ -1,9 +1,11 @@
 <script setup>
 import { computed } from 'vue';
+import { useTranslation } from 'i18next-vue';
 
 import { useBaseLayer } from '../../hooks/useBaseLayer';
 
 const { items } = useBaseLayer();
+const { t } = useTranslation();
 
 const props = defineProps({
   modelValue: {
@@ -24,7 +26,7 @@ const inputValue = computed({
     v-model="inputValue"
     :items="items"
     density="comfortable"
-    label="Hintergrundkarte"
+    :label="t('additional:modules.dataNarrator.label.backgroundMap')"
     variant="outlined"
     hide-details
   />

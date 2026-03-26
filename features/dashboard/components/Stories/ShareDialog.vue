@@ -1,9 +1,12 @@
 <script setup>
 import { ref, watch, computed } from 'vue';
+import { useTranslation } from 'i18next-vue';
+
+const { t } = useTranslation();
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
-  title: { type: String, default: 'Share story' },
+  title: { type: String, default: null },
   storyId: { type: Number, required: true },
 });
 
@@ -15,6 +18,10 @@ watch(
   (v) => (open.value = v)
 );
 watch(open, (v) => emit('update:modelValue', v));
+
+const dialogTitle = computed(() =>
+  props.title ?? t('additional:modules.dataNarrator.share.defaultTitle')
+);
 
 const url = computed(() => `${location.origin}/portal/stories/?id=${props.storyId}`);
 
@@ -36,9 +43,9 @@ async function copy() {
       document.execCommand('copy');
       document.body.removeChild(el);
     }
-    msg.value = 'Link copied';
+    msg.value = t('additional:modules.dataNarrator.share.linkCopied');
   } catch {
-    msg.value = 'Couldn’t copy link';
+    msg.value = t('additional:modules.dataNarrator.share.copyFailed');
   } finally {
     snackbar.value = true;
   }
@@ -52,15 +59,15 @@ async function copy() {
   >
     <v-card>
       <v-card-title class="text-h6">
-        {{ title }}
+        {{ dialogTitle }}
       </v-card-title>
       <v-card-text>
         <div class="mb-3 text-body-2">
-          Anyone with this link can view the story
+          {{ t('additional:modules.dataNarrator.share.description') }}
         </div>
         <v-text-field
           :model-value="url"
-          label="Share link"
+          :label="t('additional:modules.dataNarrator.share.linkLabel')"
           variant="outlined"
           density="comfortable"
           readonly
@@ -72,13 +79,13 @@ async function copy() {
           variant="text"
           @click="open = false"
         >
-          Close
+          {{ t('additional:modules.dataNarrator.button.close') }}
         </v-btn>
         <v-btn
           color="primary"
           @click="copy"
         >
-          Copy link
+          {{ t('additional:modules.dataNarrator.button.copyLink') }}
         </v-btn>
       </v-card-actions>
     </v-card>

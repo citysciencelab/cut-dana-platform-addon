@@ -84,7 +84,10 @@
         "loadWmsBtn": "Load",
         "openTransparencySlider": "Open the transparency slider",
         "closeTransparencySlider": "Close the transparency slider",
-        "changeTransparency": "Set the transparency"
+        "changeTransparency": "Set the transparency",
+        "uploadModel": "Upload model (.glb, .gltf)",
+        "storyNamePlaceholder": "Story name",
+        "storyDescriptionPlaceholder": "Story description"
       },
       "categoryBrowser": {
         "searchLayers": "Search Layers…",
@@ -99,7 +102,14 @@
         "panelTitle": "GeoJSON Data Sources",
         "newAssetTitle": "Add GeoJSON Data Source",
         "editAssetTitle": "Edit GeoJSON Data Source",
-        "uploadFile": "Select file or drag & drop"
+        "uploadFile": "Select file or drag & drop",
+        "titleLabel": "Title",
+        "geoJSONLabel": "GeoJSON",
+        "addGeoJSON": "Add GeoJSON",
+        "panelHeading": "GeoJSON",
+        "invalidGeoJSON": "Invalid GeoJSON: Type must be \"FeatureCollection\"",
+        "invalidJSON": "Invalid JSON file",
+        "errorReadingFile": "Error reading file"
       },
       "storyList": {
         "all": "All Stories",
@@ -199,6 +209,7 @@
       },
       "button": {
         "cancel": "Cancel",
+        "yes": "Yes",
         "addStep": "Add Step",
         "deleteStep": "Delete",
         "submitAddStep": "Add Step to Story",
@@ -215,7 +226,8 @@
         "next": "Next",
         "publish": "Publish",
         "unpublish": "Unpublish",
-        "close": "Close"
+        "close": "Close",
+        "copyLink": "Copy link"
       },
       "newChapter": "New Chapter",
       "editChapter": "Edit Chapter",
@@ -232,7 +244,31 @@
       "layer" : {
         "informationLayer": "Data Layer",
         "addInformationLayer": "Add Data Layer",
+        "informationLayersPanel": "Information Layers",
         "nonSelected": "No layer selected"
+      },
+      "share": {
+        "defaultTitle": "Share story",
+        "linkLabel": "Share link",
+        "description": "Anyone with this link can view the story",
+        "linkCopied": "Link copied",
+        "copyFailed": "Couldn't copy link"
+      },
+      "preview": {
+        "chapter": "Chapter",
+        "step": "Step",
+        "noSteps": "No steps",
+        "noTitle": "Untitled",
+        "zoom": "Zoom",
+        "center": "Center",
+        "backgroundMap": "Background map",
+        "informationLayers": "Information layers"
+      },
+      "dialog": {
+        "confirmTitle": "Confirm",
+        "confirmMessage": "Are you sure?",
+        "confirmYes": "Yes",
+        "confirmCancel": "Cancel"
       }
     }
   }

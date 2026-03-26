@@ -84,7 +84,10 @@
         "loadWmsBtn": "Laden",
         "openTransparencySlider": "Transparenz Einstellungen öffnen",
         "closeTransparencySlider": "Transparenz Einstellungen schließen",
-        "changeTransparency": "Transparenz einstellen"
+        "changeTransparency": "Transparenz einstellen",
+        "uploadModel": "3D Modell hochladen (.glb, .gltf)",
+        "storyNamePlaceholder": "Story Name",
+        "storyDescriptionPlaceholder": "Beschreibung"
       },
       "categoryBrowser": {
         "searchLayers": "Ebenen durchsuchen…",
@@ -99,7 +102,14 @@
         "panelTitle": "GeoJSON Datenquellen",
         "newAssetTitle": "GeoJSON Datenquelle hinzufügen",
         "editAssetTitle": "GeoJSON Datenquelle bearbeiten",
-        "uploadFile": "Datei auswählen oder Drag & Drop"
+        "uploadFile": "Datei auswählen oder Drag & Drop",
+        "titleLabel": "Titel",
+        "geoJSONLabel": "GeoJSON",
+        "addGeoJSON": "GeoJSON hinzufügen",
+        "panelHeading": "GeoJSON",
+        "invalidGeoJSON": "Ungültiges GeoJSON: Typ muss \"FeatureCollection\" sein",
+        "invalidJSON": "Ungültige JSON-Datei",
+        "errorReadingFile": "Fehler beim Lesen der Datei"
       },
       "storyList": {
         "all": "Alle Stories",
@@ -199,6 +209,7 @@
       },
       "button": {
         "cancel": "Abbrechen",
+        "yes": "Ja",
         "addStep": "Schritt hinzufügen",
         "deleteStep": "Löschen",
         "submitAddStep": "Schritt zur Story hinzufügen",
@@ -215,7 +226,8 @@
         "next": "Weiter",
         "publish": "Veröffentlichen",
         "unpublish": "Veröffentlichung aufheben",
-        "close": "Schließen"
+        "close": "Schließen",
+        "copyLink": "Link kopieren"
       },
       "newChapter": "Neues Kapitel",
       "editChapter": "Kapitel bearbeiten",
@@ -232,7 +244,31 @@
       "layer" : {
         "informationLayer": "Informationsebene",
         "addInformationLayer": "Informationsebene hinzufügen",
+        "informationLayersPanel": "Informationsebenen",
         "nonSelected": "Keine Ebenen ausgewählt"
+      },
+      "share": {
+        "defaultTitle": "Story teilen",
+        "linkLabel": "Link teilen",
+        "description": "Jeder mit diesem Link kann die Story ansehen",
+        "linkCopied": "Link kopiert",
+        "copyFailed": "Link konnte nicht kopiert werden"
+      },
+      "preview": {
+        "chapter": "Kapitel",
+        "step": "Schritt",
+        "noSteps": "Keine Schritte",
+        "noTitle": "Ohne Titel",
+        "zoom": "Zoom",
+        "center": "Position",
+        "backgroundMap": "Hintergrundkarte",
+        "informationLayers": "Informationsebenen"
+      },
+      "dialog": {
+        "confirmTitle": "Bestätigen",
+        "confirmMessage": "Sind Sie sicher?",
+        "confirmYes": "Ja",
+        "confirmCancel": "Abbrechen"
       }
     }
   }

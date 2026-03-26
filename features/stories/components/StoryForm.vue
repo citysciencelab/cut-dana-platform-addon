@@ -493,8 +493,8 @@ watch([ activeStepIndex, previewVisible ], () => {
         <span class="text-body-1 font-weight-medium">
           <template v-if="activePanel === '3d'">{{ t('additional:modules.dataNarrator.3dForm') }}</template>
           <template v-else-if="activePanel === '3dlayers'">{{ t('additional:modules.dataNarrator.label.layers3D') }}</template>
-          <template v-else-if="activePanel === 'layers'">Informationsebenen</template>
-          <template v-else-if="activePanel === 'geojson'">GeoJSON</template>
+          <template v-else-if="activePanel === 'layers'">{{ t('additional:modules.dataNarrator.layer.informationLayersPanel') }}</template>
+          <template v-else-if="activePanel === 'geojson'">{{ t('additional:modules.dataNarrator.geojson.panelHeading') }}</template>
         </span>
       </div>
 
@@ -579,7 +579,7 @@ watch([ activeStepIndex, previewVisible ], () => {
           v-model="storyNameInput"
           class="story-title-input"
           variant="underlined"
-          placeholder="Story name"
+          :placeholder="t('additional:modules.dataNarrator.label.storyNamePlaceholder')"
           required
         />
 
@@ -611,7 +611,7 @@ watch([ activeStepIndex, previewVisible ], () => {
         hide-details="true"
         rows="3"
         class="bg-white"
-        placeholder="Story description"
+        :placeholder="t('additional:modules.dataNarrator.label.storyDescriptionPlaceholder')"
       />
     </div>
 
