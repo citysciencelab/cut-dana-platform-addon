@@ -1,7 +1,7 @@
 <script setup>
-import { mdiDotsVertical, mdiPencilOutline, mdiPlus } from '@mdi/js';
-
+import { mdiPlus } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
+import { nextTick, ref } from 'vue';
 
 import { getStoryColor } from '../../../utils/getStoryColor';
 import { numberToLetter } from '../../../utils/numberToLetter';
@@ -24,7 +24,7 @@ const props = defineProps({
 
 const emits = defineEmits(['addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'update:chapter', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON']);
 
-const {t} = useTranslation();
+const { t } = useTranslation();
 
 const updateChapter = (updates) => {
   const updatedChapter = {
@@ -44,6 +44,18 @@ const updateStepInChapter = (updatedStep) => {
 const updateTitle = (event) => updateChapter({title: event.target.value});
 
 const addStep = () => emits('addNewStep');
+
+const chapterTitleRef = ref(null);
+const chapterStepRef = ref(null);
+
+const focusChapterTitle = async () => {
+  await nextTick();
+  chapterTitleRef.value?.focus();
+};
+
+defineExpose({
+  focusChapterTitle
+});
 </script>
 
 <template>
@@ -62,48 +74,24 @@ const addStep = () => emits('addNewStep');
         </div>
         <div class="chapter-title">
           <input
+            ref="chapterTitleRef"
             :value="props.chapter.title"
             :placeholder="t('additional:modules.dataNarrator.creator.unnamed')"
             type="text"
             required
             @input="updateTitle"
+            @keydown.tab.prevent="chapterStepRef?.focusStepTitle()"
           >
         </div>
       </div>
-
-      <v-menu
-        v-if="!editStoryVisible"
-        location="bottom end"
-        offset="4"
-      >
-        <template #activator="{ props: actv }">
-          <v-tooltip location="top">
-            <template #activator="{ props: tooltipProps}">
-              <v-btn
-                v-bind="{...actv, ...tooltipProps}"
-                variant="text"
-                :icon="mdiDotsVertical"
-                size="compact"
-              />
-            </template>
-            <span>{{ t('additional:modules.dataNarrator.label.openStoryMenu') }}</span>
-          </v-tooltip>
-        </template>
-        <v-list density="compact">
-          <v-list-item @click.stop="emits('editStoryVisible')">
-            <template #prepend>
-              <v-icon :icon="mdiPencilOutline"/>
-            </template>
-            <v-list-item-title>Edit Story</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
     </div>
 
 
     <ChapterStep
       v-if="props.activeStepIndex > -1 && props.activeStepIndex < props.chapter.steps.length"
+      ref="chapterStepRef"
       :step="props.chapter.steps[props.activeStepIndex]"
+      :chapter-title="props.chapter.title"
       :pill-color="getStoryColor(chapter.id).primary"
       @model-selected="(p) => emits('modelSelected', p)"
       @open3D="emits('open3D')"
@@ -111,6 +99,7 @@ const addStep = () => emits('addNewStep');
       @open-layers="emits('openLayers')"
       @open-geo-j-s-o-n="emits('openGeoJSON')"
       @update:step="updateStepInChapter"
+      @focus-chapter-title="focusChapterTitle"
     />
 
     <span v-else>

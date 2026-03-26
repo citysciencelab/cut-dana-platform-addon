@@ -8,6 +8,7 @@ import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrat
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
 import { getFileUrl } from '../../../utils/getFileUrl';
 import { createLogger } from '../../../utils/logger.js';
+import { numberToLetter } from '../../../utils/numberToLetter';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 import { useNavigation } from '../../steps/hooks/useNavigation';
 import { useStory } from '../hooks/useStory';
@@ -118,6 +119,15 @@ watch(
   { immediate: true }
 );
 
+const isPreviewMode = computed(() => store.state.Modules.DataNarrator.isPreviewMode);
+
+function backToEdit() {
+  store.commit('Modules/DataNarrator/setIsPreviewMode', false);
+  removeAllVisibleLayers();
+  clearGeoJSON();
+  gotoPage(dataNarratorModes.EDIT_STORY);
+}
+
 function startPlay() {
   stage.value = 'play';
   chapterIndex.value = 0;
@@ -184,7 +194,11 @@ onBeforeUnmount(() => {
 <template>
   <ToolWindow>
     <template #fixed>
-      <PlayerFrame :title="stage === 'play' ? story.title : t('additional:modules.dataNarrator.play.storyOverviewTitle')">
+      <PlayerFrame
+        :title="stage === 'play' ? story.title : t('additional:modules.dataNarrator.play.storyOverviewTitle')"
+        :is-preview="isPreviewMode"
+        @leave-preview="backToEdit"
+      >
         <template #default>
           <div v-if="isLoading">
             Loading...
@@ -212,7 +226,7 @@ onBeforeUnmount(() => {
                   @click="startFromChapter(index)"
                 >
                   <div class="chapter-label">
-                    {{ index + 1 }}
+                    {{ numberToLetter(index + 1) }}
                   </div>
                   <div class="chapter-title">
                     {{ chapter.name }}
@@ -224,7 +238,7 @@ onBeforeUnmount(() => {
             <div v-else>
               <div class="chapter px-2">
                 <div class="chapter-label">
-                  {{ chapterIndex + 1 }}
+                  {{ numberToLetter(chapterIndex + 1) }}
                 </div>
                 <div class="chapter-title">
                   {{ story.chapters[chapterIndex].name }}

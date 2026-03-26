@@ -1,6 +1,6 @@
 <script setup>
 import { useTranslation } from 'i18next-vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { VueEditor } from 'vue3-editor';
 
 import * as constants from '../../../../store/contantsDataNarrator';
@@ -22,12 +22,23 @@ const inputValue = computed({
   }
 });
 
+const editorRef = ref(null);
+
+defineExpose({
+  focus() {
+    // Quill editor element is inside the vue-editor wrapper
+    const ql = editorRef.value?.$el?.querySelector('.ql-editor');
+    ql?.focus();
+  }
+});
+
 const { t } = useTranslation();
 </script>
 
 <template>
   <div class="editor-wrapper">
     <vue-editor
+      ref="editorRef"
       v-model="inputValue"
       :placeholder="t('additional:modules.dataNarrator.label.htmlContent')"
       :editor-toolbar="constants.htmlEditorToolbar"

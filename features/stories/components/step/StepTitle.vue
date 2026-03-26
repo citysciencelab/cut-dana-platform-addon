@@ -9,7 +9,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits([ 'update:value' ]);
+const emit = defineEmits([ 'update:value', 'tab' ]);
 const inputValue = computed({
   get() {
     return props.value
@@ -41,5 +41,6 @@ const { t } = useTranslation();
     :autofocus="true"
     hide-details
     required
+    @keydown.tab.prevent="emit('tab')"
   />
 </template>

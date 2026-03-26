@@ -4,7 +4,7 @@ import { useTranslation } from 'i18next-vue';
 import PreviewModal from './PreviewModal.vue';
 
 const { t } = useTranslation();
-const open = defineModel('open', { type: Object, default: false });
+const open = defineModel('open', { type: Boolean, default: false });
 const { chapters, hasImage } = defineProps({
   hasImage: Boolean,
   chapters: { type: Object, required: true }

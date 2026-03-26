@@ -19,13 +19,17 @@ const props = defineProps({
     type: Object,
     required: true
   },
+  chapterTitle: {
+    type: String,
+    default: ''
+  },
   pillColor: {
     type: String,
     default: '#000000',
   }
 });
 
-const emit = defineEmits([ 'update:step', 'modelSelected', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON' ]);
+const emit = defineEmits([ 'update:step', 'modelSelected', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON', 'focus-chapter-title' ]);
 
 const { t } = useTranslation();
 const { setBaseLayer } = useNavigation();
@@ -34,8 +38,16 @@ const store = useStore();
 const transparencyDialog = ref(false);
 const activeLayerId = ref(null);
 const stepTitleRef = ref(null);
+const stepDescriptionRef = ref(null);
 const wmsDialogOpen = ref(false);
 const allMapSources = ref([]);
+
+defineExpose({
+  async focusStepTitle() {
+    await nextTick();
+    stepTitleRef.value?.focus?.();
+  }
+});
 
 const updateStep = (updates) => emit('update:step', { ...props.step, ...updates });
 
@@ -128,12 +140,21 @@ watch(
   { immediate: true }
 );
 
-watch(
-  () => props.step?.id,
-  async () => {
-    await nextTick();
+const focusAppropriateField = async () => {
+  await nextTick();
+  await nextTick(); // ensure parent refs are resolved after v-if mount
+  if (!props.chapterTitle) {
+    emit('focus-chapter-title');
+  } else {
     stepTitleRef.value?.focus?.();
   }
+};
+
+onMounted(focusAppropriateField);
+
+watch(
+  () => props.step?.id,
+  focusAppropriateField
 );
 
 watch(
@@ -196,6 +217,7 @@ onMounted(() => {
           <StepTitle
             ref="stepTitleRef"
             v-model:value="stepTitle"
+            @tab="stepDescriptionRef?.focus()"
           />
         </v-col>
       </v-row>
@@ -207,7 +229,10 @@ onMounted(() => {
           cols="12"
           class="p-0"
         >
-          <StepDescription v-model:value="stepDescription" />
+          <StepDescription
+            ref="stepDescriptionRef"
+            v-model:value="stepDescription"
+          />
         </v-col>
       </v-row>
     </div>

@@ -23,7 +23,8 @@ const state = {
     direction: 'out'
   },
   mode: dataNarratorModes.DASHBOARD,
-  toolwindowMode: ToolwindowModes.DASHBOARD
+  toolwindowMode: ToolwindowModes.DASHBOARD,
+  isPreviewMode: false
 };
 
 export default state;

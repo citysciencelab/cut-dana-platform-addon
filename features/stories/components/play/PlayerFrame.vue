@@ -17,8 +17,13 @@ const props = defineProps({
   title: {
     type: String,
     required: true
+  },
+  isPreview: {
+    type: Boolean,
+    default: false
   }
 });
+const emit = defineEmits([ 'leave-preview' ]);
 const { t } = useTranslation();
 
 function backToDashboard() {
@@ -40,25 +45,39 @@ function backToDashboard() {
       style="border-radius: 100px;padding: 0;"
     >
       <template #prepend>
-        <v-tooltip location="top">
-          <template #activator="{ props: actv }">
-            <v-btn
-              :icon="mdiArrowLeft"
-              size="compact"
-              class="mr-2"
-              v-bind="actv"
-              @click="backToDashboard"
-            />
-          </template>
-          <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
-        </v-tooltip>
+        <template v-if="isPreview">
+          <v-btn
+            :prepend-icon="mdiArrowLeft"
+            size="compact"
+            variant="text"
+            style="gap: 5px"
+            @click="emit('leave-preview')"
+          >
+            {{ t('additional:modules.dataNarrator.button.leavePreview') }}
+          </v-btn>
+        </template>
+        <template v-else>
+          <v-tooltip location="top">
+            <template #activator="{ props: actv }">
+              <v-btn
+                :icon="mdiArrowLeft"
+                size="compact"
+                class="mr-2"
+                v-bind="actv"
+                @click="backToDashboard"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
+          </v-tooltip>
 
-        <div class="bold">
-          {{ props.title }}
-        </div>
+          <div class="bold">
+            {{ props.title }}
+          </div>
+        </template>
       </template>
 
       <v-btn
+        v-if="!isPreview"
         :icon="mdiDotsVertical"
         size="compact"
       />

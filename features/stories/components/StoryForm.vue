@@ -2,9 +2,11 @@
 import { mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { computed, ref, watch } from 'vue';
+import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
+import { backendUrl } from '../../../store/contantsDataNarrator';
 import { clearGeoJSON } from '../../../utils/geoJSON';
 import { createLogger } from '../../../utils/logger.js';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
@@ -22,6 +24,7 @@ import ThreeDLayerBrowser from './step/threeDNavigation/components/ThreeDLayerBr
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 
 const logger = createLogger('StoryForm.vue');
+const store = useStore();
 
 const props = defineProps({
   storyId: {
@@ -47,6 +50,10 @@ const props = defineProps({
   coverImageUrl: {
     type: String,
     default: ''
+  },
+  isDraft: {
+    type: Boolean,
+    default: true
   }
 });
 const { t } = useTranslation();
@@ -63,6 +70,7 @@ const {
 
 const backConfirmation = ref(false);
 const discardNewStepConfirmation = ref(false);
+const isPublishing = ref(false);
 const storyNameInput = ref('');
 const descriptionInput = ref('');
 const isSaving = ref(false);
@@ -296,7 +304,7 @@ function saveStep() {
   previewVisible.value = true;
 }
 
-async function save() {
+async function saveStoryData() {
   isSaving.value = true;
 
   const payload = {
@@ -361,6 +369,35 @@ async function save() {
 
   isSaving.value = false;
   newStepDraft.value = null;
+  return storyId;
+}
+
+async function save() {
+  await saveStoryData();
+  removeAllVisibleLayers();
+  clearGeoJSON();
+  gotoPage(dataNarratorModes.DASHBOARD);
+}
+
+async function previewStory() {
+  await saveStoryData();
+  store.commit('Modules/DataNarrator/setIsPreviewMode', true);
+  gotoPage(dataNarratorModes.PLAY_STORY);
+}
+
+async function publish() {
+  isPublishing.value = true;
+  try {
+    const storyId = await saveStoryData();
+    await fetch(`${backendUrl}/stories/new/${storyId}/publish-state`, {
+      method: 'PUT',
+      body: JSON.stringify({ isDraft: false }),
+    });
+  } catch (err) {
+    logger.error('Failed to publish story', err);
+  } finally {
+    isPublishing.value = false;
+  }
   removeAllVisibleLayers();
   clearGeoJSON();
   gotoPage(dataNarratorModes.DASHBOARD);
@@ -559,21 +596,6 @@ watch([ activeStepIndex, previewVisible ], () => {
         class="sticky-top"
         style="border-radius: 100px;padding: 0;"
       >
-        <template #prepend>
-          <v-tooltip location="top">
-            <template #activator="{ props: actv}">
-              <v-btn
-                v-bind="actv"
-                :icon="mdiArrowLeft"
-                size="compact"
-                class="mr-2"
-                @click="backConfirmation = true"
-              />
-            </template>
-            <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
-          </v-tooltip>
-        </template>
-
         <v-text-field
           id="title"
           v-model="storyNameInput"
@@ -657,48 +679,112 @@ watch([ activeStepIndex, previewVisible ], () => {
     />
 
     <v-container class="story-form-footer">
-      <v-row justify="center">
-        <v-btn
-          v-if="isCreatingNewStep"
-          type="button"
-          class="mr-2"
-          variant="outlined"
-          color="black"
-          @click="discardNewStepConfirmation = true"
-        >
-          {{ t('additional:modules.dataNarrator.button.cancel') }}
-        </v-btn>
-        <v-btn
-          v-else-if="!previewVisible"
-          type="button"
-          class="mr-2"
-          variant="outlined"
-          color="black"
-          @click="previewVisible = !previewVisible"
-        >
-          {{ t('additional:modules.dataNarrator.creator.overview') }}
-        </v-btn>
-        <v-btn
-          type="submit"
-          variant="flat"
-          color="black"
-          :loading="isSaving"
-          :disabled="!canPublish"
-          @click="isEditingStep ? saveStep() : save()"
-        >
-          {{ isEditingStep ? t('additional:modules.dataNarrator.creator.saveStep') : t('additional:modules.dataNarrator.creator.saveStory') }}
-        </v-btn>
-      </v-row>
+      <!-- While creating a new step: cancel + save step -->
+      <template v-if="isCreatingNewStep">
+        <v-row justify="center">
+          <v-btn
+            type="button"
+            variant="outlined"
+            color="black"
+            class="mr-2"
+            @click="discardNewStepConfirmation = true"
+          >
+            {{ t('additional:modules.dataNarrator.button.cancel') }}
+          </v-btn>
+          <v-btn
+            type="submit"
+            variant="flat"
+            color="black"
+            :disabled="!canSaveStep"
+            @click="saveStep()"
+          >
+            {{ t('additional:modules.dataNarrator.creator.saveStep') }}
+          </v-btn>
+        </v-row>
+      </template>
+      <!-- Step editing: only cancel + save step -->
+      <template v-else-if="isEditingStep">
+        <v-row justify="center">
+          <v-btn
+            type="button"
+            variant="outlined"
+            color="black"
+            class="mr-2"
+            @click="backConfirmation = true"
+          >
+            {{ t('additional:modules.dataNarrator.button.cancel') }}
+          </v-btn>
+          <v-btn
+            type="submit"
+            variant="flat"
+            color="black"
+            :loading="isSaving"
+            @click="saveStep()"
+          >
+            {{ t('additional:modules.dataNarrator.creator.saveStep') }}
+          </v-btn>
+        </v-row>
+      </template>
+      <!-- Normal story editing: 2x2 grid -->
+      <template v-else>
+        <v-row class="mb-1">
+          <v-col cols="6" class="pa-1">
+            <v-btn
+              type="submit"
+              variant="flat"
+              color="black"
+              block
+              :loading="isSaving"
+              :disabled="!canPublish"
+              @click="save()"
+            >
+              {{ t('additional:modules.dataNarrator.button.submitEditStep') }}
+            </v-btn>
+          </v-col>
+          <v-col cols="6" class="pa-1">
+            <v-btn
+              type="button"
+              variant="flat"
+              color="primary"
+              block
+              :loading="isPublishing"
+              :disabled="!canPublish"
+              @click="publish()"
+            >
+              {{ t('additional:modules.dataNarrator.button.publish') }}
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="6" class="pa-1">
+            <v-btn
+              type="button"
+              variant="outlined"
+              color="black"
+              block
+              @click="backConfirmation = true"
+            >
+              {{ t('additional:modules.dataNarrator.button.cancel') }}
+            </v-btn>
+          </v-col>
+          <v-col cols="6" class="pa-1">
+            <v-btn
+              type="button"
+              variant="outlined"
+              color="black"
+              block
+              @click="previewStory()"
+            >
+              {{ t('additional:modules.dataNarrator.button.previewStory') }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </template>
     </v-container>
 
 
 
 
-    <!--        <Preview-->
-    <!--            :chapters="chapters"-->
-    <!--            :hasImage="!!selectedImage || !!imagePreview"-->
-    <!--            v-model:open="previewModal"-->
-    <!--        -->
     </template>
   </form>
   <ConfirmationDialog
