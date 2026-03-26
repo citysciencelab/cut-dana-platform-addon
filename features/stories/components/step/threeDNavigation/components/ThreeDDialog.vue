@@ -5,7 +5,7 @@ import { useTranslation } from 'i18next-vue';
 
 import ThreeDNavigation from './ThreeDNavigation.vue';
 
-const props = defineProps({
+defineProps({
   navigation3D: {
     type: Object,
     default: () => ({}),

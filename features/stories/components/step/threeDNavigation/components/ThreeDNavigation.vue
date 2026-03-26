@@ -66,19 +66,19 @@ function getCenterOfView3D() {
   );
 
   // Try a precise pick against depth buffer (works for terrain/3D tiles, needs support)
-  let cartesian = undefined;
+  let cartesian = null;
   if (scene.pickPositionSupported) {
     // improves picking through terrain/tiles
     const prev = scene.globe.depthTestAgainstTerrain;
     scene.globe.depthTestAgainstTerrain = true;
-    cartesian = scene.pickPosition(centerPx);
+    cartesian = scene.pickPosition(centerPx) ?? null;
     scene.globe.depthTestAgainstTerrain = prev;
   }
 
   // Fallback: ray cast to the globe (works when looking at terrain/globe)
   if (!Cesium.defined(cartesian)) {
     const ray = camera.getPickRay(centerPx);
-    cartesian = scene.globe.pick(ray, scene);
+    cartesian = scene.globe.pick(ray, scene) ?? null;
   }
 
   if (!Cesium.defined(cartesian)) {

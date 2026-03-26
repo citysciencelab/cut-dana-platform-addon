@@ -28,7 +28,7 @@ const props = defineProps({
 const emit = defineEmits([ 'update:step', 'modelSelected', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON' ]);
 
 const { t } = useTranslation();
-const { setBaseLayer, setAnimatedView } = useNavigation();
+const { setBaseLayer } = useNavigation();
 const store = useStore();
 
 const transparencyDialog = ref(false);

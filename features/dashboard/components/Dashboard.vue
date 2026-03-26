@@ -1,12 +1,8 @@
 ﻿<script setup>
-import { useStore } from 'vuex';
-
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 
 import DashboardContent from './DashboardContent.vue';
 import DashboardHeader from './DashboardHeader.vue';
-
-const store = useStore();
 </script>
 
 <template>

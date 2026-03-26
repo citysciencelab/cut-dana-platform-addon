@@ -45,14 +45,8 @@ const emit = defineEmits([
                   'additional:modules.dataNarrator.label.chapter'
                 )
               "
-            >
-            </v-btn>
+            />
           </v-col>
-        </v-row>
-      </div>
-
-      <div class="form-group form-input-holder lg">
-        <v-row class="pr-3">
           <v-col
             cols="1"
             class="d-flex align-self-center "
@@ -250,8 +244,7 @@ const emit = defineEmits([
               color="green"
               :disabled="!isValid"
               @click="onSubmit"
-            >
-            </v-btn>
+            />
           </v-row>
         </v-container>
       </v-footer>
@@ -328,7 +321,7 @@ const emit = defineEmits([
             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
         }
 
-        .v-text-field.v-text-field--solo.v-input--is-focused:not(.v-text-field--solo-flat)
+        .v-text-field.v-text-field--solo.v-input--is-focused:not(.v-text-field--solo-flat),
         > .v-input__control,
         > .v-input__slot {
             border-color: #66afe9;

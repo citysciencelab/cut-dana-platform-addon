@@ -3,7 +3,7 @@ import { mdiDelete, mdiEye, mdiEyeOff, mdiMapMarker, mdiPencil } from '@mdi/js';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-const props = defineProps({
+defineProps({
   editingModelId: {
     type: [String, Number],
     default: null,
