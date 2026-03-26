@@ -5,8 +5,8 @@ import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
-import cutcslDepiction from '../../../img/cutcsl_depiction.png';
-import logonotextXs from '../../../img/logonotext-xs.png';
+import danaKeyimage from '../../../img/dana-keyframe.png';
+import logoNew from '../../../img/logo-new.png';
 import { availableStoryListModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { createLogger } from '../../../utils/logger.js';
 import { useLogin } from '../hooks/useLogin';
@@ -37,9 +37,7 @@ const legendAdded = true;
 
 const toggleLegend = () => logger.debug('toggleLegend');
 
-const getBackgroundStyle = () => ({
-  backgroundImage: `url(${cutcslDepiction})`
-});
+const getBackgroundStyle = () => ({});
 </script>
 
 <template>
@@ -109,7 +107,10 @@ const getBackgroundStyle = () => ({
     </div>
 
     <v-row>
+      <!-- text col: on small screens full width, on md+ 5 cols with offset -->
       <v-col
+        order="2"
+        order-md="1"
         lg="4"
         md="5"
         sm="12"
@@ -121,7 +122,7 @@ const getBackgroundStyle = () => ({
       >
         <h1 class="header-h1">
           <img
-            :src="logonotextXs"
+            :src="logoNew"
             alt="logo"
             class="header-logo"
           >
@@ -133,6 +134,22 @@ const getBackgroundStyle = () => ({
         <p class="header-body">
           {{ t("additional:modules.dataNarrator.dashboardView.description") }}
         </p>
+      </v-col>
+      <!-- key image col: on small screens above text (order-1), on md+ right side -->
+      <v-col
+        order="1"
+        order-md="2"
+        lg="4"
+        md="4"
+        sm="12"
+        cols="12"
+        class="d-flex align-center justify-center justify-md-end pa-0"
+      >
+        <img
+          :src="danaKeyimage"
+          alt="dana keyimage"
+          class="dana-keyimage"
+        >
       </v-col>
     </v-row>
     <v-row>
@@ -209,16 +226,21 @@ const getBackgroundStyle = () => ({
 }
 
 .with-fancy-background {
-  background-position: -50% -50%;
-
-  @media (min-width: 768px) {
-    background-position: 80%;
-    background-size: 50%;
-  }
+  position: relative;
 }
 
 .list-buttons {
   margin-top: 0.5rem !important;
+}
+
+.dana-keyimage {
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+
+  @media (min-width: 768px) {
+    max-height: 340px;
+  }
 }
 
 .header-h1 {
