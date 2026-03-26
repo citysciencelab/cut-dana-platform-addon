@@ -4,8 +4,6 @@ import { useTranslation } from 'i18next-vue';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
-import Modeler3DEntityModel
-  from '../../../../../../../../../src/modules/modeler3D/components/Modeler3DEntityModel.vue';
 import { createLogger } from '../../../../../../utils/logger.js';
 
 import EntityList from './EntityList.vue';
@@ -190,13 +188,6 @@ watch([
       :editing-model-id="editingModelId"
       @edit="handleEditModel"
     />
-
-    <div
-      v-if="editingModelId !== null && importedModels.length > 0"
-      class="mt-2 entity-model-compact"
-    >
-      <Modeler3DEntityModel />
-    </div>
   </div>
 
   <Modeler3D />
