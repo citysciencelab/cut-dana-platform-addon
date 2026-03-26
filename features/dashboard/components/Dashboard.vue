@@ -1,5 +1,4 @@
 ﻿<script setup>
-import { onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
@@ -8,10 +7,6 @@ import DashboardContent from './DashboardContent.vue';
 import DashboardHeader from './DashboardHeader.vue';
 
 const store = useStore();
-
-onMounted(() => {
-  store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', 'all');
-})
 </script>
 
 <template>

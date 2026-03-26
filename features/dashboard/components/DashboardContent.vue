@@ -33,7 +33,7 @@ watch(storiesDisplayMode, () => {
       class="stories-container"
     >
       <StoryCard
-        v-for="story in stories.toReversed()"
+        v-for="story in [...stories].reverse()"
         :key="story.id + story.updatedAt"
         :story="story"
         :grid="true"

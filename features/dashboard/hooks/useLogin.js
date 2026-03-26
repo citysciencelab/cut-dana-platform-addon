@@ -19,9 +19,15 @@ const CLIENT_NAME = 'masterportal-client';
 const isDebugAuthBypass = Boolean(debugAuthBypass);
 
 function decodeJwt(token) {
-  const payload = token.split('.')[1];
-  const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-  return decoded;
+  try {
+    const parts = token?.split('.');
+    if (!parts || parts.length < 2) return {};
+    const payload = parts[1];
+    const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+    return decoded;
+  } catch {
+    return {};
+  }
 }
 
 export function useLogin() {
