@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
-import danaKeyimage from '../../../img/dana-keyframe.png';
+import danaKeyimage from '../../../img/dana-keyframe2.png';
 import logoNew from '../../../img/logo-new.png';
 import { availableStoryListModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { createLogger } from '../../../utils/logger.js';
