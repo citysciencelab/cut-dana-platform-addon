@@ -18,6 +18,7 @@ import Chapter from './Chapter.vue';
 import StoryOverview from './StoryOverview.vue';
 import GeoJSONPanel from './GeoJSON/GeoJSONPanel.vue';
 import Layers from './step/layers/Layers.vue';
+import ThreeDLayerBrowser from './step/threeDNavigation/components/ThreeDLayerBrowser.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 
 const logger = createLogger('StoryForm.vue');
@@ -350,14 +351,11 @@ async function save() {
       logger.error(err);
     }
   } else if (props.coverImageUrl && imageDeleted.value) {
-    try {
-      const response = await deleteCoverImage(props.storyId);
-      if (!response.ok) {
-        throw new Error(`Failed to delete cover image: ${response.status} ${await response.text()}`);
-      }
+    const response = await deleteCoverImage(props.storyId);
+    if (!response.ok) {
+      logger.error(`Failed to delete cover image: ${response.status}`);
+    } else {
       selectedImage.value = null;
-    } catch (err) {
-      logger.error(err);
     }
   }
 
@@ -395,6 +393,14 @@ function updateActiveStepNavigation3D(val) {
   const step = chapter.steps[activeStepIndex.value];
   if (!step) return;
   step.navigation3D = val;
+}
+
+function updateActiveStepLayers3D(val) {
+  const chapter = chaptersData.value[activeChapterIndex.value];
+  if (!chapter) return;
+  const step = chapter.steps[activeStepIndex.value];
+  if (!step) return;
+  step.layers3D = val;
 }
 
 function updateActiveStepInformationLayers(val) {
@@ -486,6 +492,7 @@ watch([ activeStepIndex, previewVisible ], () => {
         />
         <span class="text-body-1 font-weight-medium">
           <template v-if="activePanel === '3d'">{{ t('additional:modules.dataNarrator.3dForm') }}</template>
+          <template v-else-if="activePanel === '3dlayers'">{{ t('additional:modules.dataNarrator.label.layers3D') }}</template>
           <template v-else-if="activePanel === 'layers'">Informationsebenen</template>
           <template v-else-if="activePanel === 'geojson'">GeoJSON</template>
         </span>
@@ -496,6 +503,12 @@ watch([ activeStepIndex, previewVisible ], () => {
         :model-value="activeStep?.navigation3D ?? {}"
         @update:model-value="updateActiveStepNavigation3D"
         @model-selected="(file) => handleModelSelected({ step: activeStep, file })"
+      />
+
+      <ThreeDLayerBrowser
+        v-else-if="activePanel === '3dlayers'"
+        :model-value="activeStep?.layers3D ?? []"
+        @update:model-value="updateActiveStepLayers3D"
       />
 
       <Layers
@@ -616,6 +629,7 @@ watch([ activeStepIndex, previewVisible ], () => {
         @edit-story-visible="editStoryVisible = true"
         @model-selected="handleModelSelected"
         @open3D="activePanel = '3d'"
+        @open3-d-layers="activePanel = '3dlayers'"
         @open-layers="activePanel = 'layers'"
         @open-geo-j-s-o-n="activePanel = 'geojson'"
         @update:chapter="handleChapterUpdate"

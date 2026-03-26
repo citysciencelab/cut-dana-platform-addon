@@ -19,7 +19,6 @@ const { mode, active } = defineProps({
 
 const setMode = () => {
   store.commit('Modules/DataNarrator/DashboardStore/setMode', mode);
-  store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', mode);
 };
 </script>
 

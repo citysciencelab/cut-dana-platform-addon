@@ -22,7 +22,7 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits(['addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'update:chapter', 'open3D', 'openLayers', 'openGeoJSON']);
+const emits = defineEmits(['addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'update:chapter', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON']);
 
 const {t} = useTranslation();
 
@@ -107,6 +107,7 @@ const addStep = () => emits('addNewStep');
       :pill-color="getStoryColor(chapter.id).primary"
       @model-selected="(p) => emits('modelSelected', p)"
       @open3D="emits('open3D')"
+      @open3-d-layers="emits('open3DLayers')"
       @open-layers="emits('openLayers')"
       @open-geo-j-s-o-n="emits('openGeoJSON')"
       @update:step="updateStepInChapter"

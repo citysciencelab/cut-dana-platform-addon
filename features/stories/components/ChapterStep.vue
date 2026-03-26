@@ -25,7 +25,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits([ 'update:step', 'modelSelected', 'open3D', 'openLayers', 'openGeoJSON' ]);
+const emit = defineEmits([ 'update:step', 'modelSelected', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON' ]);
 
 const { t } = useTranslation();
 const { setBaseLayer, setAnimatedView } = useNavigation();
@@ -414,6 +414,23 @@ onMounted(() => {
         @click="emit('open3D')"
       >
         {{ t('additional:modules.dataNarrator.label.threeDFiles') }}
+      </v-btn>
+    </div>
+
+    <div
+      v-if="is3D"
+      class="mb-2 d-flex justify-center"
+    >
+      <v-btn
+        variant="flat"
+        size="small"
+        class="threed-btn"
+        :prepend-icon="mdiMapMarkerPlusOutline"
+        :append-icon="mdiChevronRight"
+        rounded
+        @click="emit('open3DLayers')"
+      >
+        {{ t('additional:modules.dataNarrator.label.layers3D') }}
       </v-btn>
     </div>
   </div>

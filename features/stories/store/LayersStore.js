@@ -3,8 +3,11 @@ import { generateSimpleGetters, generateSimpleMutations } from '../../../../../.
 import { createLogger } from '../../../utils/logger';
 const logger = createLogger('LayerStore');
 
+const TYPES_3D = new Set([ 'ENTITIES3D', 'TERRAIN3D', 'TILESET3D' ]);
+
 export const state = {
   layersTree: [],
+  layers3D: [],
   loading: false,
   error: null,
   sourceURL: 'https://geodienste.hamburg.de/services-internet.json',
@@ -15,6 +18,9 @@ export const mutations = {
 
   setLayersTree(state, payload) {
     state.layersTree = payload;
+  },
+  setLayers3D(state, payload) {
+    state.layers3D = payload;
   },
   setLoading(state, payload) {
     state.loading = payload;
@@ -35,22 +41,22 @@ export const actions = {
     commit('setError', null);
 
     try {
-      const norm = v => (String(v ?? '').trim() || 'ohne Kategorie');
-      const normSub = v => (String(v ?? '').trim() || 'ohne Subkategorie');
-
       const res = await fetch(URL);
       const services = await res.json();
 
-      const filtered = Array.isArray(services)
-        ? services.filter(s => {
-          const t = String(s?.typ || '').toUpperCase();
-          return t === 'WMS';
-        })
-        : [];
+      const allServices = Array.isArray(services) ? services : [];
+
+      // ── WMS tree ──────────────────────────────────────────────────────────
+      const norm = v => (String(v ?? '').trim() || 'ohne Kategorie');
+      const normSub = v => (String(v ?? '').trim() || 'ohne Subkategorie');
+
+      const wmsServices = allServices.filter(s =>
+        String(s?.typ || '').toUpperCase() === 'WMS'
+      );
 
       const catMap = new Map();
 
-      filtered.forEach(svc => {
+      wmsServices.forEach(svc => {
         const dsArr = Array.isArray(svc.datasets) ? svc.datasets : [];
 
         if (!dsArr.length) {
@@ -92,10 +98,19 @@ export const actions = {
         }));
 
       commit('setLayersTree', layersTree);
+
+      // ── 3D layers (flat list) ─────────────────────────────────────────────
+      const layers3D = allServices
+        .filter(s => TYPES_3D.has(String(s?.typ || '').toUpperCase()))
+        .sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+
+      commit('setLayers3D', layers3D);
+
     } catch (err) {
       logger.error('Error fetching or processing services:', err);
       commit('setError', err instanceof Error ? err.message : String(err));
       commit('setLayersTree', []);
+      commit('setLayers3D', []);
     } finally {
       commit('setLoading', false);
     }
