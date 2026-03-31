@@ -6,6 +6,7 @@ import { useStore } from 'vuex';
 
 import AddWMS from '../../../tools/addWms/components/AddWMS.vue';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
+import { useSceneReset } from '../../../hooks/useSceneReset';
 import { useNavigation } from '../../steps/hooks/useNavigation';
 
 import BackgroundMap from './step/BackgroundMap.vue';
@@ -33,6 +34,7 @@ const emit = defineEmits([ 'update:step', 'modelSelected', 'open3D', 'open3DLaye
 
 const { t } = useTranslation();
 const { setBaseLayer } = useNavigation();
+const { resetScene } = useSceneReset();
 const store = useStore();
 
 const transparencyDialog = ref(false);
@@ -136,22 +138,10 @@ watch(
   () => props.step.is3D,
   (is3DEnabled) => {
     if (!is3DEnabled) {
-      const map3d = mapCollection.getMap('3D');
-      const scene = map3d?.getCesiumScene();
-
-      if (scene) {
-        scene.camera.setView({
-          destination: scene.camera.position,
-          orientation: {
-            heading: 0,
-            pitch: scene.camera.pitch,
-            roll: scene.camera.roll
-          }
-        });
-      }
+      resetScene();
+    } else {
+      store.dispatch('Maps/changeMapMode', '3D');
     }
-
-    store.dispatch('Maps/changeMapMode', is3DEnabled ? '3D' : '2D');
   },
   { immediate: true }
 );

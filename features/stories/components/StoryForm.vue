@@ -9,6 +9,7 @@ import { dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataN
 import { backendUrl } from '../../../store/contantsDataNarrator';
 import { clearGeoJSON } from '../../../utils/geoJSON';
 import { createLogger } from '../../../utils/logger.js';
+import { useSceneReset } from '../../../hooks/useSceneReset';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import { useNavigation } from '../../steps/hooks/useNavigation';
 import { deleteCoverImage, uploadCoverImage } from '../services/coverImage';
@@ -59,6 +60,7 @@ const props = defineProps({
 const { t } = useTranslation();
 const { toolwindowMode } = useDataNarrator();
 const { gotoPage } = useDataNarrator();
+const { resetScene } = useSceneReset();
 
 const {
   initialCenter,
@@ -328,13 +330,7 @@ function saveStep() {
       }
     }
 
-    const importedModels = store.getters['Modules/Modeler3D/importedModels'];
-
-    for (const model of [...importedModels]) {
-      store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
-    }
-
-    store.dispatch('Maps/changeMapMode', '2D');
+    resetScene();
   }
 
   newStepDraft.value = null;
@@ -831,7 +827,7 @@ watch([ activeStepIndex, previewVisible ], () => {
     :message="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.description')"
     :cancel-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.denyButton')"
     :confirm-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.confirmButton')"
-    @confirm="() => gotoPage(dataNarratorModes.DASHBOARD)"
+    @confirm="() => { resetScene(); gotoPage(dataNarratorModes.DASHBOARD); }"
   />
   <ConfirmationDialog
     v-model="discardNewStepConfirmation"
