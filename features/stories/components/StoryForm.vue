@@ -356,6 +356,7 @@ async function saveStoryData() {
     if (!updateResp.ok) {
       throw new Error(`Failed to edit story: ${updateResp.status} ${bodyText}`);
     }
+    createdStory = JSON.parse(bodyText);
   } else {
     const createResp = await createStory(payload);
     const bodyText = await createResp.text();
@@ -379,7 +380,8 @@ async function saveStoryData() {
       const dbStep = dbChapter.StoryStep.find((x) => x.stepNumber === sIdx + 1);
       if (!dbStep) continue;
 
-      await uploadStepModel(storyId, dbStep.id, file);
+      const newFile = await uploadStepModel(storyId, dbStep.id, file);
+      uiStep.modelUrl = `files/${newFile.fileContext}/${newFile.filename}`;
       modelFiles.delete(uiStep);
     }
   }
