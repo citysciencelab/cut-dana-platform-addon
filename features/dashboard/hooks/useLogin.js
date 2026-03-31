@@ -6,7 +6,7 @@ import OIDC from '../../../../../../src/modules/login/js/utilsOIDC';
 
 import { FetchInterceptor } from '../../../api/FetchInterceptor';
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
-import { backendUrl, debugAuthBypass } from '../../../store/contantsDataNarrator';
+import { backendUrl } from '../../../store/contantsDataNarrator';
 import { createLogger } from '../../../utils/logger.js';
 import { getRedirectUrl } from '../../login/services/loginService';
 
@@ -16,7 +16,6 @@ const logger = createLogger('useLogin');
 
 const ADMIN_ROLE = 'admin';
 const CLIENT_NAME = 'masterportal-client';
-const isDebugAuthBypass = Boolean(debugAuthBypass);
 
 function decodeJwt(token) {
   try {
@@ -167,17 +166,6 @@ export function useLogin() {
   }
 
   const checkLoggedIn = async () => {
-    if (isDebugAuthBypass) {
-      store.commit('Modules/Login/setAccessToken', 'debug-token');
-      store.commit('Modules/Login/setRefreshToken', 'debug-refresh-token');
-      store.commit('Modules/Login/setLoggedIn', true);
-      store.commit('Modules/Login/setScreenName', 'Debug User');
-      store.commit('Modules/Login/setUsername', 'debug-user');
-      store.commit('Modules/Login/setEmail', 'testuser@example.com');
-      store.commit('Modules/Login/setUserId', '69');
-      return true;
-    }
-
     const config = Config.login,
       token = Cookie.get('token'),
       refreshToken = Cookie.get('refresh_token');

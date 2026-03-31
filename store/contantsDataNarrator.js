@@ -40,14 +40,12 @@ const htmlEditorToolbar = [
 ];
 
 const backendUrl = Config.backendUrl || 'https://staging-dana-backend.elie.de';
-const debugAuthBypass = true;
 
 export {
   dataNarratorModes,
   dataNarratorToolSettings,
   ToolwindowModes,
   backendUrl,
-  debugAuthBypass,
   htmlEditorToolbar,
   availableStoryListModes
 }
