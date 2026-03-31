@@ -6,9 +6,6 @@ export function uploadCoverImage(storyId, coverImage) {
 
   return fetch(`${backendUrl}/stories/${storyId}/cover`, {
     method: 'POST',
-    headers: {
-      'Content-Type': null,
-    },
     body: formData
   });
 }

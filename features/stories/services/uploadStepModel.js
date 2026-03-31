@@ -8,9 +8,6 @@ export async function uploadStepModel(storyId, stepId, file) {
     `${backendUrl}/stories/${storyId}/steps/${stepId}/model`, {
       method: 'POST',
       body: form,
-      headers: {
-        'Content-Type': null,
-      },
     });
   if (!resp.ok) {
     throw new Error(await resp.text());
