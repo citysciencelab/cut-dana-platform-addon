@@ -65,6 +65,8 @@ export function useLogin() {
 
     const idToken = Cookie.get('id_token');
 
+    Cookie.eraseAll(['id_token', 'token', 'refresh_token', 'name', 'username', 'email']);
+    FetchInterceptor.setHeader('Authorization', '');
     store.dispatch('Modules/Login/logout');
 
     if (idToken) {
@@ -97,12 +99,10 @@ export function useLogin() {
 
       const logoutParams = new URLSearchParams({
         id_token_hint: idToken,
-        // Redirect back to the application after logout.
-        post_logout_redirect_uri: `${window.location.origin}${window.location.pathname}`
       });
 
-      // Redirect to Keycloak logout.
-      window.location.href = `${logoutUri}?${logoutParams.toString()}`;
+      // Notify Keycloak of logout without redirecting the page.
+      await fetch(`${logoutUri}?${logoutParams.toString()}`, { mode: 'no-cors' });
     } catch (error) {
       logger.error('Error during logout: ', error);
     }
