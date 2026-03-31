@@ -88,13 +88,77 @@ watch(currentStoryId, (id) => {
   stepIndex.value = 0;
 }, { immediate: true });
 
+async function load3DModel(step) {
+  const nav = step.navigation3D ?? {};
+
+  try {
+    const easting = nav.coordinates?.easting;
+    const northing = nav.coordinates?.northing;
+    const h = nav.dimensions?.height ?? 0;
+    const scale = nav.transforms?.scale ?? 1;
+    const rotation = nav.transforms?.rotation ?? 0;
+    const adaptToTerrain = nav.dimensions?.adaptToTerrain ?? true;
+
+    if (easting != null) store.commit('Modules/Modeler3D/setCoordinateEasting', easting);
+    if (northing != null) store.commit('Modules/Modeler3D/setCoordinateNorthing', northing);
+    store.commit('Modules/Modeler3D/setHeight', h);
+    store.commit('Modules/Modeler3D/setScale', scale);
+    store.commit('Modules/Modeler3D/setRotation', rotation);
+    store.commit('Modules/Modeler3D/setAdaptToHeight', adaptToTerrain);
+
+    const resp = await fetch(`${backendUrl}/${step.modelUrl}`);
+    if (!resp.ok) throw new Error(`Failed to fetch model: ${resp.status}`);
+    const blob = await resp.blob();
+    const fileName = step.modelUrl.split('/').pop()?.split('.')[0] ?? 'model';
+
+    const existingIds = new Set((store.getters['Modules/Modeler3D/importedModels'] ?? []).map(m => m.id));
+
+    const scene = mapCollection.getMap('3D')?.getCesiumScene();
+    const pos = scene?.camera?.positionWC ?? { x: 0, y: 0, z: 0 };
+
+    await store.dispatch('Modules/Modeler3D/createEntity', { blob, fileName, position: pos });
+
+    const allModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
+    const newModel = allModels.find(m => !existingIds.has(m.id));
+
+    if (newModel) {
+      store.commit('Modules/Modeler3D/setCurrentModelId', newModel.id);
+      await store.dispatch('Modules/Modeler3D/updateEntityPosition');
+
+      if (rotation !== 0) {
+        try {
+          const entities = mapCollection.getMap('3D').getDataSourceDisplay().defaultDataSource.entities;
+          const entity = entities.getById(newModel.id);
+          if (entity?.position) {
+            const heading = Cesium.Math.toRadians(rotation);
+            const entityPos = entity.position.getValue();
+            if (entityPos) {
+              entity.orientation = Cesium.Transforms.headingPitchRollQuaternion(
+                entityPos, new Cesium.HeadingPitchRoll(heading, 0, 0)
+              );
+            }
+          }
+        } catch (e) { /* ignore if 3D map not ready */ }
+      }
+    }
+  } catch (err) {
+    logger.error('Failed to load 3D model for step:', err);
+  }
+}
+
 watch(
   () => [ chapterIndex.value, stepIndex.value, stage.value ],
-  () => {
+  async () => {
     if (stage.value !== 'play' || !story.value) return;
 
     const step = story.value.chapters[chapterIndex.value].steps[stepIndex.value];
     if (!step) return;
+
+    // Clear 3D entities from the previous step
+    const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
+    for (const model of [...prevModels]) {
+      store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
+    }
 
     store.dispatch('Maps/changeMapMode', step.is3D ? '3D' : '2D');
 
@@ -119,6 +183,10 @@ watch(
             },
           });
         }
+      }
+
+      if (step.modelUrl) {
+        await load3DModel(step);
       }
     } else {
       setAnimatedView({
