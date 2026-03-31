@@ -135,6 +135,22 @@ const mapSources = computed({
 watch(
   () => props.step.is3D,
   (is3DEnabled) => {
+    if (!is3DEnabled) {
+      const map3d = mapCollection.getMap('3D');
+      const scene = map3d?.getCesiumScene();
+
+      if (scene) {
+        scene.camera.setView({
+          destination: scene.camera.position,
+          orientation: {
+            heading: 0,
+            pitch: scene.camera.pitch,
+            roll: scene.camera.roll
+          }
+        });
+      }
+    }
+
     store.dispatch('Maps/changeMapMode', is3DEnabled ? '3D' : '2D');
   },
   { immediate: true }
