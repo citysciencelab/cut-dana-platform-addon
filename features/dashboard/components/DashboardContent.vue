@@ -1,10 +1,12 @@
 <script setup>
 import { computed, watch } from 'vue';
+import { useTranslation } from 'i18next-vue';
 import { useStore } from 'vuex';
 
 import StoryCard from './Stories/StoryCard.vue';
 
 const store = useStore();
+const { t } = useTranslation();
 const storiesDisplayMode = computed(() => store.state.Modules.DataNarrator.DashboardStore.mode);
 const stories = computed(() => store.state.Modules.DataNarrator.StoryStore.stories);
 const loading = computed(() => store.state.Modules.DataNarrator.StoryStore.loading);
@@ -45,7 +47,7 @@ watch(storiesDisplayMode, () => {
       v-else
       class="no-results"
     >
-      No stories available
+      {{ t('additional:modules.dataNarrator.storyList.noStoriesAvailable') }}
     </div>
   </div>
 </template>

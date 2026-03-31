@@ -125,7 +125,8 @@
         "all": "All Stories",
         "my": "My Stories",
         "featured": "Featured",
-        "popular": "Popular"
+        "popular": "Popular",
+        "noStoriesAvailable": "No stories available"
       },
       "creator": {
         "edit": "Edit",

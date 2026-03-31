@@ -125,7 +125,8 @@
         "all": "Alle Stories",
         "my": "Meine Stories",
         "featured": "Vorgestellt",
-        "popular": "Beliebt"
+        "popular": "Beliebt",
+        "noStoriesAvailable": "Keine Stories verfügbar"
       },
       "creator": {
         "edit": "Bearbeiten",
