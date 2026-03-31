@@ -93,7 +93,7 @@ async function playStory() {
           />
         </template>
         <PublishButton
-          v-if="storiesDisplayMode === 'my' && userId === story.owner"
+          v-if="userId === story.owner || isAdmin"
           :is-draft="story.isDraft"
           :story-id="story.id"
           @success="() => emit('published')"
