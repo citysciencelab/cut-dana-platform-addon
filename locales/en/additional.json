@@ -3,6 +3,7 @@
     "dataNarrator": {
       "title": "Data Narrator",
       "create": "Create Story",
+      "loginToCreate": "You need to login to create a story",
       "play": {
         "start": "Start Story",
         "storyOverviewTitle": "Story overview"
