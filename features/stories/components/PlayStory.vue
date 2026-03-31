@@ -4,6 +4,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrator';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
 import { getFileUrl } from '../../../utils/getFileUrl';
@@ -16,12 +17,14 @@ import { useStory } from '../hooks/useStory';
 
 import PlayerFrame from './play/PlayerFrame.vue';
 import RichTextViewer from './step/RichTextViewer.vue';
+import ThreeDHint from './ThreeDHint.vue';
 
 const logger = createLogger('PlayStory.vue');
 const { t } = useTranslation();
 const { gotoPage } = useDataNarrator()
 const { resetScene } = useSceneReset();
 const { currentStoryId } = useStory();
+const { isMobile } = useIsMobile();
 const {
   defaultBaseLayerId,
   initialZoom,
@@ -57,6 +60,10 @@ const currentGlobalStep = computed(() => {
 
   return prevSteps + stepIndex.value + 1;
 });
+
+const currentStep = computed(() =>
+  story.value?.chapters[chapterIndex.value]?.steps[stepIndex.value] ?? null
+);
 
 async function loadStory(id) {
   if (!id) return;
@@ -394,6 +401,7 @@ onBeforeUnmount(() => {
       </PlayerFrame>
     </template>
   </ToolWindow>
+  <ThreeDHint :visible="!isMobile && stage === 'play' && !!currentStep?.is3D" />
 </template>
 
 <style lang="scss" scoped>

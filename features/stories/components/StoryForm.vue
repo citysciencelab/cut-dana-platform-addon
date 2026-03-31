@@ -5,6 +5,7 @@ import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import { dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { backendUrl } from '../../../store/contantsDataNarrator';
 import { clearGeoJSON } from '../../../utils/geoJSON';
@@ -23,6 +24,7 @@ import GeoJSONPanel from './GeoJSON/GeoJSONPanel.vue';
 import Layers from './step/layers/Layers.vue';
 import ThreeDLayerBrowser from './step/threeDNavigation/components/ThreeDLayerBrowser.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
+import ThreeDHint from './ThreeDHint.vue';
 
 const logger = createLogger('StoryForm.vue');
 const store = useStore();
@@ -61,6 +63,7 @@ const { t } = useTranslation();
 const { toolwindowMode } = useDataNarrator();
 const { gotoPage } = useDataNarrator();
 const { resetScene } = useSceneReset();
+const { isMobile } = useIsMobile();
 
 const {
   initialCenter,
@@ -840,6 +843,7 @@ watch([ activeStepIndex, previewVisible ], () => {
     :confirm-text="t('additional:modules.dataNarrator.confirm.discardNewStep.confirmButton')"
     @confirm="discardNewStep"
   />
+  <ThreeDHint :visible="!isMobile && !!activeStep?.is3D" />
 </template>
 
 <style lang="scss">

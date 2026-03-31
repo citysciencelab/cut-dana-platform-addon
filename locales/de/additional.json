@@ -281,6 +281,9 @@
         "confirmMessage": "Sind Sie sicher?",
         "confirmYes": "Ja",
         "confirmCancel": "Abbrechen"
+      },
+      "hint": {
+        "ctrl3D": "Strg gedrückt halten und Maus ziehen, um die Kamera in alle Richtungen zu bewegen"
       }
     }
   }

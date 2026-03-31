@@ -281,6 +281,9 @@
         "confirmMessage": "Are you sure?",
         "confirmYes": "Yes",
         "confirmCancel": "Cancel"
+      },
+      "hint": {
+        "ctrl3D": "Hold Ctrl and drag to orbit the camera in 3D"
       }
     }
   }
