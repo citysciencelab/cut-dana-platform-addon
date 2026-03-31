@@ -178,7 +178,8 @@ function getDefaultStep(id) {
       transforms: {
         rotation: 0,
         scale: 1,
-      }
+      },
+      camera: null,
     }
 
   };
@@ -300,6 +301,33 @@ function handleChaptersChange(newList) {
 
 function saveStep() {
   if (activeStep.value?.is3D) {
+    const map3d = mapCollection.getMap('3D');
+    const scene = map3d?.getCesiumScene();
+
+    if (scene) {
+      const camera = scene.camera;
+      const cartographic = Cesium.Cartographic.fromCartesian(camera.position);
+
+      const chapter = chaptersData.value[activeChapterIndex.value];
+      const step = chapter?.steps[activeStepIndex.value];
+
+      if (step) {
+        step.navigation3D = {
+          ...step.navigation3D,
+          camera: {
+            heading: camera.heading,
+            pitch: camera.pitch,
+            roll: camera.roll,
+            position: [
+              Cesium.Math.toDegrees(cartographic.longitude),
+              Cesium.Math.toDegrees(cartographic.latitude),
+              cartographic.height,
+            ],
+          },
+        };
+      }
+    }
+
     const importedModels = store.getters['Modules/Modeler3D/importedModels'];
 
     for (const model of [...importedModels]) {

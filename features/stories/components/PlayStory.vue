@@ -94,17 +94,43 @@ watch(
     const step = story.value.chapters[chapterIndex.value].steps[stepIndex.value];
     if (!step) return;
 
-    setAnimatedView({
-      center: step.centerCoordinate,
-      zoom: step.zoomLevel
-    });
+    store.dispatch('Maps/changeMapMode', step.is3D ? '3D' : '2D');
+
+    if (step.is3D) {
+      const camera = step.navigation3D?.camera;
+
+      if (camera?.position) {
+        const map3d = mapCollection.getMap('3D');
+        const scene = map3d?.getCesiumScene();
+
+        if (scene) {
+          scene.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(
+              camera.position[0],
+              camera.position[1],
+              camera.position[2]
+            ),
+            orientation: {
+              heading: camera.heading ?? 0,
+              pitch: camera.pitch ?? -Cesium.Math.PI_OVER_TWO,
+              roll: camera.roll ?? 0,
+            },
+          });
+        }
+      }
+    } else {
+      setAnimatedView({
+        center: step.centerCoordinate,
+        zoom: step.zoomLevel
+      });
+    }
 
     if (step.mapSources.length > 0) {
       setInformationLayers([]);
       step.mapSources.forEach(layer => {
         store.dispatch('addLayerToLayerConfig', {
           layerConfig: layer,
-          parentKey: 'subjectlayer', // analogue to AddWMS in MP
+          parentKey: 'subjectlayer',
         });
       })
     } else {
