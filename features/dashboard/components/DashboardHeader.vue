@@ -25,7 +25,7 @@ const { t } = useTranslation();
 
 const storiesDisplayMode = computed(() => store.state.Modules.DataNarrator.DashboardStore.mode);
 const { toolwindowMode } = useDataNarrator()
-const { loggedIn, screenName, email } = useLogin();
+const { loggedIn, screenName, email, isAdmin } = useLogin();
 const loggedInPersonLabel = computed(() => screenName.value || email.value || '');
 const storyModeLists = computed(() => {
   return Object.values(availableStoryListModes).filter(mode =>
@@ -60,7 +60,7 @@ const getBackgroundStyle = () => ({});
             v-if="loggedIn && loggedInPersonLabel"
             class="logged-in-person"
           >
-            {{ loggedInPersonLabel }}
+            {{ loggedInPersonLabel }}<span v-if="isAdmin" class="admin-badge"> (Admin)</span>
           </span>
         </div>
         <div class="d-flex justify-end align-center ga-2">
@@ -81,7 +81,7 @@ const getBackgroundStyle = () => ({});
           v-if="loggedIn && loggedInPersonLabel"
           class="logged-in-person"
         >
-          {{ loggedInPersonLabel }}
+          {{ loggedInPersonLabel }}<span v-if="isAdmin" class="admin-badge"> (Admin)</span>
         </span>
       </div>
       <div class="d-flex justify-end align-center ga-2">
@@ -211,6 +211,11 @@ const getBackgroundStyle = () => ({});
   white-space: nowrap;
   margin-top: 3px;
   font: inherit;
+}
+
+.admin-badge {
+  font-weight: 400;
+  opacity: 0.6;
 }
 
 .header-col {
