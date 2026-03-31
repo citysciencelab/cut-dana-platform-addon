@@ -9,6 +9,7 @@ import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
 import { getFileUrl } from '../../../utils/getFileUrl';
 import { createLogger } from '../../../utils/logger.js';
 import { numberToLetter } from '../../../utils/numberToLetter';
+import { useSceneReset } from '../../../hooks/useSceneReset';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 import { useNavigation } from '../../steps/hooks/useNavigation';
 import { useStory } from '../hooks/useStory';
@@ -19,6 +20,7 @@ import RichTextViewer from './step/RichTextViewer.vue';
 const logger = createLogger('PlayStory.vue');
 const { t } = useTranslation();
 const { gotoPage } = useDataNarrator()
+const { resetScene } = useSceneReset();
 const { currentStoryId } = useStory();
 const {
   defaultBaseLayerId,
@@ -149,8 +151,7 @@ const isPreviewMode = computed(() => store.state.Modules.DataNarrator.isPreviewM
 
 function backToEdit() {
   store.commit('Modules/DataNarrator/setIsPreviewMode', false);
-  removeAllVisibleLayers();
-  clearGeoJSON();
+  resetScene();
   gotoPage(dataNarratorModes.EDIT_STORY);
 }
 
@@ -170,10 +171,8 @@ function next() {
     chapterIndex.value++;
     stepIndex.value = 0;
   } else {
+    resetScene();
     gotoPage(dataNarratorModes.DASHBOARD);
-    removeAllVisibleLayers();
-    resetBaseLayer();
-    clearGeoJSON();
     setAnimatedView({
       center: initialCenter.value,
       zoom: initialZoom.value,

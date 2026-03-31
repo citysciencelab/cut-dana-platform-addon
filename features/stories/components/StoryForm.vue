@@ -450,6 +450,7 @@ function discardNewStep() {
   }
 
   newStepDraft.value = null;
+  resetScene();
   resetToStoryForm();
 }
 
