@@ -299,6 +299,16 @@ function handleChaptersChange(newList) {
 }
 
 function saveStep() {
+  if (activeStep.value?.is3D) {
+    const importedModels = store.getters['Modules/Modeler3D/importedModels'];
+
+    for (const model of [...importedModels]) {
+      store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
+    }
+
+    store.dispatch('Maps/changeMapMode', '2D');
+  }
+
   newStepDraft.value = null;
   activeStepIndex.value = -1;
   previewVisible.value = true;
