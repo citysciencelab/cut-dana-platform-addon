@@ -258,10 +258,8 @@ function back() {
     chapterIndex.value--;
     stepIndex.value = story.value.chapters[chapterIndex.value].steps.length - 1;
   } else {
+    resetScene();
     stage.value = 'overview';
-    removeAllVisibleLayers();
-    resetBaseLayer();
-    clearGeoJSON();
     setAnimatedView({
       center: initialCenter.value,
       zoom: initialZoom.value,
