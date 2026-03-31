@@ -1,8 +1,4 @@
 <script setup>
-import { computed } from 'vue';
-
-import { useStore } from 'vuex';
-
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { backendUrl, dataNarratorModes } from '../../../../store/contantsDataNarrator';
 import { createLogger } from '../../../../utils/logger.js';
@@ -16,11 +12,6 @@ import FeaturedButton from './FeaturedButton.vue';
 import PlayButton from './PlayButton.vue';
 import PublishButton from './PublishButton.vue';
 import ShareButton from './ShareButton.vue';
-
-const store = useStore();
-const storiesDisplayMode = computed(() => {
-  return store.state.Modules.DataNarrator.DashboardStore.mode
-});
 
 const { userId, isAdmin } = useLogin();
 const { gotoPage } = useDataNarrator();
