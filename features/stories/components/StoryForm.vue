@@ -87,6 +87,8 @@ const imageDeleted = ref(false);
 const modelFiles = new Map(); // key: `${chapterId}-${stepId}`
 const newStepDraft = ref(null);
 const activePanel = ref(null); // null | '3d' | 'layers' | 'geojson'
+const validationErrors = ref([]);
+const showValidation = ref(false);
 
 let nextChapterId = 1;
 const chaptersData = ref([]);
@@ -150,6 +152,32 @@ const canPublish = computed(() => {
 
   return canSaveStory.value;
 });
+
+function getStepErrors() {
+  const errors = [];
+  if (!activeChapter.value?.title?.trim())
+    errors.push(t('additional:modules.dataNarrator.validation.missingChapterTitle'));
+  if (!activeStep.value?.title?.trim())
+    errors.push(t('additional:modules.dataNarrator.validation.missingStepTitle'));
+  if (!hasTextContent(activeStep.value?.description))
+    errors.push(t('additional:modules.dataNarrator.validation.missingStepContent'));
+  return errors;
+}
+
+function getStoryErrors() {
+  const errors = [];
+  if (!storyNameInput.value.trim())
+    errors.push(t('additional:modules.dataNarrator.validation.missingStoryTitle'));
+  const hasEmptyChapter = (chaptersData.value ?? []).some((ch) => (ch?.steps?.length ?? 0) === 0);
+  if (hasEmptyChapter)
+    errors.push(t('additional:modules.dataNarrator.validation.chaptersNeedSteps'));
+  return errors;
+}
+
+function clearValidation() {
+  validationErrors.value = [];
+  showValidation.value = false;
+}
 
 function handleModelSelected({ step, file }) {
   const chapter = chaptersData.value[activeChapterIndex.value];
@@ -226,6 +254,7 @@ function addNewChapter() {
 }
 
 function handleAddNewStep({ chapterIdx }) {
+  clearValidation();
   const chapter = chaptersData.value[chapterIdx];
   if (!chapter) return;
 
@@ -264,6 +293,7 @@ function handleStepsChange({ chapterIdx, newList }) {
 }
 
 function handleEditStep({ chapterIdx, stepIdx }) {
+  clearValidation();
   newStepDraft.value = null;
   activeChapterIndex.value = chapterIdx;
   activeStepIndex.value = stepIdx;
@@ -308,6 +338,14 @@ function handleChaptersChange(newList) {
 }
 
 function saveStep() {
+  const errors = getStepErrors();
+  if (errors.length) {
+    validationErrors.value = errors;
+    showValidation.value = true;
+    return;
+  }
+  clearValidation();
+
   if (activeStep.value?.is3D) {
     const map3d = mapCollection.getMap('3D');
     const scene = map3d?.getCesiumScene();
@@ -420,6 +458,13 @@ async function saveStoryData() {
 }
 
 async function save() {
+  const errors = isEditingStep.value ? getStepErrors() : getStoryErrors();
+  if (errors.length) {
+    validationErrors.value = errors;
+    showValidation.value = true;
+    return;
+  }
+  clearValidation();
   await saveStoryData();
   removeAllVisibleLayers();
   clearGeoJSON();
@@ -427,12 +472,26 @@ async function save() {
 }
 
 async function previewStory() {
+  const errors = isEditingStep.value ? getStepErrors() : getStoryErrors();
+  if (errors.length) {
+    validationErrors.value = errors;
+    showValidation.value = true;
+    return;
+  }
+  clearValidation();
   await saveStoryData();
   store.commit('Modules/DataNarrator/setIsPreviewMode', true);
   gotoPage(dataNarratorModes.PLAY_STORY);
 }
 
 async function publish() {
+  const errors = isEditingStep.value ? getStepErrors() : getStoryErrors();
+  if (errors.length) {
+    validationErrors.value = errors;
+    showValidation.value = true;
+    return;
+  }
+  clearValidation();
   isPublishing.value = true;
   try {
     const storyId = await saveStoryData();
@@ -650,6 +709,7 @@ watch([ activeStepIndex, previewVisible ], () => {
           class="story-title-input"
           variant="underlined"
           :placeholder="t('additional:modules.dataNarrator.label.storyNamePlaceholder')"
+          :error="showValidation && !isEditingStep && !storyNameInput.trim()"
           required
         />
 
@@ -691,6 +751,7 @@ watch([ activeStepIndex, previewVisible ], () => {
         :chapter="chaptersData[activeChapterIndex]"
         :active-step-index="activeStepIndex"
         :edit-story-visible="editStoryVisible"
+        :show-validation="showValidation"
         @add-new-chapter="addNewChapter"
         @add-new-step="() => {
           previewVisible = false;
@@ -727,6 +788,21 @@ watch([ activeStepIndex, previewVisible ], () => {
     />
 
     <v-container class="story-form-footer">
+      <!-- Validation error banner -->
+      <v-alert
+        v-if="validationErrors.length"
+        type="error"
+        variant="tonal"
+        density="compact"
+        class="mb-2"
+        :closable="true"
+        @click:close="clearValidation()"
+      >
+        <ul class="ma-0 pa-0" style="list-style: none;">
+          <li v-for="err in validationErrors" :key="err">{{ err }}</li>
+        </ul>
+      </v-alert>
+
       <!-- While creating a new step: cancel + save step -->
       <template v-if="isCreatingNewStep">
         <v-row justify="center">
@@ -743,7 +819,6 @@ watch([ activeStepIndex, previewVisible ], () => {
             type="submit"
             variant="flat"
             color="black"
-            :disabled="!canSaveStep"
             @click="saveStep()"
           >
             {{ t('additional:modules.dataNarrator.creator.saveStep') }}
@@ -783,7 +858,6 @@ watch([ activeStepIndex, previewVisible ], () => {
               color="black"
               block
               :loading="isSaving"
-              :disabled="!canPublish"
               @click="save()"
             >
               {{ t('additional:modules.dataNarrator.button.submitEditStep') }}
@@ -796,7 +870,6 @@ watch([ activeStepIndex, previewVisible ], () => {
               color="primary"
               block
               :loading="isPublishing"
-              :disabled="!canPublish"
               @click="publish()"
             >
               {{ t('additional:modules.dataNarrator.button.publish') }}

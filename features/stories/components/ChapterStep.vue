@@ -27,6 +27,10 @@ const props = defineProps({
   pillColor: {
     type: String,
     default: '#000000',
+  },
+  showValidation: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -114,6 +118,16 @@ const stepDescription = computed({
   get: () => props.step.description,
   set: (value) => updateStep({ description: value })
 });
+
+function hasTextContent(value) {
+  const str = String(value ?? '').trim();
+  if (!str) return false;
+  const doc = new DOMParser().parseFromString(str, 'text/html');
+  return (doc.body.textContent?.replace(/\s+/g, ' ').trim() ?? '').length > 0;
+}
+
+const stepTitleError = computed(() => props.showValidation && !props.step.title?.trim());
+const stepDescriptionError = computed(() => props.showValidation && !hasTextContent(props.step.description));
 
 const stepMapConfig = computed({
   get: () => props.step.mapConfig,
@@ -223,6 +237,7 @@ onMounted(() => {
           <StepTitle
             ref="stepTitleRef"
             v-model:value="stepTitle"
+            :error="stepTitleError"
             @tab="stepDescriptionRef?.focus()"
           />
         </v-col>
@@ -238,6 +253,7 @@ onMounted(() => {
           <StepDescription
             ref="stepDescriptionRef"
             v-model:value="stepDescription"
+            :error="stepDescriptionError"
           />
         </v-col>
       </v-row>

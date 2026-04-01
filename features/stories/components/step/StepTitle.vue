@@ -6,6 +6,10 @@ const props = defineProps({
   value: {
     type: String,
     default: ''
+  },
+  error: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -39,6 +43,7 @@ const { t } = useTranslation();
     density="comfortable"
     :label="t('additional:modules.dataNarrator.label.stepTitle')"
     :autofocus="true"
+    :error="error"
     hide-details
     required
     @keydown.tab.prevent="emit('tab')"

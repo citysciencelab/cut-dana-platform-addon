@@ -10,6 +10,10 @@ const props = defineProps({
   value: {
     type: String,
     default: '',
+  },
+  error: {
+    type: Boolean,
+    default: false
   }
 });
 const emit = defineEmits([ 'update:value' ]);
@@ -36,7 +40,7 @@ const { t } = useTranslation();
 </script>
 
 <template>
-  <div class="editor-wrapper">
+  <div :class="['editor-wrapper', { 'editor-error': error }]">
     <vue-editor
       ref="editorRef"
       v-model="inputValue"
@@ -73,6 +77,15 @@ const { t } = useTranslation();
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
     }
+  }
+}
+
+.editor-error {
+  .ql-container {
+    border-color: #d32f2f !important;
+  }
+  .ql-toolbar {
+    border-color: #d32f2f !important;
   }
 }
 </style>

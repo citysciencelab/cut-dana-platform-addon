@@ -19,6 +19,10 @@ const props = defineProps({
   },
   editStoryVisible: {
     type: Boolean
+  },
+  showValidation: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -77,6 +81,7 @@ defineExpose({
             ref="chapterTitleRef"
             :value="props.chapter.title"
             :placeholder="t('additional:modules.dataNarrator.creator.unnamed')"
+            :class="{ 'field-error': showValidation && !props.chapter.title?.trim() }"
             type="text"
             required
             @input="updateTitle"
@@ -93,6 +98,7 @@ defineExpose({
       :step="props.chapter.steps[props.activeStepIndex]"
       :chapter-title="props.chapter.title"
       :pill-color="getStoryColor(chapter.id).primary"
+      :show-validation="showValidation"
       @model-selected="(p) => emits('modelSelected', p)"
       @open3D="emits('open3D')"
       @open3-d-layers="emits('open3DLayers')"
@@ -170,6 +176,11 @@ defineExpose({
 
         &:focus {
           border-bottom: 1px solid #a1a1a1;
+        }
+
+        &.field-error {
+          border-bottom: 2px solid #d32f2f;
+          color: #d32f2f;
         }
       }
     }

@@ -285,6 +285,13 @@
       "hint": {
         "ctrl3D": "Strg gedrückt halten und Maus ziehen, um die Kamera in alle Richtungen zu bewegen",
         "modelSizeLimit": "Maximale Dateigröße: 10 MB"
+      },
+      "validation": {
+        "missingStoryTitle": "Bitte einen Story-Titel eingeben.",
+        "missingChapterTitle": "Bitte einen Kapitel-Titel eingeben.",
+        "missingStepTitle": "Bitte einen Schritt-Titel eingeben.",
+        "missingStepContent": "Bitte Inhalt für den Schritt hinzufügen.",
+        "chaptersNeedSteps": "Jedes Kapitel muss mindestens einen Schritt enthalten."
       }
     }
   }
