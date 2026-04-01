@@ -145,11 +145,6 @@ const canSaveStory = computed(() => {
 
 const isEditingStep = computed(() => activeStepIndex.value >= 0 && !previewVisible.value);
 
-const canPublish = computed(() => {
-  if (isEditingStep.value) {
-    return canSaveStep.value;
-  }
-
   return canSaveStory.value;
 });
 
