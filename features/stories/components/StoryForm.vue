@@ -145,8 +145,6 @@ const canSaveStory = computed(() => {
 
 const isEditingStep = computed(() => activeStepIndex.value >= 0 && !previewVisible.value);
 
-  return canSaveStory.value;
-});
 
 function getStepErrors() {
   const errors = [];
