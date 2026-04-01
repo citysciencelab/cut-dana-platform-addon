@@ -84,7 +84,7 @@ const activeChapterIndex = ref(0);
 const activeStepIndex = ref(-1);
 const editStoryVisible = ref(true);
 const imageDeleted = ref(false);
-const modelFiles = new Map(); // key: `${chapterId}-${stepId}`
+const entityFiles = new Map(); // key: entityId (string) → File
 const newStepDraft = ref(null);
 const activePanel = ref(null); // null | '3d' | 'layers' | 'geojson'
 const validationErrors = ref([]);
@@ -178,11 +178,8 @@ function clearValidation() {
   showValidation.value = false;
 }
 
-function handleModelSelected({ step, file }) {
-  const chapter = chaptersData.value[activeChapterIndex.value];
-  const key = `${chapter?.id}-${step.id}`;
-  if (file) modelFiles.set(key, file);
-  else modelFiles.delete(key);
+function handleModelCreated({ entityId, file }) {
+  if (entityId && file) entityFiles.set(entityId, file);
 }
 
 function getDefaultStep(id) {
@@ -199,7 +196,7 @@ function getDefaultStep(id) {
     mapSources: [],
     // 3D
     is3D: false,
-    modelUrl: '',
+    models3D: [],
     navigation3D: {
       coordinates: {
         easting: null,
@@ -372,6 +369,47 @@ function saveStep() {
       }
     }
 
+    // Snapshot all currently loaded 3D models into step.models3D
+    const importedModelsList = store.getters['Modules/Modeler3D/importedModels'] ?? [];
+    if (importedModelsList.length > 0) {
+      const importedEntitiesList = store.getters['Modules/Modeler3D/importedEntities'] ?? [];
+      const chapter = chaptersData.value[activeChapterIndex.value];
+      const step = chapter?.steps[activeStepIndex.value];
+
+      if (step) {
+        let dataSourceEntities = null;
+        try {
+          dataSourceEntities = mapCollection.getMap('3D')
+            ?.getDataSourceDisplay()
+            ?.defaultDataSource
+            ?.entities;
+        } catch { /* 3D map may not be ready */ }
+
+        step.models3D = importedModelsList.map(model => {
+          const entityData = importedEntitiesList.find(e => e.entityId === model.id);
+          let position = null;
+          try {
+            const cesiumEntity = dataSourceEntities?.getById(model.id);
+            const rawPos = cesiumEntity?.position?.getValue();
+            if (rawPos) position = { x: rawPos.x, y: rawPos.y, z: rawPos.z };
+          } catch { /* ignore */ }
+
+          // Preserve existing fileUrl if already uploaded
+          const existing = (step.models3D ?? []).find(m => m.entityId === model.id);
+          return {
+            entityId: model.id,
+            fileUrl: existing?.fileUrl ?? '',
+            name: model.name,
+            show: model.show,
+            heading: model.heading ?? 0,
+            position,
+            scale: entityData?.scale ?? 1,
+            rotation: entityData?.rotation ?? 0,
+          };
+        });
+      }
+    }
+
     resetScene();
   }
 
@@ -417,18 +455,21 @@ async function saveStoryData() {
 
     for (let sIdx = 0; sIdx < ch.steps.length; sIdx++) {
       const uiStep = ch.steps[sIdx];
-      const key = `${ch.id}-${uiStep.id}`;
-      const file = modelFiles.get(key);
-      if (!file) continue;
-
       const dbStep = dbChapter.StoryStep.find((x) => x.stepNumber === sIdx + 1);
 
       if (!dbStep) continue;
 
-      const newFile = await uploadStepModel(storyId, dbStep.id, file);
-      uiStep.modelUrl = `files/${newFile.fileContext}/${newFile.filename}`;
+      // Upload new model files tracked by entityId
+      if (Array.isArray(uiStep.models3D) && uiStep.models3D.length > 0) {
+        for (const model3D of uiStep.models3D) {
+          const file = entityFiles.get(model3D.entityId);
+          if (!file) continue; // already uploaded or no new file
 
-      modelFiles.delete(key);
+          const newFile = await uploadStepModel(storyId, dbStep.id, file, model3D.entityId);
+          model3D.fileUrl = `files/${newFile.fileContext}/${newFile.filename}`;
+          entityFiles.delete(model3D.entityId);
+        }
+      }
     }
   }
 
@@ -536,6 +577,53 @@ function updateActiveStepNavigation3D(val) {
   step.navigation3D = val;
 }
 
+async function loadModels3DForStep(step) {
+  const models = step.models3D ?? [];
+  if (!models.length) return;
+
+  // Clear any stale Cesium entities from previous step
+  const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
+  for (const m of [...prevModels]) {
+    await store.dispatch('Modules/Modeler3D/deleteEntity', m.id);
+  }
+
+  for (const model3D of models) {
+    if (!model3D.fileUrl) continue;
+    try {
+      const resp = await fetch(`${backendUrl}/${model3D.fileUrl}`);
+      if (!resp.ok) continue;
+      const blob = await resp.blob();
+      const fileName = model3D.name ?? model3D.fileUrl.split('/').pop()?.split('.')[0] ?? 'model';
+
+      const existingIds = new Set((store.getters['Modules/Modeler3D/importedModels'] ?? []).map(m => m.id));
+
+      store.commit('Modules/Modeler3D/setScale', model3D.scale ?? 1);
+      store.commit('Modules/Modeler3D/setRotation', model3D.rotation ?? 0);
+
+      const position = model3D.position ?? { x: 0, y: 0, z: 0 };
+      await store.dispatch('Modules/Modeler3D/createEntity', { blob, fileName, position });
+
+      const allModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
+      const newModel = allModels.find(m => !existingIds.has(m.id));
+
+      if (newModel) {
+        // Register entityId → no file needed (already uploaded)
+        // update show state if needed
+        if (model3D.show === false) {
+          try {
+            const entities = mapCollection.getMap('3D')
+              ?.getDataSourceDisplay()?.defaultDataSource?.entities;
+            const entity = entities?.getById(newModel.id);
+            if (entity) entity.show = false;
+          } catch { /* ignore */ }
+        }
+      }
+    } catch (err) {
+      logger.error('Failed to load 3D model for step edit:', err);
+    }
+  }
+}
+
 function updateActiveStepLayers3D(val) {
   const chapter = chaptersData.value[activeChapterIndex.value];
   if (!chapter) return;
@@ -562,6 +650,16 @@ function updateActiveStepGeoJsonAssets(val) {
 
 watch(activeStepIndex, () => {
   activePanel.value = null;
+});
+
+// Load 3D models when the user opens the 3D side panel for a step that has saved models
+watch(activePanel, async (panel, prevPanel) => {
+  if (panel === '3d' && prevPanel !== '3d') {
+    const step = activeStep.value;
+    if (step?.is3D && Array.isArray(step.models3D) && step.models3D.length > 0) {
+      await loadModels3DForStep(step);
+    }
+  }
 });
 
 watch(
@@ -643,7 +741,7 @@ watch([ activeStepIndex, previewVisible ], () => {
         v-if="activePanel === '3d'"
         :model-value="activeStep?.navigation3D ?? {}"
         @update:model-value="updateActiveStepNavigation3D"
-        @model-selected="(file) => handleModelSelected({ step: activeStep, file })"
+        @model-created="handleModelCreated"
       />
 
       <ThreeDLayerBrowser
@@ -756,7 +854,6 @@ watch([ activeStepIndex, previewVisible ], () => {
           handleAddNewStep({ chapterIdx: activeChapterIndex });
         }"
         @edit-story-visible="editStoryVisible = true"
-        @model-selected="handleModelSelected"
         @open3D="activePanel = '3d'"
         @open3-d-layers="activePanel = '3dlayers'"
         @open-layers="activePanel = 'layers'"

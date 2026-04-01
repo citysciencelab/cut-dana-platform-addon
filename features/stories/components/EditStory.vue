@@ -51,7 +51,7 @@ async function loadStory() {
         mapSources: s.mapSources,
         is3D: s.is3D ?? false,
         navigation3D: s.navigation3D ?? {},
-        modelUrl: s.modelUrl ?? '',
+        models3D: Array.isArray(s.models3D) ? s.models3D : [],
       })),
     }));
   } catch (err) {

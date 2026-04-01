@@ -18,7 +18,7 @@ const props = defineProps({
 });
 const logger = createLogger('ThreeDNavigation');
 
-const emit = defineEmits([ 'update:modelValue', 'modelSelected' ]);
+const emit = defineEmits([ 'update:modelValue', 'modelCreated' ]);
 
 const store = useStore();
 const fileLoading = ref(false);
@@ -100,26 +100,29 @@ function getCenterOfView3D() {
   };
 }
 
-function onFileChange(file) {
-  if (!file) {
-    emit('modelSelected', null);
-    return;
-  }
+async function onFileChange(file) {
+  if (!file) return;
 
-  emit('modelSelected', file);
-
-  const reader = new FileReader(),
-    fileName = file.name.split('.')[0],
-    fileExtension = file.name.split('.').pop();
+  const snapshotIds = new Set((importedModels.value ?? []).map(m => m.id));
+  const fileName = file.name.split('.')[0];
+  const fileExtension = file.name.split('.').pop();
 
   fileLoading.value = true;
 
   if (fileExtension === 'gltf' || fileExtension === 'glb') {
-    handleGltfFile(file, fileName).then(() => {
-      selectedFile.value = null;
-    });
+    await handleGltfFile(file, fileName);
+    selectedFile.value = null;
+    fileLoading.value = false;
+
+    const allModels = importedModels.value ?? [];
+    const newModel = allModels.find(m => !snapshotIds.has(m.id));
+    if (newModel) {
+      emit('modelCreated', { entityId: newModel.id, file });
+    }
     return;
   }
+
+  const reader = new FileReader();
 
   reader.onload = () => {
     fileLoading.value = false;

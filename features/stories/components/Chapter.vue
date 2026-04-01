@@ -26,7 +26,7 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits(['addNewChapter', 'addNewStep', 'editStoryVisible', 'modelSelected', 'update:chapter', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON']);
+const emits = defineEmits(['addNewChapter', 'addNewStep', 'editStoryVisible', 'update:chapter', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON']);
 
 const { t } = useTranslation();
 
@@ -99,7 +99,6 @@ defineExpose({
       :chapter-title="props.chapter.title"
       :pill-color="getStoryColor(chapter.id).primary"
       :show-validation="showValidation"
-      @model-selected="(p) => emits('modelSelected', p)"
       @open3D="emits('open3D')"
       @open3-d-layers="emits('open3DLayers')"
       @open-layers="emits('openLayers')"

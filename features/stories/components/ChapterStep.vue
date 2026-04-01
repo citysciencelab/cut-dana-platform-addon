@@ -34,7 +34,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits([ 'update:step', 'modelSelected', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON', 'focus-chapter-title' ]);
+const emit = defineEmits([ 'update:step', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON', 'focus-chapter-title' ]);
 
 const { t } = useTranslation();
 const { setBaseLayer } = useNavigation();

@@ -12,7 +12,7 @@ defineProps({
   }
 });
 
-const emit = defineEmits(['update:navigation3D', 'modelSelected']);
+const emit = defineEmits(['update:navigation3D', 'modelCreated']);
 
 const { t } = useTranslation();
 const dialogOpen = ref(false);
@@ -60,7 +60,7 @@ const dialogOpen = ref(false);
         <ThreeDNavigation
           :model-value="navigation3D"
           @update:model-value="emit('update:navigation3D', $event)"
-          @model-selected="emit('modelSelected', $event)"
+          @model-created="emit('modelCreated', $event)"
         />
       </v-card-text>
 
