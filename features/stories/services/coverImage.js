@@ -6,6 +6,7 @@ export function uploadCoverImage(storyId, coverImage) {
 
   return fetch(`${backendUrl}/stories/${storyId}/cover`, {
     method: 'POST',
+    headers: { 'Content-Type': null }, // removes interceptor's application/json so browser sets correct multipart boundary
     body: formData
   });
 }

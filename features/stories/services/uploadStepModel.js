@@ -4,13 +4,20 @@ export async function uploadStepModel(storyId, stepId, file) {
   const form = new FormData();
   form.append('files', file);
 
+  console.log(`[DEBUG] uploadStepModel: storyId=${storyId}, stepId=${stepId}, file=${file?.name}, size=${file?.size}`);
+
   const resp = await fetch(
     `${backendUrl}/stories/${storyId}/steps/${stepId}/model`, {
       method: 'POST',
       body: form,
+      headers: { 'Content-Type': null }, // removes interceptor's application/json so browser sets correct multipart boundary
     });
+
+  const bodyText = await resp.text();
+  console.log(`[DEBUG] uploadStepModel response: status=${resp.status}, body=${bodyText}`);
+
   if (!resp.ok) {
-    throw new Error(await resp.text());
+    throw new Error(bodyText);
   }
-  return resp.json();
+  return JSON.parse(bodyText);
 }
