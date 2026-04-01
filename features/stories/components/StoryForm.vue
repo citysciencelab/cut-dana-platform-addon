@@ -161,8 +161,14 @@ function getStoryErrors() {
   const errors = [];
   if (!storyNameInput.value.trim())
     errors.push(t('additional:modules.dataNarrator.validation.missingStoryTitle'));
+  if (!descriptionInput.value.trim())
+    errors.push(t('additional:modules.dataNarrator.validation.missingStoryDescription'));
+  const hasNoChapterWithStep = (chaptersData.value ?? []).length === 0 ||
+    (chaptersData.value ?? []).every((ch) => (ch?.steps?.length ?? 0) === 0);
   const hasEmptyChapter = (chaptersData.value ?? []).some((ch) => (ch?.steps?.length ?? 0) === 0);
-  if (hasEmptyChapter)
+  if (hasNoChapterWithStep)
+    errors.push(t('additional:modules.dataNarrator.validation.missingChapterAndStep'));
+  else if (hasEmptyChapter)
     errors.push(t('additional:modules.dataNarrator.validation.chaptersNeedSteps'));
   return errors;
 }
@@ -175,7 +181,6 @@ function clearValidation() {
 function handleModelSelected({ step, file }) {
   const chapter = chaptersData.value[activeChapterIndex.value];
   const key = `${chapter?.id}-${step.id}`;
-  console.log(`[DEBUG] handleModelSelected: chapter.id=${chapter?.id}, step.id=${step.id}, key=${key}, file=${file?.name ?? 'null'}`);
   if (file) modelFiles.set(key, file);
   else modelFiles.delete(key);
 }
@@ -407,23 +412,22 @@ async function saveStoryData() {
   const uploads = [];
   for (const ch of chaptersData.value) {
     const dbChapter = createdStory.chapters.find((x) => x.sequence === ch.sequence);
-    console.log(`[DEBUG] upload-loop: ch.id=${ch.id}, ch.sequence=${ch.sequence}, dbChapter found=${!!dbChapter}`);
+
     if (!dbChapter) continue;
 
     for (let sIdx = 0; sIdx < ch.steps.length; sIdx++) {
       const uiStep = ch.steps[sIdx];
       const key = `${ch.id}-${uiStep.id}`;
       const file = modelFiles.get(key);
-      console.log(`[DEBUG] upload-loop step: ch.id=${ch.id}, step.id=${uiStep.id}, key=${key}, file=${file?.name ?? 'null'}, modelFiles.size=${modelFiles.size}`);
       if (!file) continue;
 
       const dbStep = dbChapter.StoryStep.find((x) => x.stepNumber === sIdx + 1);
-      console.log(`[DEBUG] upload-loop: dbStep found=${!!dbStep}, stepNumber=${sIdx + 1}`);
+
       if (!dbStep) continue;
 
       const newFile = await uploadStepModel(storyId, dbStep.id, file);
       uiStep.modelUrl = `files/${newFile.fileContext}/${newFile.filename}`;
-      console.log(`[DEBUG] upload-loop: uploaded, modelUrl=${uiStep.modelUrl}`);
+
       modelFiles.delete(key);
     }
   }
@@ -734,6 +738,7 @@ watch([ activeStepIndex, previewVisible ], () => {
         hide-details="true"
         rows="3"
         class="bg-white"
+        :error="showValidation && !isEditingStep && !descriptionInput.trim()"
         :placeholder="t('additional:modules.dataNarrator.label.storyDescriptionPlaceholder')"
       />
     </div>

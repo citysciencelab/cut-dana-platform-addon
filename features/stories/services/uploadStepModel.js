@@ -4,8 +4,6 @@ export async function uploadStepModel(storyId, stepId, file) {
   const form = new FormData();
   form.append('files', file);
 
-  console.log(`[DEBUG] uploadStepModel: storyId=${storyId}, stepId=${stepId}, file=${file?.name}, size=${file?.size}`);
-
   const resp = await fetch(
     `${backendUrl}/stories/${storyId}/steps/${stepId}/model`, {
       method: 'POST',
@@ -14,7 +12,6 @@ export async function uploadStepModel(storyId, stepId, file) {
     });
 
   const bodyText = await resp.text();
-  console.log(`[DEBUG] uploadStepModel response: status=${resp.status}, body=${bodyText}`);
 
   if (!resp.ok) {
     throw new Error(bodyText);

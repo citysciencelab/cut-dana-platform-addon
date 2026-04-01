@@ -288,6 +288,8 @@
       },
       "validation": {
         "missingStoryTitle": "Bitte einen Story-Titel eingeben.",
+        "missingStoryDescription": "Bitte eine Story-Beschreibung eingeben.",
+        "missingChapterAndStep": "Bitte mindestens ein Kapitel mit einem Schritt hinzufügen.",
         "missingChapterTitle": "Bitte einen Kapitel-Titel eingeben.",
         "missingStepTitle": "Bitte einen Schritt-Titel eingeben.",
         "missingStepContent": "Bitte Inhalt für den Schritt hinzufügen.",
