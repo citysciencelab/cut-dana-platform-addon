@@ -183,6 +183,9 @@ watch([
       :prepend-icon="mdiCubeScan"
       @update:model-value="onFileChange"
     />
+    <p class="text-caption text-medium-emphasis px-1 mt-n2 mb-2">
+      {{ t('additional:modules.dataNarrator.hint.modelSizeLimit') }}
+    </p>
 
     <EntityList
       :editing-model-id="editingModelId"

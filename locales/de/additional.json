@@ -283,7 +283,8 @@
         "confirmCancel": "Abbrechen"
       },
       "hint": {
-        "ctrl3D": "Strg gedrückt halten und Maus ziehen, um die Kamera in alle Richtungen zu bewegen"
+        "ctrl3D": "Strg gedrückt halten und Maus ziehen, um die Kamera in alle Richtungen zu bewegen",
+        "modelSizeLimit": "Maximale Dateigröße: 10 MB"
       }
     }
   }

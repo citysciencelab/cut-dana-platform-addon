@@ -283,7 +283,8 @@
         "confirmCancel": "Cancel"
       },
       "hint": {
-        "ctrl3D": "Hold Ctrl and drag to orbit the camera in 3D"
+        "ctrl3D": "Hold Ctrl and drag to orbit the camera in 3D",
+        "modelSizeLimit": "Max. file size: 10 MB"
       }
     }
   }
