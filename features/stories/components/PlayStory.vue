@@ -172,6 +172,24 @@ async function load3DModel(step) {
   }
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function waitFor3DSceneReady(maxWaitMs = 600) {
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt < maxWaitMs) {
+    const scene = mapCollection.getMap('3D')?.getCesiumScene();
+    if (scene?.camera) {
+      return scene;
+    }
+    await sleep(25);
+  }
+
+  return mapCollection.getMap('3D')?.getCesiumScene() ?? null;
+}
+
 watch(
   () => [ chapterIndex.value, stepIndex.value, stage.value ],
   async () => {
@@ -179,6 +197,10 @@ watch(
 
     const step = story.value.chapters[chapterIndex.value].steps[stepIndex.value];
     if (!step) return;
+    const bgId = step.backgroundMapId || defaultBaseLayerId;
+
+    // Keep a base layer selected before the 2D/3D switch to avoid blank frames.
+    setBaseLayer(bgId);
 
     // Clear 3D entities from the previous step
     const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
@@ -186,9 +208,10 @@ watch(
       store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
     }
 
-    store.dispatch('Maps/changeMapMode', step.is3D ? '3D' : '2D');
+    await store.dispatch('Maps/changeMapMode', step.is3D ? '3D' : '2D');
 
     if (step.is3D) {
+      await waitFor3DSceneReady();
       const camera = step.navigation3D?.camera;
 
       if (camera?.position) {
@@ -221,7 +244,7 @@ watch(
       });
     }
 
-    if (step.mapSources.length > 0) {
+    if (Array.isArray(step.mapSources) && step.mapSources.length > 0) {
       setInformationLayers([]);
       step.mapSources.forEach(layer => {
         store.dispatch('addLayerToLayerConfig', {
@@ -230,7 +253,6 @@ watch(
         });
       })
     } else {
-      const bgId = step.backgroundMapId || defaultBaseLayerId;
       setBaseLayer(bgId);
       setInformationLayers(step.informationLayers ?? [], [ bgId ]);
     }

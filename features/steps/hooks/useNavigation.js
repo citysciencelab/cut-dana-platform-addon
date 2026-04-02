@@ -62,13 +62,19 @@ export function useNavigation() {
   }
 
   const removeAllVisibleLayers = (restoreDefaultBaseLayer = true) => {
-    for (const layerConfig of store.getters.visibleLayerConfigs) {
-      const id = layerConfig.id;
-      store.dispatch('Modules/LayerTree/removeLayer', { id });
+    const defaultBaseLayerId = '19969';
+
+    // Keep a valid base layer visible to avoid a transient blank/black frame.
+    if (restoreDefaultBaseLayer) {
+      setBaseLayer(defaultBaseLayerId);
     }
 
-    if (restoreDefaultBaseLayer) {
-      setBaseLayer('19969');
+    for (const layerConfig of store.getters.visibleLayerConfigs) {
+      const id = layerConfig.id;
+      if (restoreDefaultBaseLayer && id === defaultBaseLayerId) {
+        continue;
+      }
+      store.dispatch('Modules/LayerTree/removeLayer', { id });
     }
   }
 
