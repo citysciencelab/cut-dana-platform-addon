@@ -396,15 +396,18 @@ function saveStep() {
 
           // Preserve existing fileUrl if already uploaded
           const existing = (step.models3D ?? []).find(m => m.entityId === model.id);
+
+          const resolvedRotation = entityData?.rotation ?? model.heading ?? existing?.rotation ?? 0;
+          const resolvedScale = entityData?.scale ?? existing?.scale ?? 1;
           return {
             entityId: model.id,
             fileUrl: existing?.fileUrl ?? '',
             name: model.name,
             show: model.show,
-            heading: model.heading ?? 0,
+            heading: resolvedRotation,
             position,
-            scale: entityData?.scale ?? 1,
-            rotation: entityData?.rotation ?? 0,
+            scale: resolvedScale,
+            rotation: resolvedRotation,
           };
         });
       }
@@ -607,6 +610,45 @@ async function loadModels3DForStep(step) {
       const newModel = allModels.find(m => !existingIds.has(m.id));
 
       if (newModel) {
+        const modelScale = model3D.scale ?? 1;
+        const modelRotation = model3D.rotation ?? 0;
+
+        try {
+          const entities = mapCollection.getMap('3D')
+            ?.getDataSourceDisplay()?.defaultDataSource?.entities;
+          const entity = entities?.getById(newModel.id);
+
+          if (entity?.model) {
+            // Re-apply persisted scale in case createEntity defaulted differently.
+            entity.model.scale = modelScale;
+          }
+
+          if (entity?.position) {
+            const positionValue = entity.position.getValue();
+            if (positionValue) {
+              entity.orientation = Cesium.Transforms.headingPitchRollQuaternion(
+                positionValue,
+                new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(modelRotation), 0, 0)
+              );
+            }
+          }
+        } catch { /* ignore */ }
+
+        const importedEntities = [ ...(store.getters['Modules/Modeler3D/importedEntities'] ?? []) ];
+        const importedEntity = importedEntities.find(e => e.entityId === newModel.id);
+        if (importedEntity) {
+          importedEntity.scale = modelScale;
+          importedEntity.rotation = modelRotation;
+          store.commit('Modules/Modeler3D/setImportedEntities', importedEntities);
+        }
+
+        const importedModels = [ ...(store.getters['Modules/Modeler3D/importedModels'] ?? []) ];
+        const importedModel = importedModels.find(m => m.id === newModel.id);
+        if (importedModel) {
+          importedModel.heading = modelRotation;
+          store.commit('Modules/Modeler3D/setImportedModels', importedModels);
+        }
+
         // Register entityId → no file needed (already uploaded)
         // update show state if needed
         if (model3D.show === false) {

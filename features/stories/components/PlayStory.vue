@@ -117,6 +117,47 @@ async function load3DModel(step) {
       const allModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
       const newModel = allModels.find(m => !existingIds.has(m.id));
 
+      if (newModel) {
+        const modelScale = model3D.scale ?? 1;
+        const modelRotation = model3D.rotation ?? 0;
+
+        try {
+          const entities = mapCollection.getMap('3D')
+            ?.getDataSourceDisplay()?.defaultDataSource?.entities;
+          const entity = entities?.getById(newModel.id);
+
+          if (entity?.model) {
+            // Enforce persisted transform values after entity creation.
+            entity.model.scale = modelScale;
+          }
+
+          if (entity?.position) {
+            const positionValue = entity.position.getValue();
+            if (positionValue) {
+              entity.orientation = Cesium.Transforms.headingPitchRollQuaternion(
+                positionValue,
+                new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(modelRotation), 0, 0)
+              );
+            }
+          }
+        } catch { /* ignore */ }
+
+        const importedEntities = [ ...(store.getters['Modules/Modeler3D/importedEntities'] ?? []) ];
+        const importedEntity = importedEntities.find(e => e.entityId === newModel.id);
+        if (importedEntity) {
+          importedEntity.scale = modelScale;
+          importedEntity.rotation = modelRotation;
+          store.commit('Modules/Modeler3D/setImportedEntities', importedEntities);
+        }
+
+        const importedModels = [ ...(store.getters['Modules/Modeler3D/importedModels'] ?? []) ];
+        const importedModel = importedModels.find(m => m.id === newModel.id);
+        if (importedModel) {
+          importedModel.heading = modelRotation;
+          store.commit('Modules/Modeler3D/setImportedModels', importedModels);
+        }
+      }
+
       if (newModel && model3D.show === false) {
         try {
           const entities = mapCollection.getMap('3D')
