@@ -85,10 +85,13 @@ const activeStepIndex = ref(-1);
 const editStoryVisible = ref(true);
 const imageDeleted = ref(false);
 const entityFiles = new Map(); // key: entityId (string) → File
+const persistedEntityIds = new Map(); // key: runtime entityId (string) -> persisted entityId (string)
 const newStepDraft = ref(null);
 const activePanel = ref(null); // null | '3d' | 'layers' | 'geojson'
 const validationErrors = ref([]);
 const showValidation = ref(false);
+const isLoadingStepModels3D = ref(false);
+const loaded3DStepSignature = ref('');
 
 let nextChapterId = 1;
 const chaptersData = ref([]);
@@ -179,7 +182,11 @@ function clearValidation() {
 }
 
 function handleModelCreated({ entityId, file }) {
-  if (entityId && file) entityFiles.set(entityId, file);
+  if (entityId && file) {
+    entityFiles.set(entityId, file);
+    // New uploads keep runtime and persisted ID identical.
+    persistedEntityIds.set(entityId, entityId);
+  }
 }
 
 function getDefaultStep(id) {
@@ -386,6 +393,7 @@ function saveStep() {
         } catch { /* 3D map may not be ready */ }
 
         step.models3D = importedModelsList.map(model => {
+          const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
           const entityData = importedEntitiesList.find(e => e.entityId === model.id);
           let position = null;
           try {
@@ -395,12 +403,13 @@ function saveStep() {
           } catch { /* ignore */ }
 
           // Preserve existing fileUrl if already uploaded
-          const existing = (step.models3D ?? []).find(m => m.entityId === model.id);
+          const existing = (step.models3D ?? []).find(m => m.entityId === persistedEntityId)
+            ?? (step.models3D ?? []).find(m => m.entityId === model.id);
 
           const resolvedRotation = entityData?.rotation ?? model.heading ?? existing?.rotation ?? 0;
           const resolvedScale = entityData?.scale ?? existing?.scale ?? 1;
           return {
-            entityId: model.id,
+            entityId: persistedEntityId,
             fileUrl: existing?.fileUrl ?? '',
             name: model.name,
             show: model.show,
@@ -581,14 +590,15 @@ function updateActiveStepNavigation3D(val) {
 }
 
 async function loadModels3DForStep(step) {
-  const models = step.models3D ?? [];
-  if (!models.length) return;
-
   // Clear any stale Cesium entities from previous step
   const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
   for (const m of [...prevModels]) {
+    persistedEntityIds.delete(m.id);
     await store.dispatch('Modules/Modeler3D/deleteEntity', m.id);
   }
+
+  const models = step.models3D ?? [];
+  if (!models.length) return;
 
   for (const model3D of models) {
     if (!model3D.fileUrl) continue;
@@ -610,6 +620,11 @@ async function loadModels3DForStep(step) {
       const newModel = allModels.find(m => !existingIds.has(m.id));
 
       if (newModel) {
+        if (model3D.entityId) {
+          // Keep mapping to the stable persisted ID from DB payload.
+          persistedEntityIds.set(newModel.id, model3D.entityId);
+        }
+
         const modelScale = model3D.scale ?? 1;
         const modelRotation = model3D.rotation ?? 0;
 
@@ -666,6 +681,43 @@ async function loadModels3DForStep(step) {
   }
 }
 
+function getActiveStep3DSignature() {
+  const step = activeStep.value;
+  if (!step?.is3D) return '';
+
+  const modelsSignature = (step.models3D ?? [])
+    .map(m => `${m.entityId ?? ''}:${m.fileUrl ?? ''}`)
+    .join('|');
+
+  return `${activeChapterIndex.value}:${activeStepIndex.value}:${modelsSignature}`;
+}
+
+async function ensureActiveStepModels3DLoaded() {
+  const step = activeStep.value;
+  if (previewVisible.value || !step?.is3D || activeStepIndex.value < 0) {
+    const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
+    for (const model of [...prevModels]) {
+      persistedEntityIds.delete(model.id);
+      await store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
+    }
+    loaded3DStepSignature.value = '';
+    return;
+  }
+
+  const signature = getActiveStep3DSignature();
+  if (!signature || isLoadingStepModels3D.value || loaded3DStepSignature.value === signature) {
+    return;
+  }
+
+  isLoadingStepModels3D.value = true;
+  try {
+    await loadModels3DForStep(step);
+    loaded3DStepSignature.value = signature;
+  } finally {
+    isLoadingStepModels3D.value = false;
+  }
+}
+
 function updateActiveStepLayers3D(val) {
   const chapter = chaptersData.value[activeChapterIndex.value];
   if (!chapter) return;
@@ -694,13 +746,15 @@ watch(activeStepIndex, () => {
   activePanel.value = null;
 });
 
-// Load 3D models when the user opens the 3D side panel for a step that has saved models
+// Load saved 3D models as soon as user enters a 3D step in edit mode.
+watch([ activeChapterIndex, activeStepIndex, previewVisible ], async () => {
+  await ensureActiveStepModels3DLoaded();
+}, { immediate: true });
+
+// Keep panel-open behavior as a fallback trigger, but avoid duplicate loads.
 watch(activePanel, async (panel, prevPanel) => {
   if (panel === '3d' && prevPanel !== '3d') {
-    const step = activeStep.value;
-    if (step?.is3D && Array.isArray(step.models3D) && step.models3D.length > 0) {
-      await loadModels3DForStep(step);
-    }
+    await ensureActiveStepModels3DLoaded();
   }
 });
 
