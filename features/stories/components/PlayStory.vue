@@ -208,6 +208,18 @@ function backToEdit() {
   gotoPage(dataNarratorModes.EDIT_STORY);
 }
 
+function backToDashboard() {
+  resetScene();
+  gotoPage(dataNarratorModes.DASHBOARD);
+  setAnimatedView({
+    center: initialCenter.value,
+    zoom: initialZoom.value,
+  });
+
+  const baseUrl = `${location.origin}/portal/stories`;
+  window.history.replaceState({}, '', baseUrl);
+}
+
 function startPlay() {
   stage.value = 'play';
   chapterIndex.value = 0;
@@ -273,6 +285,7 @@ onBeforeUnmount(() => {
       <PlayerFrame
         :title="stage === 'play' ? story.title : t('additional:modules.dataNarrator.play.storyOverviewTitle')"
         :is-preview="isPreviewMode"
+        @back="backToDashboard"
         @leave-preview="backToEdit"
       >
         <template #default>

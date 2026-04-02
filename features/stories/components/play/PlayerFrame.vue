@@ -1,18 +1,12 @@
 <script setup>
-import { mdiArrowLeft, mdiDotsVertical } from '@mdi/js';
+import { mdiArrowLeft } from '@mdi/js';
 
 import { useTranslation } from 'i18next-vue';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
-import { dataNarratorModes, ToolwindowModes } from '../../../../store/contantsDataNarrator';
-import { clearGeoJSON } from '../../../../utils/geoJSON';
-import { useNavigation } from '../../../steps/hooks/useNavigation';
+import { ToolwindowModes } from '../../../../store/contantsDataNarrator';
 
-const { gotoPage } = useDataNarrator();
 const { toolwindowMode } = useDataNarrator();
-const {
-  removeAllVisibleLayers,
-} = useNavigation();
 const props = defineProps({
   title: {
     type: String,
@@ -23,16 +17,16 @@ const props = defineProps({
     default: false
   }
 });
-const emit = defineEmits([ 'leave-preview' ]);
+const emit = defineEmits([ 'leave-preview', 'back' ]);
 const { t } = useTranslation();
 
-function backToDashboard() {
-  removeAllVisibleLayers();
-  gotoPage(dataNarratorModes.DASHBOARD);
-  clearGeoJSON();
+function handleBack() {
+  if (props.isPreview) {
+    emit('leave-preview');
+    return;
+  }
 
-  const baseUrl = `${location.origin}/portal/stories`;
-  window.history.replaceState({}, '', baseUrl);
+  emit('back');
 }
 </script>
 
@@ -64,7 +58,7 @@ function backToDashboard() {
                 size="compact"
                 class="mr-2"
                 v-bind="actv"
-                @click="backToDashboard"
+                @click="handleBack"
               />
             </template>
             <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
@@ -76,11 +70,6 @@ function backToDashboard() {
         </template>
       </template>
 
-      <v-btn
-        v-if="!isPreview"
-        :icon="mdiDotsVertical"
-        size="compact"
-      />
     </v-toolbar>
 
     <div class="player-content">
