@@ -1,5 +1,5 @@
 <script setup>
-import { mdiDelete, mdiEye, mdiEyeOff, mdiMapMarker, mdiPencil } from '@mdi/js';
+import { mdiDelete, mdiEye, mdiEyeOff, mdiHandPointingUp, mdiMapMarker, mdiPencil } from '@mdi/js';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
@@ -38,6 +38,11 @@ function zoomTo(id) {
   });
 }
 
+function activateMove(id) {
+  store.commit('Modules/Modeler3D/setCurrentModelId', id);
+  store.commit('Modules/Modeler3D/setMovingEntity', true);
+}
+
 function deleteModel(id) {
   store.dispatch('Modules/Modeler3D/deleteEntity', id);
 }
@@ -62,6 +67,14 @@ function deleteModel(id) {
             {{ model.name }}
           </div>
           <div>
+            <v-btn
+              variant="flat"
+              :icon="mdiHandPointingUp"
+              size="compact"
+              class="mr-1"
+              title="Objekt verschieben"
+              @click="activateMove(model.id)"
+            />
             <v-btn
               variant="flat"
               :icon="mdiMapMarker"
