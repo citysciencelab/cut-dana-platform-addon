@@ -125,6 +125,10 @@ async function load3DModel(step) {
           const entities = mapCollection.getMap('3D')
             ?.getDataSourceDisplay()?.defaultDataSource?.entities;
           const entity = entities?.getById(newModel.id);
+          const scene = mapCollection.getMap('3D')?.getCesiumScene();
+
+          // Hide immediately to prevent untextured-geometry blink.
+          if (entity) entity.show = false;
 
           if (entity?.model) {
             // Enforce persisted transform values after entity creation.
@@ -139,6 +143,14 @@ async function load3DModel(step) {
                 new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(modelRotation), 0, 0)
               );
             }
+          }
+
+          // Wait for Cesium to fully load the model primitive (textures included),
+          // then reveal it in one clean frame — no blink.
+          if (entity && scene) {
+            waitForModelReady(entity, scene).then(() => {
+              entity.show = model3D.show !== false;
+            });
           }
         } catch { /* ignore */ }
 
@@ -157,15 +169,6 @@ async function load3DModel(step) {
           store.commit('Modules/Modeler3D/setImportedModels', importedModels);
         }
       }
-
-      if (newModel && model3D.show === false) {
-        try {
-          const entities = mapCollection.getMap('3D')
-            ?.getDataSourceDisplay()?.defaultDataSource?.entities;
-          const entity = entities?.getById(newModel.id);
-          if (entity) entity.show = false;
-        } catch { /* ignore */ }
-      }
     } catch (err) {
       logger.error('Failed to load 3D model for step:', err);
     }
@@ -174,6 +177,32 @@ async function load3DModel(step) {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Waits until Cesium has fully loaded the model primitive for the given entity
+ * (geometry + textures), then resolves. Falls back after maxWaitMs.
+ * This prevents the "blink" caused by the model appearing untextured first.
+ */
+function waitForModelReady(entity, scene, maxWaitMs = 5000) {
+  return new Promise((resolve) => {
+    const startTime = Date.now();
+    const removeListener = scene.postRender.addEventListener(() => {
+      const primitives = scene.primitives;
+      for (let i = 0; i < primitives.length; i++) {
+        const prim = primitives.get(i);
+        if (prim?._id === entity && prim?.ready === true) {
+          removeListener();
+          resolve();
+          return;
+        }
+      }
+      if (Date.now() - startTime > maxWaitMs) {
+        removeListener();
+        resolve();
+      }
+    });
+  });
 }
 
 async function waitFor3DSceneReady(maxWaitMs = 600) {
