@@ -443,7 +443,9 @@ onMounted(() => {
         rounded
         @click="emit('openGeoJSON')"
       >
-        {{ t('additional:modules.dataNarrator.geojson.addGeoJSON') }}
+        {{ step.geoJsonAssets?.length
+          ? t('additional:modules.dataNarrator.geojson.editGeoJSON')
+          : t('additional:modules.dataNarrator.geojson.addGeoJSON') }}
       </v-btn>
     </div>
 
@@ -473,7 +475,9 @@ onMounted(() => {
         rounded
         @click="emit('open3D')"
       >
-        {{ t('additional:modules.dataNarrator.label.threeDFiles') }}
+        {{ step.models3D?.length
+          ? t('additional:modules.dataNarrator.label.editThreeDFiles')
+          : t('additional:modules.dataNarrator.label.threeDFiles') }}
       </v-btn>
     </div>
 
@@ -490,7 +494,9 @@ onMounted(() => {
         rounded
         @click="emit('open3DLayers')"
       >
-        {{ t('additional:modules.dataNarrator.label.addLayers3D') }}
+        {{ step.layers3D?.length
+          ? t('additional:modules.dataNarrator.label.editLayers3D')
+          : t('additional:modules.dataNarrator.label.addLayers3D') }}
       </v-btn>
     </div>
   </div>
