@@ -76,11 +76,11 @@ function applyRotation() {
       const heading = Cesium.Math.toRadians(v);
       const position = entity.position.getValue();
       if (position) {
-        const orientationMatrix = Cesium.Transforms.headingPitchRollQuaternion(
+        entity.orientation = Cesium.Transforms.headingPitchRollQuaternion(
           position,
           new Cesium.HeadingPitchRoll(heading, 0, 0)
         );
-        entity.orientation = orientationMatrix;
+
         // Also update importedModels heading for persistence
         const clonedModels = [ ...store.state.Modules.Modeler3D.importedModels ];
         const modelEntry = clonedModels.find(m => m.id === currentModelId.value);
