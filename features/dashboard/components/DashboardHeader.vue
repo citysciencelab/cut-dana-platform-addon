@@ -1,13 +1,13 @@
 <script setup>
 import { mdiMapLegend } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import danaKeyimage from '../../../img/dana-keyframe2.png';
 import logoNew from '../../../img/logo-new.png';
-import { availableStoryListModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
+import { availableStoryListModes, dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { createLogger } from '../../../utils/logger.js';
 import { useLogin } from '../hooks/useLogin';
 
@@ -24,12 +24,12 @@ const logger = createLogger('DashboardHeader');
 const { t } = useTranslation();
 
 const storiesDisplayMode = computed(() => store.state.Modules.DataNarrator.DashboardStore.mode);
-const { toolwindowMode } = useDataNarrator()
+const { toolwindowMode, mode } = useDataNarrator();
 const { loggedIn, screenName, email, isAdmin } = useLogin();
 const loggedInPersonLabel = computed(() => screenName.value || email.value || '');
 const storyModeLists = computed(() => {
-  return Object.values(availableStoryListModes).filter(mode =>
-    loggedIn.value || mode !== 'my'
+  return Object.values(availableStoryListModes).filter(m =>
+    loggedIn.value || m !== 'my'
   );
 });
 
@@ -38,6 +38,13 @@ const legendAdded = true;
 const toggleLegend = () => logger.debug('toggleLegend');
 
 const getBackgroundStyle = () => ({});
+
+const imageKey = ref(0);
+watch(mode, (newMode) => {
+  if (newMode === dataNarratorModes.DASHBOARD) {
+    imageKey.value++;
+  }
+});
 </script>
 
 <template>
@@ -122,6 +129,7 @@ const getBackgroundStyle = () => ({});
       >
         <h1 class="header-h1">
           <img
+            :key="`logo-${imageKey}`"
             :src="logoNew"
             alt="logo"
             class="header-logo"
@@ -146,6 +154,7 @@ const getBackgroundStyle = () => ({});
         class="d-flex align-center justify-center justify-md-end pa-0"
       >
         <img
+          :key="`keyimage-${imageKey}`"
           :src="danaKeyimage"
           alt="dana keyimage"
           class="dana-keyimage"
