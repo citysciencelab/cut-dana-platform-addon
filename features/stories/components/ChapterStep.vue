@@ -502,6 +502,7 @@ onMounted(() => {
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
   font-weight: 600;
   letter-spacing: 0.1px;
+  width: 200px;
 }
 
 .threed-btn:hover, .layers-btn:hover, .geojson-btn:hover {
