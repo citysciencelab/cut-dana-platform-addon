@@ -40,6 +40,7 @@
         "layers": "Layer",
         "selectLayers": "Ebenen auswählen",
         "selectLayers3D": "3D Ebenen auswählen",
+        "addLayers3D": "3D Layer hinzufügen",
         "layers3D": "3D Layer",
         "availableLayers": "Verfügbare Layer",
         "interactionAddons": "Erweiterungen",

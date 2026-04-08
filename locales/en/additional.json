@@ -40,6 +40,7 @@
         "layers": "Layers",
         "selectLayers": "Select Layers",
         "selectLayers3D": "Select 3D Layers",
+        "addLayers3D": "Add 3D Layers",
         "layers3D": "3D Layers",
         "availableLayers": "Available Layers",
         "interactionAddons": "Extensions",

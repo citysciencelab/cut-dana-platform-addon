@@ -294,7 +294,7 @@ onMounted(() => {
         rounded
         @click="emit('openLayers')"
       >
-        Informationsebenen
+        {{ t('additional:modules.dataNarrator.layer.addInformationLayer') }}
       </v-btn>
     </div>
 
@@ -430,18 +430,18 @@ onMounted(() => {
         rounded
         @click="emit('openGeoJSON')"
       >
-        GeoJSON
+        {{ t('additional:modules.dataNarrator.geojson.addGeoJSON') }}
       </v-btn>
     </div>
 
-    <div class="d-flex align-center my-2">
-      <span class="text-body-2 flex-1-0">
+    <div class="is3d-toggle-row my-2">
+      <span class="is3d-toggle-label text-body-2">
         {{ t('additional:modules.dataNarrator.label.is3D') }}
       </span>
       <v-switch
+        class="is3d-toggle-switch"
         :model-value="is3D"
         hide-details
-        inset
         density="compact"
         @update:model-value="is3D = $event"
       />
@@ -477,7 +477,7 @@ onMounted(() => {
         rounded
         @click="emit('open3DLayers')"
       >
-        {{ t('additional:modules.dataNarrator.label.layers3D') }}
+        {{ t('additional:modules.dataNarrator.label.addLayers3D') }}
       </v-btn>
     </div>
   </div>
@@ -485,6 +485,39 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .threed-btn, .layers-btn, .geojson-btn {
-  background-color: var(--pill-color-secondary, #e8e0ee);
+  background-color: #ffffff;
+  color: #1f2937;
+  border: 1px solid rgba(31, 41, 55, 0.2);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  font-weight: 600;
+  letter-spacing: 0.1px;
+}
+
+.threed-btn:hover, .layers-btn:hover, .geojson-btn:hover {
+  background-color: #f8fafc;
+  border-color: rgba(31, 41, 55, 0.35);
+}
+
+.is3d-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.is3d-toggle-label {
+  flex: 1;
+}
+
+.is3d-toggle-switch {
+  margin-left: 8px;
+}
+
+.is3d-toggle-switch:deep(.v-selection-control) {
+  min-height: 28px;
+}
+
+.is3d-toggle-switch:deep(.v-selection-control__wrapper) {
+  width: 34px;
+  height: 20px;
 }
 </style>
