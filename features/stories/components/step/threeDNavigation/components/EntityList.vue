@@ -7,12 +7,12 @@ import ThreeDModelEditor from './ThreeDModelEditor.vue';
 
 defineProps({
   editingModelId: {
-    type: [String, Number],
+    type: [ String, Number ],
     default: null,
   },
 });
 
-const emit = defineEmits(['edit']);
+const emit = defineEmits([ 'edit' ]);
 
 const store = useStore();
 

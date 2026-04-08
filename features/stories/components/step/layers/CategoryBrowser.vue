@@ -167,7 +167,6 @@ function onLayerClick(layer) {
           :key="'search-' + i"
           class="panel-row search-result-row"
           :class="{ 'is-selected': isSelected(match.layer.id) }"
-          role="listitem"
           @click="onLayerClick(match.layer)"
         >
           <span class="icon">
@@ -178,15 +177,15 @@ function onLayerClick(layer) {
               @click.stop="onLayerClick(match.layer)"
             />
           </span>
-          <div>
-            <div class="meta">
+          <span>
+            <span class="meta d-block">
               {{ match.cat.category }} >
               {{ match.sub.name }}
-            </div>
-            <div class="label">
+            </span>
+            <span class="label d-block">
               {{ match.layer.name }}
-            </div>
-          </div>
+            </span>
+          </span>
         </button>
       </template>
       <template v-else>
@@ -195,7 +194,6 @@ function onLayerClick(layer) {
           :key="i"
           class="panel-row"
           :class="{ 'is-selected': row.type === 'layer' && isSelected(row.layer?.id) }"
-          role="listitem"
           v-bind="row.type !== 'layer' ? { 'aria-haspopup': 'list' } : {}"
           @click="
             row.type==='category'

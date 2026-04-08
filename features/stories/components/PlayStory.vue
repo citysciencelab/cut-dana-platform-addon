@@ -102,7 +102,10 @@ async function load3DModel(step) {
     if (!model3D.fileUrl) continue;
     try {
       const resp = await fetch(`${backendUrl}/${model3D.fileUrl}`);
-      if (!resp.ok) throw new Error(`Failed to fetch model: ${resp.status}`);
+      if (!resp.ok) {
+        console.warn(`Failed to fetch model: ${resp.status}`);
+        continue;
+      }
       const blob = await resp.blob();
       const fileName = model3D.name ?? model3D.fileUrl.split('/').pop()?.split('.')[0] ?? 'model';
 
