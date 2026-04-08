@@ -128,23 +128,7 @@ const isCreatingNewStep = computed(() => {
   return activeChapter.value.id === draft.chapterId && activeStep.value.id === draft.stepId;
 });
 
-const canSaveStep = computed(() => {
-  return Boolean(
-    activeChapter.value?.title?.trim() &&
-    activeStep.value?.title?.trim() &&
-    hasTextContent(activeStep.value?.description)
-  );
-});
 
-const canSaveStory = computed(() => {
-  const chapterList = chaptersData.value ?? [];
-
-  const allChaptersHaveSteps =
-    chapterList.length > 0 &&
-    chapterList.every((ch) => (ch?.steps?.length ?? 0) > 0);
-
-  return allChaptersHaveSteps && storyNameInput.value.trim().length > 0;
-});
 
 const isEditingStep = computed(() => activeStepIndex.value >= 0 && !previewVisible.value);
 

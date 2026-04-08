@@ -79,7 +79,7 @@ function applyRotation() {
       }
     }
   }
-  catch (e) {
+  catch {
     // ignore if 3D map not ready
   }
 }
@@ -106,7 +106,7 @@ function applyHeight() {
         const entity = entities.getById(currentModelId.value);
         if (entity) entity.clampToGround = false;
       }
-      catch (e) { /* ignore */ }
+      catch { /* ignore */ }
     }
   }
   store.dispatch('Modules/Modeler3D/updateEntityPosition');
@@ -119,7 +119,7 @@ function toggleAdaptToHeight(val) {
     const entity = entities.getById(currentModelId.value);
     if (entity) entity.clampToGround = val;
   }
-  catch (e) {
+  catch {
     // ignore if 3D map not ready
   }
   store.dispatch('Modules/Modeler3D/updateEntityPosition');

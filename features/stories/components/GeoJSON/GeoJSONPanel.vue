@@ -63,7 +63,7 @@ function onFileSelectionChanged(file) {
         const json = JSON.parse(e.target.result);
         if (!json.type || json.type !== 'FeatureCollection') {
           workingCopy.value.geoJson = null;
-      jsonError.value = t('additional:modules.dataNarrator.geojson.invalidGeoJSON');
+          jsonError.value = t('additional:modules.dataNarrator.geojson.invalidGeoJSON');
         } else {
           workingCopy.value.geoJson = JSON.stringify(json, null, 2);
           if (!workingCopy.value.title) workingCopy.value.title = file.name;
