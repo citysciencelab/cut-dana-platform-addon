@@ -1,12 +1,20 @@
 <script setup>
-import { mdiTrashCan, mdiClose, mdiFileDocumentPlusOutline, mdiEye, mdiCubeScan, mdiChevronRight, mdiMapMarkerPlusOutline } from '@mdi/js';
+import {
+  mdiChevronRight,
+  mdiClose,
+  mdiCubeScan,
+  mdiEye,
+  mdiFileDocumentPlusOutline,
+  mdiMapMarkerPlusOutline,
+  mdiTrashCan
+} from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { ref, watch, nextTick, computed, onMounted } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
+import { useSceneReset } from '../../../hooks/useSceneReset';
 import AddWMS from '../../../tools/addWms/components/AddWMS.vue';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
-import { useSceneReset } from '../../../hooks/useSceneReset';
 import { useNavigation } from '../../steps/hooks/useNavigation';
 
 import BackgroundMap from './step/BackgroundMap.vue';
@@ -94,7 +102,7 @@ function toggleTransparencySlider(layer) {
 
 function onTransparencyChange(layer, transparency) {
   layer.transparency = transparency;
-  const opacity = 1 - (transparency/100);
+  const opacity = 1 - (transparency / 100);
   layer.opacity = opacity;
   const mapLayer = store.getters['Maps/getLayerById'](layer.id);
   if (mapLayer) {
@@ -109,6 +117,7 @@ function onTransparencyFinalChange(layer, transparency) {
     transparency: transparency
   });
 }
+
 const stepTitle = computed({
   get: () => props.step.title,
   set: (value) => updateStep({ title: value })
@@ -183,11 +192,11 @@ watch(
     setBaseLayer(newMapConfig?.backgroundMapId);
     /**
      * not supposed to animate all the time
-    setAnimatedView({
-      center: newMapConfig.centerCoordinates,
-      zoom: newMapConfig.zoomLevel
-    });
-      **/
+     setAnimatedView({
+     center: newMapConfig.centerCoordinates,
+     zoom: newMapConfig.zoomLevel
+     });
+     **/
   },
   { immediate: true, deep: true }
 );
@@ -395,9 +404,11 @@ onMounted(() => {
                   @click="toggleTransparencySlider(l)"
                 />
               </template>
-              <span>{{ transparencyDialog ?
-                t("additional:modules.dataNarrator.label.closeTransparencySlider") :
-                t("additional:modules.dataNarrator.label.openTransparencySlider") }}
+              <span>{{
+                transparencyDialog ?
+                  t("additional:modules.dataNarrator.label.closeTransparencySlider") :
+                  t("additional:modules.dataNarrator.label.openTransparencySlider")
+              }}
               </span>
             </v-tooltip>
             <v-icon

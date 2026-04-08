@@ -6,11 +6,10 @@ import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { useIsMobile } from '../../../hooks/useIsMobile';
-import { dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
-import { backendUrl } from '../../../store/contantsDataNarrator';
+import { useSceneReset } from '../../../hooks/useSceneReset';
+import { backendUrl, dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { clearGeoJSON } from '../../../utils/geoJSON';
 import { createLogger } from '../../../utils/logger.js';
-import { useSceneReset } from '../../../hooks/useSceneReset';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import { useNavigation } from '../../steps/hooks/useNavigation';
 import { deleteCoverImage, uploadCoverImage } from '../services/coverImage';
@@ -19,11 +18,11 @@ import { editStory } from '../services/editStory';
 import { uploadStepModel } from '../services/uploadStepModel';
 
 import Chapter from './Chapter.vue';
-import StoryOverview from './StoryOverview.vue';
 import GeoJSONPanel from './GeoJSON/GeoJSONPanel.vue';
 import Layers from './step/layers/Layers.vue';
 import ThreeDLayerBrowser from './step/threeDNavigation/components/ThreeDLayerBrowser.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
+import StoryOverview from './StoryOverview.vue';
 import ThreeDHint from './ThreeDHint.vue';
 
 const logger = createLogger('StoryForm.vue');
@@ -129,7 +128,6 @@ const isCreatingNewStep = computed(() => {
 });
 
 
-
 const isEditingStep = computed(() => activeStepIndex.value >= 0 && !previewVisible.value);
 
 
@@ -226,7 +224,7 @@ function addNewChapter() {
     id: newChapterId,
     sequence: chaptersData.value.length + 1,
     title: '',
-    steps: [newStep],
+    steps: [ newStep ],
   };
 
   chaptersData.value.push(newChapter);
@@ -374,7 +372,8 @@ function saveStep() {
             ?.getDataSourceDisplay()
             ?.defaultDataSource
             ?.entities;
-        } catch { /* 3D map may not be ready */ }
+        } catch { /* 3D map may not be ready */
+        }
 
         step.models3D = importedModelsList.map(model => {
           const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
@@ -384,7 +383,8 @@ function saveStep() {
             const cesiumEntity = dataSourceEntities?.getById(model.id);
             const rawPos = cesiumEntity?.position?.getValue();
             if (rawPos) position = { x: rawPos.x, y: rawPos.y, z: rawPos.z };
-          } catch { /* ignore */ }
+          } catch { /* ignore */
+          }
 
           // Preserve existing fileUrl if already uploaded
           const existing = (step.models3D ?? []).find(m => m.entityId === persistedEntityId)
@@ -576,7 +576,7 @@ function updateActiveStepNavigation3D(val) {
 async function loadModels3DForStep(step) {
   // Clear any stale Cesium entities from previous step
   const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
-  for (const m of [...prevModels]) {
+  for (const m of [ ...prevModels ]) {
     persistedEntityIds.delete(m.id);
     await store.dispatch('Modules/Modeler3D/deleteEntity', m.id);
   }
@@ -631,7 +631,8 @@ async function loadModels3DForStep(step) {
               );
             }
           }
-        } catch { /* ignore */ }
+        } catch { /* ignore */
+        }
 
         const importedEntities = [ ...(store.getters['Modules/Modeler3D/importedEntities'] ?? []) ];
         const importedEntity = importedEntities.find(e => e.entityId === newModel.id);
@@ -656,7 +657,8 @@ async function loadModels3DForStep(step) {
               ?.getDataSourceDisplay()?.defaultDataSource?.entities;
             const entity = entities?.getById(newModel.id);
             if (entity) entity.show = false;
-          } catch { /* ignore */ }
+          } catch { /* ignore */
+          }
         }
       }
     } catch (err) {
@@ -680,7 +682,7 @@ async function ensureActiveStepModels3DLoaded() {
   const step = activeStep.value;
   if (previewVisible.value || !step?.is3D || activeStepIndex.value < 0) {
     const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
-    for (const model of [...prevModels]) {
+    for (const model of [ ...prevModels ]) {
       persistedEntityIds.delete(model.id);
       await store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
     }
@@ -811,9 +813,15 @@ watch([ activeStepIndex, previewVisible ], () => {
         />
         <span class="text-body-1 font-weight-medium">
           <template v-if="activePanel === '3d'">{{ t('additional:modules.dataNarrator.3dForm') }}</template>
-          <template v-else-if="activePanel === '3dlayers'">{{ t('additional:modules.dataNarrator.label.layers3D') }}</template>
-          <template v-else-if="activePanel === 'layers'">{{ t('additional:modules.dataNarrator.layer.informationLayersPanel') }}</template>
-          <template v-else-if="activePanel === 'geojson'">{{ t('additional:modules.dataNarrator.geojson.panelHeading') }}</template>
+          <template v-else-if="activePanel === '3dlayers'">{{
+            t('additional:modules.dataNarrator.label.layers3D')
+          }}</template>
+          <template v-else-if="activePanel === 'layers'">{{
+            t('additional:modules.dataNarrator.layer.informationLayersPanel')
+          }}</template>
+          <template v-else-if="activePanel === 'geojson'">{{
+            t('additional:modules.dataNarrator.geojson.panelHeading')
+          }}</template>
         </span>
       </div>
 
@@ -857,69 +865,69 @@ watch([ activeStepIndex, previewVisible ], () => {
             alt="Selected preview"
           >
           <div class="remove-image-btn">
-          <v-tooltip location="top">
-            <template #activator="{ props: actv}">
-              <v-btn
-                v-bind="actv"
-                :icon="mdiTrashCan"
-                variant="flat"
-                density="comfortable"
-                @click="onDeleteImage"
-              />
-            </template>
-            <span>{{ t('additional:modules.dataNarrator.label.removeLogoImage') }}</span>
-          </v-tooltip>
+            <v-tooltip location="top">
+              <template #activator="{ props: actv}">
+                <v-btn
+                  v-bind="actv"
+                  :icon="mdiTrashCan"
+                  variant="flat"
+                  density="comfortable"
+                  @click="onDeleteImage"
+                />
+              </template>
+              <span>{{ t('additional:modules.dataNarrator.label.removeLogoImage') }}</span>
+            </v-tooltip>
+          </div>
         </div>
+
+        <v-toolbar
+          :color="selectedImage ? 'white' : 'transparent'"
+          size="compact"
+          class="sticky-top"
+          style="border-radius: 100px;padding: 0;"
+        >
+          <v-text-field
+            id="title"
+            v-model="storyNameInput"
+            class="story-title-input"
+            variant="underlined"
+            :placeholder="t('additional:modules.dataNarrator.label.storyNamePlaceholder')"
+            :error="showValidation && !isEditingStep && !storyNameInput.trim()"
+            required
+          />
+
+          <template #append>
+            <v-tooltip location="top">
+              <template #activator="{ props: actv }">
+                <v-file-input
+                  v-model="selectedImage"
+                  class="mr-2"
+                  :prepend-icon="mdiImagePlusOutline"
+                  hide-input
+                  accept="image/png, image/jpeg"
+                  v-bind="actv"
+                  @change="imageDeleted = false"
+                />
+              </template>
+              <span>{{ t('additional:modules.dataNarrator.label.imageUpload') }}</span>
+            </v-tooltip>
+          </template>
+        </v-toolbar>
       </div>
 
-      <v-toolbar
-        :color="selectedImage ? 'white' : 'transparent'"
-        size="compact"
-        class="sticky-top"
-        style="border-radius: 100px;padding: 0;"
-      >
-        <v-text-field
-          id="title"
-          v-model="storyNameInput"
-          class="story-title-input"
-          variant="underlined"
-          :placeholder="t('additional:modules.dataNarrator.label.storyNamePlaceholder')"
-          :error="showValidation && !isEditingStep && !storyNameInput.trim()"
-          required
+      <div class="mb-2">
+        <v-textarea
+          v-if="editStoryVisible"
+          id="description"
+          v-model="descriptionInput"
+          variant="outlined"
+          hide-details="true"
+          rows="3"
+          class="bg-white"
+          :error="showValidation && !isEditingStep && !descriptionInput.trim()"
+          :placeholder="t('additional:modules.dataNarrator.label.storyDescriptionPlaceholder')"
         />
-
-        <template #append>
-          <v-tooltip location="top">
-            <template #activator="{ props: actv }">
-              <v-file-input
-                v-model="selectedImage"
-                class="mr-2"
-                :prepend-icon="mdiImagePlusOutline"
-                hide-input
-                accept="image/png, image/jpeg"
-                v-bind="actv"
-                @change="imageDeleted = false"
-              />
-            </template>
-            <span>{{ t('additional:modules.dataNarrator.label.imageUpload') }}</span>
-          </v-tooltip>
-        </template>
-      </v-toolbar>
-    </div>
-
-    <div class="mb-2">
-      <v-textarea
-        v-if="editStoryVisible"
-        id="description"
-        v-model="descriptionInput"
-        variant="outlined"
-        hide-details="true"
-        rows="3"
-        class="bg-white"
-        :error="showValidation && !isEditingStep && !descriptionInput.trim()"
-        :placeholder="t('additional:modules.dataNarrator.label.storyDescriptionPlaceholder')"
-      />
-    </div>
+      </div>
 
       <Chapter
         v-if="activeStepIndex >= 0"
@@ -934,153 +942,169 @@ watch([ activeStepIndex, previewVisible ], () => {
           handleAddNewStep({ chapterIdx: activeChapterIndex });
         }"
         @edit-story-visible="editStoryVisible = true"
-        @open3D="activePanel = '3d'"
+        @open3-d="activePanel = '3d'"
         @open3-d-layers="activePanel = '3dlayers'"
         @open-layers="activePanel = 'layers'"
         @open-geo-j-s-o-n="activePanel = 'geojson'"
         @update:chapter="handleChapterUpdate"
       />
 
-    <StoryOverview
-      v-if="activeStepIndex === -1"
-      :chapters="chaptersData"
-      :edit-story-visible="editStoryVisible"
-      @edit-story-visible="editStoryVisible = true"
-      @add-new-chapter="() => {
-        previewVisible = false;
-        addNewChapter();
-      }"
-      @add-new-step="({ chapterIdx }) => {
-        previewVisible = false;
-        handleAddNewStep({ chapterIdx });
-      }"
-      @delete-step="handleDeleteStep"
-      @steps-change="handleStepsChange"
-      @edit-step="handleEditStep"
-      @edit-chapter="handleEditChapter"
-      @delete-chapter="handleDeleteChapter"
-      @chapters-change="handleChaptersChange"
-    />
+      <StoryOverview
+        v-if="activeStepIndex === -1"
+        :chapters="chaptersData"
+        :edit-story-visible="editStoryVisible"
+        @edit-story-visible="editStoryVisible = true"
+        @add-new-chapter="() => {
+          previewVisible = false;
+          addNewChapter();
+        }"
+        @add-new-step="({ chapterIdx }) => {
+          previewVisible = false;
+          handleAddNewStep({ chapterIdx });
+        }"
+        @delete-step="handleDeleteStep"
+        @steps-change="handleStepsChange"
+        @edit-step="handleEditStep"
+        @edit-chapter="handleEditChapter"
+        @delete-chapter="handleDeleteChapter"
+        @chapters-change="handleChaptersChange"
+      />
 
-    <v-container class="story-form-footer">
-      <!-- Validation error banner -->
-      <v-alert
-        v-if="validationErrors.length"
-        type="error"
-        variant="tonal"
-        density="compact"
-        class="mb-2"
-        :closable="true"
-        @click:close="clearValidation()"
-      >
-        <ul class="ma-0 pa-0" style="list-style: none;">
-          <li v-for="err in validationErrors" :key="err">{{ err }}</li>
-        </ul>
-      </v-alert>
+      <v-container class="story-form-footer">
+        <!-- Validation error banner -->
+        <v-alert
+          v-if="validationErrors.length"
+          type="error"
+          variant="tonal"
+          density="compact"
+          class="mb-2"
+          :closable="true"
+          @click:close="clearValidation()"
+        >
+          <ul
+            class="ma-0 pa-0"
+            style="list-style: none;"
+          >
+            <li
+              v-for="err in validationErrors"
+              :key="err"
+            >
+              {{ err }}
+            </li>
+          </ul>
+        </v-alert>
 
-      <!-- While creating a new step: cancel + save step -->
-      <template v-if="isCreatingNewStep">
-        <v-row justify="center">
-          <v-btn
-            type="button"
-            variant="outlined"
-            color="black"
-            class="mr-2"
-            @click="discardNewStepConfirmation = true"
-          >
-            {{ t('additional:modules.dataNarrator.button.cancel') }}
-          </v-btn>
-          <v-btn
-            type="submit"
-            variant="flat"
-            color="black"
-            @click="saveStep()"
-          >
-            {{ t('additional:modules.dataNarrator.creator.saveStep') }}
-          </v-btn>
-        </v-row>
-      </template>
-      <!-- Step editing: only cancel + save step -->
-      <template v-else-if="isEditingStep">
-        <v-row justify="center">
-          <v-btn
-            type="button"
-            variant="outlined"
-            color="black"
-            class="mr-2"
-            @click="backConfirmation = true"
-          >
-            {{ t('additional:modules.dataNarrator.button.cancel') }}
-          </v-btn>
-          <v-btn
-            type="submit"
-            variant="flat"
-            color="black"
-            :loading="isSaving"
-            @click="saveStep()"
-          >
-            {{ t('additional:modules.dataNarrator.creator.saveStep') }}
-          </v-btn>
-        </v-row>
-      </template>
-      <!-- Normal story editing: 2x2 grid -->
-      <template v-else>
-        <v-row class="mb-1">
-          <v-col cols="6" class="pa-1">
+        <!-- While creating a new step: cancel + save step -->
+        <template v-if="isCreatingNewStep">
+          <v-row justify="center">
+            <v-btn
+              type="button"
+              variant="outlined"
+              color="black"
+              class="mr-2"
+              @click="discardNewStepConfirmation = true"
+            >
+              {{ t('additional:modules.dataNarrator.button.cancel') }}
+            </v-btn>
             <v-btn
               type="submit"
               variant="flat"
               color="black"
-              block
-              :loading="isSaving"
-              @click="save()"
+              @click="saveStep()"
             >
-              {{ t('additional:modules.dataNarrator.button.submitEditStep') }}
+              {{ t('additional:modules.dataNarrator.creator.saveStep') }}
             </v-btn>
-          </v-col>
-          <v-col cols="6" class="pa-1">
-            <v-btn
-              type="button"
-              variant="flat"
-              color="primary"
-              block
-              :loading="isPublishing"
-              @click="publish()"
-            >
-              {{ t('additional:modules.dataNarrator.button.publish') }}
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="6" class="pa-1">
+          </v-row>
+        </template>
+        <!-- Step editing: only cancel + save step -->
+        <template v-else-if="isEditingStep">
+          <v-row justify="center">
             <v-btn
               type="button"
               variant="outlined"
               color="black"
-              block
+              class="mr-2"
               @click="backConfirmation = true"
             >
               {{ t('additional:modules.dataNarrator.button.cancel') }}
             </v-btn>
-          </v-col>
-          <v-col cols="6" class="pa-1">
             <v-btn
-              type="button"
-              variant="outlined"
+              type="submit"
+              variant="flat"
               color="black"
-              block
-              @click="previewStory()"
+              :loading="isSaving"
+              @click="saveStep()"
             >
-              {{ t('additional:modules.dataNarrator.button.previewStory') }}
+              {{ t('additional:modules.dataNarrator.creator.saveStep') }}
             </v-btn>
-          </v-col>
-        </v-row>
-      </template>
-    </v-container>
-
-
-
-
+          </v-row>
+        </template>
+        <!-- Normal story editing: 2x2 grid -->
+        <template v-else>
+          <v-row class="mb-1">
+            <v-col
+              cols="6"
+              class="pa-1"
+            >
+              <v-btn
+                type="submit"
+                variant="flat"
+                color="black"
+                block
+                :loading="isSaving"
+                @click="save()"
+              >
+                {{ t('additional:modules.dataNarrator.button.submitEditStep') }}
+              </v-btn>
+            </v-col>
+            <v-col
+              cols="6"
+              class="pa-1"
+            >
+              <v-btn
+                type="button"
+                variant="flat"
+                color="primary"
+                block
+                :loading="isPublishing"
+                @click="publish()"
+              >
+                {{ t('additional:modules.dataNarrator.button.publish') }}
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              cols="6"
+              class="pa-1"
+            >
+              <v-btn
+                type="button"
+                variant="outlined"
+                color="black"
+                block
+                @click="backConfirmation = true"
+              >
+                {{ t('additional:modules.dataNarrator.button.cancel') }}
+              </v-btn>
+            </v-col>
+            <v-col
+              cols="6"
+              class="pa-1"
+            >
+              <v-btn
+                type="button"
+                variant="outlined"
+                color="black"
+                block
+                @click="previewStory()"
+              >
+                {{ t('additional:modules.dataNarrator.button.previewStory') }}
+              </v-btn>
+            </v-col>
+          </v-row>
+        </template>
+      </v-container>
     </template>
   </form>
   <ConfirmationDialog
