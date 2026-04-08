@@ -1,5 +1,5 @@
 <script setup>
-import { mdiMapMarkerPlusOutline } from '@mdi/js';
+import { mdiChevronRight, mdiMapMarkerPlusOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { computed, ref, watch } from 'vue';
 
@@ -12,15 +12,21 @@ const props = defineProps({
 });
 const emit = defineEmits([ 'update:modelValue' ]);
 
+// Local copy so additions/removals are visible immediately without prop round-trip
+const assets = ref([ ...(props.modelValue ?? []) ]);
+watch(() => props.modelValue, (val) => { assets.value = [ ...(val ?? []) ]; });
+
 const selectedAssetId = ref(null);
 const jsonError = ref(null);
 const workingCopy = ref({ id: null, title: '', geoJson: null });
+const fileModel = ref(null);
 
 const selectedAsset = computed(() =>
-  (props.modelValue ?? []).find(a => a.id === selectedAssetId.value) ?? null
+  assets.value.find(a => a.id === selectedAssetId.value) ?? null
 );
 
 const editMode = computed(() => !!workingCopy.value.id);
+const canSave = computed(() => !!workingCopy.value.geoJson);
 
 const formTitle = computed(() =>
   editMode.value
@@ -48,10 +54,12 @@ function resetForm() {
   selectedAssetId.value = null;
   workingCopy.value = { id: null, title: '', geoJson: null };
   jsonError.value = null;
+  fileModel.value = null;
 }
 
 function removeAsset(id) {
-  emit('update:modelValue', props.modelValue.filter(a => a.id !== id));
+  assets.value = assets.value.filter(a => a.id !== id);
+  emit('update:modelValue', assets.value);
   if (selectedAssetId.value === id) resetForm();
 }
 
@@ -81,18 +89,18 @@ function onFileSelectionChanged(file) {
 }
 
 function onAssetSave() {
-  if (workingCopy.value.geoJson) {
-    workingCopy.value.geoJson = JSON.stringify(JSON.parse(workingCopy.value.geoJson));
-  }
-  const asset = { ...workingCopy.value };
-  let updated;
+  if (!canSave.value) return;
+  const asset = {
+    ...workingCopy.value,
+    geoJson: JSON.stringify(JSON.parse(workingCopy.value.geoJson))
+  };
   if (asset.id) {
-    updated = props.modelValue.map(a => (a.id === asset.id ? asset : a));
+    assets.value = assets.value.map(a => (a.id === asset.id ? asset : a));
   } else {
     asset.id = crypto.randomUUID();
-    updated = [ ...props.modelValue, asset ];
+    assets.value = [ ...assets.value, asset ];
   }
-  emit('update:modelValue', updated);
+  emit('update:modelValue', assets.value);
   resetForm();
 }
 </script>
@@ -100,8 +108,8 @@ function onAssetSave() {
 <template>
   <!-- Existing items -->
   <GeoJSONList
-    v-if="modelValue.length"
-    :model-value="modelValue"
+    v-if="assets.length"
+    :model-value="assets"
     class="mb-3"
     @remove-asset="removeAsset"
     @edit-asset="startEdit"
@@ -118,6 +126,7 @@ function onAssetSave() {
       class="mb-2"
     >
       <v-file-upload
+        v-model="fileModel"
         :title="t('additional:modules.dataNarrator.geojson.uploadFile')"
         density="compact"
         variant="compact"
@@ -162,10 +171,13 @@ function onAssetSave() {
         {{ t('additional:modules.dataNarrator.button.cancel') }}
       </v-btn>
       <v-btn
-        color="primary"
-        variant="tonal"
+        variant="flat"
         size="small"
+        class="geojson-action-btn"
         :prepend-icon="editMode ? undefined : mdiMapMarkerPlusOutline"
+        :append-icon="mdiChevronRight"
+        :disabled="!canSave"
+        rounded
         @click="onAssetSave"
       >
         {{ editMode
@@ -182,5 +194,19 @@ function onAssetSave() {
   border: 1px solid #e1e1e1;
   border-radius: 8px;
   padding: 12px;
+}
+
+.geojson-action-btn {
+  background-color: #ffffff;
+  color: #1f2937;
+  border: 1px solid rgba(31, 41, 55, 0.2);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  font-weight: 600;
+  letter-spacing: 0.1px;
+
+  &:hover {
+    background-color: #f0f4ff;
+    border-color: rgba(31, 41, 55, 0.35);
+  }
 }
 </style>
