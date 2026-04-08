@@ -5,12 +5,8 @@ import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { useIsMobile } from '../../../hooks/useIsMobile';
-import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrator';
-import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
-import { getFileUrl } from '../../../utils/getFileUrl';
-import { createLogger } from '../../../utils/logger.js';
-import { numberToLetter } from '../../../utils/numberToLetter';
 import { useSceneReset } from '../../../hooks/useSceneReset';
+import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrator';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 import { useNavigation } from '../../steps/hooks/useNavigation';
 import { useStory } from '../hooks/useStory';
