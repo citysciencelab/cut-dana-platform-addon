@@ -257,6 +257,7 @@
       "layer" : {
         "informationLayer": "Informationsebene",
         "addInformationLayer": "Informationsebene hinzufügen",
+        "editInformationLayer": "Informationsebene bearbeiten",
         "informationLayersPanel": "Informationsebenen",
         "nonSelected": "Keine Ebenen ausgewählt"
       },

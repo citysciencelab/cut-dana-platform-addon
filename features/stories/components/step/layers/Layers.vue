@@ -151,7 +151,9 @@ watch(
   <CategoryBrowser
     :items="layersTree"
     :loading="loading"
+    :selected-ids="(props.modelValue ?? []).map(l => l.id)"
     @select:layer="(l) => addLayer(l.id)"
+    @deselect:layer="(l) => removeLayer(l.id)"
   />
 </template>
 

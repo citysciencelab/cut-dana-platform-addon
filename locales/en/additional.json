@@ -257,6 +257,7 @@
       "layer" : {
         "informationLayer": "Data Layer",
         "addInformationLayer": "Add Data Layer",
+        "editInformationLayer": "Edit Data Layer",
         "informationLayersPanel": "Information Layers",
         "nonSelected": "No layer selected"
       },

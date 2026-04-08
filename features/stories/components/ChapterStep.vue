@@ -303,7 +303,9 @@ onMounted(() => {
         rounded
         @click="emit('openLayers')"
       >
-        {{ t('additional:modules.dataNarrator.layer.addInformationLayer') }}
+        {{ step.informationLayers?.length
+          ? t('additional:modules.dataNarrator.layer.editInformationLayer')
+          : t('additional:modules.dataNarrator.layer.addInformationLayer') }}
       </v-btn>
     </div>
 

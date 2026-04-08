@@ -1,17 +1,18 @@
 <!-- CategoryBrowser.vue -->
 <script setup>
-import { mdiChevronRight, mdiFileDocumentOutline, mdiFolderOutline } from '@mdi/js';
+import { mdiChevronRight, mdiFolderOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, computed } from 'vue';
 
 const props = defineProps({
   items: { type: Array, required: false, default: () => [] },
   loading: { type: Boolean, default: false },
+  selectedIds: { type: Array, default: () => [] },
 });
 
 const { t } = useTranslation();
 
-const emit = defineEmits([ 'select:layer' ]);
+const emit = defineEmits([ 'select:layer', 'deselect:layer' ]);
 
 const stack = ref([]);
 const searchQuery = ref();
@@ -91,8 +92,16 @@ function goHome() {
   stack.value = [];
 }
 
+function isSelected(layerId) {
+  return props.selectedIds.includes(layerId);
+}
+
 function onLayerClick(layer) {
-  emit('select:layer', layer);
+  if (isSelected(layer.id)) {
+    emit('deselect:layer', layer);
+  } else {
+    emit('select:layer', layer);
+  }
 }
 
 </script>
@@ -157,11 +166,17 @@ function onLayerClick(layer) {
           v-for="(match, i) in searchResultLayers"
           :key="'search-' + i"
           class="panel-row search-result-row"
+          :class="{ 'is-selected': isSelected(match.layer.id) }"
           role="listitem"
           @click="onLayerClick(match.layer)"
         >
           <span class="icon">
-            <v-icon :icon="mdiFileDocumentOutline" />
+            <v-checkbox-btn
+              :model-value="isSelected(match.layer.id)"
+              density="compact"
+              hide-details
+              @click.stop="onLayerClick(match.layer)"
+            />
           </span>
           <div>
             <div class="meta">
@@ -179,6 +194,7 @@ function onLayerClick(layer) {
           v-for="(row, i) in rows"
           :key="i"
           class="panel-row"
+          :class="{ 'is-selected': row.type === 'layer' && isSelected(row.layer?.id) }"
           role="listitem"
           v-bind="row.type !== 'layer' ? { 'aria-haspopup': 'list' } : {}"
           @click="
@@ -197,7 +213,12 @@ function onLayerClick(layer) {
               <v-icon :icon="mdiFolderOutline" />
             </template>
             <template v-else>
-              <v-icon :icon="mdiFileDocumentOutline" />
+              <v-checkbox-btn
+                :model-value="isSelected(row.layer.id)"
+                density="compact"
+                hide-details
+                @click.stop="onLayerClick(row.layer)"
+              />
             </template>
           </span>
 
@@ -280,6 +301,10 @@ function onLayerClick(layer) {
             text-align: left;
             cursor: pointer;
             border-radius: 4px;
+
+            &.is-selected {
+                background-color: #f0f4ff;
+            }
 
             &:hover {
                 background-color: #f1f1f1;
