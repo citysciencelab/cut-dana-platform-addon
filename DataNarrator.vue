@@ -27,7 +27,7 @@ useDeepLink();
       id="datanarrator-container"
       :class="[toolwindowMode]"
     >
-      <DataNarratorDashboard v-if="mode === constants.dataNarratorModes.DASHBOARD" />
+      <DataNarratorDashboard v-show="mode === constants.dataNarratorModes.DASHBOARD" />
       <CreateStory v-if="mode === constants.dataNarratorModes.CREATE_STORY" />
       <EditStory v-if="mode === constants.dataNarratorModes.EDIT_STORY" />
       <PlayStory v-if="mode === constants.dataNarratorModes.PLAY_STORY" />
