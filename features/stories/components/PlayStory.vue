@@ -7,6 +7,10 @@ import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { useSceneReset } from '../../../hooks/useSceneReset';
 import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrator';
+import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
+import { getFileUrl } from '../../../utils/getFileUrl';
+import { createLogger } from '../../../utils/logger.js';
+import { numberToLetter } from '../../../utils/numberToLetter';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 import { useNavigation } from '../../steps/hooks/useNavigation';
 import { useStory } from '../hooks/useStory';
@@ -99,7 +103,7 @@ async function load3DModel(step) {
     try {
       const resp = await fetch(`${backendUrl}/${model3D.fileUrl}`);
       if (!resp.ok) {
-        console.warn(`Failed to fetch model: ${resp.status}`);
+        logger.warn(`Failed to fetch model: ${resp.status}`);
         continue;
       }
       const blob = await resp.blob();
@@ -232,7 +236,7 @@ watch(
 
     // Clear 3D entities from the previous step
     const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
-    for (const model of [...prevModels]) {
+    for (const model of [ ...prevModels ]) {
       store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
     }
 
