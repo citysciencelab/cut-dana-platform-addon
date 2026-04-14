@@ -42,7 +42,7 @@ const isOpen = computed({
 const dialogTitle = computed(() =>
   editMode.value
     ? t('additional:modules.dataNarrator.geojson.editAssetTitle')
-    : t('additional:modules.dataNarrator.geojson.newAssetTitle')
+    : t('additional:modules.dataNarrator.geojson.geoJSONLabel')
 );
 
 const onFileSelectionChanged = (file) => {
@@ -120,7 +120,7 @@ const onAssetSave = () => {
         <v-col cols="12">
           <v-textarea
             v-model="workingCopy.geoJson"
-            :label="t('additional:modules.dataNarrator.geojson.geoJSONLabel')"
+            :label="t('additional:modules.dataNarrator.geojson.geoJSONContentLabel')"
             variant="outlined"
           />
         </v-col>

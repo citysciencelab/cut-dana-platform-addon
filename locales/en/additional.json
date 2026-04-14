@@ -111,11 +111,11 @@
       },
       "geojson": {
         "panelTitle": "GeoJSON Data Sources",
-        "newAssetTitle": "Add GeoJSON Data Source",
         "editAssetTitle": "Edit GeoJSON Data Source",
         "uploadFile": "Select file or drag & drop",
         "titleLabel": "Title",
-        "geoJSONLabel": "GeoJSON",
+        "geoJSONLabel": "Add GeoJSON",
+        "geoJSONContentLabel": "GeoJSON Content",
         "addGeoJSON": "Add GeoJSON",
         "editGeoJSON": "Edit GeoJSON",
         "panelHeading": "GeoJSON",

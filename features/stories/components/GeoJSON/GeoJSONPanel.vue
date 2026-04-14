@@ -14,7 +14,9 @@ const emit = defineEmits([ 'update:modelValue' ]);
 
 // Local copy so additions/removals are visible immediately without prop round-trip
 const assets = ref([ ...(props.modelValue ?? []) ]);
-watch(() => props.modelValue, (val) => { assets.value = [ ...(val ?? []) ]; });
+watch(() => props.modelValue, (val) => {
+  assets.value = [ ...(val ?? []) ];
+});
 
 const selectedAssetId = ref(null);
 const jsonError = ref(null);
@@ -27,12 +29,6 @@ const selectedAsset = computed(() =>
 
 const editMode = computed(() => !!workingCopy.value.id);
 const canSave = computed(() => !!workingCopy.value.geoJson);
-
-const formTitle = computed(() =>
-  editMode.value
-    ? t('additional:modules.dataNarrator.geojson.editAssetTitle')
-    : t('additional:modules.dataNarrator.geojson.newAssetTitle')
-);
 
 watch(selectedAsset, (asset) => {
   const geoJson = asset?.geoJson
@@ -81,10 +77,14 @@ function onFileSelectionChanged(file) {
         jsonError.value = t('additional:modules.dataNarrator.geojson.invalidJSON');
       }
     };
-    reader.onerror = () => { jsonError.value = t('additional:modules.dataNarrator.geojson.errorReadingFile'); };
+    reader.onerror = () => {
+      jsonError.value = t('additional:modules.dataNarrator.geojson.errorReadingFile');
+    };
     reader.readAsText(file);
   } else {
     workingCopy.value.geoJson = null;
+    workingCopy.value.title = '';
+    jsonError.value = null;
   }
 }
 
@@ -117,10 +117,6 @@ function onAssetSave() {
 
   <!-- Inline add / edit form -->
   <div class="geojson-form">
-    <p class="text-body-2 font-weight-medium mb-2">
-      {{ formTitle }}
-    </p>
-
     <div
       v-if="!editMode"
       class="mb-2"
@@ -147,7 +143,7 @@ function onAssetSave() {
 
     <v-textarea
       v-model="workingCopy.geoJson"
-      :label="t('additional:modules.dataNarrator.geojson.geoJSONLabel')"
+      :label="t('additional:modules.dataNarrator.geojson.geoJSONContentLabel')"
       variant="outlined"
       density="compact"
       rows="5"
@@ -180,32 +176,28 @@ function onAssetSave() {
         rounded
         @click="onAssetSave"
       >
-        {{ editMode
-          ? t('additional:modules.dataNarrator.button.submitEditStep')
-          : t('additional:modules.dataNarrator.geojson.addGeoJSON') }}
+        {{
+          editMode
+            ? t('additional:modules.dataNarrator.button.submitEditStep')
+            : t('additional:modules.dataNarrator.geojson.addGeoJSON')
+        }}
       </v-btn>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.geojson-form {
-  background: #f9f9f9;
-  border: 1px solid #e1e1e1;
-  border-radius: 8px;
-  padding: 12px;
-}
 
 .geojson-action-btn {
-  background-color: #ffffff;
-  color: #1f2937;
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
   border: 1px solid rgba(31, 41, 55, 0.2);
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
   font-weight: 600;
   letter-spacing: 0.1px;
 
   &:hover {
-    background-color: #f0f4ff;
+    background-color: #f8fafc !important;
     border-color: rgba(31, 41, 55, 0.35);
   }
 }
