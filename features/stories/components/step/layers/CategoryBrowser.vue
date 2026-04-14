@@ -1,6 +1,6 @@
 <!-- CategoryBrowser.vue -->
 <script setup>
-import { mdiChevronRight, mdiFolderOutline } from '@mdi/js';
+import { mdiChevronRight, mdiFolderOutline, mdiHomeOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { computed, ref } from 'vue';
 
@@ -127,9 +127,12 @@ function onLayerClick(layer) {
       <div class="crumbs">
         <button
           class="crumb"
+          :class="{ current: level === 'root' && !hasSearchResultLayers }"
           :disabled="level==='root'"
           @click="goHome"
-        />
+        >
+          <v-icon :icon="mdiHomeOutline" />
+        </button>
         <template v-if="!hasSearchResultLayers">
           <span
             v-if="level!=='root'"
@@ -271,6 +274,9 @@ function onLayerClick(layer) {
         cursor: pointer;
         padding: 0;
         font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
 
         &[disabled] {
           color: #999;
