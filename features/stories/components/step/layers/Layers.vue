@@ -13,15 +13,23 @@ const store = useStore();
 const { layersTree, idToLayerMap, loading } = useLayers();
 const { t } = useTranslation();
 
-const props = defineProps({ modelValue: { type: Array, default: () => [] } });
+const props = defineProps({
+  modelValue: { type: Array, default: () => [] },
+  items: { type: Array, default: null },
+  loadingValue: { type: Boolean, default: null },
+  idToLayerMapValue: { type: Object, default: null }
+});
 const emit = defineEmits([ 'update:modelValue' ]);
 
 const transparencyDialog = ref(false);
 const activeLayerId = ref(null);
+const resolvedItems = computed(() => props.items ?? layersTree.value);
+const resolvedLoading = computed(() => props.loadingValue ?? loading.value);
+const resolvedIdToLayerMap = computed(() => props.idToLayerMapValue ?? idToLayerMap.value);
 
 const selectedLayers = computed(() =>
   (props.modelValue ?? [])
-    .map(({ id }) => idToLayerMap.value.get(String(id)))
+    .map(({ id }) => resolvedIdToLayerMap.value.get(String(id)))
     .filter(Boolean)
 );
 
@@ -150,8 +158,8 @@ watch(
 
   <!-- CategoryBrowser always visible -->
   <CategoryBrowser
-    :items="layersTree"
-    :loading="loading"
+    :items="resolvedItems"
+    :loading="resolvedLoading"
     :selected-ids="(props.modelValue ?? []).map(l => l.id)"
     @select:layer="(l) => addLayer(l.id)"
     @deselect:layer="(l) => removeLayer(l.id)"

@@ -5,6 +5,7 @@ import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
+import { use3DLayers } from '../../../hooks/use3DLayers';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { useSceneReset } from '../../../hooks/useSceneReset';
 import { backendUrl, dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
@@ -20,7 +21,6 @@ import { uploadStepModel } from '../services/uploadStepModel';
 import Chapter from './Chapter.vue';
 import GeoJSONPanel from './GeoJSON/GeoJSONPanel.vue';
 import Layers from './step/layers/Layers.vue';
-import ThreeDLayerBrowser from './step/threeDNavigation/components/ThreeDLayerBrowser.vue';
 import ThreeDNavigation from './step/threeDNavigation/components/ThreeDNavigation.vue';
 import StoryOverview from './StoryOverview.vue';
 import ThreeDHint from './ThreeDHint.vue';
@@ -61,6 +61,7 @@ const props = defineProps({
 const { t } = useTranslation();
 const { toolwindowMode } = useDataNarrator();
 const { gotoPage } = useDataNarrator();
+const { layers3D, loading: loading3DLayers } = use3DLayers();
 const { resetScene } = useSceneReset();
 const { isMobile } = useIsMobile();
 
@@ -117,6 +118,28 @@ function hasTextContent(value) {
 
 const activeChapter = computed(() => chaptersData.value?.[activeChapterIndex.value] ?? null);
 const activeStep = computed(() => activeChapter.value?.steps?.[activeStepIndex.value] ?? null);
+const threeDLayerItems = computed(() => {
+  const layers = layers3D.value ?? [];
+
+  if (!layers.length) {
+    return [];
+  }
+
+  return [ {
+    category: '3D',
+    subcategories: [ {
+      name: t('additional:modules.dataNarrator.label.layers3D'),
+      layers
+    } ]
+  } ];
+});
+const threeDLayerIdToLayerMap = computed(() => {
+  return new Map(
+    (layers3D.value ?? [])
+      .filter(layer => layer?.id)
+      .map(layer => [ String(layer.id), layer ])
+  );
+});
 const isCreatingNewStep = computed(() => {
   const draft = newStepDraft.value;
 
@@ -832,9 +855,12 @@ watch([ activeStepIndex, previewVisible ], () => {
         @model-created="handleModelCreated"
       />
 
-      <ThreeDLayerBrowser
+      <Layers
         v-else-if="activePanel === '3dlayers'"
         :model-value="activeStep?.layers3D ?? []"
+        :items="threeDLayerItems"
+        :loading-value="loading3DLayers"
+        :id-to-layer-map-value="threeDLayerIdToLayerMap"
         @update:model-value="updateActiveStepLayers3D"
       />
 
