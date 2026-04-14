@@ -1,7 +1,7 @@
 import { useStore } from 'vuex';
 
 import { clearGeoJSON } from '../utils/geoJSON';
-import { useNavigation } from '../features/steps/hooks/useNavigation';
+import { useNavigation } from './useNavigation';
 
 /**
  * Provides a unified reset function that cleans up all map/scene state:

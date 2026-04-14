@@ -15,7 +15,7 @@ import { useStore } from 'vuex';
 import { useSceneReset } from '../../../hooks/useSceneReset';
 import AddWMS from '../../../tools/addWms/components/AddWMS.vue';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
-import { useNavigation } from '../../steps/hooks/useNavigation';
+import { useNavigation } from '../../../hooks/useNavigation';
 
 import BackgroundMap from './step/BackgroundMap.vue';
 import TransparencySlider from './step/layers/TransparencySlider.vue';

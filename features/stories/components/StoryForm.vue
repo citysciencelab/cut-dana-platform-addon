@@ -11,7 +11,7 @@ import { backendUrl, dataNarratorModes, ToolwindowModes } from '../../../store/c
 import { clearGeoJSON } from '../../../utils/geoJSON';
 import { createLogger } from '../../../utils/logger.js';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
-import { useNavigation } from '../../steps/hooks/useNavigation';
+import { useNavigation } from '../../../hooks/useNavigation';
 import { deleteCoverImage, uploadCoverImage } from '../services/coverImage';
 import { createStory } from '../services/createStory';
 import { editStory } from '../services/editStory';

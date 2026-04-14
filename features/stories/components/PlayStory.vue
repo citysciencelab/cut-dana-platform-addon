@@ -12,7 +12,7 @@ import { getFileUrl } from '../../../utils/getFileUrl';
 import { createLogger } from '../../../utils/logger.js';
 import { numberToLetter } from '../../../utils/numberToLetter';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
-import { useNavigation } from '../../steps/hooks/useNavigation';
+import { useNavigation } from '../../../hooks/useNavigation';
 import { useStory } from '../hooks/useStory';
 
 import PlayerFrame from './play/PlayerFrame.vue';
