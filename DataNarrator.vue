@@ -1,4 +1,6 @@
-﻿<script setup>
+<script setup>
+import { onMounted, onUnmounted } from 'vue';
+
 import DataNarratorDashboard from './features/dashboard/components/Dashboard.vue';
 import CreateStory from './features/stories/components/CreateStory.vue';
 import EditStory from './features/stories/components/EditStory.vue';
@@ -6,6 +8,7 @@ import PlayStory from './features/stories/components/PlayStory.vue';
 import { useDataNarrator } from './hooks/useDataNarrator';
 import { useDeepLink } from './hooks/useDeepLink';
 import { useLayers } from './hooks/useLayers';
+import logoNew from './img/logo-new.png';
 import * as constants from './store/contantsDataNarrator';
 
 defineOptions({
@@ -13,12 +16,75 @@ defineOptions({
 });
 
 const { disableFooter, disableMainMenu, disableSecondaryMenu, toolwindowMode, mode } = useDataNarrator();
+let previousFaviconHref = null;
+let previousFaviconType = null;
+let previousFaviconRel = null;
+let faviconElement = null;
+
+const normalizeBundledAssetPath = (assetPath) => {
+  if (typeof assetPath !== 'string') {
+    return assetPath;
+  }
+
+  return assetPath.replace(/^(\.\.\/)+mastercode\//, './mastercode/');
+};
+
+const setBrowserTabIcon = () => {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  const nextHref = normalizeBundledAssetPath(logoNew);
+  const existingFavicon = document.head.querySelector('link[rel="icon"]');
+
+  if (existingFavicon) {
+    previousFaviconHref = existingFavicon.getAttribute('href');
+    previousFaviconType = existingFavicon.getAttribute('type');
+    previousFaviconRel = existingFavicon.getAttribute('rel');
+    faviconElement = existingFavicon;
+  }
+  else {
+    faviconElement = document.createElement('link');
+    faviconElement.setAttribute('rel', 'icon');
+    document.head.appendChild(faviconElement);
+  }
+
+  faviconElement.setAttribute('rel', 'icon');
+  faviconElement.setAttribute('type', 'image/png');
+  faviconElement.setAttribute('href', nextHref);
+};
+
+const restoreBrowserTabIcon = () => {
+  if (!faviconElement) {
+    return;
+  }
+
+  if (previousFaviconHref) {
+    faviconElement.setAttribute('href', previousFaviconHref);
+  }
+  else {
+    faviconElement.removeAttribute('href');
+  }
+
+  if (previousFaviconType) {
+    faviconElement.setAttribute('type', previousFaviconType);
+  }
+  else {
+    faviconElement.removeAttribute('type');
+  }
+
+  if (previousFaviconRel) {
+    faviconElement.setAttribute('rel', previousFaviconRel);
+  }
+};
 
 useLayers();
 disableFooter();
 disableMainMenu();
 disableSecondaryMenu();
 useDeepLink();
+onMounted(setBrowserTabIcon);
+onUnmounted(restoreBrowserTabIcon);
 </script>
 
 <template lang="html">
