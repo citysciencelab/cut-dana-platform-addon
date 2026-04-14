@@ -228,10 +228,21 @@ function getDefaultStep(id) {
   };
 }
 
-function getNextStepId(chapter) {
-  return (chapter?.steps ?? []).reduce((maxId, step) => {
-    return Number.isInteger(step?.id) ? Math.max(maxId, step.id) : maxId;
-  }, 0) + 1;
+function reindexAllSteps() {
+  let nextStepId = 1;
+
+  for (const chapter of chaptersData.value ?? []) {
+    for (const step of chapter.steps ?? []) {
+      step.id = nextStepId++;
+    }
+  }
+
+  if (newStepDraft.value && activeChapter.value && activeStep.value) {
+    newStepDraft.value = {
+      chapterId: activeChapter.value.id,
+      stepId: activeStep.value.id,
+    };
+  }
 }
 
 function resetToStoryForm() {
@@ -254,9 +265,10 @@ function addNewChapter() {
 
   activeChapterIndex.value = chaptersData.value.length - 1;
   activeStepIndex.value = 0;
+  reindexAllSteps();
   newStepDraft.value = {
     chapterId: newChapterId,
-    stepId: newStep.id,
+    stepId: chaptersData.value[activeChapterIndex.value].steps[activeStepIndex.value].id,
   };
 }
 
@@ -265,14 +277,15 @@ function handleAddNewStep({ chapterIdx }) {
   const chapter = chaptersData.value[chapterIdx];
   if (!chapter) return;
 
-  const newStep = getDefaultStep(getNextStepId(chapter));
+  const newStep = getDefaultStep(0);
 
   chapter.steps.push(newStep);
   activeChapterIndex.value = chapterIdx;
   activeStepIndex.value = chapter.steps.length - 1;
+  reindexAllSteps();
   newStepDraft.value = {
     chapterId: chapter.id,
-    stepId: newStep.id,
+    stepId: chaptersData.value[activeChapterIndex.value].steps[activeStepIndex.value].id,
   };
 }
 
@@ -282,21 +295,25 @@ function handleDeleteStep({ chapterIdx, stepIdx }) {
   if (stepIdx < 0 || stepIdx >= chapter.steps.length) return;
 
   const deletedStep = chapter.steps[stepIdx];
-  chapter.steps.splice(stepIdx, 1);
-
-  if (
+  const isDeletingDraftStep = (
     newStepDraft.value?.chapterId === chapter.id &&
     newStepDraft.value?.stepId === deletedStep?.id
-  ) {
+  );
+  chapter.steps.splice(stepIdx, 1);
+
+  if (isDeletingDraftStep) {
     newStepDraft.value = null;
     resetToStoryForm();
   }
+
+  reindexAllSteps();
 }
 
 function handleStepsChange({ chapterIdx, newList }) {
   const chapter = chaptersData.value?.[chapterIdx];
   if (!chapter) return;
   chapter.steps = [ ...newList ];
+  reindexAllSteps();
 }
 
 function handleEditStep({ chapterIdx, stepIdx }) {
@@ -330,6 +347,7 @@ function handleDeleteChapter({ chapterIdx }) {
   const deletedChapter = chaptersData.value[chapterIdx];
   chaptersData.value.splice(chapterIdx, 1);
   chaptersData.value.forEach((ch, i) => (ch.sequence = i + 1));
+  reindexAllSteps();
 
   if (newStepDraft.value?.chapterId === deletedChapter?.id) {
     newStepDraft.value = null;
@@ -342,6 +360,7 @@ function handleChaptersChange(newList) {
     ...ch,
     sequence: i + 1,
   }));
+  reindexAllSteps();
 }
 
 function saveStep() {
@@ -575,6 +594,7 @@ function discardNewStep() {
 
     if (chapter && stepIdx >= 0) {
       chapter.steps.splice(stepIdx, 1);
+      reindexAllSteps();
     }
   }
 
@@ -774,6 +794,7 @@ watch(
       storyNameInput.value = s ?? '';
       descriptionInput.value = d ?? '';
       chaptersData.value = c ?? [];
+      reindexAllSteps();
       previewVisible.value = true;
       activeStepIndex.value = -1;
       editStoryVisible.value = true;

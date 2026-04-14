@@ -42,12 +42,26 @@ const isLoading = ref(true);
 const stage = ref('overview');
 const chapterIndex = ref(0);
 const stepIndex = ref(0);
+const pendingStepFromUrl = ref(null);
 
 const totalSteps = computed(() => {
   if (!story.value) return 0;
   return story.value.chapters.reduce(
     (sum, chap) => sum + chap.steps.length,
     0
+  );
+});
+const flattenedSteps = computed(() => {
+  if (!story.value) {
+    return [];
+  }
+
+  return story.value.chapters.flatMap((chapter, resolvedChapterIndex) =>
+    (chapter.steps ?? []).map((step, resolvedStepIndex) => ({
+      chapterIndex: resolvedChapterIndex,
+      stepIndex: resolvedStepIndex,
+      step
+    }))
   );
 });
 
@@ -65,12 +79,57 @@ const currentStep = computed(() =>
   story.value?.chapters[chapterIndex.value]?.steps[stepIndex.value] ?? null
 );
 
+function syncBrowserUrl() {
+  const baseUrl = `${location.origin}/portal/stories/`;
+
+  if (!currentStoryId.value) {
+    window.history.replaceState({}, '', baseUrl);
+    return;
+  }
+
+  const params = new URLSearchParams({
+    id: String(currentStoryId.value)
+  });
+
+  if (stage.value === 'play' && currentGlobalStep.value > 0) {
+    params.set('step', String(currentGlobalStep.value));
+  }
+
+  window.history.replaceState({}, '', `${baseUrl}?${params.toString()}`);
+}
+
+function openRequestedStepFromUrl() {
+  const requestedStep = Number(pendingStepFromUrl.value);
+  pendingStepFromUrl.value = null;
+
+  if (!Number.isInteger(requestedStep) || requestedStep < 1) {
+    stage.value = 'overview';
+    chapterIndex.value = 0;
+    stepIndex.value = 0;
+    return;
+  }
+
+  const targetStep = flattenedSteps.value[requestedStep - 1];
+
+  if (!targetStep) {
+    stage.value = 'overview';
+    chapterIndex.value = 0;
+    stepIndex.value = 0;
+    return;
+  }
+
+  chapterIndex.value = targetStep.chapterIndex;
+  stepIndex.value = targetStep.stepIndex;
+  stage.value = 'play';
+}
+
 async function loadStory(id) {
   if (!id) return;
   isLoading.value = true;
   try {
     const res = await fetch(`${backendUrl}/stories/new/${id}`);
     story.value = await res.json();
+    openRequestedStepFromUrl();
   } catch (error) {
     logger.error(error);
   } finally {
@@ -89,11 +148,20 @@ watch(stage, (currentStage) => {
 });
 
 watch(currentStoryId, (id) => {
+  pendingStepFromUrl.value = new URLSearchParams(window.location.search).get('step');
   loadStory(id);
   stage.value = 'overview';
   chapterIndex.value = 0;
   stepIndex.value = 0;
 }, { immediate: true });
+
+watch(
+  () => [ currentStoryId.value, stage.value, currentGlobalStep.value ],
+  () => {
+    syncBrowserUrl();
+  },
+  { immediate: true }
+);
 
 async function load3DModel(step) {
   const models3D = Array.isArray(step.models3D) ? step.models3D : [];
@@ -312,7 +380,7 @@ function backToDashboard() {
   });
 
   const baseUrl = `${location.origin}/portal/stories`;
-  window.history.replaceState({}, '', baseUrl);
+  window.history.replaceState({}, '', `${baseUrl}/`);
 }
 
 function startPlay() {
@@ -331,12 +399,7 @@ function next() {
     chapterIndex.value++;
     stepIndex.value = 0;
   } else {
-    resetScene();
-    gotoPage(dataNarratorModes.DASHBOARD);
-    setAnimatedView({
-      center: initialCenter.value,
-      zoom: initialZoom.value,
-    });
+    backToDashboard();
   }
 }
 
@@ -431,7 +494,7 @@ onBeforeUnmount(() => {
               <div class="step-content px-2">
                 <div class="step-content-title mt-10">
                   <h2 class="step-pill">
-                    {{ stepIndex + 1 }}
+                    {{ currentGlobalStep }}
                   </h2>
                   <h3 class="font-bold">
                     {{ story.chapters[chapterIndex].steps[stepIndex].title }}

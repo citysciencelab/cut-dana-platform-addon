@@ -196,7 +196,7 @@ const getColor = (idx) => {
                   title="Drag"
                 />
                 <div class="step-content bg-white d-flex flex-row align-center rounded-xl ml-2 p-2 flex-1-0">
-                  <span class="pl-2 mr-2">{{ stepIdx + 1 }}</span>
+                  <span class="pl-2 mr-2">{{ step.id }}</span>
                   <span>{{ step.title }}</span>
                   <div class="step-content-action ml-auto d-flex flex-row align-center ga-1">
                     <v-tooltip location="top">
