@@ -2,7 +2,7 @@
 <script setup>
 import { mdiChevronRight, mdiFolderOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   items: { type: Array, required: false, default: () => [] },
@@ -129,9 +129,7 @@ function onLayerClick(layer) {
           class="crumb"
           :disabled="level==='root'"
           @click="goHome"
-        >
-          {{ t('additional:modules.dataNarrator.categoryBrowser.dataSources') }}
-        </button>
+        />
         <template v-if="!hasSearchResultLayers">
           <span
             v-if="level!=='root'"
@@ -158,7 +156,7 @@ function onLayerClick(layer) {
     >
       <template v-if="searchQuery?.length > 3 && !hasSearchResultLayers">
         <p class="empty">
-          {{ t('additional:modules.dataNarrator.categoryBrowser.noResultsFound', { query: searchQuery }) }}
+          {{ t('additional:modules.dataNarrator.categoryBrowser.noResultsFound', {query: searchQuery}) }}
         </p>
       </template>
       <template v-else-if="hasSearchResultLayers">
@@ -244,8 +242,12 @@ function onLayerClick(layer) {
         v-if="rows.length === 0 && !hasSearchResultLayers"
         class="empty"
       >
-        <span v-if="level==='root'">{{ t('additional:modules.dataNarrator.categoryBrowser.noCategoriesAvailable') }}</span>
-        <span v-else-if="level==='category'">{{ t('additional:modules.dataNarrator.categoryBrowser.noSubcategoriesInFolder') }}</span>
+        <span v-if="level==='root'">{{
+          t('additional:modules.dataNarrator.categoryBrowser.noCategoriesAvailable')
+        }}</span>
+        <span v-else-if="level==='category'">{{
+          t('additional:modules.dataNarrator.categoryBrowser.noSubcategoriesInFolder')
+        }}</span>
         <span v-else>{{ t('additional:modules.dataNarrator.categoryBrowser.noLayersInFolder') }}</span>
       </p>
     </div>
@@ -254,65 +256,65 @@ function onLayerClick(layer) {
 
 <style scoped lang="scss">
 .nav {
-    .nav-header {
-        .crumbs {
-            grid-column: 1 / -1;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 6px;
+  .nav-header {
+    .crumbs {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
 
-            .crumb {
-                background: transparent;
-                border: 0;
-                color: #2f84ff;
-                cursor: pointer;
-                padding: 0;
-                font-weight: 600;
+      .crumb {
+        background: transparent;
+        border: 0;
+        color: #2f84ff;
+        cursor: pointer;
+        padding: 0;
+        font-weight: 600;
 
-                &[disabled] {
-                    color: #999;
-                    cursor: default;
-                }
-
-                &.current {
-                    color: #111;
-                    font-weight: 700;
-                    cursor: default;
-                }
-            }
+        &[disabled] {
+          color: #999;
+          cursor: default;
         }
-    }
 
-    .panel {
-        width: 100%;
-
-        .panel-row {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 28px 1fr auto 18px;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 12px;
-            background: transparent;
-            border: 0;
-            text-align: left;
-            cursor: pointer;
-            border-radius: 4px;
-
-            &.is-selected {
-                background-color: #f0f4ff;
-            }
-
-            &:hover {
-                background-color: #f1f1f1;
-            }
-
-            &.search-result-row .meta {
-                font-size: 0.9em;
-                color: grey;
-            }
+        &.current {
+          color: #111;
+          font-weight: 700;
+          cursor: default;
         }
+      }
     }
+  }
+
+  .panel {
+    width: 100%;
+
+    .panel-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 28px 1fr auto 18px;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 4px;
+
+      &.is-selected {
+        background-color: #f0f4ff;
+      }
+
+      &:hover {
+        background-color: #f1f1f1;
+      }
+
+      &.search-result-row .meta {
+        font-size: 0.9em;
+        color: grey;
+      }
+    }
+  }
 }
 </style>

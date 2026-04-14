@@ -104,8 +104,6 @@
       },
       "categoryBrowser": {
         "searchLayers": "Ebenen durchsuchen…",
-
-        "dataSources": "Datenquellen",
         "noResultsFound": "Keine Ergebnisse gefunden für \"{{query}}\".",
         "noCategoriesAvailable": "Keine Kategorien verfügbar.",
         "noSubcategoriesInFolder": "Keine Unterkategorien in diesem Ordner.",
@@ -143,7 +141,7 @@
         "saveStory": "Story Speichern",
         "unnamed": "Unbenanntes Kapitel"
       },
-      "overview":{
+      "overview": {
         "structure": "Inhalt der Story"
       },
       "dashboardView": {
@@ -257,7 +255,7 @@
         "cancel": "Abbrechen",
         "error": "Es ist ein Fehler beim Löschen des Kontos aufgetreten."
       },
-      "layer" : {
+      "layer": {
         "informationLayer": "Informationsebene",
         "addInformationLayer": "Informationsebene hinzufügen",
         "editInformationLayer": "Informationsebene bearbeiten",
