@@ -21,19 +21,19 @@ const activeLayerId = ref(null);
 
 const selectedLayers = computed(() =>
   (props.modelValue ?? [])
-    .map(({ id }) => idToLayerMap.value.get(id))
+    .map(({ id }) => idToLayerMap.value.get(String(id)))
     .filter(Boolean)
 );
 
 function addLayer(layerId) {
   if (!layerId) return;
-  if (!props.modelValue.find(l => l.id === layerId)) {
+  if (!props.modelValue.find(l => String(l.id) === String(layerId))) {
     emit('update:modelValue', [ ...props.modelValue, { id: layerId, transparency: 0 } ]);
   }
 }
 
 function removeLayer(id) {
-  emit('update:modelValue', props.modelValue.filter(v => v.id !== id));
+  emit('update:modelValue', props.modelValue.filter(v => String(v.id) !== String(id)));
 }
 
 function toggleTransparencySlider(layer) {
@@ -56,22 +56,23 @@ function onTransparencyFinalChange(layer, transparency) {
     layerConf: layer,
     transparency: transparency
   });
-  const item = props.modelValue.find(item => item.id === layer.id);
+  const item = props.modelValue.find(item => String(item.id) === String(layer.id));
   if (item) item.transparency = transparency;
 }
 
 watch(
   () => props.modelValue,
-  (newIds, oldIds) => {
-    const prev = oldIds ?? [];
-    const added = newIds.filter(id => !prev.includes(id));
-    const removed = prev.filter(id => !newIds.includes(id));
+  (newLayers = [], oldLayers = []) => {
+    const prevIds = new Set(oldLayers.map(({ id }) => String(id)));
+    const nextIds = new Set(newLayers.map(({ id }) => String(id)));
+    const added = newLayers.filter(({ id }) => !prevIds.has(String(id)));
+    const removed = oldLayers.filter(({ id }) => !nextIds.has(String(id)));
 
     const baseLayers = store.getters.layerConfigsByAttributes({
       baselayer: true,
       showInLayerTree: true
     });
-    let maxBaselayerZIndex = Math.max(...baseLayers.map(layer => layer.zIndex));
+    let maxBaselayerZIndex = Math.max(0, ...baseLayers.map(layer => layer.zIndex ?? 0));
 
     if (added.length) {
       for (const { id, transparency } of added) {
@@ -83,7 +84,7 @@ watch(
       }
     }
 
-    for (const id of removed) {
+    for (const { id } of removed) {
       store.dispatch('Modules/LayerTree/removeLayer', { id });
     }
   },

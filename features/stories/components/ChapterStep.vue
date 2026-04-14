@@ -202,6 +202,32 @@ watch(
 );
 
 watch(
+  () => props.step?.informationLayers,
+  (informationLayers) => {
+    const layers = Array.isArray(informationLayers) ? informationLayers : [];
+
+    if (!layers.length) {
+      return;
+    }
+
+    const baseLayers = store.getters.layerConfigsByAttributes({
+      baselayer: true,
+      showInLayerTree: true
+    });
+    let maxBaselayerZIndex = Math.max(0, ...baseLayers.map(layer => layer.zIndex ?? 0));
+
+    for (const layer of layers) {
+      store.dispatch('addOrReplaceLayer', {
+        layerId: layer.id,
+        zIndex: ++maxBaselayerZIndex,
+        transparency: layer.transparency
+      });
+    }
+  },
+  { immediate: true, deep: true }
+);
+
+watch(
   () => props.step?.geoJsonAssets,
   (newGeoJsonAssets) => {
     clearGeoJSON();
