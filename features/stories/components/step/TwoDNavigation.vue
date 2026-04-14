@@ -29,6 +29,17 @@ watch([ centerCoordinates, zoomLevel ], () => {
     zoomLevel: Number(zoomLevel.value)
   });
 });
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    centerCoordinates.value = Array.isArray(value?.centerCoordinates)
+      ? [ ...value.centerCoordinates ]
+      : [];
+    zoomLevel.value = value?.zoomLevel;
+  },
+  { immediate: true, deep: true }
+);
 </script>
 
 <template>

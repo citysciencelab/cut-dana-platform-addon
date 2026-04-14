@@ -45,7 +45,7 @@ const props = defineProps({
 const emit = defineEmits([ 'update:step', 'open3D', 'open3DLayers', 'openLayers', 'openGeoJSON', 'focus-chapter-title' ]);
 
 const { t } = useTranslation();
-const { setBaseLayer } = useNavigation();
+const { setAnimatedView, setBaseLayer, setInformationLayers } = useNavigation();
 const { resetScene } = useSceneReset();
 const store = useStore();
 
@@ -190,39 +190,38 @@ watch(
   () => props.step?.mapConfig,
   (newMapConfig) => {
     setBaseLayer(newMapConfig?.backgroundMapId);
-    /**
-     * not supposed to animate all the time
-     setAnimatedView({
-     center: newMapConfig.centerCoordinates,
-     zoom: newMapConfig.zoomLevel
-     });
-     **/
+
+    const center = Array.isArray(newMapConfig?.centerCoordinates)
+      ? newMapConfig.centerCoordinates.map(Number)
+      : [];
+    const zoom = Number(newMapConfig?.zoomLevel);
+
+    if (center.length >= 2 && Number.isFinite(zoom)) {
+      setAnimatedView({
+        center,
+        zoom
+      });
+    }
   },
   { immediate: true, deep: true }
 );
 
 watch(
-  () => props.step?.informationLayers,
-  (informationLayers) => {
-    const layers = Array.isArray(informationLayers) ? informationLayers : [];
+  [
+    () => props.step?.informationLayers,
+    () => props.step?.mapSources,
+    () => props.step?.mapConfig?.backgroundMapId
+  ],
+  ([ informationLayers, mapSources, backgroundMapId ]) => {
+    const activeLayers = [
+      ...(Array.isArray(informationLayers) ? informationLayers : []),
+      ...(Array.isArray(mapSources) ? mapSources : []),
+    ];
 
-    if (!layers.length) {
-      return;
-    }
-
-    const baseLayers = store.getters.layerConfigsByAttributes({
-      baselayer: true,
-      showInLayerTree: true
-    });
-    let maxBaselayerZIndex = Math.max(0, ...baseLayers.map(layer => layer.zIndex ?? 0));
-
-    for (const layer of layers) {
-      store.dispatch('addOrReplaceLayer', {
-        layerId: layer.id,
-        zIndex: ++maxBaselayerZIndex,
-        transparency: layer.transparency
-      });
-    }
+    setInformationLayers(
+      activeLayers,
+      [ String(backgroundMapId ?? ''), '19969' ].filter(Boolean)
+    );
   },
   { immediate: true, deep: true }
 );
