@@ -1,13 +1,13 @@
 <script setup>
 import { mdiMapLegend } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import danaKeyimage from '../../../img/dana-keyframe2.png';
 import logoNew from '../../../img/logo-new.png';
-import { availableStoryListModes, dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
+import { availableStoryListModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { createLogger } from '../../../utils/logger.js';
 import { useLogin } from '../hooks/useLogin';
 
@@ -24,7 +24,7 @@ const logger = createLogger('DashboardHeader');
 const { t } = useTranslation();
 
 const storiesDisplayMode = computed(() => store.state.Modules.DataNarrator.DashboardStore.mode);
-const { toolwindowMode, mode } = useDataNarrator();
+const { toolwindowMode } = useDataNarrator();
 const { loggedIn, screenName, email, isAdmin } = useLogin();
 const loggedInPersonLabel = computed(() => screenName.value || email.value || '');
 const storyModeLists = computed(() => {
@@ -38,13 +38,15 @@ const legendAdded = true;
 const toggleLegend = () => logger.debug('toggleLegend');
 
 const getBackgroundStyle = () => ({});
-
-const imageKey = ref(0);
-watch(mode, (newMode) => {
-  if (newMode === dataNarratorModes.DASHBOARD) {
-    imageKey.value++;
+const normalizeBundledAssetPath = (assetPath) => {
+  if (typeof assetPath !== 'string') {
+    return assetPath;
   }
-});
+
+  return assetPath.replace(/^(\.\.\/)+mastercode\//, './mastercode/');
+};
+const normalizedLogoNew = computed(() => normalizeBundledAssetPath(logoNew));
+const normalizedDanaKeyimage = computed(() => normalizeBundledAssetPath(danaKeyimage));
 </script>
 
 <template>
@@ -129,8 +131,7 @@ watch(mode, (newMode) => {
       >
         <h1 class="header-h1">
           <img
-            :key="`logo-${imageKey}`"
-            :src="logoNew"
+            :src="normalizedLogoNew"
             alt="logo"
             class="header-logo"
           >
@@ -154,8 +155,7 @@ watch(mode, (newMode) => {
         class="d-flex align-center justify-center justify-md-end pa-0"
       >
         <img
-          :key="`keyimage-${imageKey}`"
-          :src="danaKeyimage"
+          :src="normalizedDanaKeyimage"
           alt="dana keyimage"
           class="dana-keyimage"
         >
