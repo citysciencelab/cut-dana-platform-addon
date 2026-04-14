@@ -105,12 +105,12 @@ watch(
   <v-list
     v-if="selectedLayers.length"
     density="comfortable"
-    class="pa-0 mb-2"
+    class="pa-0 mb-1 bg-transparent"
   >
     <v-list-item
       v-for="l in selectedLayers"
       :key="l.id"
-      class="pa-0 mb-1"
+      class="pa-0 mb-0"
     >
       <v-sheet
         width="100%"

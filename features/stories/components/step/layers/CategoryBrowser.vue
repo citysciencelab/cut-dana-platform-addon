@@ -112,7 +112,7 @@ function onLayerClick(layer) {
   </div>
   <div
     v-else
-    class="nav px-4"
+    class="nav px-0"
   >
     <div class="nav-header mb-2 w-100">
       <div class="search">
