@@ -2,7 +2,7 @@
 <script setup>
 import { mdiChevronRight, mdiFolderOutline, mdiHomeOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
   items: { type: Array, required: false, default: () => [] },
@@ -16,6 +16,17 @@ const emit = defineEmits([ 'select:layer', 'deselect:layer' ]);
 
 const stack = ref([]);
 const searchQuery = ref();
+
+// Auto-skip root if there's only one category (and skip subcategory if it also has only one)
+watch(
+  () => props.items,
+  (items) => {
+    if (stack.value.length === 0 && (items ?? []).length === 1) {
+      enterCategory(items[0]);
+    }
+  },
+  { immediate: true }
+);
 
 const searchResultLayers = computed(() => {
   const queryString = searchQuery.value;
@@ -81,7 +92,14 @@ const rows = computed(() => {
 });
 
 function enterCategory(cat) {
-  stack.value = [ { level: 'category', cat } ];
+  if ((cat.subcategories ?? []).length === 1) {
+    stack.value = [
+      { level: 'category', cat },
+      { level: 'subcategory', cat, sub: cat.subcategories[0] },
+    ];
+  } else {
+    stack.value = [ { level: 'category', cat } ];
+  }
 }
 
 function enterSubcategory(cat, sub) {
@@ -90,6 +108,9 @@ function enterSubcategory(cat, sub) {
 
 function goHome() {
   stack.value = [];
+  if ((props.items ?? []).length === 1) {
+    enterCategory(props.items[0]);
+  }
 }
 
 function isSelected(layerId) {
