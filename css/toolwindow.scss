@@ -4,6 +4,9 @@
   padding: 0 min(100px, 6vw);
   display: flex;
   align-items: center;
+  max-width: 2000px;
+  margin-left: auto;
+  margin-right: auto;
 
   &.desktop {
     grid-column: 1 / 2;
