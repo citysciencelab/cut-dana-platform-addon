@@ -1,6 +1,7 @@
 import { useStore } from 'vuex';
 
 import { clearGeoJSON } from '../utils/geoJSON';
+
 import { useNavigation } from './useNavigation';
 
 /**
@@ -34,7 +35,7 @@ export function useSceneReset() {
     // Remove all 3D entities
     const importedModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
 
-    for (const model of [...importedModels]) {
+    for (const model of [ ...importedModels ]) {
       store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
     }
 

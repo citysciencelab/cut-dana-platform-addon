@@ -6,8 +6,8 @@ import {
   mdiDeleteForeverOutline,
   mdiPencilOutline
 } from '@mdi/js';
-import { ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
+import { ref } from 'vue';
 import Draggable from 'vuedraggable';
 
 import { getStoryColor } from '../../../utils/getStoryColor';

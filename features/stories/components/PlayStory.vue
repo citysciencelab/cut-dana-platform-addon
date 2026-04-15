@@ -1,12 +1,13 @@
 <script setup>
 import { mdiChevronLeft, mdiChevronRight, mdiClose } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
+import scrollama from 'scrollama';
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import scrollama from 'scrollama';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import { useNavigation } from '../../../hooks/useNavigation';
 import { useSceneReset } from '../../../hooks/useSceneReset';
 import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrator';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
@@ -14,7 +15,6 @@ import { getFileUrl } from '../../../utils/getFileUrl';
 import { createLogger } from '../../../utils/logger.js';
 import { numberToLetter } from '../../../utils/numberToLetter';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
-import { useNavigation } from '../../../hooks/useNavigation';
 import { useStory } from '../hooks/useStory';
 
 import PlayerFrame from './play/PlayerFrame.vue';

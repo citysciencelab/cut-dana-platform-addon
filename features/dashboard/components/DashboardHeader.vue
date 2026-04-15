@@ -69,7 +69,10 @@ const normalizedDanaKeyimage = computed(() => normalizeBundledAssetPath(danaKeyi
             v-if="loggedIn && loggedInPersonLabel"
             class="logged-in-person"
           >
-            {{ loggedInPersonLabel }}<span v-if="isAdmin" class="admin-badge"> (Admin)</span>
+            {{ loggedInPersonLabel }}<span
+              v-if="isAdmin"
+              class="admin-badge"
+            > (Admin)</span>
           </span>
         </div>
         <div class="d-flex justify-end align-center ga-2">
@@ -90,7 +93,10 @@ const normalizedDanaKeyimage = computed(() => normalizeBundledAssetPath(danaKeyi
           v-if="loggedIn && loggedInPersonLabel"
           class="logged-in-person"
         >
-          {{ loggedInPersonLabel }}<span v-if="isAdmin" class="admin-badge"> (Admin)</span>
+          {{ loggedInPersonLabel }}<span
+            v-if="isAdmin"
+            class="admin-badge"
+          > (Admin)</span>
         </span>
       </div>
       <div class="d-flex justify-end align-center ga-2">
@@ -213,13 +219,13 @@ const normalizedDanaKeyimage = computed(() => normalizeBundledAssetPath(danaKeyi
 }
 
 .logged-in-person {
-  font-size: 12px;
-  font-weight: 600;
   color: #333;
   line-height: 1;
   white-space: nowrap;
   margin-top: 3px;
   font: inherit;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .admin-badge {
