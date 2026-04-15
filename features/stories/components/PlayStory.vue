@@ -42,7 +42,7 @@ const isLoading = ref(true);
 const stage = ref('overview');
 const chapterIndex = ref(0);
 const stepIndex = ref(0);
-const pendingStepFromUrl = ref(null);
+const pendingStepFromUrl = ref(getRequestedStepFromUrl());
 
 const totalSteps = computed(() => {
   if (!story.value) return 0;
@@ -93,9 +93,15 @@ function syncBrowserUrl() {
 
   if (stage.value === 'play' && currentGlobalStep.value > 0) {
     params.set('step', String(currentGlobalStep.value));
+  } else if (pendingStepFromUrl.value) {
+    params.set('step', String(pendingStepFromUrl.value));
   }
 
   window.history.replaceState({}, '', `${baseUrl}?${params.toString()}`);
+}
+
+function getRequestedStepFromUrl() {
+  return new URLSearchParams(window.location.search).get('step');
 }
 
 function openRequestedStepFromUrl() {
@@ -124,7 +130,11 @@ function openRequestedStepFromUrl() {
 }
 
 async function loadStory(id) {
-  if (!id) return;
+  if (!id) {
+    story.value = null;
+    isLoading.value = false;
+    return;
+  }
   isLoading.value = true;
   try {
     const res = await fetch(`${backendUrl}/stories/new/${id}`);
@@ -148,15 +158,15 @@ watch(stage, (currentStage) => {
 });
 
 watch(currentStoryId, (id) => {
-  pendingStepFromUrl.value = new URLSearchParams(window.location.search).get('step');
-  loadStory(id);
+  pendingStepFromUrl.value = getRequestedStepFromUrl();
   stage.value = 'overview';
   chapterIndex.value = 0;
   stepIndex.value = 0;
+  loadStory(id);
 }, { immediate: true });
 
 watch(
-  () => [ currentStoryId.value, stage.value, currentGlobalStep.value ],
+  () => [ currentStoryId.value, stage.value, chapterIndex.value, stepIndex.value, pendingStepFromUrl.value ],
   () => {
     syncBrowserUrl();
   },
