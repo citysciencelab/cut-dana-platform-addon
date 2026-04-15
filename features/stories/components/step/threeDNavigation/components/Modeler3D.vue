@@ -5,6 +5,11 @@ import { useStore } from 'vuex';
 
 import initProjections from '../../../../../../../../../src/shared/js/utils/initProjections';
 
+// Polyfill for Cesium.defaultValue which was removed in newer Cesium versions
+function cesiumDefaultValue(a, b) {
+  return a !== undefined ? a : b;
+}
+
 const store = useStore();
 
 const namedProjections = computed(() => store.getters['namedProjections']);
@@ -150,7 +155,7 @@ function cursorCheck(event) {
 
   const scene = mapCollection.getMap('3D').getCesiumScene();
   const picked = scene.drillPick(event.endPosition).filter(pickedObj => !pickedObj?.id?.label && !pickedObj?.id?.outline);
-  const entity = Cesium.defaultValue(picked[0]?.id, picked[0]?.primitive?.id);
+  const entity = cesiumDefaultValue(picked[0]?.id, picked[0]?.primitive?.id);
 
   if (Cesium.defined(entity) && entity instanceof Cesium.Entity) {
     if ((currentModelId.value && entity.id === currentModelId.value) || entity.cylinder) {
@@ -173,7 +178,7 @@ function moveEntity(event) {
   if (event) {
     const scene = mapCollection.getMap('3D').getCesiumScene();
     const picked = scene.drillPick(event.position).filter(pickedObj => !pickedObj?.id?.label && !pickedObj?.id?.outline);
-    entity = Cesium.defaultValue(picked[0]?.id, picked[0]?.primitive?.id);
+    entity = cesiumDefaultValue(picked[0]?.id, picked[0]?.primitive?.id);
   }
 
   if (entity instanceof Cesium.Entity || !event) {
@@ -233,7 +238,7 @@ function selectObject(event) {
 
   if (!Cesium.defined(picked[0])) return;
 
-  entity = Cesium.defaultValue(picked[0]?.id, picked[0]?.primitive?.id);
+  entity = cesiumDefaultValue(picked[0]?.id, picked[0]?.primitive?.id);
 
   if (entity instanceof Cesium.Entity && !entity.cylinder) {
     setCurrentModelId(entity.id);
