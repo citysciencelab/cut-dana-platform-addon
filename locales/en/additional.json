@@ -100,7 +100,8 @@
         "height3D": "Height",
         "adaptToHeight3D": "Adapt to terrain",
         "storyNamePlaceholder": "Story name",
-        "storyDescriptionPlaceholder": "Story description"
+        "storyDescriptionPlaceholder": "Story description",
+        "storyOptions": "Story options"
       },
       "categoryBrowser": {
         "searchLayers": "Search Layers…",

@@ -1,7 +1,9 @@
 <script setup>
+import { mdiChevronLeft, mdiChevronRight, mdiClose } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { useStore } from 'vuex';
+import scrollama from 'scrollama';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { useIsMobile } from '../../../hooks/useIsMobile';
@@ -43,6 +45,10 @@ const stage = ref('overview');
 const chapterIndex = ref(0);
 const stepIndex = ref(0);
 const pendingStepFromUrl = ref(getRequestedStepFromUrl());
+const pendingScrollTarget = ref(null);
+const scrollyRoot = ref(null);
+const scroller = ref(null);
+const scrollStepElements = ref([]);
 
 const totalSteps = computed(() => {
   if (!story.value) return 0;
@@ -52,27 +58,35 @@ const totalSteps = computed(() => {
   );
 });
 const flattenedSteps = computed(() => {
-  if (!story.value) {
+  if (!story.value?.chapters) {
     return [];
   }
 
   return story.value.chapters.flatMap((chapter, resolvedChapterIndex) =>
     (chapter.steps ?? []).map((step, resolvedStepIndex) => ({
       chapterIndex: resolvedChapterIndex,
+      chapterTitle: chapter.name,
+      globalStep: 0,
       stepIndex: resolvedStepIndex,
       step
     }))
   );
 });
+const flattenedStorySteps = computed(() => {
+  let nextGlobalStep = 1;
+
+  return flattenedSteps.value.map((entry) => ({
+    ...entry,
+    globalStep: nextGlobalStep++
+  }));
+});
+const isScrollytellingStory = computed(() => story.value?.scrollytelling === true);
 
 const currentGlobalStep = computed(() => {
   if (stage.value === 'overview' || !story.value) return 0;
-
-  const prevSteps = story.value.chapters
-    .slice(0, chapterIndex.value)
-    .reduce((sum, chap) => sum + chap.steps.length, 0);
-
-  return prevSteps + stepIndex.value + 1;
+  return flattenedStorySteps.value.findIndex((entry) =>
+    entry.chapterIndex === chapterIndex.value && entry.stepIndex === stepIndex.value
+  ) + 1;
 });
 
 const currentStep = computed(() =>
@@ -104,29 +118,123 @@ function getRequestedStepFromUrl() {
   return new URLSearchParams(window.location.search).get('step');
 }
 
-function openRequestedStepFromUrl() {
-  const requestedStep = Number(pendingStepFromUrl.value);
-  pendingStepFromUrl.value = null;
+function setScrollStepElement(element, index) {
+  scrollStepElements.value[index] = element ?? null;
+}
 
-  if (!Number.isInteger(requestedStep) || requestedStep < 1) {
-    stage.value = 'overview';
-    chapterIndex.value = 0;
-    stepIndex.value = 0;
+function requestScrollToFlatStep(flatIndex, behavior = 'smooth') {
+  pendingScrollTarget.value = {
+    index: flatIndex,
+    behavior
+  };
+}
+
+async function flushPendingScrollTarget() {
+  const request = pendingScrollTarget.value;
+
+  if (!request || stage.value !== 'play' || !isScrollytellingStory.value) {
     return;
   }
 
-  const targetStep = flattenedSteps.value[requestedStep - 1];
+  await nextTick();
+
+  const targetElement = scrollStepElements.value[request.index];
+
+  if (!targetElement?.scrollIntoView) {
+    return;
+  }
+
+  pendingScrollTarget.value = null;
+  targetElement.scrollIntoView({
+    behavior: request.behavior,
+    block: 'center'
+  });
+}
+
+function destroyScroller() {
+  scroller.value?.destroy();
+  scroller.value = null;
+}
+
+async function setupScroller() {
+  destroyScroller();
+
+  if (stage.value !== 'play' || !isScrollytellingStory.value) {
+    return;
+  }
+
+  await nextTick();
+
+  const scrollContainer = scrollyRoot.value?.closest('.player-content');
+  const steps = scrollStepElements.value.filter(Boolean);
+
+  if (!scrollContainer || !steps.length) {
+    return;
+  }
+
+  // Set each step's min-height to the scroll container height so scrollama can trigger correctly
+  const containerHeight = scrollContainer.clientHeight;
+  steps.forEach((step) => {
+    step.style.minHeight = `${containerHeight}px`;
+  });
+
+  const instance = scrollama();
+
+  instance.setup({
+    step: steps,
+    offset: 0.5,
+    container: scrollContainer,
+    root: scrollContainer
+  });
+  instance.onStepEnter(onScrollytellingStepEnter);
+  scroller.value = instance;
+}
+
+function setActiveStepByFlatIndex(flatIndex, options = {}) {
+  const {
+    scroll = false,
+    scrollBehavior = 'smooth'
+  } = options;
+  const targetStep = flattenedStorySteps.value[flatIndex];
 
   if (!targetStep) {
-    stage.value = 'overview';
-    chapterIndex.value = 0;
-    stepIndex.value = 0;
-    return;
+    return false;
   }
 
   chapterIndex.value = targetStep.chapterIndex;
   stepIndex.value = targetStep.stepIndex;
   stage.value = 'play';
+
+  if (scroll && isScrollytellingStory.value) {
+    requestScrollToFlatStep(flatIndex, scrollBehavior);
+  }
+
+  return true;
+}
+
+function openRequestedStepFromUrl() {
+  const requestedStep = Number(pendingStepFromUrl.value);
+
+  if (!Number.isInteger(requestedStep) || requestedStep < 1) {
+    pendingStepFromUrl.value = null;
+    stage.value = 'overview';
+    chapterIndex.value = 0;
+    stepIndex.value = 0;
+    return;
+  }
+
+  if (!setActiveStepByFlatIndex(requestedStep - 1, {
+    scroll: true,
+    scrollBehavior: 'auto'
+  })) {
+    pendingStepFromUrl.value = null;
+    stage.value = 'overview';
+    chapterIndex.value = 0;
+    stepIndex.value = 0;
+    return;
+  }
+
+  pendingStepFromUrl.value = null;
 }
 
 async function loadStory(id) {
@@ -169,6 +277,21 @@ watch(
   () => [ currentStoryId.value, stage.value, chapterIndex.value, stepIndex.value, pendingStepFromUrl.value ],
   () => {
     syncBrowserUrl();
+  },
+  { immediate: true }
+);
+
+watch(
+  () => [ pendingScrollTarget.value?.index, stage.value, isScrollytellingStory.value, flattenedStorySteps.value.length ],
+  () => {
+    flushPendingScrollTarget();
+  }
+);
+
+watch(
+  () => [ stage.value, isScrollytellingStory.value, flattenedStorySteps.value.length ],
+  () => {
+    setupScroller();
   },
   { immediate: true }
 );
@@ -393,7 +516,26 @@ function backToDashboard() {
   window.history.replaceState({}, '', `${baseUrl}/`);
 }
 
+function closeStoryPlayback() {
+  if (isPreviewMode.value) {
+    backToEdit();
+    return;
+  }
+
+  backToDashboard();
+}
+
 function startPlay() {
+  if (!story.value) return;
+
+  if (isScrollytellingStory.value) {
+    setActiveStepByFlatIndex(0, {
+      scroll: true,
+      scrollBehavior: 'auto'
+    });
+    return;
+  }
+
   stage.value = 'play';
   chapterIndex.value = 0;
   stepIndex.value = 0;
@@ -401,6 +543,17 @@ function startPlay() {
 
 function next() {
   if (!story.value) return;
+
+  if (isScrollytellingStory.value) {
+    const nextFlatIndex = currentGlobalStep.value;
+
+    if (nextFlatIndex < flattenedStorySteps.value.length) {
+      setActiveStepByFlatIndex(nextFlatIndex, { scroll: true });
+    } else {
+      closeStoryPlayback();
+    }
+    return;
+  }
 
   const steps = story.value.chapters[chapterIndex.value].steps;
   if (stepIndex.value < steps.length - 1) {
@@ -417,6 +570,21 @@ function back() {
   if (!story.value) return;
 
   if (stage.value === 'overview') return;
+  if (isScrollytellingStory.value) {
+    const previousFlatIndex = currentGlobalStep.value - 2;
+
+    if (previousFlatIndex >= 0) {
+      setActiveStepByFlatIndex(previousFlatIndex, { scroll: true });
+    } else {
+      resetScene();
+      stage.value = 'overview';
+      setAnimatedView({
+        center: initialCenter.value,
+        zoom: initialZoom.value,
+      });
+    }
+    return;
+  }
   if (stepIndex.value > 0) {
     stepIndex.value--;
   } else if (chapterIndex.value > 0) {
@@ -436,12 +604,57 @@ function startFromChapter(idx) {
   if (!story.value) return;
   const chapter = story.value.chapters?.[idx];
   if (!chapter || !chapter.steps?.length) return;
+  if (isScrollytellingStory.value) {
+    const flatIndex = flattenedStorySteps.value.findIndex((entry) => entry.chapterIndex === idx);
+
+    if (flatIndex >= 0) {
+      setActiveStepByFlatIndex(flatIndex, {
+        scroll: true,
+        scrollBehavior: 'auto'
+      });
+    }
+    return;
+  }
   chapterIndex.value = idx;
   stepIndex.value = 0;
   stage.value = 'play';
 }
 
+function onScrollytellingStepEnter({ index }) {
+  if (stage.value !== 'play' || !isScrollytellingStory.value) {
+    return;
+  }
+
+  setActiveStepByFlatIndex(index);
+}
+
+function goToScrollytellingStep(globalStep) {
+  if (!isScrollytellingStory.value) {
+    return;
+  }
+
+  setActiveStepByFlatIndex(globalStep - 1, { scroll: true });
+}
+
+function goToPreviousScrollytellingStep(globalStep) {
+  if (globalStep <= 1) {
+    return;
+  }
+
+  goToScrollytellingStep(globalStep - 1);
+}
+
+function goToNextScrollytellingStep(globalStep) {
+  if (globalStep >= flattenedStorySteps.value.length) {
+    closeStoryPlayback();
+    return;
+  }
+
+  goToScrollytellingStep(globalStep + 1);
+}
+
 onBeforeUnmount(() => {
+  destroyScroller();
   removeAllVisibleLayers();
   resetBaseLayer();
 });
@@ -493,27 +706,86 @@ onBeforeUnmount(() => {
             </div>
 
             <div v-else>
-              <div class="chapter px-2">
-                <div class="chapter-label">
-                  {{ numberToLetter(chapterIndex + 1) }}
-                </div>
-                <div class="chapter-title">
-                  {{ story.chapters[chapterIndex].name }}
-                </div>
+              <div
+                v-if="isScrollytellingStory"
+                ref="scrollyRoot"
+                class="scrolly-steps"
+              >
+                <section
+                  v-for="entry in flattenedStorySteps"
+                  :key="`${entry.chapterIndex}-${entry.stepIndex}-${entry.globalStep}`"
+                  :ref="(element) => setScrollStepElement(element, entry.globalStep - 1)"
+                  :data-step="entry.globalStep"
+                  :class="['scrolly-step', { active: entry.globalStep === currentGlobalStep }]"
+                >
+                  <div class="chapter px-2">
+                    <div class="chapter-label">
+                      {{ numberToLetter(entry.chapterIndex + 1) }}
+                    </div>
+                    <div class="chapter-title">
+                      {{ entry.chapterTitle }}
+                    </div>
+                  </div>
+                  <div class="step-content px-2">
+                    <div class="step-content-title mt-10">
+                      <h2 class="step-pill">
+                        {{ entry.globalStep }}
+                      </h2>
+                      <h3 class="font-bold">
+                        {{ entry.step.title }}
+                      </h3>
+                    </div>
+                    <div class="mt-4">
+                      <RichTextViewer v-model="entry.step.html" />
+                    </div>
+                  </div>
+                  <div class="scrolly-step-controls">
+                    <v-btn
+                      variant="text"
+                      rounded
+                      :icon="mdiChevronLeft"
+                      :disabled="entry.globalStep === 1"
+                      @click.prevent="goToPreviousScrollytellingStep(entry.globalStep)"
+                    />
+                    <v-btn
+                      variant="text"
+                      rounded
+                      :icon="mdiClose"
+                      @click.prevent="closeStoryPlayback"
+                    />
+                    <v-btn
+                      variant="text"
+                      rounded
+                      :icon="mdiChevronRight"
+                      @click.prevent="goToNextScrollytellingStep(entry.globalStep)"
+                    />
+                  </div>
+                </section>
               </div>
-              <div class="step-content px-2">
-                <div class="step-content-title mt-10">
-                  <h2 class="step-pill">
-                    {{ currentGlobalStep }}
-                  </h2>
-                  <h3 class="font-bold">
-                    {{ story.chapters[chapterIndex].steps[stepIndex].title }}
-                  </h3>
+
+              <template v-else>
+                <div class="chapter px-2">
+                  <div class="chapter-label">
+                    {{ numberToLetter(chapterIndex + 1) }}
+                  </div>
+                  <div class="chapter-title">
+                    {{ story.chapters[chapterIndex].name }}
+                  </div>
                 </div>
-                <div class="mt-4">
-                  <RichTextViewer v-model="story.chapters[chapterIndex].steps[stepIndex].html" />
+                <div class="step-content px-2">
+                  <div class="step-content-title mt-10">
+                    <h2 class="step-pill">
+                      {{ currentGlobalStep }}
+                    </h2>
+                    <h3 class="font-bold">
+                      {{ story.chapters[chapterIndex].steps[stepIndex].title }}
+                    </h3>
+                  </div>
+                  <div class="mt-4">
+                    <RichTextViewer v-model="story.chapters[chapterIndex].steps[stepIndex].html" />
+                  </div>
                 </div>
-              </div>
+              </template>
             </div>
           </div>
         </template>
@@ -522,7 +794,10 @@ onBeforeUnmount(() => {
           <v-row align="center">
             <div>{{ currentGlobalStep }}/{{ totalSteps }}</div>
 
-            <v-col class="p-0">
+            <v-col
+              v-if="!isScrollytellingStory || stage === 'overview'"
+              class="p-0"
+            >
               <v-row justify="end">
                 <v-btn
                   v-if="stage === 'play'"
@@ -625,5 +900,36 @@ onBeforeUnmount(() => {
             border-radius: 20px;
         }
     }
+}
+
+.scrolly-steps {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 16px;
+}
+
+.scrolly-step {
+    min-height: 100%;
+    padding-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+
+    &.active {
+        .step-pill {
+            background-color: rgba(34, 96, 81, 0.08);
+        }
+    }
+}
+
+.scrolly-step-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    width: fit-content;
+    margin: 16px auto 0;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(246, 246, 246, 0.78);
+    backdrop-filter: blur(6px);
 }
 </style>

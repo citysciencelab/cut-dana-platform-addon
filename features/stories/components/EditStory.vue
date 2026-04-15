@@ -18,6 +18,7 @@ const storyName = ref('');
 const description = ref('');
 const chapters = ref([]);
 const coverImageUrl = ref(null);
+const scrollytelling = ref(false);
 
 function getFileUrl(titleImage) {
   return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
@@ -32,6 +33,7 @@ async function loadStory() {
     const data = await getStory(currentStoryId.value);
     storyName.value = data.title ?? '';
     description.value = data.description ?? '';
+    scrollytelling.value = data.scrollytelling === true;
     coverImageUrl.value = data.titleImage ? getFileUrl(data.titleImage) : null;
     chapters.value = (data.chapters ?? []).map((c, idx) => ({
       id: idx,
@@ -73,6 +75,7 @@ watch(() => currentStoryId?.value, loadStory);
         :chapters="chapters"
         :story-name="storyName"
         :description="description"
+        :scrollytelling="scrollytelling"
         :story-loading="isLoading"
         :cover-image-url="coverImageUrl"
       />

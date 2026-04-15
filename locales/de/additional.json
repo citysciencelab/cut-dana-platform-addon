@@ -100,7 +100,8 @@
         "height3D": "Höhe",
         "adaptToHeight3D": "An Gelände anpassen",
         "storyNamePlaceholder": "Story Name",
-        "storyDescriptionPlaceholder": "Beschreibung"
+        "storyDescriptionPlaceholder": "Beschreibung",
+        "storyOptions": "Story-Optionen"
       },
       "categoryBrowser": {
         "searchLayers": "Ebenen durchsuchen…",

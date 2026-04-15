@@ -4,15 +4,16 @@ import { useTranslation } from 'i18next-vue';
 import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
-import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { use3DLayers } from '../../../hooks/use3DLayers';
+import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import { useNavigation } from '../../../hooks/useNavigation';
 import { useSceneReset } from '../../../hooks/useSceneReset';
 import { backendUrl, dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { clearGeoJSON } from '../../../utils/geoJSON';
 import { createLogger } from '../../../utils/logger.js';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
-import { useNavigation } from '../../../hooks/useNavigation';
+import { useStory } from '../hooks/useStory';
 import { deleteCoverImage, uploadCoverImage } from '../services/coverImage';
 import { createStory } from '../services/createStory';
 import { editStory } from '../services/editStory';
@@ -41,6 +42,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  scrollytelling: {
+    type: Boolean,
+    default: false
+  },
   chapters: {
     type: Array,
     default: () => []
@@ -61,6 +66,7 @@ const props = defineProps({
 const { t } = useTranslation();
 const { toolwindowMode } = useDataNarrator();
 const { gotoPage } = useDataNarrator();
+const { currentStoryId } = useStory();
 const { layers3D, loading: loading3DLayers } = use3DLayers();
 const { resetScene } = useSceneReset();
 const { isMobile } = useIsMobile();
@@ -80,6 +86,7 @@ const storyNameInput = ref('');
 const descriptionInput = ref('');
 const isSaving = ref(false);
 const previewVisible = ref(false);
+const scrollytellingEnabled = ref(false);
 const activeChapterIndex = ref(0);
 const activeStepIndex = ref(-1);
 const editStoryVisible = ref(true);
@@ -462,6 +469,7 @@ async function saveStoryData() {
   const payload = {
     title: String(storyNameInput.value ?? '').trim(),
     description: String(descriptionInput.value ?? '').trim(),
+    scrollytelling: scrollytellingEnabled.value === true,
     chapters: chaptersData.value
   };
 
@@ -484,6 +492,8 @@ async function saveStoryData() {
     createdStory = JSON.parse(bodyText);
     storyId = createdStory.id;
   }
+
+  currentStoryId.value = storyId;
 
   const uploads = [];
   for (const ch of chaptersData.value) {
@@ -788,12 +798,13 @@ watch(activePanel, async (panel, prevPanel) => {
 });
 
 watch(
-  [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId ],
-  ([ s, d, c, sId ]) => {
+  [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId, () => props.scrollytelling ],
+  ([ s, d, c, sId, scrollytelling ]) => {
     if (sId) {
       storyNameInput.value = s ?? '';
       descriptionInput.value = d ?? '';
-      chaptersData.value = c ?? [];
+      scrollytellingEnabled.value = scrollytelling === true;
+      chaptersData.value = structuredClone(c ?? []);
       reindexAllSteps();
       previewVisible.value = true;
       activeStepIndex.value = -1;
@@ -1088,6 +1099,22 @@ watch([ activeStepIndex, previewVisible ], () => {
         </template>
         <!-- Normal story editing: 2x2 grid -->
         <template v-else>
+          <div
+            class="story-options"
+            style="display: none"
+          >
+            <div class="story-options-row">
+              <span class="story-options-label">
+                {{ t('additional:modules.dataNarrator.label.scrolly') }}
+              </span>
+              <v-switch
+                v-model="scrollytellingEnabled"
+                hide-details
+                density="compact"
+                class="story-options-switch"
+              />
+            </div>
+          </div>
           <v-row class="mb-1">
             <v-col
               cols="6"
@@ -1258,6 +1285,25 @@ watch([ activeStepIndex, previewVisible ], () => {
     margin-top: auto;
     background-color: #f6f6f6;
   }
+}
+
+.story-options {
+  padding: 4px 14px 0;
+}
+
+.story-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.story-options-label {
+  font-size: 14px;
+}
+
+.story-options-switch {
+  flex: 0 0 auto;
 }
 
 .side-panel {
