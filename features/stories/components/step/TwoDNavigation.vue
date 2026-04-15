@@ -20,7 +20,12 @@ const centerCoordinates = ref(props.modelValue.centerCoordinates);
 const zoomLevel = ref(props.modelValue.zoomLevel);
 
 const zoomUpdated = computed(() => zoomLevel.value !== zoom.value);
-const centerUpdated = computed(() => centerCoordinates.value !== center.value);
+const centerUpdated = computed(() => {
+  const c = centerCoordinates.value;
+  const m = center.value;
+  if (!Array.isArray(c) || !Array.isArray(m)) return false;
+  return c[0] !== m[0] || c[1] !== m[1];
+});
 
 watch([ centerCoordinates, zoomLevel ], () => {
   emit('update:modelValue', {

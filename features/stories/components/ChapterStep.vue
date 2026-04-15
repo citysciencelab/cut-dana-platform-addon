@@ -12,10 +12,10 @@ import { useTranslation } from 'i18next-vue';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
+import { useNavigation } from '../../../hooks/useNavigation';
 import { useSceneReset } from '../../../hooks/useSceneReset';
 import AddWMS from '../../../tools/addWms/components/AddWMS.vue';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
-import { useNavigation } from '../../../hooks/useNavigation';
 
 import BackgroundMap from './step/BackgroundMap.vue';
 import TransparencySlider from './step/layers/TransparencySlider.vue';
@@ -53,6 +53,7 @@ const transparencyDialog = ref(false);
 const activeLayerId = ref(null);
 const stepTitleRef = ref(null);
 const stepDescriptionRef = ref(null);
+const lastNavigatedStepId = ref(null);
 const wmsDialogOpen = ref(false);
 const allMapSources = ref([]);
 
@@ -191,6 +192,11 @@ watch(
   (newMapConfig) => {
     setBaseLayer(newMapConfig?.backgroundMapId);
 
+    // Only navigate when switching to a different step, not when user edits the current step's mapConfig
+    const stepId = props.step?.id;
+    if (lastNavigatedStepId.value === stepId) return;
+    lastNavigatedStepId.value = stepId;
+
     const center = Array.isArray(newMapConfig?.centerCoordinates)
       ? newMapConfig.centerCoordinates.map(Number)
       : [];
@@ -328,9 +334,11 @@ onMounted(() => {
         rounded
         @click="emit('openLayers')"
       >
-        {{ step.informationLayers?.length
-          ? t('additional:modules.dataNarrator.layer.editInformationLayer')
-          : t('additional:modules.dataNarrator.layer.addInformationLayer') }}
+        {{
+          step.informationLayers?.length
+            ? t('additional:modules.dataNarrator.layer.editInformationLayer')
+            : t('additional:modules.dataNarrator.layer.addInformationLayer')
+        }}
       </v-btn>
     </div>
 
@@ -468,9 +476,11 @@ onMounted(() => {
         rounded
         @click="emit('openGeoJSON')"
       >
-        {{ step.geoJsonAssets?.length
-          ? t('additional:modules.dataNarrator.geojson.editGeoJSON')
-          : t('additional:modules.dataNarrator.geojson.addGeoJSON') }}
+        {{
+          step.geoJsonAssets?.length
+            ? t('additional:modules.dataNarrator.geojson.editGeoJSON')
+            : t('additional:modules.dataNarrator.geojson.addGeoJSON')
+        }}
       </v-btn>
     </div>
 
@@ -500,9 +510,11 @@ onMounted(() => {
         rounded
         @click="emit('open3D')"
       >
-        {{ step.models3D?.length
-          ? t('additional:modules.dataNarrator.label.editThreeDFiles')
-          : t('additional:modules.dataNarrator.label.threeDFiles') }}
+        {{
+          step.models3D?.length
+            ? t('additional:modules.dataNarrator.label.editThreeDFiles')
+            : t('additional:modules.dataNarrator.label.threeDFiles')
+        }}
       </v-btn>
     </div>
 
@@ -519,9 +531,11 @@ onMounted(() => {
         rounded
         @click="emit('open3DLayers')"
       >
-        {{ step.layers3D?.length
-          ? t('additional:modules.dataNarrator.label.editLayers3D')
-          : t('additional:modules.dataNarrator.label.addLayers3D') }}
+        {{
+          step.layers3D?.length
+            ? t('additional:modules.dataNarrator.label.editLayers3D')
+            : t('additional:modules.dataNarrator.label.addLayers3D')
+        }}
       </v-btn>
     </div>
   </div>
@@ -535,7 +549,7 @@ onMounted(() => {
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
   font-weight: 600;
   letter-spacing: 0.1px;
-  width: 200px;
+  width: 300px;
 }
 
 .threed-btn:hover, .layers-btn:hover, .geojson-btn:hover {
