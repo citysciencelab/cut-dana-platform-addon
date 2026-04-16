@@ -1,7 +1,7 @@
 <script setup>
 import { mdiChevronDown, mdiChevronUp, mdiPinOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, nextTick } from 'vue';
 
 import { useNavigation } from '../../../../hooks/useNavigation';
 
@@ -27,7 +27,10 @@ const centerUpdated = computed(() => {
   return c[0] !== m[0] || c[1] !== m[1];
 });
 
+let isSyncing = false;
+
 watch([ centerCoordinates, zoomLevel ], () => {
+  if (isSyncing) return;
   emit('update:modelValue', {
     ...props.modelValue,
     centerCoordinates: (centerCoordinates.value ?? []).map(Number),
@@ -38,10 +41,12 @@ watch([ centerCoordinates, zoomLevel ], () => {
 watch(
   () => props.modelValue,
   (value) => {
+    isSyncing = true;
     centerCoordinates.value = Array.isArray(value?.centerCoordinates)
       ? [ ...value.centerCoordinates ]
       : [];
     zoomLevel.value = value?.zoomLevel;
+    nextTick(() => { isSyncing = false; });
   },
   { immediate: true, deep: true }
 );

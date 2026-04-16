@@ -190,41 +190,33 @@ watch(
   focusAppropriateField
 );
 
-let isNavigating = false;
-
 watch(
-  () => props.step?.mapConfig,
-  (newMapConfig) => {
-    if (isNavigating) return;
-    isNavigating = true;
+  [
+    () => props.step?.mapConfig?.backgroundMapId,
+    () => props.step?.mapConfig?.centerCoordinates,
+    () => props.step?.mapConfig?.zoomLevel,
+    () => props.step?.id,
+  ],
+  ([backgroundMapId, centerCoordinates, zoomLevel, stepId]) => {
+    setBaseLayer(backgroundMapId);
 
-    try {
-      setBaseLayer(newMapConfig?.backgroundMapId);
+    if (lastNavigatedStepId.value === stepId) return;
+    lastNavigatedStepId.value = stepId;
 
-      // Only navigate when switching to a different step, not when user edits the current step's mapConfig
-      const stepId = props.step?.id;
-      if (lastNavigatedStepId.value === stepId) return;
-      lastNavigatedStepId.value = stepId;
+    const center = Array.isArray(centerCoordinates)
+      ? [...centerCoordinates].map(Number)
+      : [];
+    const zoom = Number(zoomLevel);
 
-      const center = Array.isArray(newMapConfig?.centerCoordinates)
-        ? newMapConfig.centerCoordinates.map(Number)
-        : [];
-      const zoom = Number(newMapConfig?.zoomLevel);
-
-      if (center.length >= 2 && Number.isFinite(zoom)) {
-        setAnimatedView({
-          center,
-          zoom
-        });
-      }
-    } finally {
-      nextTick(() => { isNavigating = false; });
+    if (center.length >= 2 && Number.isFinite(zoom)) {
+      setAnimatedView({
+        center,
+        zoom
+      });
     }
   },
-  { immediate: true, deep: true }
+  { immediate: true }
 );
-
-let isUpdatingLayers = false;
 
 watch(
   [
@@ -233,24 +225,17 @@ watch(
     () => props.step?.mapConfig?.backgroundMapId
   ],
   ([ informationLayers, mapSources, backgroundMapId ]) => {
-    if (isUpdatingLayers) return;
-    isUpdatingLayers = true;
+    const activeLayers = [
+      ...(Array.isArray(informationLayers) ? informationLayers : []),
+      ...(Array.isArray(mapSources) ? mapSources : []),
+    ];
 
-    try {
-      const activeLayers = [
-        ...(Array.isArray(informationLayers) ? informationLayers : []),
-        ...(Array.isArray(mapSources) ? mapSources : []),
-      ];
-
-      setInformationLayers(
-        activeLayers,
-        [ String(backgroundMapId ?? ''), '19969' ].filter(Boolean)
-      );
-    } finally {
-      nextTick(() => { isUpdatingLayers = false; });
-    }
+    setInformationLayers(
+      activeLayers,
+      [ String(backgroundMapId ?? ''), '19969' ].filter(Boolean)
+    );
   },
-  { immediate: true, deep: true }
+  { immediate: true }
 );
 
 watch(
@@ -259,7 +244,7 @@ watch(
     clearGeoJSON();
     addGeoJSON(newGeoJsonAssets);
   },
-  { immediate: true, deep: true }
+  { immediate: true }
 );
 
 // load existing WMS layers into layer config on mount

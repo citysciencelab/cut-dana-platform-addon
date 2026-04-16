@@ -1,6 +1,6 @@
 <script setup>
-import { computed, watch } from 'vue';
 import { useTranslation } from 'i18next-vue';
+import { computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import StoryCard from './Stories/StoryCard.vue';
@@ -25,6 +25,7 @@ watch(storiesDisplayMode, () => {
 <template>
   <div class="dashboard-content-container">
     <div v-if="loading">
+      fdbdfb
       Loading...
     </div>
     <div v-else-if="err">
@@ -54,25 +55,25 @@ watch(storiesDisplayMode, () => {
 
 <style scoped lang="scss">
 .dashboard-content-container {
-    padding: 1rem;
-    width: 70%;
-    margin: 0 auto;
+  padding: 1rem;
+  width: 70%;
+  margin: 0 auto;
 
-    @media screen and (max-width: 768px) {
-        width: 100%;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
+
+  .stories-container {
+    columns: 300px;
+
+    > * {
+      margin-bottom: 1rem;
     }
+  }
 
-    .stories-container {
-        columns: 300px;
-
-        >* {
-            margin-bottom: 1rem;
-        }
-    }
-
-    .no-results {
-        color: #808080;
-        text-align: center;
-    }
+  .no-results {
+    color: #808080;
+    text-align: center;
+  }
 }
 </style>
