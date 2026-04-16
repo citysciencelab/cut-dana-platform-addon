@@ -190,30 +190,41 @@ watch(
   focusAppropriateField
 );
 
+let isNavigating = false;
+
 watch(
   () => props.step?.mapConfig,
   (newMapConfig) => {
-    setBaseLayer(newMapConfig?.backgroundMapId);
+    if (isNavigating) return;
+    isNavigating = true;
 
-    // Only navigate when switching to a different step, not when user edits the current step's mapConfig
-    const stepId = props.step?.id;
-    if (lastNavigatedStepId.value === stepId) return;
-    lastNavigatedStepId.value = stepId;
+    try {
+      setBaseLayer(newMapConfig?.backgroundMapId);
 
-    const center = Array.isArray(newMapConfig?.centerCoordinates)
-      ? newMapConfig.centerCoordinates.map(Number)
-      : [];
-    const zoom = Number(newMapConfig?.zoomLevel);
+      // Only navigate when switching to a different step, not when user edits the current step's mapConfig
+      const stepId = props.step?.id;
+      if (lastNavigatedStepId.value === stepId) return;
+      lastNavigatedStepId.value = stepId;
 
-    if (center.length >= 2 && Number.isFinite(zoom)) {
-      setAnimatedView({
-        center,
-        zoom
-      });
+      const center = Array.isArray(newMapConfig?.centerCoordinates)
+        ? newMapConfig.centerCoordinates.map(Number)
+        : [];
+      const zoom = Number(newMapConfig?.zoomLevel);
+
+      if (center.length >= 2 && Number.isFinite(zoom)) {
+        setAnimatedView({
+          center,
+          zoom
+        });
+      }
+    } finally {
+      nextTick(() => { isNavigating = false; });
     }
   },
   { immediate: true, deep: true }
 );
+
+let isUpdatingLayers = false;
 
 watch(
   [
@@ -222,15 +233,22 @@ watch(
     () => props.step?.mapConfig?.backgroundMapId
   ],
   ([ informationLayers, mapSources, backgroundMapId ]) => {
-    const activeLayers = [
-      ...(Array.isArray(informationLayers) ? informationLayers : []),
-      ...(Array.isArray(mapSources) ? mapSources : []),
-    ];
+    if (isUpdatingLayers) return;
+    isUpdatingLayers = true;
 
-    setInformationLayers(
-      activeLayers,
-      [ String(backgroundMapId ?? ''), '19969' ].filter(Boolean)
-    );
+    try {
+      const activeLayers = [
+        ...(Array.isArray(informationLayers) ? informationLayers : []),
+        ...(Array.isArray(mapSources) ? mapSources : []),
+      ];
+
+      setInformationLayers(
+        activeLayers,
+        [ String(backgroundMapId ?? ''), '19969' ].filter(Boolean)
+      );
+    } finally {
+      nextTick(() => { isUpdatingLayers = false; });
+    }
   },
   { immediate: true, deep: true }
 );

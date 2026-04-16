@@ -207,8 +207,8 @@ function getDefaultStep(id) {
     title: '',
     description: '',
     mapConfig: {
-      centerCoordinates: initialCenter,
-      zoomLevel: initialZoom,
+      centerCoordinates: initialCenter.value ? [...initialCenter.value] : [0, 0],
+      zoomLevel: initialZoom.value ?? 7,
       backgroundMapId: defaultBaseLayerId,
     },
     informationLayers: [],
