@@ -666,6 +666,7 @@ onBeforeUnmount(() => {
       <PlayerFrame
         :title="stage === 'play' ? story.title : t('additional:modules.dataNarrator.play.storyOverviewTitle')"
         :is-preview="isPreviewMode"
+        :show-header="stage === 'overview'"
         @back="backToDashboard"
         @leave-preview="backToEdit"
       >
@@ -851,7 +852,7 @@ onBeforeUnmount(() => {
 }
 
 .story-title {
-    font-size: 20px;
+    font-size: 15pt;
 }
 
 .story-description {
@@ -885,6 +886,7 @@ onBeforeUnmount(() => {
     &-title {
         flex: 1;
         font-weight: bold;
+        font-size: 15pt;
     }
 }
 
@@ -893,6 +895,7 @@ onBeforeUnmount(() => {
         display: flex;
         align-items: center;
         gap: 8px;
+        font-size: 15pt;
 
         .step-pill {
             border: 2px solid #226051;
