@@ -9,8 +9,13 @@
   margin-left: auto;
   margin-right: auto;
 
+  &.dashboard {
+    grid-column: 1 / -1;
+  }
+
   &.desktop {
     grid-column: 1 / 2;
+    width: 100%;
   }
 
   .toolwindow-between {

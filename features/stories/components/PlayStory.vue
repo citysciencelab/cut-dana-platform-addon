@@ -14,6 +14,7 @@ import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
 import { getFileUrl } from '../../../utils/getFileUrl';
 import { createLogger } from '../../../utils/logger.js';
 import { numberToLetter } from '../../../utils/numberToLetter';
+import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 import { useStory } from '../hooks/useStory';
 
@@ -49,6 +50,7 @@ const pendingScrollTarget = ref(null);
 const scrollyRoot = ref(null);
 const scroller = ref(null);
 const scrollStepElements = ref([]);
+const closeConfirmation = ref(false);
 
 const totalSteps = computed(() => {
   if (!story.value) return 0;
@@ -562,7 +564,12 @@ function next() {
     chapterIndex.value++;
     stepIndex.value = 0;
   } else {
-    backToDashboard();
+    resetScene();
+    stage.value = 'overview';
+    setAnimatedView({
+      center: initialCenter.value,
+      zoom: initialZoom.value,
+    });
   }
 }
 
@@ -792,50 +799,66 @@ onBeforeUnmount(() => {
         </template>
 
         <template #footer>
-          <v-row align="center">
-            <div>{{ currentGlobalStep }}/{{ totalSteps }}</div>
-
-            <v-col
-              v-if="!isScrollytellingStory || stage === 'overview'"
-              class="p-0"
+          <div
+            v-if="stage === 'overview'"
+            class="nav-bar"
+          >
+            <v-btn
+              variant="flat"
+              color="#555"
+              rounded
+              :loading="isLoading"
+              @click="startPlay"
             >
-              <v-row justify="end">
-                <v-btn
-                  v-if="stage === 'play'"
-                  variant="text"
-                  rounded
-                  @click="back"
-                >
-                  Zurück
-                </v-btn>
-                <v-btn
-                  v-if="stage === 'overview'"
-                  class="ml-2"
-                  variant="flat"
-                  color="black"
-                  rounded
-                  :loading="isLoading"
-                  @click="startPlay"
-                >
-                  Start
-                </v-btn>
-                <v-btn
-                  v-else
-                  class="ml-2"
-                  variant="flat"
-                  color="black"
-                  rounded
-                  @click="next"
-                >
-                  {{ totalSteps === currentGlobalStep ? 'Beenden' : 'Weiter' }}
-                </v-btn>
-              </v-row>
-            </v-col>
-          </v-row>
+              Start
+            </v-btn>
+          </div>
+
+          <div
+            v-else-if="stage === 'play' && (!isScrollytellingStory)"
+            class="nav-bar"
+          >
+            <v-btn
+              :icon="mdiChevronLeft"
+              variant="flat"
+              size="small"
+              class="nav-btn"
+              :disabled="currentGlobalStep <= 1"
+              @click="back"
+            />
+
+            <span class="nav-step-info">
+              {{ currentGlobalStep }} / {{ totalSteps }}
+            </span>
+
+            <v-btn
+              :icon="mdiClose"
+              variant="flat"
+              size="small"
+              class="nav-btn"
+              @click="closeConfirmation = true"
+            />
+
+            <v-btn
+              :icon="mdiChevronRight"
+              variant="flat"
+              size="small"
+              class="nav-btn"
+              @click="next"
+            />
+          </div>
         </template>
       </PlayerFrame>
     </template>
   </ToolWindow>
+  <ConfirmationDialog
+    v-model="closeConfirmation"
+    :title="t('additional:modules.dataNarrator.confirm.leaveStory.title')"
+    :message="t('additional:modules.dataNarrator.confirm.leaveStory.description')"
+    :cancel-text="t('additional:modules.dataNarrator.confirm.leaveStory.denyButton')"
+    :confirm-text="t('additional:modules.dataNarrator.confirm.leaveStory.confirmButton')"
+    @confirm="closeStoryPlayback"
+  />
   <ThreeDHint :visible="!isMobile && stage === 'play' && !!currentStep?.is3D" />
 </template>
 
@@ -934,5 +957,35 @@ onBeforeUnmount(() => {
     border-radius: 999px;
     background: rgba(246, 246, 246, 0.78);
     backdrop-filter: blur(6px);
+}
+
+.nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+.nav-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #1f2937 !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-step-info {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f2937;
+    min-width: 40px;
+    text-align: center;
 }
 </style>

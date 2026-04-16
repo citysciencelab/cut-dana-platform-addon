@@ -219,6 +219,12 @@
           "description": "Do you really want to discard this new step? Unsaved changes in this step will be lost.",
           "confirmButton": "Discard",
           "denyButton": "Keep editing"
+        },
+        "leaveStory": {
+          "title": "Leave story?",
+          "description": "Do you really want to stop reading this story?",
+          "confirmButton": "Leave",
+          "denyButton": "Continue reading"
         }
       },
       "button": {

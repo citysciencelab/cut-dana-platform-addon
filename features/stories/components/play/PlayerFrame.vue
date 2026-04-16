@@ -35,64 +35,74 @@ function handleBack() {
 </script>
 
 <template>
-  <div :class="{ 'player-frame': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }">
-    <v-toolbar
-      v-if="showHeader"
-      color="transparent"
-      size="compact"
-      class="sticky-top"
-      style="border-radius: 100px;padding: 0;"
-    >
-      <template #prepend>
-        <template v-if="isPreview">
-          <v-btn
-            :prepend-icon="mdiArrowLeft"
-            size="compact"
-            variant="text"
-            style="gap: 5px"
-            @click="emit('leave-preview')"
-          >
-            {{ t('additional:modules.dataNarrator.button.leavePreview') }}
-          </v-btn>
-        </template>
-        <template v-else>
-          <v-tooltip location="top">
-            <template #activator="{ props: actv }">
-              <v-btn
-                :icon="mdiArrowLeft"
-                size="compact"
-                class="mr-2"
-                v-bind="actv"
-                @click="handleBack"
-              />
-            </template>
-            <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
-          </v-tooltip>
+  <div class="player-frame-wrapper">
+    <div :class="{ 'player-frame': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }">
+      <v-toolbar
+        v-if="showHeader"
+        color="transparent"
+        size="compact"
+        class="sticky-top"
+        style="border-radius: 100px;padding: 0;"
+      >
+        <template #prepend>
+          <template v-if="isPreview">
+            <v-btn
+              :prepend-icon="mdiArrowLeft"
+              size="compact"
+              variant="text"
+              style="gap: 5px"
+              @click="emit('leave-preview')"
+            >
+              {{ t('additional:modules.dataNarrator.button.leavePreview') }}
+            </v-btn>
+          </template>
+          <template v-else>
+            <v-tooltip location="top">
+              <template #activator="{ props: actv }">
+                <v-btn
+                  :icon="mdiArrowLeft"
+                  size="compact"
+                  class="mr-2"
+                  v-bind="actv"
+                  @click="handleBack"
+                />
+              </template>
+              <span>{{ t('additional:modules.dataNarrator.label.backToDashboard') }}</span>
+            </v-tooltip>
 
-          <div class="bold">
-            {{ props.title }}
-          </div>
+            <div class="bold">
+              {{ props.title }}
+            </div>
+          </template>
         </template>
-      </template>
-    </v-toolbar>
+      </v-toolbar>
 
-    <div class="player-content">
-      <slot name="default" />
+      <div class="player-content">
+        <slot name="default" />
+      </div>
     </div>
 
-    <div class="player-footer mb-2 px-2">
+    <div class="player-nav-bar">
       <slot name="footer" />
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.player-frame {
+.player-frame-wrapper {
   position: absolute;
   top: 90px;
-  bottom: 90px;
+  bottom: 40px;
   left: 20px;
   right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.player-frame {
+  flex: 1;
+  min-height: 0;
   background-color: white;
   box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.30);
   border-radius: .8rem;
@@ -103,10 +113,6 @@ function handleBack() {
   &.mobile {
     background-color: transparent;
     box-shadow: none;
-    top: 30px;
-    bottom: 10px;
-    right: 10px;
-    left: 10px;
   }
 }
 
@@ -115,7 +121,10 @@ function handleBack() {
   overflow-y: auto;
 }
 
-.player-footer {
-  margin-top: auto;
+.player-nav-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 0;
 }
 </style>

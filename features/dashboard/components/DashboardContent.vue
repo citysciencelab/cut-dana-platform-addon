@@ -25,7 +25,6 @@ watch(storiesDisplayMode, () => {
 <template>
   <div class="dashboard-content-container">
     <div v-if="loading">
-      fdbdfb
       Loading...
     </div>
     <div v-else-if="err">

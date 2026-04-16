@@ -219,6 +219,12 @@
           "description": "Möchten Sie diesen neuen Schritt wirklich verwerfen? Nicht gespeicherte Änderungen in diesem Schritt gehen verloren.",
           "confirmButton": "Verwerfen",
           "denyButton": "Weiter bearbeiten"
+        },
+        "leaveStory": {
+          "title": "Story verlassen?",
+          "description": "Möchten Sie die Wiedergabe dieser Story wirklich beenden?",
+          "confirmButton": "Verlassen",
+          "denyButton": "Weiterlesen"
         }
       },
       "button": {
