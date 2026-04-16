@@ -197,14 +197,14 @@ watch(
     () => props.step?.mapConfig?.zoomLevel,
     () => props.step?.id,
   ],
-  ([backgroundMapId, centerCoordinates, zoomLevel, stepId]) => {
+  ([ backgroundMapId, centerCoordinates, zoomLevel, stepId ]) => {
     setBaseLayer(backgroundMapId);
 
     if (lastNavigatedStepId.value === stepId) return;
     lastNavigatedStepId.value = stepId;
 
     const center = Array.isArray(centerCoordinates)
-      ? [...centerCoordinates].map(Number)
+      ? [ ...centerCoordinates ].map(Number)
       : [];
     const zoom = Number(zoomLevel);
 
