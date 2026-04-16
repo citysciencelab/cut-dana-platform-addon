@@ -32,7 +32,8 @@ function createGeoJSONLayer() {
 
 export function getGeoJSONLayer() {
   //TODO: add support for 3D map
-  const map = mapCollection.getMap('2D');
+  const map = mapCollection?.getMap('2D');
+  if (!map) return null;
   const layers = map.getLayers();
   let layer = layers.getArray().find(l => l.get('name') === 'data-narrator-geojson');
   if (!layer) {
@@ -44,12 +45,13 @@ export function getGeoJSONLayer() {
 
 export function clearGeoJSON() {
   const layer = getGeoJSONLayer();
-  layer.getSource().clear();
+  layer?.getSource()?.clear();
 }
 
 export function addGeoJSON(geoJSONAssets) {
   //TODO: add support for 3D map
-  const map = mapCollection.getMap('2D');
+  const map = mapCollection?.getMap('2D');
+  if (!map) return;
   const mapProjection = map.getView().getProjection().getCode();
   const parser = new GeoJSON();
   let transparency = 0;
@@ -71,7 +73,9 @@ export function addGeoJSON(geoJSONAssets) {
 
 export function updateGeoJSONZIndex() {
   const layer = getGeoJSONLayer();
-  const map = mapCollection.getMap('2D');
+  if (!layer) return;
+  const map = mapCollection?.getMap('2D');
+  if (!map) return;
   const layers = map.getLayers().getArray();
   const maxZIndex = Math.max(...layers.map(l => l.getZIndex() || 0));
   layer.setZIndex(maxZIndex + 1);

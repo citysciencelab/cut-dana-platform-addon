@@ -160,7 +160,10 @@ const mapSources = computed({
 
 watch(
   () => props.step.is3D,
-  (is3DEnabled) => {
+  (is3DEnabled, oldVal) => {
+    // Skip initial mount when step was never 3D — no cleanup needed
+    if (oldVal === undefined && !is3DEnabled) return;
+
     if (!is3DEnabled) {
       resetScene();
     } else {
