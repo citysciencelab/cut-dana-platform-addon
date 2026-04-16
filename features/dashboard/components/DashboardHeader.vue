@@ -222,10 +222,10 @@ const normalizedDanaKeyimage = computed(() => normalizeBundledAssetPath(danaKeyi
   color: #333;
   line-height: 1;
   white-space: nowrap;
-  margin-top: 3px;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.0178571429em;
+  text-transform: none;
 }
 
 .admin-badge {
@@ -273,11 +273,11 @@ const normalizedDanaKeyimage = computed(() => normalizeBundledAssetPath(danaKeyi
   img {
     position: absolute;
     height: 1em;
-    top: -1.2em;
+    top: 5px;
 
     @media (min-width: 768px) {
       left: -1.5em;
-      top: unset;
+      top: 5px;
     }
   }
 }
