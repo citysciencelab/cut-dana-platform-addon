@@ -12,6 +12,7 @@ import { useSceneReset } from '../../../hooks/useSceneReset';
 import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrator';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
 import { getFileUrl } from '../../../utils/getFileUrl';
+import { getStoryColor } from '../../../utils/getStoryColor';
 import { createLogger } from '../../../utils/logger.js';
 import { numberToLetter } from '../../../utils/numberToLetter';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
@@ -671,9 +672,9 @@ onBeforeUnmount(() => {
   <ToolWindow>
     <template #fixed>
       <PlayerFrame
-        :title="stage === 'play' ? story.title : t('additional:modules.dataNarrator.play.storyOverviewTitle')"
+        :title="story?.title ?? ''"
         :is-preview="isPreviewMode"
-        :show-header="stage === 'overview'"
+        :show-header="false"
         @back="backToDashboard"
         @leave-preview="backToEdit"
       >
@@ -703,7 +704,10 @@ onBeforeUnmount(() => {
                   class="chapter"
                   @click="startFromChapter(index)"
                 >
-                  <div class="chapter-label">
+                  <div
+                    class="chapter-label"
+                    :style="{ backgroundColor: getStoryColor(index).primary }"
+                  >
                     {{ numberToLetter(index + 1) }}
                   </div>
                   <div class="chapter-title">
@@ -727,7 +731,10 @@ onBeforeUnmount(() => {
                   :class="['scrolly-step', { active: entry.globalStep === currentGlobalStep }]"
                 >
                   <div class="chapter px-2">
-                    <div class="chapter-label">
+                    <div
+                      class="chapter-label"
+                      :style="{ backgroundColor: getStoryColor(entry.chapterIndex).primary }"
+                    >
                       {{ numberToLetter(entry.chapterIndex + 1) }}
                     </div>
                     <div class="chapter-title">
@@ -736,7 +743,10 @@ onBeforeUnmount(() => {
                   </div>
                   <div class="step-content px-2">
                     <div class="step-content-title mt-10">
-                      <h2 class="step-pill">
+                      <h2
+                        class="step-pill"
+                        :style="{ borderColor: getStoryColor(entry.chapterIndex).primary, color: getStoryColor(entry.chapterIndex).primary }"
+                      >
                         {{ entry.stepIndex + 1 }}
                       </h2>
                       <h3 class="font-bold">
@@ -773,7 +783,10 @@ onBeforeUnmount(() => {
 
               <template v-else>
                 <div class="chapter px-2">
-                  <div class="chapter-label">
+                  <div
+                    class="chapter-label"
+                    :style="{ backgroundColor: getStoryColor(chapterIndex).primary }"
+                  >
                     {{ numberToLetter(chapterIndex + 1) }}
                   </div>
                   <div class="chapter-title">
@@ -782,7 +795,10 @@ onBeforeUnmount(() => {
                 </div>
                 <div class="step-content px-2">
                   <div class="step-content-title mt-10">
-                    <h2 class="step-pill">
+                    <h2
+                      class="step-pill"
+                      :style="{ borderColor: getStoryColor(chapterIndex).primary, color: getStoryColor(chapterIndex).primary }"
+                    >
                       {{ stepIndex + 1 }}
                     </h2>
                     <h3 class="font-bold">
@@ -803,6 +819,13 @@ onBeforeUnmount(() => {
             v-if="stage === 'overview'"
             class="nav-bar"
           >
+            <v-btn
+              :icon="mdiClose"
+              variant="flat"
+              size="small"
+              class="nav-btn"
+              @click="closeConfirmation = true"
+            />
             <v-btn
               variant="flat"
               color="#555"
@@ -898,7 +921,6 @@ onBeforeUnmount(() => {
     cursor: pointer;
 
     &-label {
-        background-color: #413fab;
         padding: 2px 16px;
         border-radius: 20px;
         font-size: 16px;
@@ -921,7 +943,7 @@ onBeforeUnmount(() => {
         font-size: 15pt;
 
         .step-pill {
-            border: 2px solid #226051;
+            border: 2px solid currentColor;
             padding: 10px;
             border-radius: 20px;
         }
