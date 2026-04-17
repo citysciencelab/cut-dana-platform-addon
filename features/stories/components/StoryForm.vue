@@ -230,8 +230,9 @@ function getDefaultStep(id) {
         scale: 1,
       },
       camera: null,
-    }
-
+    },
+    layers3D: [],
+    geoJsonAssets: [],
   };
 }
 

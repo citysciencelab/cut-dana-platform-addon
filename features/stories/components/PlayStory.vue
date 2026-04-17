@@ -490,8 +490,12 @@ watch(
         });
       })
     } else {
+      const allLayers = [
+        ...(step.informationLayers ?? []),
+        ...(Array.isArray(step.layers3D) ? step.layers3D : []),
+      ];
       setBaseLayer(bgId);
-      setInformationLayers(step.informationLayers ?? [], [ bgId ]);
+      setInformationLayers(allLayers, [ bgId ]);
     }
 
     clearGeoJSON();

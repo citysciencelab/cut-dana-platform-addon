@@ -229,13 +229,12 @@ watch(
     const activeLayers = [
       ...(Array.isArray(informationLayers) ? informationLayers : []),
       ...(Array.isArray(mapSources) ? mapSources : []),
+      ...(Array.isArray(layers3D) ? layers3D : []),
     ];
-
-    const layers3DIds = (Array.isArray(layers3D) ? layers3D : []).map(l => String(l.id));
 
     setInformationLayers(
       activeLayers,
-      [ String(backgroundMapId ?? ''), '19969', ...layers3DIds ].filter(Boolean)
+      [ String(backgroundMapId ?? ''), '19969' ].filter(Boolean)
     );
   },
   { immediate: true }
