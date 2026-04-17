@@ -222,17 +222,20 @@ watch(
   [
     () => props.step?.informationLayers,
     () => props.step?.mapSources,
-    () => props.step?.mapConfig?.backgroundMapId
+    () => props.step?.mapConfig?.backgroundMapId,
+    () => props.step?.layers3D
   ],
-  ([ informationLayers, mapSources, backgroundMapId ]) => {
+  ([ informationLayers, mapSources, backgroundMapId, layers3D ]) => {
     const activeLayers = [
       ...(Array.isArray(informationLayers) ? informationLayers : []),
       ...(Array.isArray(mapSources) ? mapSources : []),
     ];
 
+    const layers3DIds = (Array.isArray(layers3D) ? layers3D : []).map(l => String(l.id));
+
     setInformationLayers(
       activeLayers,
-      [ String(backgroundMapId ?? ''), '19969' ].filter(Boolean)
+      [ String(backgroundMapId ?? ''), '19969', ...layers3DIds ].filter(Boolean)
     );
   },
   { immediate: true }

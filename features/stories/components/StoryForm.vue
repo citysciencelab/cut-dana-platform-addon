@@ -855,7 +855,7 @@ watch([ activeStepIndex, previewVisible ], () => {
   >
     <!-- Side panels replace all editor content -->
     <div
-      v-if="activePanel"
+      v-show="activePanel"
       class="side-panel"
     >
       <div class="d-flex align-center mb-3 pt-2">
@@ -909,7 +909,7 @@ watch([ activeStepIndex, previewVisible ], () => {
       />
     </div>
 
-    <template v-else>
+    <div v-show="!activePanel">
       <div
         v-if="editStoryVisible"
         :class="['story-form-top', { 'with-image': (!!selectedImage || !!imagePreview) }]"
@@ -1179,7 +1179,7 @@ watch([ activeStepIndex, previewVisible ], () => {
           </v-row>
         </template>
       </v-container>
-    </template>
+    </div>
   </form>
   <ConfirmationDialog
     v-model="backConfirmation"

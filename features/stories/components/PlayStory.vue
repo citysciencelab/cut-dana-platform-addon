@@ -359,7 +359,8 @@ async function load3DModel(step) {
               entity.show = model3D.show !== false;
             });
           }
-        } catch { /* ignore */ }
+        } catch { /* ignore */
+        }
 
         const importedEntities = [ ...(store.getters['Modules/Modeler3D/importedEntities'] ?? []) ];
         const importedEntity = importedEntities.find(e => e.entityId === newModel.id);
@@ -742,7 +743,7 @@ onBeforeUnmount(() => {
                     </div>
                   </div>
                   <div class="step-content px-2">
-                    <div class="step-content-title mt-10">
+                    <div class="step-content-title mt-3">
                       <h2
                         class="step-pill"
                         :style="{ borderColor: getStoryColor(entry.chapterIndex).primary, color: getStoryColor(entry.chapterIndex).primary }"
@@ -794,7 +795,7 @@ onBeforeUnmount(() => {
                   </div>
                 </div>
                 <div class="step-content px-2">
-                  <div class="step-content-title mt-10">
+                  <div class="step-content-title mt-3">
                     <h2
                       class="step-pill"
                       :style="{ borderColor: getStoryColor(chapterIndex).primary, color: getStoryColor(chapterIndex).primary }"
@@ -887,127 +888,127 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .story-cover {
-    width: 100%;
-    height: 180px;
-    aspect-ratio: 16 / 9;
-    background-color: #f1f1f1;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    border-radius: 5px;
+  width: 100%;
+  height: 180px;
+  aspect-ratio: 16 / 9;
+  background-color: #f1f1f1;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 5px;
 }
 
 .story-title {
-    font-size: 15pt;
+  font-size: 15pt;
 }
 
 .story-description {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 .chapter-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 0;
 }
 
 .chapter {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border-radius: 50px;
-    padding: 4px 8px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 50px;
+  padding: 4px 8px;
+  cursor: pointer;
 
-    &-label {
-        padding: 2px 16px;
-        border-radius: 20px;
-        font-size: 16px;
-        font-weight: bold;
-        color: white;
-    }
+  &-label {
+    padding: 2px 16px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+  }
 
-    &-title {
-        flex: 1;
-        font-weight: bold;
-        font-size: 15pt;
-    }
+  &-title {
+    flex: 1;
+    font-weight: bold;
+    font-size: 15pt;
+  }
 }
 
 .step-content {
-    &-title {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 15pt;
+  &-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15pt;
 
-        .step-pill {
-            border: 2px solid currentColor;
-            padding: 10px;
-            border-radius: 20px;
-        }
+    .step-pill {
+      border: 2px solid currentColor;
+      padding: 10px;
+      border-radius: 20px;
     }
+  }
 }
 
 .scrolly-steps {
-    display: flex;
-    flex-direction: column;
-    padding: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 16px;
 }
 
 .scrolly-step {
-    min-height: 100%;
-    padding-bottom: 8px;
-    display: flex;
-    flex-direction: column;
+  min-height: 100%;
+  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
 
-    &.active {
-        .step-pill {
-            background-color: rgba(34, 96, 81, 0.08);
-        }
+  &.active {
+    .step-pill {
+      background-color: rgba(34, 96, 81, 0.08);
     }
+  }
 }
 
 .scrolly-step-controls {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    width: fit-content;
-    margin: 16px auto 0;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: rgba(246, 246, 246, 0.78);
-    backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 16px auto 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(246, 246, 246, 0.78);
+  backdrop-filter: blur(6px);
 }
 
 .nav-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 6px 16px;
-    border-radius: 999px;
-    background: transparent;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: transparent;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
 }
 
 .nav-btn {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9) !important;
-    color: #1f2937 !important;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #1f2937 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .nav-step-info {
-    font-size: 13px;
-    font-weight: 600;
-    color: #1f2937;
-    min-width: 40px;
-    text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  min-width: 40px;
+  text-align: center;
 }
 </style>

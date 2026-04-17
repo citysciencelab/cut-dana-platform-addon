@@ -77,7 +77,7 @@ function handleBack() {
         </template>
       </v-toolbar>
 
-      <div class="player-content pt-2">
+      <div class="player-content pt-2 pb-2">
         <slot name="default" />
       </div>
     </div>
