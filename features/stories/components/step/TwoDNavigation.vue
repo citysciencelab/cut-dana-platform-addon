@@ -1,7 +1,7 @@
 <script setup>
 import { mdiChevronDown, mdiChevronUp, mdiPinOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { ref, watch, computed, nextTick } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 
 import { useNavigation } from '../../../../hooks/useNavigation';
 
@@ -46,7 +46,9 @@ watch(
       ? [ ...value.centerCoordinates ]
       : [];
     zoomLevel.value = value?.zoomLevel;
-    nextTick(() => { isSyncing = false; });
+    nextTick(() => {
+      isSyncing = false;
+    });
   },
   { immediate: true, deep: true }
 );
@@ -168,64 +170,64 @@ watch(
 
 <style scoped lang="scss">
 .navigation-container {
-    display: flex;
-    gap: 8px;
+  display: flex;
+  gap: 8px;
 
-    .field {
-        flex: 1;
+  .field {
+    flex: 1;
 
-        .position-container {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 8px;
+    .position-container {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px;
 
-            .position-inputs {
-                display: flex;
-                gap: 8px;
-                padding-top: 14px;
+      .position-inputs {
+        display: flex;
+        gap: 8px;
+        padding-top: 14px;
 
-                input[type="text"] {
-                    border-bottom: 1px solid #a1a1a1;
-                    max-width: 110px;
-                }
-            }
+        input[type="text"] {
+          border-bottom: 1px solid #a1a1a1;
+          max-width: 110px;
         }
-
-        .zoom-container {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 8px;
-
-            .zoom-inputs {
-                display: flex;
-                gap: 8px;
-                position: relative;
-                align-items: flex-end;
-
-                input[type="text"] {
-                    border-bottom: 1px solid #a1a1a1;
-                    max-width: 16px;
-                }
-
-                .zoom-stepper {
-                    display: flex;
-                    flex-direction: column;
-
-                    .stepper-btn {
-                        height: 18px;
-                        width: 18px;
-                        min-width: 18px;
-                        padding: 0;
-                    }
-                }
-            }
-        }
-
-        .input-info {
-            margin-top: 2px;
-            color: #fe8e39;
-            font-size: 12px;
-        }
+      }
     }
+
+    .zoom-container {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px;
+
+      .zoom-inputs {
+        display: flex;
+        gap: 8px;
+        position: relative;
+        align-items: flex-end;
+
+        input[type="text"] {
+          border-bottom: 1px solid #a1a1a1;
+          max-width: 16px;
+        }
+
+        .zoom-stepper {
+          display: flex;
+          flex-direction: column;
+
+          .stepper-btn {
+            height: 18px;
+            width: 18px;
+            min-width: 18px;
+            padding: 0;
+          }
+        }
+      }
+    }
+
+    .input-info {
+      margin-top: 2px;
+      color: #fe8e39;
+      font-size: 12px;
+    }
+  }
 }
 </style>
