@@ -117,7 +117,8 @@ function handleBack() {
 }
 
 .player-content {
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 

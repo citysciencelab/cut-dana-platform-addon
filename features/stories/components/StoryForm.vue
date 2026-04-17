@@ -650,7 +650,7 @@ async function loadModels3DForStep(step) {
       store.commit('Modules/Modeler3D/setScale', model3D.scale ?? 1);
       store.commit('Modules/Modeler3D/setRotation', model3D.rotation ?? 0);
 
-      const position = model3D.position ?? { x: 0, y: 0, z: 0 };
+      const position = model3D.position ?? { x: 0, y: 0 };
       await store.dispatch('Modules/Modeler3D/createEntity', { blob, fileName, position });
 
       const allModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
@@ -1187,7 +1187,14 @@ watch([ activeStepIndex, previewVisible ], () => {
     :message="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.description')"
     :cancel-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.denyButton')"
     :confirm-text="t('additional:modules.dataNarrator.confirm.leaveWithoutSaving.confirmButton')"
-    @confirm="() => { resetScene(); gotoPage(dataNarratorModes.DASHBOARD); }"
+    @confirm="() => {
+      if (isEditingStep) {
+        resetToStoryForm();
+      } else {
+        resetScene();
+        gotoPage(dataNarratorModes.DASHBOARD);
+      }
+    }"
   />
   <ConfirmationDialog
     v-model="discardNewStepConfirmation"
