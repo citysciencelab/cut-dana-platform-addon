@@ -737,7 +737,7 @@ onBeforeUnmount(() => {
                   <div class="step-content px-2">
                     <div class="step-content-title mt-10">
                       <h2 class="step-pill">
-                        {{ entry.globalStep }}
+                        {{ entry.stepIndex + 1 }}
                       </h2>
                       <h3 class="font-bold">
                         {{ entry.step.title }}
@@ -783,7 +783,7 @@ onBeforeUnmount(() => {
                 <div class="step-content px-2">
                   <div class="step-content-title mt-10">
                     <h2 class="step-pill">
-                      {{ currentGlobalStep }}
+                      {{ stepIndex + 1 }}
                     </h2>
                     <h3 class="font-bold">
                       {{ story.chapters[chapterIndex].steps[stepIndex].title }}

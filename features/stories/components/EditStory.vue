@@ -54,6 +54,7 @@ async function loadStory() {
         is3D: s.is3D ?? false,
         navigation3D: s.navigation3D ?? {},
         models3D: Array.isArray(s.models3D) ? s.models3D : [],
+        layers3D: Array.isArray(s.layers3D) ? s.layers3D : [],
       })),
     }));
   } catch (err) {

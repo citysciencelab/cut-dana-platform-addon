@@ -236,9 +236,9 @@ function getDefaultStep(id) {
 }
 
 function reindexAllSteps() {
-  let nextStepId = 1;
-
   for (const chapter of chaptersData.value ?? []) {
+    let nextStepId = 1;
+
     for (const step of chapter.steps ?? []) {
       step.id = nextStepId++;
     }
@@ -804,7 +804,7 @@ watch(
       storyNameInput.value = s ?? '';
       descriptionInput.value = d ?? '';
       scrollytellingEnabled.value = scrollytelling === true;
-      chaptersData.value = structuredClone(c ?? []);
+      chaptersData.value = JSON.parse(JSON.stringify(c ?? []));
       reindexAllSteps();
       previewVisible.value = true;
       activeStepIndex.value = -1;
