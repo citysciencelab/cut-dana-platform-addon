@@ -101,7 +101,9 @@
         "adaptToHeight3D": "An Gelände anpassen",
         "storyNamePlaceholder": "Story Name",
         "storyDescriptionPlaceholder": "Beschreibung",
-        "storyOptions": "Story-Optionen"
+        "storyOptions": "Story-Optionen",
+        "playerWidth": "Player-Breite (px)",
+        "playerHeight": "Player-Höhe (px)"
       },
       "categoryBrowser": {
         "searchLayers": "Ebenen durchsuchen…",
@@ -167,7 +169,8 @@
         "sendNoHTML": "Das Absenden eines Unterkapitels ist erst möglich sobald Inhalt hinzugefügt wurde.",
         "storyNotSaved": "Ihre Story konnte nicht gespeichert werden.",
         "noIntervalOnScrolly": "Scrollbare Stories können kein Autoplay Intervall haben.",
-        "noStepInChapter": "Kapitel müssen mindestens einen Schritt enthalten."
+        "noStepInChapter": "Kapitel müssen mindestens einen Schritt enthalten.",
+        "minPlayerDimension": "Mindestgröße ist 460px. Werte darunter können nicht gespeichert werden."
       },
       "error": {
         "chapterNumberAlreadyExists": "Ein Kapitel mit dieser Nummer existiert bereits. Bitte wählen Sie eine andere Nummer.",

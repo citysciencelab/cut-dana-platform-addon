@@ -61,6 +61,14 @@ const props = defineProps({
   isDraft: {
     type: Boolean,
     default: true
+  },
+  playerWidth: {
+    type: Number,
+    default: null
+  },
+  playerHeight: {
+    type: Number,
+    default: null
   }
 });
 const { t } = useTranslation();
@@ -98,6 +106,9 @@ const activePanel = ref(null); // null | '3d' | 'layers' | 'geojson'
 const validationErrors = ref([]);
 const showValidation = ref(false);
 const isLoadingStepModels3D = ref(false);
+const playerWidthInput = ref(null);
+const playerHeightInput = ref(null);
+const advancedOptionsOpen = ref(false);
 const loaded3DStepSignature = ref('');
 
 let nextChapterId = 1;
@@ -185,6 +196,10 @@ function getStoryErrors() {
     errors.push(t('additional:modules.dataNarrator.validation.missingChapterAndStep'));
   else if (hasEmptyChapter)
     errors.push(t('additional:modules.dataNarrator.validation.chaptersNeedSteps'));
+  if (playerWidthInput.value && Number(playerWidthInput.value) < 460)
+    errors.push(t('additional:modules.dataNarrator.warning.minPlayerDimension'));
+  if (playerHeightInput.value && Number(playerHeightInput.value) < 460)
+    errors.push(t('additional:modules.dataNarrator.warning.minPlayerDimension'));
   return errors;
 }
 
@@ -471,6 +486,8 @@ async function saveStoryData() {
     title: String(storyNameInput.value ?? '').trim(),
     description: String(descriptionInput.value ?? '').trim(),
     scrollytelling: scrollytellingEnabled.value === true,
+    playerWidth: playerWidthInput.value ? Number(playerWidthInput.value) : null,
+    playerHeight: playerHeightInput.value ? Number(playerHeightInput.value) : null,
     chapters: chaptersData.value
   };
 
@@ -799,12 +816,14 @@ watch(activePanel, async (panel, prevPanel) => {
 });
 
 watch(
-  [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId, () => props.scrollytelling ],
-  ([ s, d, c, sId, scrollytelling ]) => {
+  [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId, () => props.scrollytelling, () => props.playerWidth, () => props.playerHeight ],
+  ([ s, d, c, sId, scrollytelling, pw, ph ]) => {
     if (sId) {
       storyNameInput.value = s ?? '';
       descriptionInput.value = d ?? '';
       scrollytellingEnabled.value = scrollytelling === true;
+      playerWidthInput.value = pw ?? null;
+      playerHeightInput.value = ph ?? null;
       chaptersData.value = JSON.parse(JSON.stringify(c ?? []));
       reindexAllSteps();
       previewVisible.value = true;
@@ -1116,6 +1135,52 @@ watch([ activeStepIndex, previewVisible ], () => {
               />
             </div>
           </div>
+          <!-- Advanced Options collapsible -->
+          <div class="advanced-options mb-2">
+            <div
+              class="advanced-options-header"
+              @click="advancedOptionsOpen = !advancedOptionsOpen"
+            >
+              <span class="advanced-options-label">{{ t('additional:modules.dataNarrator.label.advancedOptions') }}</span>
+              <v-icon
+                :icon="advancedOptionsOpen ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                size="small"
+              />
+            </div>
+            <div
+              v-show="advancedOptionsOpen"
+              class="advanced-options-body"
+            >
+              <v-row dense>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model.number="playerWidthInput"
+                    :label="t('additional:modules.dataNarrator.label.playerWidth')"
+                    type="number"
+                    variant="outlined"
+                    density="compact"
+                    hide-details="auto"
+                    :min="460"
+                    :hint="Number(playerWidthInput) > 0 && Number(playerWidthInput) < 460 ? t('additional:modules.dataNarrator.warning.minPlayerDimension') : ''"
+                    persistent-hint
+                  />
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model.number="playerHeightInput"
+                    :label="t('additional:modules.dataNarrator.label.playerHeight')"
+                    type="number"
+                    variant="outlined"
+                    density="compact"
+                    hide-details="auto"
+                    :min="460"
+                    :hint="Number(playerHeightInput) > 0 && Number(playerHeightInput) < 460 ? t('additional:modules.dataNarrator.warning.minPlayerDimension') : ''"
+                    persistent-hint
+                  />
+                </v-col>
+              </v-row>
+            </div>
+          </div>
           <v-row class="mb-1">
             <v-col
               cols="6"
@@ -1312,6 +1377,36 @@ watch([ activeStepIndex, previewVisible ], () => {
 
 .story-options-switch {
   flex: 0 0 auto;
+}
+
+.advanced-options {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    cursor: pointer;
+    background: #efefef;
+    user-select: none;
+
+    &:hover {
+      background: #e5e5e5;
+    }
+  }
+
+  &-label {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  &-body {
+    padding: 10px 12px 4px;
+    background: #f6f6f6;
+  }
 }
 
 .side-panel {

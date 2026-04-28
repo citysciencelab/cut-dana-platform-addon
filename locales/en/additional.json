@@ -101,7 +101,9 @@
         "adaptToHeight3D": "Adapt to terrain",
         "storyNamePlaceholder": "Story name",
         "storyDescriptionPlaceholder": "Story description",
-        "storyOptions": "Story options"
+        "storyOptions": "Story options",
+        "playerWidth": "Player width (px)",
+        "playerHeight": "Player height (px)"
       },
       "categoryBrowser": {
         "searchLayers": "Search Layers…",
@@ -167,7 +169,8 @@
         "sendNoHTML": "Submitting a subchapter is only possible once content has been added.",
         "storyNotSaved": "Your story could not be saved.",
         "noIntervalOnScrolly": "Scrollable stories cannot have an autoplay interval.",
-        "noStepInChapter": "Chapters must contain at least one step."
+        "noStepInChapter": "Chapters must contain at least one step.",
+        "minPlayerDimension": "Minimum size is 460px. Values below this cannot be saved."
       },
       "error": {
         "chapterNumberAlreadyExists": "A chapter with this number already exists. Please choose another number.",

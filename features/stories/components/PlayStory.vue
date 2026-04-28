@@ -680,6 +680,8 @@ onBeforeUnmount(() => {
         :title="story?.title ?? ''"
         :is-preview="isPreviewMode"
         :show-header="false"
+        :player-width="story?.playerWidth ?? null"
+        :player-height="story?.playerHeight ?? null"
         @back="backToDashboard"
         @leave-preview="backToEdit"
       >
@@ -746,7 +748,7 @@ onBeforeUnmount(() => {
                       {{ entry.chapterTitle }}
                     </div>
                   </div>
-                  <div class="step-content px-2">
+                  <div class="step-content px-2 pb-4">
                     <div class="step-content-title mt-3">
                       <h2
                         class="step-pill"
@@ -798,7 +800,7 @@ onBeforeUnmount(() => {
                     {{ story.chapters[chapterIndex].name }}
                   </div>
                 </div>
-                <div class="step-content px-2">
+                <div class="step-content px-2 pb-4">
                   <div class="step-content-title mt-3">
                     <h2
                       class="step-pill"

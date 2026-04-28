@@ -100,6 +100,11 @@ async function playStory() {
     <v-card-actions class="card-actions">
       <v-row>
         <v-col>
+          <CopyButton
+            v-if="isAdmin"
+            :story-id="story.id"
+            @copied="() => emit('copied')"
+          />
           <EditButton
             v-if="userId === story.owner || isAdmin"
             :story-id="story.id"
@@ -108,11 +113,6 @@ async function playStory() {
             v-if="userId === story.owner || isAdmin"
             :story-id="story.id"
             @deleted="() => emit('deleted')"
-          />
-          <CopyButton
-            v-if="isAdmin"
-            :story-id="story.id"
-            @copied="() => emit('copied')"
           />
         </v-col>
         <v-col class="play-button">
