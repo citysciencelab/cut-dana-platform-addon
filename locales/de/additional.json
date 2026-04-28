@@ -176,6 +176,12 @@
         "storyDeleted": "Story konnte nicht gelöscht werden."
       },
       "confirm": {
+        "copyStory": {
+          "title": "Story kopieren",
+          "description": "Möchten Sie diese Story kopieren? Eine Kopie wird in Ihrem Konto gespeichert.",
+          "confirmButton": "Kopieren",
+          "denyButton": "Abbrechen"
+        },
         "closeStoryCreation": {
           "title": "Tool schließen",
           "description": "Sind Sie sicher, dass Sie das Tool schließen möchten? Eingetragene Daten werden nicht gespeichert.",
@@ -248,7 +254,8 @@
         "publish": "Veröffentlichen",
         "unpublish": "Veröffentlichung aufheben",
         "close": "Schließen",
-        "copyLink": "Link kopieren"
+        "copyLink": "Link kopieren",
+        "copyStory": "Story kopieren"
       },
       "newChapter": "Neues Kapitel",
       "editChapter": "Kapitel bearbeiten",

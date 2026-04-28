@@ -16,6 +16,10 @@ const fetchStories = () => {
   store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', storiesDisplayMode.value);
 };
 
+const onStoryCopied = () => {
+  store.commit('Modules/DataNarrator/DashboardStore/setMode', 'my');
+};
+
 watch(storiesDisplayMode, () => {
   fetchStories();
 }, { immediate: true });
@@ -41,6 +45,7 @@ watch(storiesDisplayMode, () => {
         :grid="true"
         @deleted="fetchStories"
         @published="fetchStories"
+        @copied="onStoryCopied"
       />
     </div>
     <div

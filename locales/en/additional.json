@@ -176,6 +176,12 @@
         "storyDeleted": "Story could not be deleted."
       },
       "confirm": {
+        "copyStory": {
+          "title": "Copy Story",
+          "description": "Do you want to copy this story? A copy will be saved in your account.",
+          "confirmButton": "Copy",
+          "denyButton": "Cancel"
+        },
         "closeStoryCreation": {
           "title": "Close Tool",
           "description": "Are you sure you want to close the tool? Entered data will not be saved.",
@@ -248,7 +254,8 @@
         "publish": "Publish",
         "unpublish": "Unpublish",
         "close": "Close",
-        "copyLink": "Copy link"
+        "copyLink": "Copy link",
+        "copyStory": "Copy Story"
       },
       "newChapter": "New Chapter",
       "editChapter": "Edit Chapter",

@@ -6,6 +6,7 @@ import { useStory } from '../../../stories/hooks/useStory';
 import { useLogin } from '../../hooks/useLogin';
 
 import AuthorDisplay from './Author.vue';
+import CopyButton from './CopyButton.vue';
 import DeleteButton from './DeleteButton.vue';
 import EditButton from './EditButton.vue';
 import FeaturedButton from './FeaturedButton.vue';
@@ -16,7 +17,7 @@ import ShareButton from './ShareButton.vue';
 const { userId, isAdmin } = useLogin();
 const { gotoPage } = useDataNarrator();
 const { currentStoryId } = useStory();
-const emit = defineEmits([ 'deleted', 'published' ]);
+const emit = defineEmits([ 'deleted', 'published', 'copied' ]);
 
 const logger = createLogger('StoryCard.vue');
 
@@ -107,6 +108,11 @@ async function playStory() {
             v-if="userId === story.owner || isAdmin"
             :story-id="story.id"
             @deleted="() => emit('deleted')"
+          />
+          <CopyButton
+            v-if="isAdmin"
+            :story-id="story.id"
+            @copied="() => emit('copied')"
           />
         </v-col>
         <v-col class="play-button">
