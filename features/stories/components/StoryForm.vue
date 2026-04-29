@@ -322,6 +322,24 @@ function handleDeleteStep({ chapterIdx, stepIdx }) {
     newStepDraft.value?.chapterId === chapter.id &&
     newStepDraft.value?.stepId === deletedStep?.id
   );
+
+  // Remove entityFiles entries for models3D only used in this step
+  if (Array.isArray(deletedStep?.models3D)) {
+    const allOtherModelsEntityIds = new Set(
+      chaptersData.value.flatMap((ch, cIdx) =>
+        cIdx === chapterIdx
+          ? ch.steps.filter((_, sIdx) => sIdx !== stepIdx).flatMap(s => (s.models3D ?? []).map(m => m.entityId))
+          : ch.steps.flatMap(s => (s.models3D ?? []).map(m => m.entityId))
+      )
+    );
+    for (const model3D of deletedStep.models3D) {
+      if (model3D.entityId && !allOtherModelsEntityIds.has(model3D.entityId)) {
+        entityFiles.delete(model3D.entityId);
+        persistedEntityIds.delete(model3D.entityId);
+      }
+    }
+  }
+
   chapter.steps.splice(stepIdx, 1);
 
   if (isDeletingDraftStep) {
@@ -329,6 +347,28 @@ function handleDeleteStep({ chapterIdx, stepIdx }) {
     resetToStoryForm();
   }
 
+  reindexAllSteps();
+}
+
+function handleCopyStep({ chapterIdx, stepIdx }) {
+  const chapter = chaptersData.value?.[chapterIdx];
+  if (!chapter) return;
+  const sourceStep = chapter.steps[stepIdx];
+  if (!sourceStep) return;
+
+  // Deep clone the step data
+  const copiedStep = JSON.parse(JSON.stringify(sourceStep));
+
+  // Append '-copy' to the title
+  copiedStep.title = `${copiedStep.title}-copy`;
+
+  // geoJsonAssets: references are preserved via JSON clone (data only, no file re-upload needed)
+  // models3D: references are preserved — same entityId/fileUrl so no re-upload occurs
+  // New entityIds for copied models are NOT registered in entityFiles,
+  // meaning they will reuse the already-uploaded fileUrl on next save.
+
+  // Insert immediately after the source step
+  chapter.steps.splice(stepIdx + 1, 0, copiedStep);
   reindexAllSteps();
 }
 
@@ -1041,6 +1081,7 @@ watch([ activeStepIndex, previewVisible ], () => {
           handleAddNewStep({ chapterIdx });
         }"
         @delete-step="handleDeleteStep"
+        @copy-step="handleCopyStep"
         @steps-change="handleStepsChange"
         @edit-step="handleEditStep"
         @edit-chapter="handleEditChapter"

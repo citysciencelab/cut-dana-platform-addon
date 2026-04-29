@@ -138,6 +138,7 @@
         "delete": "Delete",
         "editStep": "Edit Step",
         "deleteStep": "Delete Step",
+        "copyStep": "Copy Step",
         "overview": "Overview",
         "save": "Save",
         "saveStep": "Save Step",

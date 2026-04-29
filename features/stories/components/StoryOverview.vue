@@ -4,7 +4,8 @@ import {
   mdiPlus,
   mdiDragHorizontalVariant,
   mdiDeleteForeverOutline,
-  mdiPencilOutline
+  mdiPencilOutline,
+  mdiContentCopy
 } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref } from 'vue';
@@ -21,6 +22,7 @@ const emits = defineEmits([
   'addNewStep',
   'editStep',
   'deleteStep',
+  'copyStep',
   'stepsChange',
   'editChapter',
   'deleteChapter',
@@ -43,6 +45,9 @@ const pendingDeleteChapter = ref(null); // { chapterIdx }
 
 const onEditStepClick = (chapterIdx, stepIdx) => {
   emits('editStep', { chapterIdx, stepIdx });
+};
+const onCopyStepClick = (chapterIdx, stepIdx) => {
+  emits('copyStep', { chapterIdx, stepIdx });
 };
 const onDeleteStepClick = (chapterIdx, stepIdx) => {
   pendingDeleteStep.value = { chapterIdx, stepIdx };
@@ -210,6 +215,18 @@ const getColor = (idx) => {
                         />
                       </template>
                       <span>{{ t('additional:modules.dataNarrator.creator.deleteStep') }}</span>
+                    </v-tooltip>
+                    <v-tooltip location="top">
+                      <template #activator="{ props: tooltipProps}">
+                        <v-btn
+                          v-bind="{...tooltipProps}"
+                          variant="text"
+                          :icon="mdiContentCopy"
+                          size="compact"
+                          @click.stop="onCopyStepClick(idx, stepIdx)"
+                        />
+                      </template>
+                      <span>{{ t('additional:modules.dataNarrator.creator.copyStep') }}</span>
                     </v-tooltip>
                     <v-tooltip location="top">
                       <template #activator="{ props: tooltipProps}">
