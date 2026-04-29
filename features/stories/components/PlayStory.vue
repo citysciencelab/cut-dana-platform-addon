@@ -130,6 +130,7 @@ const autoplayIntervalMs = computed(() => {
   return Math.max(1000, Math.floor(seconds * 1000));
 });
 const autoplayActive = computed(() => storyHasAutoplay.value && !autoplayPausedByUser.value);
+const canLeaveStory = computed(() => story.value?.hideBackButton !== true);
 
 function syncBrowserUrl() {
   const baseUrl = `${location.origin}/portal/stories/`;
@@ -813,6 +814,7 @@ onBeforeUnmount(() => {
             <div v-if="stage === 'overview'">
               <div class="story-overview-step px-2 pb-4">
                 <v-btn
+                  v-if="canLeaveStory"
                   :icon="mdiClose"
                   variant="flat"
                   size="small"
@@ -896,6 +898,7 @@ onBeforeUnmount(() => {
                       @click.prevent="goToPreviousScrollytellingStep(entry.globalStep)"
                     />
                     <v-btn
+                      v-if="canLeaveStory"
                       variant="text"
                       rounded
                       :icon="mdiClose"
@@ -923,6 +926,7 @@ onBeforeUnmount(() => {
                       @click="autoplayPausedByUser = !autoplayPausedByUser"
                     />
                     <v-btn
+                      v-if="canLeaveStory"
                       :icon="mdiClose"
                       variant="flat"
                       size="small"

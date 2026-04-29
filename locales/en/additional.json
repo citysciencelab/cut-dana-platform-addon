@@ -49,6 +49,7 @@
         "heading": "Heading",
         "pitch": "Pitch",
         "autoPLay": "Autoplay",
+        "hideBackButton": "Hide back button",
         "scrollMode": "Scroll Mode",
         "on": "On",
         "off": "Off",

@@ -23,6 +23,7 @@ const playerWidth = ref(null);
 const playerHeight = ref(null);
 const autoplayEnabled = ref(false);
 const autoplayIntervalSec = ref(10);
+const hideBackButton = ref(false);
 
 function getFileUrl(titleImage) {
   return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
@@ -42,6 +43,7 @@ async function loadStory() {
     playerHeight.value = data.playerHeight ?? null;
     autoplayEnabled.value = data.autoplayEnabled === true;
     autoplayIntervalSec.value = data.autoplayIntervalSec ?? 10;
+    hideBackButton.value = data.hideBackButton === true;
     coverImageUrl.value = data.titleImage ? getFileUrl(data.titleImage) : null;
     chapters.value = (data.chapters ?? []).map((c, idx) => ({
       id: idx,
@@ -91,6 +93,7 @@ watch(() => currentStoryId?.value, loadStory);
         :player-height="playerHeight"
         :autoplay-enabled="autoplayEnabled"
         :autoplay-interval-sec="autoplayIntervalSec"
+        :hide-back-button="hideBackButton"
       />
     </template>
   </ToolWindow>

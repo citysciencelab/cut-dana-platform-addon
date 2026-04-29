@@ -12,6 +12,7 @@ import { useSceneReset } from '../../../hooks/useSceneReset';
 import { backendUrl, dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { clearGeoJSON } from '../../../utils/geoJSON';
 import { createLogger } from '../../../utils/logger.js';
+import { useLogin } from '../../dashboard/hooks/useLogin';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import { useStory } from '../hooks/useStory';
 import { deleteCoverImage, uploadCoverImage } from '../services/coverImage';
@@ -77,6 +78,10 @@ const props = defineProps({
   autoplayIntervalSec: {
     type: Number,
     default: 10
+  },
+  hideBackButton: {
+    type: Boolean,
+    default: false
   }
 });
 const { t } = useTranslation();
@@ -86,6 +91,7 @@ const { currentStoryId } = useStory();
 const { layers3D, loading: loading3DLayers } = use3DLayers();
 const { resetScene } = useSceneReset();
 const { isMobile } = useIsMobile();
+const { isAdmin } = useLogin();
 
 const {
   initialCenter,
@@ -118,6 +124,7 @@ const playerWidthInput = ref(null);
 const playerHeightInput = ref(null);
 const autoplayEnabledInput = ref(false);
 const autoplayIntervalSecInput = ref(10);
+const hideBackButtonInput = ref(false);
 const advancedOptionsOpen = ref(false);
 const loaded3DStepSignature = ref('');
 
@@ -542,6 +549,7 @@ async function saveStoryData() {
     playerHeight: playerHeightInput.value ? Number(playerHeightInput.value) : null,
     autoplayEnabled: autoplayEnabledInput.value === true,
     autoplayIntervalSec: autoplayEnabledInput.value ? Number(autoplayIntervalSecInput.value) : null,
+    hideBackButton: hideBackButtonInput.value === true,
     chapters: chaptersData.value
   };
 
@@ -879,9 +887,10 @@ watch(
     () => props.playerWidth,
     () => props.playerHeight,
     () => props.autoplayEnabled,
-    () => props.autoplayIntervalSec
+    () => props.autoplayIntervalSec,
+    () => props.hideBackButton
   ],
-  ([ s, d, c, sId, scrollytelling, pw, ph, autoplayEnabled, autoplayIntervalSec ]) => {
+  ([ s, d, c, sId, scrollytelling, pw, ph, autoplayEnabled, autoplayIntervalSec, hideBackButton ]) => {
     if (sId) {
       storyNameInput.value = s ?? '';
       descriptionInput.value = d ?? '';
@@ -890,6 +899,7 @@ watch(
       playerHeightInput.value = ph ?? null;
       autoplayEnabledInput.value = autoplayEnabled === true;
       autoplayIntervalSecInput.value = autoplayIntervalSec ?? 10;
+      hideBackButtonInput.value = hideBackButton === true;
       chaptersData.value = JSON.parse(JSON.stringify(c ?? []));
       reindexAllSteps();
       previewVisible.value = true;
@@ -1188,7 +1198,6 @@ watch([ activeStepIndex, previewVisible ], () => {
         <template v-else>
           <div
             class="story-options"
-            style="display: none"
           >
             <div class="story-options-row">
               <span class="story-options-label">
@@ -1208,7 +1217,9 @@ watch([ activeStepIndex, previewVisible ], () => {
               class="advanced-options-header"
               @click="advancedOptionsOpen = !advancedOptionsOpen"
             >
-              <span class="advanced-options-label">{{ t('additional:modules.dataNarrator.label.advancedOptions') }}</span>
+              <span class="advanced-options-label">{{
+                t('additional:modules.dataNarrator.label.advancedOptions')
+              }}</span>
               <v-icon
                 :icon="advancedOptionsOpen ? 'mdi-chevron-up' : 'mdi-chevron-down'"
                 size="small"
@@ -1268,6 +1279,19 @@ watch([ activeStepIndex, previewVisible ], () => {
                     hide-details="auto"
                     :min="1"
                   />
+                </v-col>
+                <v-col
+                  v-if="isAdmin && !props.storyId"
+                  cols="6"
+                >
+                  <div class="d-flex align-center ga-2 mt-1">
+                    <span class="text-body-2">{{ t('additional:modules.dataNarrator.label.hideBackButton') }}</span>
+                    <v-switch
+                      v-model="hideBackButtonInput"
+                      hide-details
+                      density="compact"
+                    />
+                  </div>
                 </v-col>
               </v-row>
             </div>
