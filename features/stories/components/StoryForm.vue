@@ -69,6 +69,14 @@ const props = defineProps({
   playerHeight: {
     type: Number,
     default: null
+  },
+  autoplayEnabled: {
+    type: Boolean,
+    default: false
+  },
+  autoplayIntervalSec: {
+    type: Number,
+    default: 10
   }
 });
 const { t } = useTranslation();
@@ -108,6 +116,8 @@ const showValidation = ref(false);
 const isLoadingStepModels3D = ref(false);
 const playerWidthInput = ref(null);
 const playerHeightInput = ref(null);
+const autoplayEnabledInput = ref(false);
+const autoplayIntervalSecInput = ref(10);
 const advancedOptionsOpen = ref(false);
 const loaded3DStepSignature = ref('');
 
@@ -200,6 +210,8 @@ function getStoryErrors() {
     errors.push(t('additional:modules.dataNarrator.warning.minPlayerDimension'));
   if (playerHeightInput.value && Number(playerHeightInput.value) < 460)
     errors.push(t('additional:modules.dataNarrator.warning.minPlayerDimension'));
+  if (autoplayEnabledInput.value && (!Number.isFinite(Number(autoplayIntervalSecInput.value)) || Number(autoplayIntervalSecInput.value) <= 0))
+    errors.push(t('additional:modules.dataNarrator.validation.missingAutoplayInterval'));
   return errors;
 }
 
@@ -528,6 +540,8 @@ async function saveStoryData() {
     scrollytelling: scrollytellingEnabled.value === true,
     playerWidth: playerWidthInput.value ? Number(playerWidthInput.value) : null,
     playerHeight: playerHeightInput.value ? Number(playerHeightInput.value) : null,
+    autoplayEnabled: autoplayEnabledInput.value === true,
+    autoplayIntervalSec: autoplayEnabledInput.value ? Number(autoplayIntervalSecInput.value) : null,
     chapters: chaptersData.value
   };
 
@@ -856,14 +870,26 @@ watch(activePanel, async (panel, prevPanel) => {
 });
 
 watch(
-  [ () => props.storyName, () => props.description, () => props.chapters, () => props.storyId, () => props.scrollytelling, () => props.playerWidth, () => props.playerHeight ],
-  ([ s, d, c, sId, scrollytelling, pw, ph ]) => {
+  [
+    () => props.storyName,
+    () => props.description,
+    () => props.chapters,
+    () => props.storyId,
+    () => props.scrollytelling,
+    () => props.playerWidth,
+    () => props.playerHeight,
+    () => props.autoplayEnabled,
+    () => props.autoplayIntervalSec
+  ],
+  ([ s, d, c, sId, scrollytelling, pw, ph, autoplayEnabled, autoplayIntervalSec ]) => {
     if (sId) {
       storyNameInput.value = s ?? '';
       descriptionInput.value = d ?? '';
       scrollytellingEnabled.value = scrollytelling === true;
       playerWidthInput.value = pw ?? null;
       playerHeightInput.value = ph ?? null;
+      autoplayEnabledInput.value = autoplayEnabled === true;
+      autoplayIntervalSecInput.value = autoplayIntervalSec ?? 10;
       chaptersData.value = JSON.parse(JSON.stringify(c ?? []));
       reindexAllSteps();
       previewVisible.value = true;
@@ -1217,6 +1243,30 @@ watch([ activeStepIndex, previewVisible ], () => {
                     :min="460"
                     :hint="Number(playerHeightInput) > 0 && Number(playerHeightInput) < 460 ? t('additional:modules.dataNarrator.warning.minPlayerDimension') : ''"
                     persistent-hint
+                  />
+                </v-col>
+                <v-col cols="6">
+                  <div class="d-flex align-center ga-2 mt-1">
+                    <span class="text-body-2">{{ t('additional:modules.dataNarrator.label.autoPLay') }}</span>
+                    <v-switch
+                      v-model="autoplayEnabledInput"
+                      hide-details
+                      density="compact"
+                    />
+                  </div>
+                </v-col>
+                <v-col
+                  v-if="autoplayEnabledInput"
+                  cols="6"
+                >
+                  <v-text-field
+                    v-model.number="autoplayIntervalSecInput"
+                    :label="t('additional:modules.dataNarrator.label.interval')"
+                    type="number"
+                    variant="outlined"
+                    density="compact"
+                    hide-details="auto"
+                    :min="1"
                   />
                 </v-col>
               </v-row>

@@ -314,7 +314,8 @@
         "missingChapterTitle": "Bitte einen Kapitel-Titel eingeben.",
         "missingStepTitle": "Bitte einen Schritt-Titel eingeben.",
         "missingStepContent": "Bitte Inhalt für den Schritt hinzufügen.",
-        "chaptersNeedSteps": "Jedes Kapitel muss mindestens einen Schritt enthalten."
+        "chaptersNeedSteps": "Jedes Kapitel muss mindestens einen Schritt enthalten.",
+        "missingAutoplayInterval": "Bitte ein Intervall in Sekunden fuer Autoplay eingeben."
       }
     }
   }

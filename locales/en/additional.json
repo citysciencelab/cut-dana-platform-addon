@@ -314,7 +314,8 @@
         "missingChapterTitle": "Please enter a chapter title.",
         "missingStepTitle": "Please enter a step title.",
         "missingStepContent": "Please add content to the step.",
-        "chaptersNeedSteps": "Every chapter must have at least one step."
+        "chaptersNeedSteps": "Every chapter must have at least one step.",
+        "missingAutoplayInterval": "Please provide an autoplay interval in seconds."
       }
     }
   }

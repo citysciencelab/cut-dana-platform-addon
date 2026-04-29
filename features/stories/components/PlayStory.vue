@@ -1,5 +1,5 @@
 <script setup>
-import { mdiChevronLeft, mdiChevronRight, mdiClose } from '@mdi/js';
+import { mdiChevronLeft, mdiChevronRight, mdiClose, mdiPauseCircleOutline, mdiPlayCircleOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import scrollama from 'scrollama';
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
@@ -52,6 +52,8 @@ const scrollyRoot = ref(null);
 const scroller = ref(null);
 const scrollStepElements = ref([]);
 const closeConfirmation = ref(false);
+const autoplayPausedByUser = ref(false);
+const autoplayTimer = ref(null);
 
 const totalSteps = computed(() => {
   if (!story.value) return 0;
@@ -119,6 +121,15 @@ const visibleStoryDotIndices = computed(() => {
 const currentStep = computed(() =>
   story.value?.chapters[chapterIndex.value]?.steps[stepIndex.value] ?? null
 );
+const storyHasAutoplay = computed(() => story.value?.autoplayEnabled === true);
+const autoplayIntervalMs = computed(() => {
+  const seconds = Number(story.value?.autoplayIntervalSec ?? 10);
+  if (!Number.isFinite(seconds) || seconds <= 0) {
+    return 10000;
+  }
+  return Math.max(1000, Math.floor(seconds * 1000));
+});
+const autoplayActive = computed(() => storyHasAutoplay.value && !autoplayPausedByUser.value);
 
 function syncBrowserUrl() {
   const baseUrl = `${location.origin}/portal/stories/`;
@@ -181,6 +192,67 @@ async function flushPendingScrollTarget() {
 function destroyScroller() {
   scroller.value?.destroy();
   scroller.value = null;
+}
+
+function clearAutoplayTimer() {
+  if (!autoplayTimer.value) {
+    return;
+  }
+  clearInterval(autoplayTimer.value);
+  autoplayTimer.value = null;
+}
+
+function goToFirstStep() {
+  if (!story.value) {
+    return;
+  }
+
+  if (isScrollytellingStory.value) {
+    setActiveStepByFlatIndex(0, { scroll: true, scrollBehavior: 'auto' });
+    return;
+  }
+
+  stage.value = 'play';
+  chapterIndex.value = 0;
+  stepIndex.value = 0;
+}
+
+function advanceAutoplayStep() {
+  if (!story.value || stage.value !== 'play') {
+    return;
+  }
+
+  if (isScrollytellingStory.value) {
+    const nextFlatIndex = currentGlobalStep.value;
+    if (nextFlatIndex < flattenedStorySteps.value.length) {
+      setActiveStepByFlatIndex(nextFlatIndex, { scroll: true });
+    } else {
+      goToFirstStep();
+    }
+    return;
+  }
+
+  const steps = story.value.chapters[chapterIndex.value].steps;
+  if (stepIndex.value < steps.length - 1) {
+    stepIndex.value++;
+  } else if (chapterIndex.value < story.value.chapters.length - 1) {
+    chapterIndex.value++;
+    stepIndex.value = 0;
+  } else {
+    goToFirstStep();
+  }
+}
+
+function restartAutoplayIfNeeded() {
+  clearAutoplayTimer();
+
+  if (!autoplayActive.value || stage.value !== 'play' || !story.value) {
+    return;
+  }
+
+  autoplayTimer.value = setInterval(() => {
+    advanceAutoplayStep();
+  }, autoplayIntervalMs.value);
 }
 
 async function setupScroller() {
@@ -319,6 +391,13 @@ watch(
   () => [ stage.value, isScrollytellingStory.value, flattenedStorySteps.value.length ],
   () => {
     setupScroller();
+  },
+  { immediate: true }
+);
+watch(
+  () => [ stage.value, autoplayActive.value, autoplayIntervalMs.value, story.value?.id ],
+  () => {
+    restartAutoplayIfNeeded();
   },
   { immediate: true }
 );
@@ -540,6 +619,9 @@ watch(isPreviewMode, (previewEnabled) => {
   stepIndex.value = 0;
   pendingScrollTarget.value = null;
 }, { immediate: true });
+watch(storyHasAutoplay, (enabled) => {
+  autoplayPausedByUser.value = !enabled;
+}, { immediate: true });
 
 function backToEdit() {
   store.commit('Modules/DataNarrator/setIsPreviewMode', false);
@@ -560,6 +642,7 @@ function backToDashboard() {
 }
 
 function closeStoryPlayback() {
+  clearAutoplayTimer();
   if (isPreviewMode.value) {
     backToEdit();
     return;
@@ -702,6 +785,7 @@ function goToNextScrollytellingStep(globalStep) {
 }
 
 onBeforeUnmount(() => {
+  clearAutoplayTimer();
   destroyScroller();
   removeAllVisibleLayers();
   resetBaseLayer();
@@ -780,10 +864,7 @@ onBeforeUnmount(() => {
                   :class="['scrolly-step', { active: entry.globalStep === currentGlobalStep }]"
                 >
                   <div class="chapter px-2">
-                    <div
-                      class="chapter-label"
-                      :style="{ backgroundColor: getStoryColor(entry.chapterIndex).primary }"
-                    >
+                    <div class="chapter-label">
                       {{ numberToLetter(entry.chapterIndex + 1) }}
                     </div>
                     <div class="chapter-title">
@@ -832,13 +913,23 @@ onBeforeUnmount(() => {
 
               <template v-else>
                 <div class="story-play-step px-2 pb-4">
-                  <v-btn
-                    :icon="mdiClose"
-                    variant="flat"
-                    size="small"
-                    class="story-play-close"
-                    @click="closeConfirmation = true"
-                  />
+                  <div class="story-play-actions">
+                    <v-btn
+                      v-if="storyHasAutoplay"
+                      :icon="autoplayPausedByUser ? mdiPlayCircleOutline : mdiPauseCircleOutline"
+                      variant="flat"
+                      size="small"
+                      class="story-play-action-btn"
+                      @click="autoplayPausedByUser = !autoplayPausedByUser"
+                    />
+                    <v-btn
+                      :icon="mdiClose"
+                      variant="flat"
+                      size="small"
+                      class="story-play-action-btn"
+                      @click="closeConfirmation = true"
+                    />
+                  </div>
 
                   <div class="story-play-chapter-header">
                     <span class="story-play-chapter-badge">
@@ -1069,6 +1160,20 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 2px;
   right: 2px;
+}
+
+.story-play-actions {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  gap: 6px;
+}
+
+.story-play-action-btn {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
 }
 
 .story-play-chapter-header {

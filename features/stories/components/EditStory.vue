@@ -21,6 +21,8 @@ const coverImageUrl = ref(null);
 const scrollytelling = ref(false);
 const playerWidth = ref(null);
 const playerHeight = ref(null);
+const autoplayEnabled = ref(false);
+const autoplayIntervalSec = ref(10);
 
 function getFileUrl(titleImage) {
   return `${backendUrl}/files/${titleImage.fileContext}/${titleImage.filename}`;
@@ -38,6 +40,8 @@ async function loadStory() {
     scrollytelling.value = data.scrollytelling === true;
     playerWidth.value = data.playerWidth ?? null;
     playerHeight.value = data.playerHeight ?? null;
+    autoplayEnabled.value = data.autoplayEnabled === true;
+    autoplayIntervalSec.value = data.autoplayIntervalSec ?? 10;
     coverImageUrl.value = data.titleImage ? getFileUrl(data.titleImage) : null;
     chapters.value = (data.chapters ?? []).map((c, idx) => ({
       id: idx,
@@ -85,6 +89,8 @@ watch(() => currentStoryId?.value, loadStory);
         :cover-image-url="coverImageUrl"
         :player-width="playerWidth"
         :player-height="playerHeight"
+        :autoplay-enabled="autoplayEnabled"
+        :autoplay-interval-sec="autoplayIntervalSec"
       />
     </template>
   </ToolWindow>
