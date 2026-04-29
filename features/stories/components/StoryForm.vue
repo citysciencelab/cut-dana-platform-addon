@@ -1196,21 +1196,6 @@ watch([ activeStepIndex, previewVisible ], () => {
         </template>
         <!-- Normal story editing: 2x2 grid -->
         <template v-else>
-          <div
-            class="story-options"
-          >
-            <div class="story-options-row">
-              <span class="story-options-label">
-                {{ t('additional:modules.dataNarrator.label.scrolly') }}
-              </span>
-              <v-switch
-                v-model="scrollytellingEnabled"
-                hide-details
-                density="compact"
-                class="story-options-switch"
-              />
-            </div>
-          </div>
           <!-- Advanced Options collapsible -->
           <div class="advanced-options mb-2">
             <div
@@ -1292,6 +1277,20 @@ watch([ activeStepIndex, previewVisible ], () => {
                       density="compact"
                     />
                   </div>
+                </v-col>
+                <v-col
+                  cols="6"
+                  style="display: none"
+                >
+                  <span class="story-options-label">
+                    {{ t('additional:modules.dataNarrator.label.scrolly') }}
+                  </span>
+                  <v-switch
+                    v-model="scrollytellingEnabled"
+                    hide-details
+                    density="compact"
+                    class="story-options-switch"
+                  />
                 </v-col>
               </v-row>
             </div>
