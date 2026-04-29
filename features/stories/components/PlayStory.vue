@@ -92,6 +92,30 @@ const currentGlobalStep = computed(() => {
   ) + 1;
 });
 
+// Dot-pagination for the non-scrollytelling story player.
+// Uses a sliding window so the control stays compact even for longer stories.
+const maxVisibleStoryDots = 7;
+const visibleStoryDotIndices = computed(() => {
+  const total = totalSteps.value;
+  if (!total) return [];
+
+  const currentIndex = currentGlobalStep.value - 1; // 0-based flat step index
+  if (currentIndex < 0) return [];
+
+  const windowSize = Math.min(total, maxVisibleStoryDots);
+  const half = Math.floor(windowSize / 2);
+
+  let start = Math.max(0, currentIndex - half);
+  let end = Math.min(total - 1, start + windowSize - 1);
+
+  // If we hit the end boundary, shift start so the window size stays stable.
+  start = Math.max(0, end - windowSize + 1);
+
+  const indices = [];
+  for (let i = start; i <= end; i++) indices.push(i);
+  return indices;
+});
+
 const currentStep = computed(() =>
   story.value?.chapters[chapterIndex.value]?.steps[stepIndex.value] ?? null
 );
@@ -505,6 +529,17 @@ watch(
 );
 
 const isPreviewMode = computed(() => store.state.Modules.DataNarrator.isPreviewMode);
+watch(isPreviewMode, (previewEnabled) => {
+  if (!previewEnabled) {
+    return;
+  }
+
+  // Always start preview from the story overview.
+  stage.value = 'overview';
+  chapterIndex.value = 0;
+  stepIndex.value = 0;
+  pendingScrollTarget.value = null;
+}, { immediate: true });
 
 function backToEdit() {
   store.commit('Modules/DataNarrator/setIsPreviewMode', false);
@@ -692,36 +727,43 @@ onBeforeUnmount(() => {
 
           <div v-else>
             <div v-if="stage === 'overview'">
-              <div
-                v-if="story.titleImage"
-                class="story-cover mb-2"
-                :style="`background-image: url(${getFileUrl(story.titleImage)});`"
-              />
-              <h5 class="story-title px-2 font-bold mb-2">
-                {{ story.title }}
-              </h5>
-              <div class="story-description px-2 mb-2">
-                {{ story.description }}
-              </div>
+              <div class="story-overview-step px-2 pb-4">
+                <v-btn
+                  :icon="mdiClose"
+                  variant="flat"
+                  size="small"
+                  class="story-play-close"
+                  @click="closeConfirmation = true"
+                />
 
-              <ul class="chapter-list">
-                <li
-                  v-for="(chapter, index) in story.chapters"
-                  :key="chapter.id"
-                  class="chapter"
-                  @click="startFromChapter(index)"
-                >
-                  <div
-                    class="chapter-label"
-                    :style="{ backgroundColor: getStoryColor(index).primary }"
+                <div
+                  v-if="story.titleImage"
+                  class="story-cover mb-2"
+                  :style="`background-image: url(${getFileUrl(story.titleImage)});`"
+                />
+                <h5 class="story-title font-bold mb-2">
+                  {{ story.title }}
+                </h5>
+                <div class="story-description mb-2">
+                  {{ story.description }}
+                </div>
+
+                <ul class="chapter-list">
+                  <li
+                    v-for="(chapter, index) in story.chapters"
+                    :key="chapter.id"
+                    class="chapter"
+                    @click="startFromChapter(index)"
                   >
-                    {{ numberToLetter(index + 1) }}
-                  </div>
-                  <div class="chapter-title">
-                    {{ chapter.name }}
-                  </div>
-                </li>
-              </ul>
+                    <div class="chapter-label">
+                      {{ numberToLetter(index + 1) }}
+                    </div>
+                    <div class="chapter-title">
+                      {{ chapter.name }}
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div v-else>
@@ -789,30 +831,29 @@ onBeforeUnmount(() => {
               </div>
 
               <template v-else>
-                <div class="chapter px-2">
-                  <div
-                    class="chapter-label"
-                    :style="{ backgroundColor: getStoryColor(chapterIndex).primary }"
-                  >
-                    {{ numberToLetter(chapterIndex + 1) }}
+                <div class="story-play-step px-2 pb-4">
+                  <v-btn
+                    :icon="mdiClose"
+                    variant="flat"
+                    size="small"
+                    class="story-play-close"
+                    @click="closeConfirmation = true"
+                  />
+
+                  <div class="story-play-chapter-header">
+                    <span class="story-play-chapter-badge">
+                      {{ numberToLetter(chapterIndex + 1) }}
+                    </span>
+                    <span class="story-play-chapter-name">
+                      {{ story.chapters[chapterIndex].name }}
+                    </span>
                   </div>
-                  <div class="chapter-title">
-                    {{ story.chapters[chapterIndex].name }}
-                  </div>
-                </div>
-                <div class="step-content px-2 pb-4">
-                  <div class="step-content-title mt-3">
-                    <h2
-                      class="step-pill"
-                      :style="{ borderColor: getStoryColor(chapterIndex).primary, color: getStoryColor(chapterIndex).primary }"
-                    >
-                      {{ stepIndex + 1 }}
-                    </h2>
-                    <h3 class="font-bold">
-                      {{ story.chapters[chapterIndex].steps[stepIndex].title }}
-                    </h3>
-                  </div>
-                  <div class="mt-4">
+
+                  <h3 class="story-play-step-title">
+                    {{ story.chapters[chapterIndex].steps[stepIndex].title }}
+                  </h3>
+
+                  <div class="mt-4 story-play-text">
                     <RichTextViewer v-model="story.chapters[chapterIndex].steps[stepIndex].html" />
                   </div>
                 </div>
@@ -827,13 +868,6 @@ onBeforeUnmount(() => {
             class="nav-bar"
           >
             <v-btn
-              :icon="mdiClose"
-              variant="flat"
-              size="small"
-              class="nav-btn"
-              @click="closeConfirmation = true"
-            />
-            <v-btn
               variant="flat"
               color="#555"
               rounded
@@ -846,28 +880,31 @@ onBeforeUnmount(() => {
 
           <div
             v-else-if="stage === 'play' && (!isScrollytellingStory)"
-            class="nav-bar"
+            class="nav-bar story-play-nav-bar"
           >
             <v-btn
               :icon="mdiChevronLeft"
               variant="flat"
               size="small"
               class="nav-btn"
-              :disabled="currentGlobalStep <= 1"
               @click="back"
             />
 
-            <span class="nav-step-info">
-              {{ currentGlobalStep }} / {{ totalSteps }}
-            </span>
-
-            <v-btn
-              :icon="mdiClose"
-              variant="flat"
-              size="small"
-              class="nav-btn"
-              @click="closeConfirmation = true"
-            />
+            <div class="story-play-dots">
+              <button
+                v-for="flatDotIndex in visibleStoryDotIndices"
+                :key="flatDotIndex"
+                type="button"
+                class="story-play-dot"
+                :class="{ active: flatDotIndex === currentGlobalStep - 1 }"
+                :style="{
+                  backgroundColor: flatDotIndex === currentGlobalStep - 1
+                    ? getStoryColor(flattenedStorySteps[flatDotIndex]?.chapterIndex ?? 0).primary
+                    : 'rgba(31,41,55,0.25)'
+                }"
+                @click="setActiveStepByFlatIndex(flatDotIndex)"
+              />
+            </div>
 
             <v-btn
               :icon="mdiChevronRight"
@@ -932,7 +969,9 @@ onBeforeUnmount(() => {
     border-radius: 20px;
     font-size: 16px;
     font-weight: bold;
-    color: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    background: transparent;
   }
 
   &-title {
@@ -995,7 +1034,7 @@ onBeforeUnmount(() => {
   gap: 12px;
   padding: 6px 16px;
   border-radius: 999px;
-  background: transparent;
+  background: white;
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
 }
@@ -1016,5 +1055,82 @@ onBeforeUnmount(() => {
   color: #1f2937;
   min-width: 40px;
   text-align: center;
+}
+
+.story-play-step {
+  position: relative;
+}
+
+.story-overview-step {
+  position: relative;
+}
+
+.story-play-close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.story-play-chapter-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.story-play-chapter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 28px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  background: transparent;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.story-play-chapter-name {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.story-play-step-title {
+  margin-top: 14px;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.story-play-text {
+  font-size: 14px;
+}
+
+.story-play-nav-bar {
+  gap: 8px;
+}
+
+.story-play-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px;
+}
+
+.story-play-dot {
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+.story-play-dot.active {
+  transform: scale(1.15);
 }
 </style>
