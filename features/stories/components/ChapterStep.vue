@@ -125,8 +125,8 @@ const stepTitle = computed({
 });
 
 const stepDescription = computed({
-  get: () => props.step.description,
-  set: (value) => updateStep({ description: value })
+  get: () => props.step.description ?? props.step.html ?? '',
+  set: (value) => updateStep({ description: value, html: value })
 });
 
 function hasTextContent(value) {
@@ -137,7 +137,7 @@ function hasTextContent(value) {
 }
 
 const stepTitleError = computed(() => props.showValidation && !props.step.title?.trim());
-const stepDescriptionError = computed(() => props.showValidation && !hasTextContent(props.step.description));
+const stepDescriptionError = computed(() => props.showValidation && !hasTextContent(props.step.description ?? props.step.html));
 
 const stepMapConfig = computed({
   get: () => props.step.mapConfig,

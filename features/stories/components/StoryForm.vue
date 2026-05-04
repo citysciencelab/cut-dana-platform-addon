@@ -127,6 +127,7 @@ const autoplayIntervalSecInput = ref(10);
 const hideBackButtonInput = ref(false);
 const advancedOptionsOpen = ref(false);
 const loaded3DStepSignature = ref('');
+const activeStepRuntimeModelIds = ref(new Set());
 
 let nextChapterId = 1;
 const chaptersData = ref([]);
@@ -195,7 +196,7 @@ function getStepErrors() {
     errors.push(t('additional:modules.dataNarrator.validation.missingChapterTitle'));
   if (!activeStep.value?.title?.trim())
     errors.push(t('additional:modules.dataNarrator.validation.missingStepTitle'));
-  if (!hasTextContent(activeStep.value?.description))
+  if (!hasTextContent(activeStep.value?.description ?? activeStep.value?.html))
     errors.push(t('additional:modules.dataNarrator.validation.missingStepContent'));
   return errors;
 }
@@ -232,7 +233,14 @@ function handleModelCreated({ entityId, file }) {
     entityFiles.set(entityId, file);
     // New uploads keep runtime and persisted ID identical.
     persistedEntityIds.set(entityId, entityId);
+    activeStepRuntimeModelIds.value.add(entityId);
   }
+}
+
+function createCopiedModelEntityId(sourceEntityId) {
+  const normalizedSourceId = String(sourceEntityId ?? '').trim() || 'model';
+  const uniqueSuffix = (globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`).replace(/[^a-zA-Z0-9_-]/g, '');
+  return `${normalizedSourceId}-copy-${uniqueSuffix}`;
 }
 
 function getDefaultStep(id) {
@@ -240,6 +248,7 @@ function getDefaultStep(id) {
     id,
     title: '',
     description: '',
+    html: '',
     mapConfig: {
       centerCoordinates: initialCenter.value ? [ ...initialCenter.value ] : [ 0, 0 ],
       zoomLevel: initialZoom.value ?? 7,
@@ -381,10 +390,22 @@ function handleCopyStep({ chapterIdx, stepIdx }) {
   // Append '-copy' to the title
   copiedStep.title = `${copiedStep.title}-copy`;
 
-  // geoJsonAssets: references are preserved via JSON clone (data only, no file re-upload needed)
-  // models3D: references are preserved — same entityId/fileUrl so no re-upload occurs
-  // New entityIds for copied models are NOT registered in entityFiles,
-  // meaning they will reuse the already-uploaded fileUrl on next save.
+  // Keep per-step 3D models isolated by assigning fresh entity IDs for the copied step.
+  // If the source step still has local files (not uploaded yet), clone that mapping too.
+  if (Array.isArray(copiedStep.models3D)) {
+    copiedStep.models3D = copiedStep.models3D.map((model3D) => {
+      const oldEntityId = model3D?.entityId;
+      const newEntityId = createCopiedModelEntityId(oldEntityId);
+      const sourceFile = oldEntityId ? entityFiles.get(oldEntityId) : null;
+      if (sourceFile) {
+        entityFiles.set(newEntityId, sourceFile);
+      }
+      return {
+        ...model3D,
+        entityId: newEntityId,
+      };
+    });
+  }
 
   // Insert immediately after the source step
   chapter.steps.splice(stepIdx + 1, 0, copiedStep);
@@ -484,50 +505,56 @@ function saveStep() {
 
     // Snapshot all currently loaded 3D models into step.models3D
     const importedModelsList = store.getters['Modules/Modeler3D/importedModels'] ?? [];
-    if (importedModelsList.length > 0) {
-      const importedEntitiesList = store.getters['Modules/Modeler3D/importedEntities'] ?? [];
-      const chapter = chaptersData.value[activeChapterIndex.value];
-      const step = chapter?.steps[activeStepIndex.value];
+    const importedEntitiesList = store.getters['Modules/Modeler3D/importedEntities'] ?? [];
+    const chapter = chaptersData.value[activeChapterIndex.value];
+    const step = chapter?.steps[activeStepIndex.value];
 
-      if (step) {
-        let dataSourceEntities = null;
+    if (step) {
+      const existingStepModels3D = Array.isArray(step.models3D) ? [ ...step.models3D ] : [];
+      const stepPersistedEntityIds = new Set(existingStepModels3D.map(m => m.entityId).filter(Boolean));
+      const stepRuntimeModelIds = activeStepRuntimeModelIds.value;
+      const modelsForCurrentStep = importedModelsList.filter((model) => {
+        const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
+        return stepRuntimeModelIds.has(model.id) || stepPersistedEntityIds.has(persistedEntityId);
+      });
+
+      let dataSourceEntities = null;
+      try {
+        dataSourceEntities = mapCollection.getMap('3D')
+          ?.getDataSourceDisplay()
+          ?.defaultDataSource
+          ?.entities;
+      } catch { /* 3D map may not be ready */
+      }
+
+      step.models3D = modelsForCurrentStep.map(model => {
+        const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
+        const entityData = importedEntitiesList.find(e => e.entityId === model.id);
+        let position = null;
         try {
-          dataSourceEntities = mapCollection.getMap('3D')
-            ?.getDataSourceDisplay()
-            ?.defaultDataSource
-            ?.entities;
-        } catch { /* 3D map may not be ready */
+          const cesiumEntity = dataSourceEntities?.getById(model.id);
+          const rawPos = cesiumEntity?.position?.getValue();
+          if (rawPos) position = { x: rawPos.x, y: rawPos.y, z: rawPos.z };
+        } catch { /* ignore */
         }
 
-        step.models3D = importedModelsList.map(model => {
-          const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
-          const entityData = importedEntitiesList.find(e => e.entityId === model.id);
-          let position = null;
-          try {
-            const cesiumEntity = dataSourceEntities?.getById(model.id);
-            const rawPos = cesiumEntity?.position?.getValue();
-            if (rawPos) position = { x: rawPos.x, y: rawPos.y, z: rawPos.z };
-          } catch { /* ignore */
-          }
+        // Preserve existing fileUrl if already uploaded
+        const existing = existingStepModels3D.find(m => m.entityId === persistedEntityId)
+          ?? existingStepModels3D.find(m => m.entityId === model.id);
 
-          // Preserve existing fileUrl if already uploaded
-          const existing = (step.models3D ?? []).find(m => m.entityId === persistedEntityId)
-            ?? (step.models3D ?? []).find(m => m.entityId === model.id);
-
-          const resolvedRotation = entityData?.rotation ?? model.heading ?? existing?.rotation ?? 0;
-          const resolvedScale = entityData?.scale ?? existing?.scale ?? 1;
-          return {
-            entityId: persistedEntityId,
-            fileUrl: existing?.fileUrl ?? '',
-            name: model.name,
-            show: model.show,
-            heading: resolvedRotation,
-            position,
-            scale: resolvedScale,
-            rotation: resolvedRotation,
-          };
-        });
-      }
+        const resolvedRotation = entityData?.rotation ?? model.heading ?? existing?.rotation ?? 0;
+        const resolvedScale = entityData?.scale ?? existing?.scale ?? 1;
+        return {
+          entityId: persistedEntityId,
+          fileUrl: existing?.fileUrl ?? '',
+          name: existing?.name ?? model.name,
+          show: model.show,
+          heading: resolvedRotation,
+          position,
+          scale: resolvedScale,
+          rotation: resolvedRotation,
+        };
+      });
     }
 
     resetScene();
@@ -541,6 +568,18 @@ function saveStep() {
 async function saveStoryData() {
   isSaving.value = true;
 
+  const chaptersPayload = (chaptersData.value ?? []).map((chapter) => ({
+    ...chapter,
+    steps: (chapter.steps ?? []).map((step) => {
+      const resolvedHtml = step?.description ?? step?.html ?? '';
+      return {
+        ...step,
+        description: resolvedHtml,
+        html: resolvedHtml,
+      };
+    })
+  }));
+
   const payload = {
     title: String(storyNameInput.value ?? '').trim(),
     description: String(descriptionInput.value ?? '').trim(),
@@ -550,7 +589,7 @@ async function saveStoryData() {
     autoplayEnabled: autoplayEnabledInput.value === true,
     autoplayIntervalSec: autoplayEnabledInput.value ? Number(autoplayIntervalSecInput.value) : null,
     hideBackButton: hideBackButtonInput.value === true,
-    chapters: chaptersData.value
+    chapters: chaptersPayload
   };
 
   let storyId = props.storyId;
@@ -575,7 +614,7 @@ async function saveStoryData() {
 
   currentStoryId.value = storyId;
 
-  const uploads = [];
+  let anyModelUploaded = false;
   for (const ch of chaptersData.value) {
     const dbChapter = createdStory.chapters.find((x) => x.sequence === ch.sequence);
 
@@ -596,12 +635,29 @@ async function saveStoryData() {
           const newFile = await uploadStepModel(storyId, dbStep.id, file, model3D.entityId);
           model3D.fileUrl = `files/${newFile.fileContext}/${newFile.filename}`;
           entityFiles.delete(model3D.entityId);
+          anyModelUploaded = true;
         }
       }
     }
   }
 
-  await Promise.all(uploads);
+  // After uploading model files the in-memory fileUrls are updated.
+  // Persist those updated fileUrls by sending the story again so the
+  // backend stores the correct model references.
+  if (anyModelUploaded) {
+    const updatedChaptersPayload = (chaptersData.value ?? []).map((chapter) => ({
+      ...chapter,
+      steps: (chapter.steps ?? []).map((step) => {
+        const resolvedHtml = step?.description ?? step?.html ?? '';
+        return {
+          ...step,
+          description: resolvedHtml,
+          html: resolvedHtml,
+        };
+      })
+    }));
+    await editStory(storyId, { ...payload, chapters: updatedChaptersPayload });
+  }
 
   if (selectedImage.value) {
     try {
@@ -711,8 +767,10 @@ async function loadModels3DForStep(step) {
   const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
   for (const m of [ ...prevModels ]) {
     persistedEntityIds.delete(m.id);
+    activeStepRuntimeModelIds.value.delete(m.id);
     await store.dispatch('Modules/Modeler3D/deleteEntity', m.id);
   }
+  activeStepRuntimeModelIds.value = new Set();
 
   const models = step.models3D ?? [];
   if (!models.length) return;
@@ -737,6 +795,7 @@ async function loadModels3DForStep(step) {
       const newModel = allModels.find(m => !existingIds.has(m.id));
 
       if (newModel) {
+        activeStepRuntimeModelIds.value.add(newModel.id);
         if (model3D.entityId) {
           // Keep mapping to the stable persisted ID from DB payload.
           persistedEntityIds.set(newModel.id, model3D.entityId);
@@ -817,8 +876,10 @@ async function ensureActiveStepModels3DLoaded() {
     const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
     for (const model of [ ...prevModels ]) {
       persistedEntityIds.delete(model.id);
+      activeStepRuntimeModelIds.value.delete(model.id);
       await store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
     }
+    activeStepRuntimeModelIds.value = new Set();
     loaded3DStepSignature.value = '';
     return;
   }
@@ -1279,8 +1340,8 @@ watch([ activeStepIndex, previewVisible ], () => {
                   </div>
                 </v-col>
                 <v-col
+                  v-if="isAdmin"
                   cols="6"
-                  style="display: none"
                 >
                   <span class="story-options-label">
                     {{ t('additional:modules.dataNarrator.label.scrolly') }}

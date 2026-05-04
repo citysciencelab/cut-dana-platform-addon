@@ -104,8 +104,8 @@ async function onFileChange(file) {
   if (!file) return;
 
   const snapshotIds = new Set((importedModels.value ?? []).map(m => m.id));
-  const fileName = file.name.split('.')[0];
-  const fileExtension = file.name.split('.').pop();
+  const fileName = file.name;
+  const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
   fileLoading.value = true;
 

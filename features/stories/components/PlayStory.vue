@@ -131,6 +131,7 @@ const autoplayIntervalMs = computed(() => {
 });
 const autoplayActive = computed(() => storyHasAutoplay.value && !autoplayPausedByUser.value);
 const canLeaveStory = computed(() => story.value?.hideBackButton !== true);
+const getStepHtml = (step) => step?.html ?? step?.description ?? '';
 
 function syncBrowserUrl() {
   const baseUrl = `${location.origin}/portal/stories/`;
@@ -362,6 +363,10 @@ function resetBaseLayer() {
 watch(stage, (currentStage) => {
   if (currentStage === 'overview') {
     resetBaseLayer();
+    const prevModels = store.getters['Modules/Modeler3D/importedModels'] ?? [];
+    for (const model of [ ...prevModels ]) {
+      store.dispatch('Modules/Modeler3D/deleteEntity', model.id);
+    }
   }
 });
 
@@ -886,7 +891,7 @@ onBeforeUnmount(() => {
                       </h3>
                     </div>
                     <div class="mt-4">
-                      <RichTextViewer v-model="entry.step.html" />
+                      <RichTextViewer :model-value="getStepHtml(entry.step)" />
                     </div>
                   </div>
                   <div class="scrolly-step-controls">
@@ -949,7 +954,7 @@ onBeforeUnmount(() => {
                   </h3>
 
                   <div class="mt-4 story-play-text">
-                    <RichTextViewer v-model="story.chapters[chapterIndex].steps[stepIndex].html" />
+                    <RichTextViewer :model-value="getStepHtml(story.chapters[chapterIndex].steps[stepIndex])" />
                   </div>
                 </div>
               </template>

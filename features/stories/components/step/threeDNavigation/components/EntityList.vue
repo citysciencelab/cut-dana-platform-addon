@@ -60,49 +60,61 @@ function deleteModel(id) {
         :key="model.id"
       >
         <div
-          class="d-flex border py-2 px-3 rounded"
+          class="model-row border py-2 px-3 rounded"
           :class="{ 'border-primary': editingModelId === model.id }"
         >
-          <div class="flex-1-0 d-flex align-center">
+          <div
+            class="model-name"
+            :title="model.name"
+          >
             {{ model.name }}
           </div>
-          <div>
-            <v-btn
-              variant="flat"
-              :icon="mdiHandPointingUp"
-              size="compact"
-              class="mr-1"
-              title="Objekt verschieben"
-              @click="activateMove(model.id)"
-            />
-            <v-btn
-              variant="flat"
-              :icon="mdiMapMarker"
-              size="compact"
-              class="mr-1"
-              @click="zoomTo(model.id)"
-            />
-            <v-btn
-              variant="flat"
-              :icon="model.show ? mdiEye : mdiEyeOff"
-              size="compact"
-              class="mr-1"
-              @click="changeVisibility(model)"
-            />
-            <v-btn
-              variant="flat"
-              :icon="mdiDelete"
-              size="compact"
-              class="mr-1"
-              @click="deleteModel(model.id)"
-            />
-            <v-btn
-              :variant="editingModelId === model.id ? 'tonal' : 'flat'"
-              :icon="mdiPencil"
-              size="compact"
-              :color="editingModelId === model.id ? 'primary' : undefined"
-              @click="emit('edit', model.id)"
-            />
+          <div class="model-actions">
+            <!-- Row 1: move, zoom, visibility -->
+            <div class="d-flex">
+              <v-btn
+                variant="flat"
+                :icon="mdiHandPointingUp"
+                size="compact"
+                class="mr-1"
+                title="Objekt verschieben"
+                @click="activateMove(model.id)"
+              />
+              <v-btn
+                variant="flat"
+                :icon="mdiMapMarker"
+                size="compact"
+                class="mr-1"
+                title="Zoom to"
+                @click="zoomTo(model.id)"
+              />
+              <v-btn
+                variant="flat"
+                :icon="model.show ? mdiEye : mdiEyeOff"
+                size="compact"
+                title="Sichtbarkeit"
+                @click="changeVisibility(model)"
+              />
+            </div>
+            <!-- Row 2: edit, delete -->
+            <div class="d-flex">
+              <v-btn
+                :variant="editingModelId === model.id ? 'tonal' : 'flat'"
+                :icon="mdiPencil"
+                size="compact"
+                class="mr-1"
+                :color="editingModelId === model.id ? 'primary' : undefined"
+                title="Bearbeiten"
+                @click="emit('edit', model.id)"
+              />
+              <v-btn
+                variant="flat"
+                :icon="mdiDelete"
+                size="compact"
+                title="Löschen"
+                @click="deleteModel(model.id)"
+              />
+            </div>
           </div>
         </div>
 
@@ -112,3 +124,27 @@ function deleteModel(id) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.model-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.model-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.82rem;
+}
+
+.model-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+</style>

@@ -58,6 +58,11 @@ const confirmDeleteStep = () => {
     pendingDeleteStep.value = null;
   }
 };
+const onDeleteStepDialogUpdate = (isOpen) => {
+  if (!isOpen) {
+    pendingDeleteStep.value = null;
+  }
+};
 
 const onStepsChange = (chapterIdx, newList) => {
   emits('stepsChange', { chapterIdx, newList });
@@ -72,6 +77,11 @@ const onDeleteChapterClick = (chapterIdx) => {
 const confirmDeleteChapter = () => {
   if (pendingDeleteChapter.value) {
     emits('deleteChapter', pendingDeleteChapter.value);
+    pendingDeleteChapter.value = null;
+  }
+};
+const onDeleteChapterDialogUpdate = (isOpen) => {
+  if (!isOpen) {
     pendingDeleteChapter.value = null;
   }
 };
@@ -282,7 +292,7 @@ const getColor = (idx) => {
     :message="t('additional:modules.dataNarrator.confirm.deleteStep.description')"
     :cancel-text="t('additional:modules.dataNarrator.confirm.deleteStep.denyButton')"
     :confirm-text="t('additional:modules.dataNarrator.confirm.deleteStep.confirmButton')"
-    @update:model-value="(v) => { if (!v) pendingDeleteStep.value = null; }"
+    @update:model-value="onDeleteStepDialogUpdate"
     @confirm="confirmDeleteStep"
   />
   <ConfirmationDialog
@@ -291,7 +301,7 @@ const getColor = (idx) => {
     :message="t('additional:modules.dataNarrator.confirm.deleteChapter.description')"
     :cancel-text="t('additional:modules.dataNarrator.confirm.deleteChapter.denyButton')"
     :confirm-text="t('additional:modules.dataNarrator.confirm.deleteChapter.confirmButton')"
-    @update:model-value="(v) => { if (!v) pendingDeleteChapter.value = null; }"
+    @update:model-value="onDeleteChapterDialogUpdate"
     @confirm="confirmDeleteChapter"
   />
 </template>

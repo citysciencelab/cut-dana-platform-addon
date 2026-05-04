@@ -27,13 +27,13 @@ const displayConfirmText = computed(() => props.confirmText ?? t('additional:mod
 const displayCancelText = computed(() => props.cancelText ?? t('additional:modules.dataNarrator.dialog.confirmCancel'));
 
 function onConfirm() {
-  emit('confirm');
   open.value = false;
+  emit('confirm');
 }
 
 function onCancel() {
-  emit('cancel');
   open.value = false;
+  emit('cancel');
 }
 </script>
 
