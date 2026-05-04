@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { mdiChevronLeft, mdiChevronRight, mdiClose, mdiPauseCircleOutline, mdiPlayCircleOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import scrollama from 'scrollama';
@@ -48,9 +48,11 @@ const chapterIndex = ref(0);
 const stepIndex = ref(0);
 const pendingStepFromUrl = ref(getRequestedStepFromUrl());
 const pendingScrollTarget = ref(null);
-const scrollyRoot = ref(null);
+const scrollyScroll = ref(null);
 const scroller = ref(null);
 const scrollStepElements = ref([]);
+const scrollEventTarget = ref(null);
+const stepOpacities = ref([]);
 const closeConfirmation = ref(false);
 const autoplayPausedByUser = ref(false);
 const autoplayTimer = ref(null);
@@ -187,11 +189,21 @@ async function flushPendingScrollTarget() {
   pendingScrollTarget.value = null;
   targetElement.scrollIntoView({
     behavior: request.behavior,
-    block: 'center'
+    block: 'start'
   });
 }
 
 function destroyScroller() {
+  if (scrollEventTarget.value) {
+    const { el, fn, playerContent } = scrollEventTarget.value;
+    el.removeEventListener('scroll', fn);
+    if (playerContent) {
+      playerContent.style.overflow = playerContent.dataset.scrollySavedOverflow ?? '';
+      playerContent.style.paddingTop = playerContent.dataset.scrollySavedPaddingTop ?? '';
+      playerContent.style.paddingBottom = playerContent.dataset.scrollySavedPaddingBottom ?? '';
+    }
+    scrollEventTarget.value = null;
+  }
   scroller.value?.destroy();
   scroller.value = null;
 }
@@ -266,26 +278,59 @@ async function setupScroller() {
 
   await nextTick();
 
-  const scrollContainer = scrollyRoot.value?.closest('.player-content');
+  const scrollEl = scrollyScroll.value;
   const steps = scrollStepElements.value.filter(Boolean);
 
-  if (!scrollContainer || !steps.length) {
+  if (!scrollEl || !steps.length) {
     return;
   }
 
-  // Set each step's min-height to the scroll container height so scrollama can trigger correctly
-  const containerHeight = scrollContainer.clientHeight;
+  // Measure available height and suppress the player-content's own scrollbar
+  const playerContent = scrollEl.closest('.player-content');
+  const containerHeight = playerContent?.clientHeight ?? scrollEl.parentElement?.clientHeight ?? 500;
+
+  if (playerContent) {
+    playerContent.dataset.scrollySavedOverflow = playerContent.style.overflow;
+    playerContent.dataset.scrollySavedPaddingTop = playerContent.style.paddingTop;
+    playerContent.dataset.scrollySavedPaddingBottom = playerContent.style.paddingBottom;
+    playerContent.style.overflow = 'hidden';
+    playerContent.style.paddingTop = '0';
+    playerContent.style.paddingBottom = '0';
+  }
+
+  scrollEl.style.height = `${containerHeight}px`;
   steps.forEach((step) => {
     step.style.minHeight = `${containerHeight}px`;
   });
+
+  // First step visible, rest invisible
+  stepOpacities.value = flattenedStorySteps.value.map((_, i) => (i === 0 ? 1 : 0));
+
+  // Scroll-driven fade: opacity peaks when section aligns with container top
+  function onScroll() {
+    const containerRect = scrollEl.getBoundingClientRect();
+    const h = containerRect.height;
+
+    if (!h) return;
+
+    stepOpacities.value = scrollStepElements.value.map((stepEl) => {
+      if (!stepEl) return 0;
+      const rect = stepEl.getBoundingClientRect();
+      const relTop = rect.top - containerRect.top;
+      return Math.max(0, Math.min(1, 1 - Math.abs(relTop) / h));
+    });
+  }
+
+  scrollEl.addEventListener('scroll', onScroll, { passive: true });
+  scrollEventTarget.value = { el: scrollEl, fn: onScroll, playerContent };
 
   const instance = scrollama();
 
   instance.setup({
     step: steps,
     offset: 0.5,
-    container: scrollContainer,
-    root: scrollContainer
+    container: scrollEl,
+    root: scrollEl
   });
   instance.onStepEnter(onScrollytellingStepEnter);
   scroller.value = instance;
@@ -807,6 +852,7 @@ onBeforeUnmount(() => {
         :show-header="false"
         :player-width="story?.playerWidth ?? null"
         :player-height="story?.playerHeight ?? null"
+        :scrollytelling="isScrollytellingStory && stage === 'play'"
         @back="backToDashboard"
         @leave-preview="backToEdit"
       >
@@ -860,63 +906,50 @@ onBeforeUnmount(() => {
             <div v-else>
               <div
                 v-if="isScrollytellingStory"
-                ref="scrollyRoot"
-                class="scrolly-steps"
+                class="scrolly-mode-wrapper"
               >
-                <section
-                  v-for="entry in flattenedStorySteps"
-                  :key="`${entry.chapterIndex}-${entry.stepIndex}-${entry.globalStep}`"
-                  :ref="(element) => setScrollStepElement(element, entry.globalStep - 1)"
-                  :data-step="entry.globalStep"
-                  :class="['scrolly-step', { active: entry.globalStep === currentGlobalStep }]"
+                <div
+                  ref="scrollyScroll"
+                  class="scrolly-scroll"
                 >
-                  <div class="chapter px-2">
-                    <div class="chapter-label">
-                      {{ numberToLetter(entry.chapterIndex + 1) }}
-                    </div>
-                    <div class="chapter-title">
-                      {{ entry.chapterTitle }}
-                    </div>
-                  </div>
-                  <div class="step-content px-2 pb-4">
-                    <div class="step-content-title mt-3">
-                      <h2
-                        class="step-pill"
-                        :style="{ borderColor: getStoryColor(entry.chapterIndex).primary, color: getStoryColor(entry.chapterIndex).primary }"
-                      >
-                        {{ entry.stepIndex + 1 }}
-                      </h2>
-                      <h3 class="font-bold">
+                  <section
+                    v-for="entry in flattenedStorySteps"
+                    :key="`${entry.chapterIndex}-${entry.stepIndex}-${entry.globalStep}`"
+                    :ref="(element) => setScrollStepElement(element, entry.globalStep - 1)"
+                    :data-step="entry.globalStep"
+                    class="scrolly-step"
+                  >
+                    <div
+                      class="scrolly-content-card px-4 pb-4"
+                      :style="{ opacity: stepOpacities[entry.globalStep - 1] ?? 0 }"
+                    >
+                      <div class="scrolly-card-header">
+                        <div class="story-play-chapter-header">
+                          <span class="story-play-chapter-badge">
+                            {{ numberToLetter(entry.chapterIndex + 1) }}
+                          </span>
+                          <span class="story-play-chapter-name">
+                            {{ entry.chapterTitle }}
+                          </span>
+                        </div>
+                        <v-btn
+                          v-if="canLeaveStory"
+                          class="scrolly-close-btn"
+                          :icon="mdiClose"
+                          variant="flat"
+                          size="small"
+                          @click="closeConfirmation = true"
+                        />
+                      </div>
+                      <h3 class="story-play-step-title">
                         {{ entry.step.title }}
                       </h3>
+                      <div class="mt-4 story-play-text">
+                        <RichTextViewer :model-value="getStepHtml(entry.step)" />
+                      </div>
                     </div>
-                    <div class="mt-4">
-                      <RichTextViewer :model-value="getStepHtml(entry.step)" />
-                    </div>
-                  </div>
-                  <div class="scrolly-step-controls">
-                    <v-btn
-                      variant="text"
-                      rounded
-                      :icon="mdiChevronLeft"
-                      :disabled="entry.globalStep === 1"
-                      @click.prevent="goToPreviousScrollytellingStep(entry.globalStep)"
-                    />
-                    <v-btn
-                      v-if="canLeaveStory"
-                      variant="text"
-                      rounded
-                      :icon="mdiClose"
-                      @click.prevent="closeStoryPlayback"
-                    />
-                    <v-btn
-                      variant="text"
-                      rounded
-                      :icon="mdiChevronRight"
-                      @click.prevent="goToNextScrollytellingStep(entry.globalStep)"
-                    />
-                  </div>
-                </section>
+                  </section>
+                </div>
               </div>
 
               <template v-else>
@@ -1096,35 +1129,44 @@ onBeforeUnmount(() => {
   }
 }
 
-.scrolly-steps {
-  display: flex;
-  flex-direction: column;
-  padding: 0 0 16px;
+.scrolly-mode-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-.scrolly-step {
-  min-height: 100%;
-  padding-bottom: 8px;
-  display: flex;
-  flex-direction: column;
+.scrolly-scroll {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  width: 100%;
+  height: 100%;
 
-  &.active {
-    .step-pill {
-      background-color: rgba(34, 96, 81, 0.08);
-    }
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
-.scrolly-step-controls {
+.scrolly-step {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 8px;
-  width: fit-content;
-  margin: 16px auto 0;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(246, 246, 246, 0.78);
-  backdrop-filter: blur(6px);
+  background: transparent;
+}
+
+.scrolly-content-card {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  padding-top: 12px;
+  transition: opacity 0.05s linear;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.10);
+}
+
+.scrolly-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
 }
 
 .nav-bar {

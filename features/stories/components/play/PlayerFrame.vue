@@ -28,6 +28,10 @@ const props = defineProps({
   playerHeight: {
     type: Number,
     default: null
+  },
+  scrollytelling: {
+    type: Boolean,
+    default: false
   }
 });
 const emit = defineEmits([ 'leave-preview', 'back' ]);
@@ -61,10 +65,12 @@ function handleBack() {
 <template>
   <div
     class="player-frame-wrapper"
-    :class="{ 'has-fixed-height': hasFixedHeight }"
+    :class="{ 'has-fixed-height': hasFixedHeight, 'scrollytelling': scrollytelling }"
     :style="wrapperStyle"
   >
-    <div :class="{ 'player-frame': true, mobile: toolwindowMode === ToolwindowModes.MOBILE }">
+    <div
+      :class="{ 'player-frame': true, mobile: toolwindowMode === ToolwindowModes.MOBILE, 'scrollytelling': scrollytelling }"
+    >
       <v-toolbar
         v-if="showHeader"
         color="transparent"
@@ -117,7 +123,7 @@ function handleBack() {
 </template>
 
 <style lang="scss" scoped>
-.player-frame-wrapper {
+. player-frame-wrapper {
   position: absolute;
   top: 90px;
   left: 20px;
@@ -125,6 +131,22 @@ function handleBack() {
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  &.scrollytelling {
+    bottom: 40px;
+    top: 40px;
+
+    .player-frame {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .player-content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+  }
 
   &.has-fixed-height {
     bottom: 40px;
@@ -151,6 +173,14 @@ function handleBack() {
   flex-direction: column;
   max-height: 840px;
   overflow-y: auto;
+
+  &.scrollytelling {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    max-height: none;
+    overflow: hidden;
+  }
 
   &.mobile {
     background-color: transparent;
