@@ -1285,6 +1285,7 @@ watch([ activeStepIndex, previewVisible ], () => {
                     density="compact"
                     hide-details="auto"
                     :min="460"
+                    :placeholder="t('additional:modules.dataNarrator.label.defaultValue')"
                     :hint="Number(playerWidthInput) > 0 && Number(playerWidthInput) < 460 ? t('additional:modules.dataNarrator.warning.minPlayerDimension') : ''"
                     persistent-hint
                   />
@@ -1298,15 +1299,16 @@ watch([ activeStepIndex, previewVisible ], () => {
                     density="compact"
                     hide-details="auto"
                     :min="460"
+                    :placeholder="t('additional:modules.dataNarrator.label.defaultValue')"
                     :hint="Number(playerHeightInput) > 0 && Number(playerHeightInput) < 460 ? t('additional:modules.dataNarrator.warning.minPlayerDimension') : ''"
                     persistent-hint
                   />
                 </v-col>
                 <v-col cols="6">
                   <div class="d-flex align-center ga-2 mt-1">
-                    <span class="text-body-2">{{ t('additional:modules.dataNarrator.label.autoPLay') }}</span>
-                    <v-switch
+                    <v-checkbox
                       v-model="autoplayEnabledInput"
+                      :label="t('additional:modules.dataNarrator.label.autoPLay')"
                       hide-details
                       density="compact"
                     />
@@ -1331,9 +1333,9 @@ watch([ activeStepIndex, previewVisible ], () => {
                   cols="6"
                 >
                   <div class="d-flex align-center ga-2 mt-1">
-                    <span class="text-body-2">{{ t('additional:modules.dataNarrator.label.hideBackButton') }}</span>
-                    <v-switch
+                    <v-checkbox
                       v-model="hideBackButtonInput"
+                      :label="t('additional:modules.dataNarrator.label.hideBackButton')"
                       hide-details
                       density="compact"
                     />
@@ -1343,14 +1345,11 @@ watch([ activeStepIndex, previewVisible ], () => {
                   v-if="isAdmin"
                   cols="6"
                 >
-                  <span class="story-options-label">
-                    {{ t('additional:modules.dataNarrator.label.scrolly') }}
-                  </span>
-                  <v-switch
+                  <v-checkbox
                     v-model="scrollytellingEnabled"
+                    :label="t('additional:modules.dataNarrator.label.scrolly')"
                     hide-details
                     density="compact"
-                    class="story-options-switch"
                   />
                 </v-col>
               </v-row>

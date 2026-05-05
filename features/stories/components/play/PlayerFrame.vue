@@ -5,6 +5,7 @@ import { useTranslation } from 'i18next-vue';
 import { computed } from 'vue';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
+import { ToolwindowModes } from '../../../../store/contantsDataNarrator';
 
 const { toolwindowMode } = useDataNarrator();
 const props = defineProps({

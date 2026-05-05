@@ -104,7 +104,8 @@
         "storyDescriptionPlaceholder": "Beschreibung",
         "storyOptions": "Story-Optionen",
         "playerWidth": "Player-Breite (px)",
-        "playerHeight": "Player-Höhe (px)"
+        "playerHeight": "Player-Höhe (px)",
+        "defaultValue": "Standard"
       },
       "categoryBrowser": {
         "searchLayers": "Ebenen durchsuchen…",

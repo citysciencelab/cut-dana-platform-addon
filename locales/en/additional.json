@@ -104,7 +104,8 @@
         "storyDescriptionPlaceholder": "Story description",
         "storyOptions": "Story options",
         "playerWidth": "Player width (px)",
-        "playerHeight": "Player height (px)"
+        "playerHeight": "Player height (px)",
+        "defaultValue": "Default"
       },
       "categoryBrowser": {
         "searchLayers": "Search Layers…",
