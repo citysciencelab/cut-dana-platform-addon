@@ -1,8 +1,8 @@
 ﻿<script setup>
-import { mdiChevronLeft, mdiChevronRight, mdiClose, mdiPauseCircleOutline, mdiPlayCircleOutline } from '@mdi/js';
+import { mdiChevronLeft, mdiChevronRight, mdiClose, mdiLock, mdiPauseCircleOutline, mdiPlayCircleOutline } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import scrollama from 'scrollama';
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { useDataNarrator } from '../../../hooks/useDataNarrator';
@@ -15,6 +15,7 @@ import { getFileUrl } from '../../../utils/getFileUrl';
 import { getStoryColor } from '../../../utils/getStoryColor';
 import { createLogger } from '../../../utils/logger.js';
 import { numberToLetter } from '../../../utils/numberToLetter';
+import { useLogin } from '../../dashboard/hooks/useLogin';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 import { useStory } from '../hooks/useStory';
@@ -39,9 +40,13 @@ const {
   removeAllVisibleLayers
 } = useNavigation();
 const store = useStore();
+const { userId, isAdmin, checkLoggedIn } = useLogin();
 
 const story = ref(null);
 const isLoading = ref(true);
+const accessDenied = ref(false);
+const accessDeniedCountdown = ref(10);
+const accessDeniedTimer = ref(null);
 
 const stage = ref('overview');
 const chapterIndex = ref(0);
@@ -390,6 +395,10 @@ async function loadStory(id) {
     return;
   }
   isLoading.value = true;
+  accessDenied.value = false;
+  clearInterval(accessDeniedTimer.value);
+  accessDeniedTimer.value = null;
+  accessDeniedCountdown.value = 10;
   try {
     const res = await fetch(`${backendUrl}/stories/new/${id}`);
     story.value = await res.json();
@@ -400,6 +409,41 @@ async function loadStory(id) {
     isLoading.value = false;
   }
 }
+
+function startAccessDeniedFlow() {
+  accessDenied.value = true;
+  accessDeniedCountdown.value = 10;
+  clearInterval(accessDeniedTimer.value);
+  accessDeniedTimer.value = setInterval(() => {
+    accessDeniedCountdown.value--;
+    if (accessDeniedCountdown.value <= 0) {
+      clearInterval(accessDeniedTimer.value);
+      accessDeniedTimer.value = null;
+      backToDashboard();
+    }
+  }, 1000);
+}
+
+watch(
+  [ story, () => userId.value, () => isAdmin.value ],
+  () => {
+    if (!story.value || isLoading.value) return;
+
+    const isPublic = story.value.isDraft === false;
+    const isOwner = userId.value && String(userId.value) === String(story.value.owner);
+    const canAccess = isPublic || isOwner || isAdmin.value;
+
+    if (!canAccess && !accessDenied.value) {
+      startAccessDeniedFlow();
+    } else if (canAccess && accessDenied.value) {
+      // Login resolved and user now has access — cancel countdown
+      clearInterval(accessDeniedTimer.value);
+      accessDeniedTimer.value = null;
+      accessDenied.value = false;
+      accessDeniedCountdown.value = 10;
+    }
+  }
+);
 
 function resetBaseLayer() {
   setBaseLayer(defaultBaseLayerId);
@@ -810,33 +854,13 @@ function onScrollytellingStepEnter({ index }) {
   setActiveStepByFlatIndex(index);
 }
 
-function goToScrollytellingStep(globalStep) {
-  if (!isScrollytellingStory.value) {
-    return;
-  }
-
-  setActiveStepByFlatIndex(globalStep - 1, { scroll: true });
-}
-
-function goToPreviousScrollytellingStep(globalStep) {
-  if (globalStep <= 1) {
-    return;
-  }
-
-  goToScrollytellingStep(globalStep - 1);
-}
-
-function goToNextScrollytellingStep(globalStep) {
-  if (globalStep >= flattenedStorySteps.value.length) {
-    closeStoryPlayback();
-    return;
-  }
-
-  goToScrollytellingStep(globalStep + 1);
-}
+onMounted(() => {
+  checkLoggedIn();
+});
 
 onBeforeUnmount(() => {
   clearAutoplayTimer();
+  clearInterval(accessDeniedTimer.value);
   destroyScroller();
   removeAllVisibleLayers();
   resetBaseLayer();
@@ -857,7 +881,38 @@ onBeforeUnmount(() => {
         @leave-preview="backToEdit"
       >
         <template #default>
-          <div v-if="isLoading">
+          <div
+            v-if="accessDenied"
+            class="access-denied px-4 py-8"
+          >
+            <v-icon
+              size="48"
+              color="error"
+              class="mb-4"
+            >
+              {{ mdiLock }}
+            </v-icon>
+            <h3 class="access-denied-title">
+              Kein Zugriff
+            </h3>
+            <p class="access-denied-msg">
+              Sie sind nicht berechtigt, diese Story aufzurufen.
+            </p>
+            <p class="access-denied-countdown">
+              Weiterleitung zur Startseite in {{ accessDeniedCountdown }} Sekunden…
+            </p>
+            <v-btn
+              variant="flat"
+              color="primary"
+              rounded
+              class="mt-2"
+              @click="backToDashboard"
+            >
+              Jetzt zur Startseite
+            </v-btn>
+          </div>
+
+          <div v-else-if="isLoading">
             Loading...
           </div>
 
@@ -1063,6 +1118,31 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss" scoped>
+.access-denied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 16px;
+
+  &-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  &-msg {
+    color: #555;
+    margin-bottom: 4px;
+  }
+
+  &-countdown {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+}
+
 .story-cover {
   width: 100%;
   height: 180px;

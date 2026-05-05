@@ -83,7 +83,10 @@ disableFooter();
 disableMainMenu();
 disableSecondaryMenu();
 useDeepLink();
-onMounted(setBrowserTabIcon);
+onMounted(() => {
+  setBrowserTabIcon();
+  disableFooter();
+});
 onUnmounted(restoreBrowserTabIcon);
 </script>
 

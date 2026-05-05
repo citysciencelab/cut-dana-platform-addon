@@ -30,8 +30,9 @@ export const useDataNarrator = () => {
 
   const disableFooter = () => {
     const footer = document.querySelector('#module-portal-footer');
-
-    footer.style.cssText = 'display: none !important;';
+    if (footer) {
+      footer.style.cssText = 'display: none !important;';
+    }
   }
 
   const moveTool = async ()=> {

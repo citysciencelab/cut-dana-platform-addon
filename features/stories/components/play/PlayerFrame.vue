@@ -5,7 +5,6 @@ import { useTranslation } from 'i18next-vue';
 import { computed } from 'vue';
 
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
-import { ToolwindowModes } from '../../../../store/contantsDataNarrator';
 
 const { toolwindowMode } = useDataNarrator();
 const props = defineProps({
@@ -123,7 +122,7 @@ function handleBack() {
 </template>
 
 <style lang="scss" scoped>
-. player-frame-wrapper {
+.player-frame-wrapper {
   position: absolute;
   top: 90px;
   left: 20px;
