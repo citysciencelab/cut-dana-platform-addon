@@ -683,15 +683,26 @@ watch(
     }
 
     if (Array.isArray(step.mapSources) && step.mapSources.length > 0) {
-      setInformationLayers([]);
-      step.mapSources.forEach(layer => {
-        store.dispatch('addLayerToLayerConfig', {
+      // Register any dynamic WMS layers that are not yet in the layer config.
+      // addLayerToLayerConfig is a no-op if the layer is already registered, so we
+      // must also call setInformationLayers afterwards — it calls addOrReplaceLayer
+      // which re-enables visibility on layers that were hidden by a previous removeLayer call.
+      for (const layer of step.mapSources) {
+        await store.dispatch('addLayerToLayerConfig', {
           layerConfig: toRuntimeWmsConfig(layer),
           parentKey: 'subjectlayer',
         });
-      });
+      }
 
-      // Check availability after dispatching — use step identity to discard stale results
+      const allLayers = [
+        ...(step.informationLayers ?? []),
+        ...step.mapSources,
+        ...(Array.isArray(step.layers3D) ? step.layers3D : []),
+      ];
+      setBaseLayer(bgId);
+      setInformationLayers(allLayers, [ bgId ]);
+
+      // Check availability — use step identity to discard stale results
       wmsUnavailable.value = false;
       const checkStepId = `${chapterIndex.value}-${stepIndex.value}`;
       const uniqueUrls = [...new Set(step.mapSources.map(l => l.url).filter(Boolean))];
