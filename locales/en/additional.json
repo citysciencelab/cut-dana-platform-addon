@@ -12,6 +12,9 @@
       "tableOfContents": "Table of Contents",
       "createStory": "Create Story",
       "3dForm": "3D View",
+      "editor": {
+        "uploadingImage": "Uploading image…"
+      },
       "label": {
         "storyUnnamed": "Story Title",
         "storyDescription": "Description",

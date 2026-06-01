@@ -12,6 +12,9 @@
       "tableOfContents": "Inhaltsverzeichnis",
       "createStory": "Story erstellen",
       "3dForm": "3D Objekte",
+      "editor": {
+        "uploadingImage": "Bild wird hochgeladen…"
+      },
       "label": {
         "storyUnnamed": "Story Titel",
         "storyDescription": "Beschreibung",
