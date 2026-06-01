@@ -9,23 +9,40 @@ import { dataNarratorModes, ToolwindowModes } from '../store/contantsDataNarrato
 
 export const useDataNarrator = () => {
   const { setToolWindowMode, isMobile } = useToolWindow();
-
   const store = useStore();
+
+  const mode = computed(() => store.state.Modules.DataNarrator.mode);
 
   const disableMainMenu = () => {
     const mainMenu = document.querySelector('#mp-menu-mainMenu'),
       mainMenuToggleButton = document.querySelector('#mainMenu-toggle-button');
 
-    mainMenu.style.cssText = 'display: none !important;';
-    mainMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
+    if (mainMenu) {
+      mainMenu.style.cssText = 'display: none !important;';
+    }
+    if (mainMenuToggleButton) {
+      mainMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
+    }
   };
 
   const disableSecondaryMenu = () => {
     const secondaryMenu = document.querySelector('#mp-menu-secondaryMenu'),
       secondaryMenuToggleButton = document.querySelector('#secondaryMenu-toggle-button');
 
-    secondaryMenu.style.cssText = 'display: none !important;';
-    secondaryMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
+    if (secondaryMenu) {
+      secondaryMenu.style.cssText = 'display: none !important;';
+    }
+    if (secondaryMenuToggleButton) {
+      secondaryMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
+    }
+  };
+
+  const disableFooter = () => {
+    const footer = document.querySelector('#module-portal-footer');
+
+    if (footer) {
+      footer.style.cssText = 'display: none !important;';
+    }
   };
 
   const moveTool = async () => {
@@ -34,13 +51,13 @@ export const useDataNarrator = () => {
     for (const toolWindow of toolWindows) {
       await nextTick();
 
-      if (isMobile) {
+      if (isMobile.value) {
         toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset}px`;
         setToolWindowMode(ToolwindowModes.MOBILE);
       } else {
         toolWindow.style.top = '0px';
 
-        if (this.mode === dataNarratorModes.DASHBOARD) {
+        if (mode.value === dataNarratorModes.DASHBOARD) {
           setToolWindowMode(ToolwindowModes.DASHBOARD);
         } else {
           setToolWindowMode(ToolwindowModes.DESKTOP);
@@ -49,25 +66,19 @@ export const useDataNarrator = () => {
     }
   };
 
-  const gotoPage = (mode) => {
-    store.commit('Modules/DataNarrator/setMode', mode);
+  const gotoPage = (newMode) => {
+    store.commit('Modules/DataNarrator/setMode', newMode);
     moveTool();
-  }
-
-  const openLayerEditor = () => {
-    gotoPage(dataNarratorModes.CREATE_STORY);
-  }
+  };
 
   return {
-    mode: computed(() => store.state.Modules.DataNarrator.mode),
+    mode,
     toolwindowMode: computed(() => store.state.Modules.DataNarrator.toolwindowMode),
-    toolWindowPadding: computed(() => store.state.Modules.DataNarrator.toolWindowPadding),
 
     disableMainMenu,
     disableSecondaryMenu,
     disableFooter,
     moveTool,
-    gotoPage,
-    openLayerEditor
-  }
-}
+    gotoPage
+  };
+};
