@@ -15,12 +15,12 @@ import { getFileUrl } from '../../../utils/getFileUrl';
 import { getStoryColor } from '../../../utils/getStoryColor';
 import { createLogger } from '../../../utils/logger.js';
 import { numberToLetter } from '../../../utils/numberToLetter';
+import { isWmsAvailable, toRuntimeWmsConfig } from '../../../utils/wmsUtils';
 import { useLogin } from '../../dashboard/hooks/useLogin';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 import { useStory } from '../hooks/useStory';
 
-import { isWmsAvailable, toRuntimeWmsConfig } from '../../../utils/wmsUtils';
 import PlayerFrame from './play/PlayerFrame.vue';
 import RichTextViewer from './step/RichTextViewer.vue';
 import ThreeDHint from './ThreeDHint.vue';
@@ -705,7 +705,7 @@ watch(
       // Check availability — use step identity to discard stale results
       wmsUnavailable.value = false;
       const checkStepId = `${chapterIndex.value}-${stepIndex.value}`;
-      const uniqueUrls = [...new Set(step.mapSources.map(l => l.url).filter(Boolean))];
+      const uniqueUrls = [ ...new Set(step.mapSources.map(l => l.url).filter(Boolean)) ];
       Promise.all(uniqueUrls.map(isWmsAvailable)).then((results) => {
         if (`${chapterIndex.value}-${stepIndex.value}` !== checkStepId) return;
         wmsUnavailable.value = results.some(ok => !ok);

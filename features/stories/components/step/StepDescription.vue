@@ -5,7 +5,10 @@ import { VueEditor } from 'vue3-editor';
 
 import * as constants from '../../../../store/contantsDataNarrator';
 import { backendUrl } from '../../../../store/contantsDataNarrator';
+import { createLogger } from '../../../../utils/logger.js';
 import { fixLinksInHTMLString } from '../../../../utils/stringUtils';
+
+const logger = createLogger('StepDescription.vue');
 
 const props = defineProps({
   value: {
@@ -93,7 +96,7 @@ function handleImageUpload() {
       quill.setSelection(range.index + 1);
     } catch (err) {
       quill.deleteText(range.index, t('additional:modules.dataNarrator.editor.uploadingImage').length);
-      console.error('Image upload failed:', err);
+      logger.error('Image upload failed:', err);
     }
   };
 }

@@ -1174,8 +1174,8 @@ watch([ activeStepIndex, previewVisible ], () => {
       />
 
       <StoryOverview
-        ref="storyOverviewRef"
         v-if="activeStepIndex === -1"
+        ref="storyOverviewRef"
         :chapters="chaptersData"
         :edit-story-visible="editStoryVisible"
         @edit-story-visible="editStoryVisible = true"

@@ -212,7 +212,10 @@ const getColor = (idx) => {
                 />
                 <div class="step-content bg-white d-flex flex-row align-center rounded-xl ml-2 p-2 flex-1-0">
                   <span class="pl-2 mr-2 flex-shrink-0">{{ step.id }}</span>
-                  <v-tooltip location="top" :disabled="!step.title">
+                  <v-tooltip
+                    location="top"
+                    :disabled="!step.title"
+                  >
                     <template #activator="{ props: tooltipProps }">
                       <span
                         v-bind="tooltipProps"
