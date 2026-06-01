@@ -108,7 +108,9 @@
         "storyOptions": "Story options",
         "playerWidth": "Player width (px)",
         "playerHeight": "Player height (px)",
-        "defaultValue": "Default"
+        "defaultValue": "Default",
+        "moveLayerUp": "Move layer up",
+        "moveLayerDown": "Move layer down"
       },
       "categoryBrowser": {
         "searchLayers": "Search Layers…",

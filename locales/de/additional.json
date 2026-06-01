@@ -108,7 +108,9 @@
         "storyOptions": "Story-Optionen",
         "playerWidth": "Player-Breite (px)",
         "playerHeight": "Player-Höhe (px)",
-        "defaultValue": "Standard"
+        "defaultValue": "Standard",
+        "moveLayerUp": "Layer nach oben verschieben",
+        "moveLayerDown": "Layer nach unten verschieben"
       },
       "categoryBrowser": {
         "searchLayers": "Ebenen durchsuchen…",

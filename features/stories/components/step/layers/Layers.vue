@@ -1,5 +1,5 @@
 <script setup>
-import { mdiTrashCan, mdiEye } from '@mdi/js';
+import { mdiTrashCan, mdiEye, mdiChevronUp, mdiChevronDown } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
@@ -38,6 +38,29 @@ function addLayer(layerId) {
   if (!props.modelValue.find(l => String(l.id) === String(layerId))) {
     emit('update:modelValue', [ ...props.modelValue, { id: layerId, transparency: 0 } ]);
   }
+}
+
+function reorderAndUpdateZIndexes(newList) {
+  emit('update:modelValue', newList);
+  const baseLayers = store.getters.layerConfigsByAttributes({ baselayer: true, showInLayerTree: true });
+  let baseZIndex = Math.max(0, ...baseLayers.map(l => l.zIndex ?? 0));
+  for (const { id, transparency } of newList) {
+    store.dispatch('addOrReplaceLayer', { layerId: id, zIndex: ++baseZIndex, transparency });
+  }
+}
+
+function moveLayerUp(index) {
+  if (index <= 0) return;
+  const newList = [ ...props.modelValue ];
+  [ newList[index], newList[index - 1] ] = [ newList[index - 1], newList[index] ];
+  reorderAndUpdateZIndexes(newList);
+}
+
+function moveLayerDown(index) {
+  if (index >= props.modelValue.length - 1) return;
+  const newList = [ ...props.modelValue ];
+  [ newList[index], newList[index + 1] ] = [ newList[index + 1], newList[index] ];
+  reorderAndUpdateZIndexes(newList);
 }
 
 function removeLayer(id) {
@@ -108,7 +131,7 @@ watch(
     class="pa-0 mb-1 bg-transparent"
   >
     <v-list-item
-      v-for="l in selectedLayers"
+      v-for="(l, lIdx) in selectedLayers"
       :key="l.id"
       class="pa-0 mb-0"
     >
@@ -120,6 +143,32 @@ watch(
       >
         <span class="flex-grow-1 text-body-2">{{ l.name }}</span>
         <div class="d-flex align-center">
+          <v-tooltip location="top">
+            <template #activator="{ props: actv }">
+              <v-icon
+                size="small"
+                :icon="mdiChevronUp"
+                class="mr-1"
+                :class="lIdx === 0 ? 'opacity-30' : 'cursor-pointer'"
+                v-bind="actv"
+                @click="moveLayerUp(lIdx)"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.moveLayerUp') }}</span>
+          </v-tooltip>
+          <v-tooltip location="top">
+            <template #activator="{ props: actv }">
+              <v-icon
+                size="small"
+                :icon="mdiChevronDown"
+                class="mr-2"
+                :class="lIdx === selectedLayers.length - 1 ? 'opacity-30' : 'cursor-pointer'"
+                v-bind="actv"
+                @click="moveLayerDown(lIdx)"
+              />
+            </template>
+            <span>{{ t('additional:modules.dataNarrator.label.moveLayerDown') }}</span>
+          </v-tooltip>
           <v-tooltip location="top">
             <template #activator="{ props: actv }">
               <v-icon
