@@ -10,7 +10,7 @@ import getters from '../store/gettersDataNarrator';
 
 export default {
   mixins: [],
-  data () {
+  data() {
     return {
       isMobile: false,
       checkMobileInterval: null,
@@ -33,16 +33,16 @@ export default {
   methods: {
     ...mapMutations('Modules/DataNarrator', [ 'setToolwindowMode' ]),
 
-    setToolIsOpen () {
+    setToolIsOpen() {
       this.isOpen = !this.isOpen;
       this.moveTool();
     },
 
-    updateIsMobile () {
+    updateIsMobile() {
       this.isMobile = isMobile();
     },
 
-    disableMainMenu () {
+    disableMainMenu() {
       const mainMenu = document.querySelector('#mp-menu-mainMenu');
       const mainMenuToggleButton = document.querySelector('#mainMenu-toggle-button');
 
@@ -50,7 +50,7 @@ export default {
       mainMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
     },
 
-    disableSecondaryMenu () {
+    disableSecondaryMenu() {
       const secondaryMenu = document.querySelector('#mp-menu-secondaryMenu');
       const secondaryMenuToggleButton = document.querySelector('#secondaryMenu-toggle-button');
 
@@ -58,13 +58,7 @@ export default {
       secondaryMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
     },
 
-    disableFooter () {
-      const footer = document.querySelector('#module-portal-footer');
-
-      footer.style.cssText = 'display: none !important;';
-    },
-
-    async moveTool () {
+    async moveTool() {
       const toolWindows = document.querySelectorAll('#datanarrator-root .toolwindow-container .toolwindow');
 
       for (const toolWindow of toolWindows) {
@@ -89,7 +83,7 @@ export default {
     ...mapGetters('Modules/DataNarrator', Object.keys(getters))
   },
   watch: {
-    isMobile () {
+    isMobile() {
       if (this.isMobile !== this.isPreviousMobile) {
         this.isPreviousMobile = this.isMobile;
         this.moveTool();

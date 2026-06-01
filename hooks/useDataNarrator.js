@@ -28,14 +28,7 @@ export const useDataNarrator = () => {
     secondaryMenuToggleButton.style.cssText = 'opacity: 0 !important;pointer-events: none;';
   };
 
-  const disableFooter = () => {
-    const footer = document.querySelector('#module-portal-footer');
-    if (footer) {
-      footer.style.cssText = 'display: none !important;';
-    }
-  }
-
-  const moveTool = async ()=> {
+  const moveTool = async () => {
     const toolWindows = document.querySelectorAll('#datanarrator-root .toolwindow-container .toolwindow');
 
     for (const toolWindow of toolWindows) {
@@ -44,14 +37,12 @@ export const useDataNarrator = () => {
       if (isMobile) {
         toolWindow.style.top = `${window.innerHeight - toolWindow.offsetHeight - constants.dataNarratorToolSettings.bottomOffset}px`;
         setToolWindowMode(ToolwindowModes.MOBILE);
-      }
-      else {
+      } else {
         toolWindow.style.top = '0px';
 
         if (this.mode === dataNarratorModes.DASHBOARD) {
           setToolWindowMode(ToolwindowModes.DASHBOARD);
-        }
-        else {
+        } else {
           setToolWindowMode(ToolwindowModes.DESKTOP);
         }
       }
