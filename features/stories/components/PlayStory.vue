@@ -20,9 +20,11 @@ import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import ToolWindow from '../../shared/Toolwindow/ToolWindow.vue';
 import { useStory } from '../hooks/useStory';
 
+import { isWmsAvailable, toRuntimeWmsConfig } from '../../../utils/wmsUtils';
 import PlayerFrame from './play/PlayerFrame.vue';
 import RichTextViewer from './step/RichTextViewer.vue';
 import ThreeDHint from './ThreeDHint.vue';
+import WmsUnavailableHint from './WmsUnavailableHint.vue';
 
 const logger = createLogger('PlayStory.vue');
 const { t } = useTranslation();
@@ -61,6 +63,7 @@ const stepOpacities = ref([]);
 const closeConfirmation = ref(false);
 const autoplayPausedByUser = ref(false);
 const autoplayTimer = ref(null);
+const wmsUnavailable = ref(false);
 
 const totalSteps = computed(() => {
   if (!story.value) return 0;
@@ -683,11 +686,21 @@ watch(
       setInformationLayers([]);
       step.mapSources.forEach(layer => {
         store.dispatch('addLayerToLayerConfig', {
-          layerConfig: layer,
+          layerConfig: toRuntimeWmsConfig(layer),
           parentKey: 'subjectlayer',
         });
-      })
+      });
+
+      // Check availability after dispatching — use step identity to discard stale results
+      wmsUnavailable.value = false;
+      const checkStepId = `${chapterIndex.value}-${stepIndex.value}`;
+      const uniqueUrls = [...new Set(step.mapSources.map(l => l.url).filter(Boolean))];
+      Promise.all(uniqueUrls.map(isWmsAvailable)).then((results) => {
+        if (`${chapterIndex.value}-${stepIndex.value}` !== checkStepId) return;
+        wmsUnavailable.value = results.some(ok => !ok);
+      });
     } else {
+      wmsUnavailable.value = false;
       const allLayers = [
         ...(step.informationLayers ?? []),
         ...(Array.isArray(step.layers3D) ? step.layers3D : []),
@@ -1115,6 +1128,7 @@ onBeforeUnmount(() => {
     @confirm="closeStoryPlayback"
   />
   <ThreeDHint :visible="!isMobile && stage === 'play' && !!currentStep?.is3D" />
+  <WmsUnavailableHint :visible="stage === 'play' && wmsUnavailable" />
 </template>
 
 <style lang="scss" scoped>

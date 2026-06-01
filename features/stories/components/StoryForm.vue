@@ -12,6 +12,7 @@ import { useSceneReset } from '../../../hooks/useSceneReset';
 import { backendUrl, dataNarratorModes, ToolwindowModes } from '../../../store/contantsDataNarrator';
 import { clearGeoJSON } from '../../../utils/geoJSON';
 import { createLogger } from '../../../utils/logger.js';
+import { toStoredWmsRef } from '../../../utils/wmsUtils';
 import { useLogin } from '../../dashboard/hooks/useLogin';
 import ConfirmationDialog from '../../shared/ConfirmationDialog.vue';
 import { useStory } from '../hooks/useStory';
@@ -576,6 +577,7 @@ async function saveStoryData() {
         ...step,
         description: resolvedHtml,
         html: resolvedHtml,
+        mapSources: (step.mapSources ?? []).map(toStoredWmsRef),
       };
     })
   }));
@@ -653,6 +655,7 @@ async function saveStoryData() {
           ...step,
           description: resolvedHtml,
           html: resolvedHtml,
+          mapSources: (step.mapSources ?? []).map(toStoredWmsRef),
         };
       })
     }));

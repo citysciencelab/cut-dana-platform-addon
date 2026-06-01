@@ -16,6 +16,7 @@ import { useNavigation } from '../../../hooks/useNavigation';
 import { useSceneReset } from '../../../hooks/useSceneReset';
 import AddWMS from '../../../tools/addWms/components/AddWMS.vue';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
+import { toRuntimeWmsConfig, toStoredWmsRef } from '../../../utils/wmsUtils';
 
 import BackgroundMap from './step/BackgroundMap.vue';
 import TransparencySlider from './step/layers/TransparencySlider.vue';
@@ -82,10 +83,11 @@ const onWmsLoad = (sources) => {
 }
 
 function loadWmsLayer(layer) {
-  const mapSources = [ ...(props.step.mapSources || []), layer ];
+  const ref = toStoredWmsRef(layer);
+  const mapSources = [ ...(props.step.mapSources || []), ref ];
   updateStep({ mapSources });
   store.dispatch('addLayerToLayerConfig', {
-    layerConfig: layer,
+    layerConfig: toRuntimeWmsConfig(ref),
     parentKey: 'subjectlayer',
   });
 }
@@ -254,7 +256,7 @@ onMounted(() => {
   if (mapSources.value.length > 0) {
     for (const layer of mapSources.value) {
       store.dispatch('addLayerToLayerConfig', {
-        layerConfig: layer,
+        layerConfig: toRuntimeWmsConfig(layer),
         parentKey: 'subjectlayer',
       });
     }

@@ -307,7 +307,8 @@
       },
       "hint": {
         "ctrl3D": "Strg gedrückt halten und Maus ziehen, um die Kamera in alle Richtungen zu bewegen",
-        "modelSizeLimit": "Maximale Dateigröße: 10 MB"
+        "modelSizeLimit": "Maximale Dateigröße: 10 MB",
+        "wmsUnavailable": "Eine oder mehrere WMS-Ebenen für diesen Schritt sind derzeit nicht verfügbar"
       },
       "validation": {
         "missingStoryTitle": "Bitte einen Story-Titel eingeben.",
