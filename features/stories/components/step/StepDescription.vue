@@ -52,6 +52,9 @@ async function uploadImageFile(file) {
   form.append('files', file);
   const resp = await fetch(`${backendUrl}/files/story-images`, {
     method: 'POST',
+    // Set Content-Type to null so FetchInterceptor removes it — the browser will
+    // then set multipart/form-data with the correct boundary automatically.
+    headers: { 'Content-Type': null },
     body: form,
   });
   if (!resp.ok) {
