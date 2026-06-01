@@ -211,8 +211,16 @@ const getColor = (idx) => {
                   title="Drag"
                 />
                 <div class="step-content bg-white d-flex flex-row align-center rounded-xl ml-2 p-2 flex-1-0">
-                  <span class="pl-2 mr-2">{{ step.id }}</span>
-                  <span>{{ step.title }}</span>
+                  <span class="pl-2 mr-2 flex-shrink-0">{{ step.id }}</span>
+                  <v-tooltip location="top" :disabled="!step.title">
+                    <template #activator="{ props: tooltipProps }">
+                      <span
+                        v-bind="tooltipProps"
+                        class="step-title-truncated"
+                      >{{ step.title }}</span>
+                    </template>
+                    <span>{{ step.title }}</span>
+                  </v-tooltip>
                   <div class="step-content-action ml-auto d-flex flex-row align-center ga-1">
                     <v-tooltip location="top">
                       <template #activator="{ props: tooltipProps}">
@@ -317,7 +325,16 @@ const getColor = (idx) => {
       color: white;
   }
 
+  .step-title-truncated {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+      flex: 1 1 0;
+  }
+
   .step-content {
+      overflow: hidden;
       &-action {
           display: none !important;
       }
