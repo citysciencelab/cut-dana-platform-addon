@@ -1,7 +1,7 @@
 <script setup>
 import { mdiArrowLeft, mdiImagePlusOutline, mdiTrashCan } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { use3DLayers } from '../../../hooks/use3DLayers';
@@ -129,6 +129,7 @@ const hideBackButtonInput = ref(false);
 const advancedOptionsOpen = ref(false);
 const loaded3DStepSignature = ref('');
 const activeStepRuntimeModelIds = ref(new Set());
+const storyOverviewRef = ref(null);
 
 let nextChapterId = 1;
 const chaptersData = ref([]);
@@ -564,6 +565,11 @@ function saveStep() {
   newStepDraft.value = null;
   activeStepIndex.value = -1;
   previewVisible.value = true;
+  nextTick(() => {
+    if (storyOverviewRef.value?.$el) {
+      storyOverviewRef.value.$el.scrollTop = 0;
+    }
+  });
 }
 
 async function saveStoryData() {
@@ -1168,6 +1174,7 @@ watch([ activeStepIndex, previewVisible ], () => {
       />
 
       <StoryOverview
+        ref="storyOverviewRef"
         v-if="activeStepIndex === -1"
         :chapters="chaptersData"
         :edit-story-visible="editStoryVisible"
