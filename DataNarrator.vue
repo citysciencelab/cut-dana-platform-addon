@@ -15,7 +15,7 @@ defineOptions({
   name: 'DataNarrator'
 });
 
-const { disableFooter, disableMainMenu, disableSecondaryMenu, toolwindowMode, mode } = useDataNarrator();
+const { disableMainMenu, disableSecondaryMenu, toolwindowMode, mode } = useDataNarrator();
 let previousFaviconHref = null;
 let previousFaviconType = null;
 let previousFaviconRel = null;
@@ -42,8 +42,7 @@ const setBrowserTabIcon = () => {
     previousFaviconType = existingFavicon.getAttribute('type');
     previousFaviconRel = existingFavicon.getAttribute('rel');
     faviconElement = existingFavicon;
-  }
-  else {
+  } else {
     faviconElement = document.createElement('link');
     faviconElement.setAttribute('rel', 'icon');
     document.head.appendChild(faviconElement);
@@ -61,15 +60,13 @@ const restoreBrowserTabIcon = () => {
 
   if (previousFaviconHref) {
     faviconElement.setAttribute('href', previousFaviconHref);
-  }
-  else {
+  } else {
     faviconElement.removeAttribute('href');
   }
 
   if (previousFaviconType) {
     faviconElement.setAttribute('type', previousFaviconType);
-  }
-  else {
+  } else {
     faviconElement.removeAttribute('type');
   }
 
@@ -79,13 +76,11 @@ const restoreBrowserTabIcon = () => {
 };
 
 useLayers();
-disableFooter();
 disableMainMenu();
 disableSecondaryMenu();
 useDeepLink();
 onMounted(() => {
   setBrowserTabIcon();
-  disableFooter();
 });
 onUnmounted(restoreBrowserTabIcon);
 </script>
@@ -109,34 +104,39 @@ onUnmounted(restoreBrowserTabIcon);
 @import "./css/vuetify_fixes.scss";
 @import "./css/fixes.scss";
 @import "./css/globals.scss";
+
+#module-portal-footer {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
 #datanarrator-root {
-    pointer-events: none;
-    position: absolute;
-    top: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
 
-    #datanarrator-container {
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
+  #datanarrator-container {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 
-        display: grid;
-        grid-template-columns: 12rem auto 12rem;
+    display: grid;
+    grid-template-columns: 12rem auto 12rem;
 
-        position: relative;
+    position: relative;
 
-        &.mobile {
-            grid-template-columns: 0 auto 0 !important;
-        }
-
-        &.dashboard {
-            grid-template-columns: 12rem auto 12rem !important;
-        }
-
-        &.desktop {
-            grid-template-columns: 30rem auto 0 !important;
-            padding-left: 1rem !important;
-        }
+    &.mobile {
+      grid-template-columns: 0 auto 0 !important;
     }
+
+    &.dashboard {
+      grid-template-columns: 12rem auto 12rem !important;
+    }
+
+    &.desktop {
+      grid-template-columns: 30rem auto 0 !important;
+      padding-left: 1rem !important;
+    }
+  }
 }
 </style>
 

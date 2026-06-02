@@ -61,6 +61,16 @@ export function useSceneReset() {
       // Switch to 2D
       store.dispatch('Maps/changeMapMode', '2D');
 
+      // Reset 2D map rotation back to north AFTER the async mode switch has settled
+      setTimeout(() => {
+        try {
+          const map2d = mapCollection?.getMap('2D');
+          map2d?.getView?.()?.setRotation?.(0);
+        } catch {
+          // 2D map may not be available yet
+        }
+      }, 300);
+
       // Reset layers and GeoJSON
       removeAllVisibleLayers();
       clearGeoJSON();

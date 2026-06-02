@@ -37,14 +37,6 @@ export const useDataNarrator = () => {
     }
   };
 
-  const disableFooter = () => {
-    const footer = document.querySelector('#module-portal-footer');
-
-    if (footer) {
-      footer.style.cssText = 'display: none !important;';
-    }
-  };
-
   const moveTool = async () => {
     const toolWindows = document.querySelectorAll('#datanarrator-root .toolwindow-container .toolwindow');
 
@@ -77,7 +69,6 @@ export const useDataNarrator = () => {
 
     disableMainMenu,
     disableSecondaryMenu,
-    disableFooter,
     moveTool,
     gotoPage
   };

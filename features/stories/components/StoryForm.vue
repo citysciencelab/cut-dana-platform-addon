@@ -370,7 +370,22 @@ function handleDeleteStep({ chapterIdx, stepIdx }) {
     }
   }
 
-  chapter.steps.splice(stepIdx, 1);
+  const remainingSteps = chapter.steps.filter((_, i) => i !== stepIdx);
+
+  // Auto-delete the chapter if this was its last step
+  if (remainingSteps.length === 0) {
+    chaptersData.value = chaptersData.value.filter((_, i) => i !== chapterIdx);
+    chaptersData.value.forEach((ch, i) => (ch.sequence = i + 1));
+    newStepDraft.value = null;
+    resetToStoryForm();
+    reindexAllSteps();
+    return;
+  }
+
+  // Assign new array reference so vuedraggable detects the change
+  chapter.steps = remainingSteps;
+  // Reassign outer chapters array to also force outer Draggable to re-render
+  chaptersData.value = [ ...chaptersData.value ];
 
   if (isDeletingDraftStep) {
     newStepDraft.value = null;
@@ -450,7 +465,7 @@ function handleDeleteChapter({ chapterIdx }) {
   if (chapterIdx < 0 || chapterIdx >= chaptersData.value.length) return;
 
   const deletedChapter = chaptersData.value[chapterIdx];
-  chaptersData.value.splice(chapterIdx, 1);
+  chaptersData.value = chaptersData.value.filter((_, i) => i !== chapterIdx);
   chaptersData.value.forEach((ch, i) => (ch.sequence = i + 1));
   reindexAllSteps();
 

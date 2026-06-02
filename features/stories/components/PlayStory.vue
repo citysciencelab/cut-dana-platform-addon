@@ -648,6 +648,17 @@ watch(
 
     await store.dispatch('Maps/changeMapMode', step.is3D ? '3D' : '2D');
 
+    // When switching to a 2D step, reset the OL map rotation back to north (0°).
+    // A preceding 3D step may have left the 2D view rotated via Cesium/OL heading sync.
+    if (!step.is3D) {
+      try {
+        const map2d = mapCollection?.getMap('2D');
+        map2d?.getView?.()?.setRotation?.(0);
+      } catch {
+        // 2D map may not be ready
+      }
+    }
+
     if (step.is3D) {
       await waitFor3DSceneReady();
       const camera = step.navigation3D?.camera;

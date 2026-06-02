@@ -93,9 +93,20 @@ async function playStory() {
       </div>
     </div>
 
-    <v-card-text class="card-text">
-      {{ story.description }}
-    </v-card-text>
+    <v-tooltip
+      location="bottom"
+      :text="story.description"
+      max-width="320"
+    >
+      <template #activator="{ props: tooltipProps }">
+        <v-card-text
+          class="card-text"
+          v-bind="tooltipProps"
+        >
+          {{ story.description }}
+        </v-card-text>
+      </template>
+    </v-tooltip>
 
     <v-card-actions class="card-actions">
       <v-row>

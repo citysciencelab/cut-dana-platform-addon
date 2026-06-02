@@ -27,8 +27,8 @@ const displayConfirmText = computed(() => props.confirmText ?? t('additional:mod
 const displayCancelText = computed(() => props.cancelText ?? t('additional:modules.dataNarrator.dialog.confirmCancel'));
 
 function onConfirm() {
-  open.value = false;
   emit('confirm');
+  open.value = false;
 }
 
 function onCancel() {
