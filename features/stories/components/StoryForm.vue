@@ -483,6 +483,87 @@ function handleChaptersChange(newList) {
   reindexAllSteps();
 }
 
+/**
+ * Snapshots the current active step's 3D camera and model state into chaptersData.
+ * Must be called before building any save payload when the user may still be in step-edit mode.
+ */
+function snapshotCurrentStep3DState() {
+  if (!activeStep.value?.is3D) return;
+
+  const chapter = chaptersData.value[activeChapterIndex.value];
+  const step = chapter?.steps[activeStepIndex.value];
+  if (!step) return;
+
+  // Snapshot camera position
+  const map3d = mapCollection.getMap('3D');
+  const scene = map3d?.getCesiumScene();
+  if (scene) {
+    try {
+      const camera = scene.camera;
+      const cartographic = Cesium.Cartographic.fromCartesian(camera.position);
+      step.navigation3D = {
+        ...step.navigation3D,
+        camera: {
+          heading: camera.heading,
+          pitch: camera.pitch,
+          roll: camera.roll,
+          position: [
+            Cesium.Math.toDegrees(cartographic.longitude),
+            Cesium.Math.toDegrees(cartographic.latitude),
+            cartographic.height,
+          ],
+        },
+      };
+    } catch { /* 3D map may not be ready */ }
+  }
+
+  // Snapshot all currently loaded 3D models into step.models3D
+  const importedModelsList = store.getters['Modules/Modeler3D/importedModels'] ?? [];
+  const importedEntitiesList = store.getters['Modules/Modeler3D/importedEntities'] ?? [];
+  const existingStepModels3D = Array.isArray(step.models3D) ? [ ...step.models3D ] : [];
+  const stepPersistedEntityIds = new Set(existingStepModels3D.map(m => m.entityId).filter(Boolean));
+  const stepRuntimeModelIds = activeStepRuntimeModelIds.value;
+  const modelsForCurrentStep = importedModelsList.filter((model) => {
+    const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
+    return stepRuntimeModelIds.has(model.id) || stepPersistedEntityIds.has(persistedEntityId);
+  });
+
+  let dataSourceEntities = null;
+  try {
+    dataSourceEntities = mapCollection.getMap('3D')
+      ?.getDataSourceDisplay()
+      ?.defaultDataSource
+      ?.entities;
+  } catch { /* 3D map may not be ready */ }
+
+  step.models3D = modelsForCurrentStep.map(model => {
+    const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
+    const entityData = importedEntitiesList.find(e => e.entityId === model.id);
+    let position = null;
+    try {
+      const cesiumEntity = dataSourceEntities?.getById(model.id);
+      const rawPos = cesiumEntity?.position?.getValue();
+      if (rawPos) position = { x: rawPos.x, y: rawPos.y, z: rawPos.z };
+    } catch { /* ignore */ }
+
+    const existing = existingStepModels3D.find(m => m.entityId === persistedEntityId)
+      ?? existingStepModels3D.find(m => m.entityId === model.id);
+
+    const resolvedRotation = entityData?.rotation ?? model.heading ?? existing?.rotation ?? 0;
+    const resolvedScale = entityData?.scale ?? existing?.scale ?? 1;
+    return {
+      entityId: persistedEntityId,
+      fileUrl: existing?.fileUrl ?? '',
+      name: existing?.name ?? model.name,
+      show: model.show,
+      heading: resolvedRotation,
+      position,
+      scale: resolvedScale,
+      rotation: resolvedRotation,
+    };
+  });
+}
+
 function saveStep() {
   const errors = getStepErrors();
   if (errors.length) {
@@ -493,87 +574,7 @@ function saveStep() {
   clearValidation();
 
   if (activeStep.value?.is3D) {
-    const map3d = mapCollection.getMap('3D');
-    const scene = map3d?.getCesiumScene();
-
-    if (scene) {
-      const camera = scene.camera;
-      const cartographic = Cesium.Cartographic.fromCartesian(camera.position);
-
-      const chapter = chaptersData.value[activeChapterIndex.value];
-      const step = chapter?.steps[activeStepIndex.value];
-
-      if (step) {
-        step.navigation3D = {
-          ...step.navigation3D,
-          camera: {
-            heading: camera.heading,
-            pitch: camera.pitch,
-            roll: camera.roll,
-            position: [
-              Cesium.Math.toDegrees(cartographic.longitude),
-              Cesium.Math.toDegrees(cartographic.latitude),
-              cartographic.height,
-            ],
-          },
-        };
-      }
-    }
-
-    // Snapshot all currently loaded 3D models into step.models3D
-    const importedModelsList = store.getters['Modules/Modeler3D/importedModels'] ?? [];
-    const importedEntitiesList = store.getters['Modules/Modeler3D/importedEntities'] ?? [];
-    const chapter = chaptersData.value[activeChapterIndex.value];
-    const step = chapter?.steps[activeStepIndex.value];
-
-    if (step) {
-      const existingStepModels3D = Array.isArray(step.models3D) ? [ ...step.models3D ] : [];
-      const stepPersistedEntityIds = new Set(existingStepModels3D.map(m => m.entityId).filter(Boolean));
-      const stepRuntimeModelIds = activeStepRuntimeModelIds.value;
-      const modelsForCurrentStep = importedModelsList.filter((model) => {
-        const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
-        return stepRuntimeModelIds.has(model.id) || stepPersistedEntityIds.has(persistedEntityId);
-      });
-
-      let dataSourceEntities = null;
-      try {
-        dataSourceEntities = mapCollection.getMap('3D')
-          ?.getDataSourceDisplay()
-          ?.defaultDataSource
-          ?.entities;
-      } catch { /* 3D map may not be ready */
-      }
-
-      step.models3D = modelsForCurrentStep.map(model => {
-        const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
-        const entityData = importedEntitiesList.find(e => e.entityId === model.id);
-        let position = null;
-        try {
-          const cesiumEntity = dataSourceEntities?.getById(model.id);
-          const rawPos = cesiumEntity?.position?.getValue();
-          if (rawPos) position = { x: rawPos.x, y: rawPos.y, z: rawPos.z };
-        } catch { /* ignore */
-        }
-
-        // Preserve existing fileUrl if already uploaded
-        const existing = existingStepModels3D.find(m => m.entityId === persistedEntityId)
-          ?? existingStepModels3D.find(m => m.entityId === model.id);
-
-        const resolvedRotation = entityData?.rotation ?? model.heading ?? existing?.rotation ?? 0;
-        const resolvedScale = entityData?.scale ?? existing?.scale ?? 1;
-        return {
-          entityId: persistedEntityId,
-          fileUrl: existing?.fileUrl ?? '',
-          name: existing?.name ?? model.name,
-          show: model.show,
-          heading: resolvedRotation,
-          position,
-          scale: resolvedScale,
-          rotation: resolvedRotation,
-        };
-      });
-    }
-
+    snapshotCurrentStep3DState();
     resetScene();
   }
 
@@ -588,6 +589,13 @@ function saveStep() {
 }
 
 async function saveStoryData() {
+  // Snapshot current step's 3D models/camera before building the payload.
+  // This is needed when the user presses the main save button without explicitly
+  // clicking "step speichern" first.
+  if (isEditingStep.value) {
+    snapshotCurrentStep3DState();
+  }
+
   isSaving.value = true;
 
   const chaptersPayload = (chaptersData.value ?? []).map((chapter) => ({
@@ -880,6 +888,28 @@ async function loadModels3DForStep(step) {
     } catch (err) {
       logger.error('Failed to load 3D model for step edit:', err);
     }
+  }
+
+  // Restore saved camera perspective, same as PlayStory does on step enter.
+  const savedCamera = step.navigation3D?.camera;
+  if (savedCamera?.position) {
+    try {
+      const scene = mapCollection.getMap('3D')?.getCesiumScene();
+      if (scene?.camera) {
+        scene.camera.setView({
+          destination: Cesium.Cartesian3.fromDegrees(
+            savedCamera.position[0],
+            savedCamera.position[1],
+            savedCamera.position[2]
+          ),
+          orientation: {
+            heading: savedCamera.heading ?? 0,
+            pitch: savedCamera.pitch ?? -Cesium.Math.PI_OVER_TWO,
+            roll: savedCamera.roll ?? 0,
+          },
+        });
+      }
+    } catch { /* 3D map may not be ready */ }
   }
 }
 
