@@ -302,6 +302,7 @@ onMounted(() => {
         >
           <StepDescription
             ref="stepDescriptionRef"
+            :key="props.step.id"
             v-model:value="stepDescription"
             :error="stepDescriptionError"
           />

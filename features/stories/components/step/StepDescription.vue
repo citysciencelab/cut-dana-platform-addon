@@ -1,6 +1,6 @@
 <script setup>
 import { useTranslation } from 'i18next-vue';
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import { VueEditor } from 'vue3-editor';
 
 import * as constants from '../../../../store/contantsDataNarrator';
@@ -31,6 +31,7 @@ const inputValue = computed({
 });
 
 const editorRef = ref(null);
+const latestUploadRequestId = ref(0);
 
 defineExpose({
   focus() {
@@ -45,6 +46,15 @@ const { t } = useTranslation();
 function getQuill() {
   return editorRef.value?.quill ?? null;
 }
+
+function getSafeEditorIndex(quill, index = 0) {
+  const maxIndex = Math.max(quill.getLength() - 1, 0);
+  return Math.min(Math.max(index, 0), maxIndex);
+}
+
+onBeforeUnmount(() => {
+  latestUploadRequestId.value += 1;
+});
 
 /**
  * Uploads an image File to the backend file storage and returns the URL
@@ -74,6 +84,8 @@ async function uploadImageFile(file) {
 function handleImageUpload() {
   const quill = getQuill();
   if (!quill) return;
+  const range = quill.getSelection();
+  const insertIndex = getSafeEditorIndex(quill, range?.index ?? quill.getLength() - 1);
 
   const input = document.createElement('input');
   input.type = 'file';
@@ -83,19 +95,23 @@ function handleImageUpload() {
   input.onchange = async () => {
     const file = input.files?.[0];
     if (!file) return;
-
-    const range = quill.getSelection(true);
-    // Insert a temporary placeholder so the cursor doesn't jump
-    quill.insertText(range.index, t('additional:modules.dataNarrator.editor.uploadingImage'), { color: '#999' });
+    const uploadRequestId = ++latestUploadRequestId.value;
 
     try {
       const url = await uploadImageFile(file);
-      // Remove placeholder text and insert the image
-      quill.deleteText(range.index, t('additional:modules.dataNarrator.editor.uploadingImage').length);
-      quill.insertEmbed(range.index, 'image', url);
-      quill.setSelection(range.index + 1);
+      const activeQuill = getQuill();
+
+      if (!activeQuill || uploadRequestId !== latestUploadRequestId.value) {
+        return;
+      }
+
+      const safeIndex = getSafeEditorIndex(activeQuill, insertIndex);
+
+      // The file picker moves focus away from the editor. Clearing the native
+      // selection before mutating Quill avoids stale range updates.
+      activeQuill.setSelection(null, 'silent');
+      activeQuill.insertEmbed(safeIndex, 'image', url, 'api');
     } catch (err) {
-      quill.deleteText(range.index, t('additional:modules.dataNarrator.editor.uploadingImage').length);
       logger.error('Image upload failed:', err);
     }
   };
