@@ -514,7 +514,8 @@ function snapshotCurrentStep3DState() {
           ],
         },
       };
-    } catch { /* 3D map may not be ready */ }
+    } catch { /* 3D map may not be ready */
+    }
   }
 
   // Snapshot all currently loaded 3D models into step.models3D
@@ -534,7 +535,8 @@ function snapshotCurrentStep3DState() {
       ?.getDataSourceDisplay()
       ?.defaultDataSource
       ?.entities;
-  } catch { /* 3D map may not be ready */ }
+  } catch { /* 3D map may not be ready */
+  }
 
   step.models3D = modelsForCurrentStep.map(model => {
     const persistedEntityId = persistedEntityIds.get(model.id) ?? model.id;
@@ -544,7 +546,8 @@ function snapshotCurrentStep3DState() {
       const cesiumEntity = dataSourceEntities?.getById(model.id);
       const rawPos = cesiumEntity?.position?.getValue();
       if (rawPos) position = { x: rawPos.x, y: rawPos.y, z: rawPos.z };
-    } catch { /* ignore */ }
+    } catch { /* ignore */
+    }
 
     const existing = existingStepModels3D.find(m => m.entityId === persistedEntityId)
       ?? existingStepModels3D.find(m => m.entityId === model.id);
@@ -918,7 +921,8 @@ async function loadModels3DForStep(step) {
           },
         });
       }
-    } catch { /* 3D map may not be ready */ }
+    } catch { /* 3D map may not be ready */
+    }
   }
 }
 
@@ -1525,6 +1529,7 @@ watch([ activeStepIndex, previewVisible ], () => {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  max-height: 840px;
 
   &.mobile {
     background-color: transparent;
