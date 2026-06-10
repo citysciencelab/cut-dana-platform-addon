@@ -635,7 +635,7 @@ watch(
 
     const step = story.value.chapters[chapterIndex.value].steps[stepIndex.value];
     if (!step) return;
-    const bgId = step.backgroundMapId || defaultBaseLayerId;
+    const bgId = step.mapConfig?.backgroundMapId || step.backgroundMapId || defaultBaseLayerId;
 
     // Keep a base layer selected before the 2D/3D switch to avoid blank frames.
     setBaseLayer(bgId);
