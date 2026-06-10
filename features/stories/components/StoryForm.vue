@@ -564,7 +564,7 @@ function snapshotCurrentStep3DState() {
   });
 }
 
-function saveStep() {
+async function saveStep() {
   const errors = getStepErrors();
   if (errors.length) {
     validationErrors.value = errors;
@@ -573,8 +573,17 @@ function saveStep() {
   }
   clearValidation();
 
-  if (activeStep.value?.is3D) {
-    snapshotCurrentStep3DState();
+  const was3D = activeStep.value?.is3D;
+
+  try {
+    // Save the story data to persist the step and upload 3D models
+    await saveStoryData();
+  } catch (err) {
+    logger.error('Failed to save step', err);
+    return;
+  }
+
+  if (was3D) {
     resetScene();
   }
 
