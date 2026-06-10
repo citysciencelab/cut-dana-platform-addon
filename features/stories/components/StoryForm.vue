@@ -635,7 +635,7 @@ async function saveStoryData() {
     chapters: chaptersPayload
   };
 
-  let storyId = props.storyId;
+  let storyId = currentStoryId.value || props.storyId;
   let createdStory = payload;
 
   if (storyId) {
@@ -734,6 +734,7 @@ async function save() {
   await saveStoryData();
   removeAllVisibleLayers();
   clearGeoJSON();
+  store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', store.state.Modules.DataNarrator.DashboardStore.mode);
   gotoPage(dataNarratorModes.DASHBOARD);
 }
 
@@ -772,6 +773,7 @@ async function publish() {
   }
   removeAllVisibleLayers();
   clearGeoJSON();
+  store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', store.state.Modules.DataNarrator.DashboardStore.mode);
   gotoPage(dataNarratorModes.DASHBOARD);
 }
 
