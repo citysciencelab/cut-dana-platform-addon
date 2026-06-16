@@ -27,8 +27,10 @@ function createGeoJSONLayer() {
     style
   });
   layer.set('name', 'data-narrator-geojson');
+  layer.set('id', 'data-narrator-geojson');
+  layer.set('gfiAttributes', 'showAll');
   return layer;
-};
+}
 
 export function getGeoJSONLayer() {
   //TODO: add support for 3D map
@@ -66,10 +68,10 @@ export function addGeoJSON(geoJSONAssets) {
     transparency = asset.transparency ?? transparency;
   });
   updateGeoJSONZIndex();
-  const opacity = 1 - (transparency/100);
+  const opacity = 1 - (transparency / 100);
   layer.setOpacity(opacity);
   layer.changed();
-};
+}
 
 export function updateGeoJSONZIndex() {
   const layer = getGeoJSONLayer();
