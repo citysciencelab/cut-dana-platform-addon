@@ -152,14 +152,14 @@ const getColor = (idx) => {
               size="compact"
               title="Drag"
             />
-            <div class="step-content d-flex flex-row align-center rounded-xl ml-2 p-2 flex-1-0">
+            <div class="step-content d-flex flex-row align-center rounded-xl ml-2 p-2">
               <span
                 class="chapter-label"
                 :style="{ backgroundColor: getColor(idx).primary }"
               >
                 {{ numberToLetter(idx + 1) }}
               </span>
-              <span class="bold ml-2">
+              <span class="bold ml-2 step-title-truncated">
                 {{ chapter.title }}
               </span>
               <div class="step-content-action ml-auto d-flex flex-row align-center ga-1">
@@ -210,7 +210,7 @@ const getColor = (idx) => {
                   size="compact"
                   title="Drag"
                 />
-                <div class="step-content bg-white d-flex flex-row align-center rounded-xl ml-2 p-2 flex-1-0">
+                <div class="step-content bg-white d-flex flex-row align-center rounded-xl ml-2 p-2">
                   <span class="pl-2 mr-2 flex-shrink-0">{{ step.id }}</span>
                   <v-tooltip
                     location="top"
@@ -338,8 +338,11 @@ const getColor = (idx) => {
 
   .step-content {
       overflow: hidden;
+      flex: 1 1 0;       /* grow to fill row, shrink when needed, no intrinsic base width */
+      min-width: 0;      /* allow flex item to shrink below content min-width */
       &-action {
           display: none !important;
+          flex-shrink: 0; /* action icons must never compress */
       }
 
       &:hover {
