@@ -14,6 +14,7 @@ import { useStore } from 'vuex';
 
 import { useNavigation } from '../../../hooks/useNavigation';
 import { useSceneReset } from '../../../hooks/useSceneReset';
+import { useWmsTimeVisibility } from '../../../hooks/useWmsTimeVisibility';
 import AddWMS from '../../../tools/addWms/components/AddWMS.vue';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
 import { toRuntimeWmsConfig, toStoredWmsRef } from '../../../utils/wmsUtils';
@@ -48,6 +49,7 @@ const emit = defineEmits([ 'update:step', 'open3D', 'open3DLayers', 'openLayers'
 const { t } = useTranslation();
 const { setAnimatedView, setBaseLayer, setInformationLayers } = useNavigation();
 const { resetScene } = useSceneReset();
+const { setWmsTimeHidden, refreshWmsTimeVisibility } = useWmsTimeVisibility();
 const store = useStore();
 
 const transparencyDialog = ref(false);
@@ -159,6 +161,13 @@ const is3D = computed({
 const mapSources = computed({
   get: () => props.step.mapSources
 });
+const hasVisibleBooleanTimeLayer = computed(() =>
+  (store.getters.visibleLayerConfigs ?? []).some((layer) => layer?.time === true)
+);
+
+watch(hasVisibleBooleanTimeLayer, (hasBooleanTimeLayer) => {
+  setWmsTimeHidden(hasBooleanTimeLayer);
+}, { immediate: true });
 
 watch(
   () => props.step.is3D,
@@ -185,7 +194,10 @@ const focusAppropriateField = async () => {
   }
 };
 
-onMounted(focusAppropriateField);
+onMounted(() => {
+  focusAppropriateField();
+  refreshWmsTimeVisibility();
+});
 
 watch(
   () => props.step?.id,

@@ -9,6 +9,7 @@ import { useDataNarrator } from '../../../hooks/useDataNarrator';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { useNavigation } from '../../../hooks/useNavigation';
 import { useSceneReset } from '../../../hooks/useSceneReset';
+import { useWmsTimeVisibility } from '../../../hooks/useWmsTimeVisibility';
 import { backendUrl, dataNarratorModes } from '../../../store/contantsDataNarrator';
 import { addGeoJSON, clearGeoJSON } from '../../../utils/geoJSON';
 import { getFileUrl } from '../../../utils/getFileUrl';
@@ -42,6 +43,7 @@ const {
   removeAllVisibleLayers
 } = useNavigation();
 const store = useStore();
+const { setWmsTimeHidden, refreshWmsTimeVisibility } = useWmsTimeVisibility();
 const { userId, isAdmin, checkLoggedIn } = useLogin();
 
 const story = ref(null);
@@ -64,6 +66,9 @@ const closeConfirmation = ref(false);
 const autoplayPausedByUser = ref(false);
 const autoplayTimer = ref(null);
 const wmsUnavailable = ref(false);
+const hasVisibleBooleanTimeLayer = computed(() =>
+  (store.getters.visibleLayerConfigs ?? []).some((layer) => layer?.time === true)
+);
 
 const totalSteps = computed(() => {
   if (!story.value) return 0;
@@ -752,6 +757,9 @@ watch(isPreviewMode, (previewEnabled) => {
 watch(storyHasAutoplay, (enabled) => {
   autoplayPausedByUser.value = !enabled;
 }, { immediate: true });
+watch(hasVisibleBooleanTimeLayer, (hasBooleanTimeLayer) => {
+  setWmsTimeHidden(hasBooleanTimeLayer);
+}, { immediate: true });
 
 function backToEdit() {
   store.commit('Modules/DataNarrator/setIsPreviewMode', false);
@@ -891,6 +899,7 @@ function onScrollytellingStepEnter({ index }) {
 
 onMounted(() => {
   checkLoggedIn();
+  refreshWmsTimeVisibility();
 });
 
 onBeforeUnmount(() => {

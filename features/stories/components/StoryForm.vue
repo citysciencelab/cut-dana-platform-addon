@@ -129,6 +129,7 @@ const hideBackButtonInput = ref(false);
 const advancedOptionsOpen = ref(false);
 const loaded3DStepSignature = ref('');
 const activeStepRuntimeModelIds = ref(new Set());
+const cameraRestoredForCurrentStep = ref(false);
 const storyOverviewRef = ref(null);
 
 let nextChapterId = 1;
@@ -494,27 +495,32 @@ function snapshotCurrentStep3DState() {
   const step = chapter?.steps[activeStepIndex.value];
   if (!step) return;
 
-  // Snapshot camera position
-  const map3d = mapCollection.getMap('3D');
-  const scene = map3d?.getCesiumScene();
-  if (scene) {
-    try {
-      const camera = scene.camera;
-      const cartographic = Cesium.Cartographic.fromCartesian(camera.position);
-      step.navigation3D = {
-        ...step.navigation3D,
-        camera: {
-          heading: camera.heading,
-          pitch: camera.pitch,
-          roll: camera.roll,
-          position: [
-            Cesium.Math.toDegrees(cartographic.longitude),
-            Cesium.Math.toDegrees(cartographic.latitude),
-            cartographic.height,
-          ],
-        },
-      };
-    } catch { /* 3D map may not be ready */
+  // Only snapshot the camera when it was successfully restored for this edit session.
+  // If restoration failed (e.g. 3D map not ready), the scene camera may be at an
+  // unrelated position — preserve the previously saved camera instead.
+  const hasSavedCamera = !!step.navigation3D?.camera;
+  if (!hasSavedCamera || cameraRestoredForCurrentStep.value) {
+    const map3d = mapCollection.getMap('3D');
+    const scene = map3d?.getCesiumScene();
+    if (scene) {
+      try {
+        const camera = scene.camera;
+        const cartographic = Cesium.Cartographic.fromCartesian(camera.position);
+        step.navigation3D = {
+          ...step.navigation3D,
+          camera: {
+            heading: camera.heading,
+            pitch: camera.pitch,
+            roll: camera.roll,
+            position: [
+              Cesium.Math.toDegrees(cartographic.longitude),
+              Cesium.Math.toDegrees(cartographic.latitude),
+              cartographic.height,
+            ],
+          },
+        };
+      } catch { /* 3D map may not be ready */
+      }
     }
   }
 
@@ -819,7 +825,10 @@ async function loadModels3DForStep(step) {
   activeStepRuntimeModelIds.value = new Set();
 
   const models = step.models3D ?? [];
-  if (!models.length) return;
+  if (!models.length) {
+    restoreCameraForStep(step);
+    return;
+  }
 
   for (const model3D of models) {
     if (!model3D.fileUrl) continue;
@@ -904,27 +913,35 @@ async function loadModels3DForStep(step) {
     }
   }
 
+  restoreCameraForStep(step);
+}
+
+function restoreCameraForStep(step) {
   // Restore saved camera perspective, same as PlayStory does on step enter.
   const savedCamera = step.navigation3D?.camera;
-  if (savedCamera?.position) {
-    try {
-      const scene = mapCollection.getMap('3D')?.getCesiumScene();
-      if (scene?.camera) {
-        scene.camera.setView({
-          destination: Cesium.Cartesian3.fromDegrees(
-            savedCamera.position[0],
-            savedCamera.position[1],
-            savedCamera.position[2]
-          ),
-          orientation: {
-            heading: savedCamera.heading ?? 0,
-            pitch: savedCamera.pitch ?? -Cesium.Math.PI_OVER_TWO,
-            roll: savedCamera.roll ?? 0,
-          },
-        });
-      }
-    } catch { /* 3D map may not be ready */
+  if (!savedCamera?.position) {
+    // No saved camera — mark as restored so the scene camera can be freely snapshotted
+    cameraRestoredForCurrentStep.value = true;
+    return;
+  }
+  try {
+    const scene = mapCollection.getMap('3D')?.getCesiumScene();
+    if (scene?.camera) {
+      scene.camera.setView({
+        destination: Cesium.Cartesian3.fromDegrees(
+          savedCamera.position[0],
+          savedCamera.position[1],
+          savedCamera.position[2]
+        ),
+        orientation: {
+          heading: savedCamera.heading ?? 0,
+          pitch: savedCamera.pitch ?? -Cesium.Math.PI_OVER_TWO,
+          roll: savedCamera.roll ?? 0,
+        },
+      });
+      cameraRestoredForCurrentStep.value = true;
     }
+  } catch { /* 3D map may not be ready */
   }
 }
 
@@ -993,6 +1010,7 @@ function updateActiveStepGeoJsonAssets(val) {
 
 watch(activeStepIndex, () => {
   activePanel.value = null;
+  cameraRestoredForCurrentStep.value = false;
 });
 
 // Load saved 3D models as soon as user enters a 3D step in edit mode.
