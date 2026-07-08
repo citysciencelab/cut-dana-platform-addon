@@ -585,7 +585,8 @@ async function load3DModel(step) {
               entity.show = model3D.show !== false;
             });
           }
-        } catch { /* ignore */
+        } catch {
+          // ignore DOM inspection errors and fall back to normal behavior
         }
 
         const importedEntities = [ ...(store.getters['Modules/Modeler3D/importedEntities'] ?? []) ];
@@ -1000,7 +1001,7 @@ function onKeyDownHandler(e) {
         return;
       }
     }
-  } catch (err) {
+  } catch {
     // ignore DOM inspection errors and fall back to normal behavior
   }
 

@@ -201,17 +201,6 @@ function toggleSelectAllInCurrentSub() {
   }
 }
 
-function selectAllInSubExplicit(sub) {
-  const layers = (sub?.layers ?? []) || [];
-  if (!layers.length) return;
-  emit('select:layers', layers);
-}
-
-function deselectAllInSubExplicit(sub) {
-  const layers = (sub?.layers ?? []) || [];
-  if (!layers.length) return;
-  emit('deselect:layers', layers);
-}
 
 </script>
 

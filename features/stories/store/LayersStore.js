@@ -1,6 +1,7 @@
-import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../src/shared/js/utils/generators';
+import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../ src/shared/js/utils/generators';
 
 import { createLogger } from '../../../utils/logger';
+
 const logger = createLogger('LayerStore');
 
 const TYPES_3D = new Set([ 'ENTITIES3D', 'TERRAIN3D', 'TILESET3D' ]);
@@ -51,10 +52,10 @@ export const actions = {
       const normSub = v => (String(v ?? '').trim() || 'ohne Subkategorie');
 
       const wmsServices = allServices.filter(s => {
-              const typ = String(s?.typ || '').toUpperCase();
-              // include WMS and SensorThings services so sensor/traffic layers appear in the category browser
-              return typ === 'WMS' || typ === 'SENSORTHINGS';
-            });
+        const typ = String(s?.typ || '').toUpperCase();
+        // include WMS and SensorThings services so sensor/traffic layers appear in the category browser
+        return typ === 'WMS' || typ === 'SENSORTHINGS';
+      });
 
       const catMap = new Map();
 
