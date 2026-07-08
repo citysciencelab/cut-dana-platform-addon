@@ -7,12 +7,12 @@ import { computed, ref, watch } from 'vue';
 const props = defineProps({
   items: { type: Array, required: false, default: () => [] },
   loading: { type: Boolean, default: false },
-  selectedIds: { type: Array, default: () => [] },
+  selectedIds: { type: Array, default: () => [] }
 });
 
 const { t } = useTranslation();
 
-const emit = defineEmits([ 'select:layer', 'deselect:layer' ]);
+const emit = defineEmits([ 'select:layer', 'deselect:layer', 'select:layers', 'deselect:layers' ]);
 
 const stack = ref([]);
 const searchQuery = ref();
@@ -66,6 +66,46 @@ const currentCategory = computed(() => {
   return null;
 });
 
+const currentSubcategoryLayers = computed(() => currentSubcategory.value?.layers ?? []);
+
+// layers inside the current category (flattened)
+const currentCategoryLayers = computed(() => {
+  const cat = currentCategory.value;
+  if (!cat) return [];
+  return (cat.subcategories ?? []).flatMap(s => s.layers ?? []).slice().sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+});
+
+const allSelectedInSub = computed(() => {
+  const layers = level.value === 'subcategory' ? currentSubcategoryLayers.value : (level.value === 'category' ? currentCategoryLayers.value : []);
+  if (!layers.length) return false;
+  return layers.every(l => isSelected(l.id));
+});
+
+const someSelectedInSub = computed(() => {
+  const layers = level.value === 'subcategory' ? currentSubcategoryLayers.value : (level.value === 'category' ? currentCategoryLayers.value : []);
+  if (!layers.length) return false;
+  return layers.some(l => isSelected(l.id)) && !allSelectedInSub.value;
+});
+
+const showSelectAll = computed(() => {
+  // Never show on root level
+  if (level.value === 'root') return false;
+
+  // Subcategory view: always show if there are layers (only layers are shown here, no subfolders)
+  if (level.value === 'subcategory') {
+    return currentSubcategoryLayers.value.length > 0;
+  }
+
+  // Category view: show only when there are no folders (all subcategories have ≤1 layer)
+  if (level.value === 'category') {
+    const subs = currentCategory.value?.subcategories ?? [];
+    const hasFolders = subs.some(s => (s.layers?.length ?? 0) > 1);
+    return !hasFolders && currentCategoryLayers.value.length > 0;
+  }
+
+  return false;
+});
+
 const currentSubcategory = computed(() => {
   if (hasSearchResultLayers.value) {
     return null;
@@ -83,12 +123,29 @@ const rows = computed(() => {
 
   if (level.value === 'category') {
     const cat = currentCategory.value;
-    return (cat?.subcategories ?? []).map((sub) => ({ type: 'subcategory', cat, sub }));
+    const subs = cat?.subcategories ?? [];
+    // folders: subcategories with more than one layer, sorted by subcategory name
+    const folders = subs
+      .filter(s => (s.layers?.length ?? 0) > 1)
+      .slice()
+      .sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
+      .map((sub) => ({ type: 'subcategory', cat, sub }));
+
+    // single layers: subcategories with exactly one layer -> show the single layer at the end, sorted by layer name
+    const singles = subs
+      .filter(s => (s.layers?.length ?? 0) === 1)
+      .map(s => ({ type: 'layer', cat, sub: s, layer: s.layers[0] }))
+      .slice()
+      .sort((a, b) => (a.layer?.name ?? '').localeCompare(b.layer?.name ?? ''));
+
+    return [ ...folders, ...singles ];
   }
 
   const cat = currentCategory.value;
   const sub = currentSubcategory.value;
-  return (sub?.layers ?? []).map((layer) => ({ type: 'layer', cat, sub, layer }));
+  // ensure layers are alphabetically sorted in subcategory view
+  const sortedLayers = (sub?.layers ?? []).slice().sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+  return sortedLayers.map((layer) => ({ type: 'layer', cat, sub, layer }));
 });
 
 function enterCategory(cat) {
@@ -123,6 +180,37 @@ function onLayerClick(layer) {
   } else {
     emit('select:layer', layer);
   }
+}
+
+function toggleSelectAllInCurrentSub() {
+  let layers = [];
+  if (level.value === 'subcategory') {
+    layers = currentSubcategoryLayers.value;
+  } else if (level.value === 'category') {
+    // when category view shows only single layers (no folders), allow selecting all of them
+    layers = currentCategoryLayers.value;
+  }
+
+  if (!layers.length) return;
+  if (allSelectedInSub.value) {
+    // deselect all (batch)
+    emit('deselect:layers', layers);
+  } else {
+    // select all (batch)
+    emit('select:layers', layers);
+  }
+}
+
+function selectAllInSubExplicit(sub) {
+  const layers = (sub?.layers ?? []) || [];
+  if (!layers.length) return;
+  emit('select:layers', layers);
+}
+
+function deselectAllInSubExplicit(sub) {
+  const layers = (sub?.layers ?? []) || [];
+  if (!layers.length) return;
+  emit('deselect:layers', layers);
 }
 
 </script>
@@ -211,6 +299,26 @@ function onLayerClick(layer) {
         </button>
       </template>
       <template v-else>
+        <!-- Show select-all at top of subcategory view when configured -->
+        <div
+          v-if="showSelectAll"
+          class="select-all-row"
+        >
+          <v-checkbox-btn
+            :model-value="allSelectedInSub"
+            :indeterminate="someSelectedInSub"
+            density="compact"
+            hide-details
+            @click.stop="toggleSelectAllInCurrentSub"
+          />
+          <button
+            class="select-all-label"
+            @click.stop="toggleSelectAllInCurrentSub"
+          >
+            {{ t('additional:modules.dataNarrator.categoryBrowser.selectAll') }}
+          </button>
+        </div>
+
         <button
           v-for="(row, i) in rows"
           :key="i"
@@ -315,6 +423,28 @@ function onLayerClick(layer) {
 
   .panel {
     width: 100%;
+
+    .select-all-row {
+      display: flex;
+      grid-template-columns: 28px 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 2px 0;
+      margin-bottom: 4px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .select-all-label {
+      background: transparent;
+      border: 0;
+      color: #2f84ff;
+      cursor: pointer;
+      font-weight: 600;
+      text-align: left;
+      font-size: 0.875rem;
+      line-height: 1.4;
+      padding: 0;
+    }
 
     .panel-row {
       width: 100%;

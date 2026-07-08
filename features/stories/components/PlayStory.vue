@@ -1,5 +1,12 @@
 ﻿<script setup>
-import { mdiChevronLeft, mdiChevronRight, mdiClose, mdiLock, mdiPauseCircleOutline, mdiPlayCircleOutline } from '@mdi/js';
+import {
+  mdiChevronLeft,
+  mdiChevronRight,
+  mdiClose,
+  mdiPauseCircleOutline,
+  mdiPencilOutline,
+  mdiPlayCircleOutline
+} from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 import scrollama from 'scrollama';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
@@ -46,7 +53,20 @@ const store = useStore();
 const { setWmsTimeHidden, refreshWmsTimeVisibility } = useWmsTimeVisibility();
 const { userId, isAdmin, checkLoggedIn } = useLogin();
 
+const canEditStory = computed(() => {
+  if (!story.value) return false;
+  const ownerMatch = userId.value && String(userId.value) === String(story.value.owner);
+  return Boolean(ownerMatch || isAdmin.value);
+});
+
 const story = ref(null);
+const overviewSelectedIndex = ref(0);
+const chapterElements = ref([]);
+
+function setChapterElement(element, index) {
+  chapterElements.value[index] = element ?? null;
+}
+
 const isLoading = ref(true);
 const accessDenied = ref(false);
 const accessDeniedCountdown = ref(10);
@@ -767,6 +787,41 @@ function backToEdit() {
   gotoPage(dataNarratorModes.EDIT_STORY);
 }
 
+function editCurrentStep() {
+  if (!story.value) return;
+  // Prepare step data and commit to EditStepForm so the editor opens on the right step
+  const chapter = story.value.chapters?.[chapterIndex.value];
+  const step = chapter?.steps?.[stepIndex.value];
+  if (!chapter || !step) return;
+
+  const stepData = {
+    stepNumber: stepIndex.value + 1,
+    stepChapterId: chapter.id,
+    stepWidth: story.value.playerWidth ?? 0,
+    stepVisible: true,
+    stepTitle: step.title ?? '',
+    stepDescription: getStepHtml(step),
+    stepCenterCoordinates: step.centerCoordinate ?? [],
+    stepZoomLevel: step.zoomLevel ?? 0,
+    stepInteractionAddons: step.interactionAddons ?? [],
+    stepIs3d: !!step.is3D,
+    stepNavigation3dId: step.navigation3D?.id ?? 0,
+    stepBackgroundMapId: step.mapConfig?.backgroundMapId || step.backgroundMapId || 0,
+  };
+
+  store.commit('Modules/DataNarrator/EditStepForm/setStepData', stepData);
+  store.commit('Modules/DataNarrator/EditStoryForm/setSelectedStoryId', story.value.id);
+  store.commit('Modules/DataNarrator/setIsPreviewMode', false);
+  gotoPage(dataNarratorModes.EDIT_STORY);
+}
+
+function editStoryOverview() {
+  if (!story.value) return;
+  store.commit('Modules/DataNarrator/EditStoryForm/setSelectedStoryId', story.value.id);
+  store.commit('Modules/DataNarrator/setIsPreviewMode', false);
+  gotoPage(dataNarratorModes.EDIT_STORY);
+}
+
 function backToDashboard() {
   resetScene();
   gotoPage(dataNarratorModes.DASHBOARD);
@@ -897,12 +952,95 @@ function onScrollytellingStepEnter({ index }) {
   setActiveStepByFlatIndex(index);
 }
 
+function onKeyDownHandler(e) {
+  // Don't intercept keys when user is typing in an input/textarea or contenteditable
+  const active = document.activeElement;
+  if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
+
+  // PLAY stage navigation
+  if (stage.value === 'play') {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      next();
+      return;
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      back();
+      return;
+    }
+  }
+
+  // If overview START button is visible and no chapter list item has focus, allow ArrowRight/Down to start the story
+  try {
+    const startButtonVisible = canLeaveStory.value && canLeaveStory.value === true;
+    const activeEl = document.activeElement;
+    const activeIsInChapterList = activeEl && typeof activeEl.closest === 'function' && activeEl.closest('.chapter-list');
+
+    // When Start is visible and nothing in the chapter list is focused:
+    // ArrowRight/ArrowDown -> start at first step, ArrowLeft/ArrowUp -> start at last step.
+    if (stage.value === 'overview' && startButtonVisible && !activeIsInChapterList) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if ((flattenedStorySteps.value ?? []).length > 0) {
+          setActiveStepByFlatIndex(0, { scroll: true, scrollBehavior: 'auto' });
+        } else {
+          startPlay();
+        }
+        return;
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const last = (flattenedStorySteps.value ?? []).length - 1;
+        if (last >= 0) {
+          setActiveStepByFlatIndex(last, { scroll: true, scrollBehavior: 'auto' });
+        } else {
+          // fallback to startPlay if no flattened steps available
+          startPlay();
+        }
+        return;
+      }
+    }
+  } catch (err) {
+    // ignore DOM inspection errors and fall back to normal behavior
+  }
+
+  // OVERVIEW navigation (chapter list)
+  if (stage.value === 'overview' && story.value && Array.isArray(story.value.chapters) && story.value.chapters.length > 0) {
+    const len = story.value.chapters.length;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      overviewSelectedIndex.value = Math.min(len - 1, overviewSelectedIndex.value + 1);
+      focusOverviewElement(overviewSelectedIndex.value);
+      return;
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      overviewSelectedIndex.value = Math.max(0, overviewSelectedIndex.value - 1);
+      focusOverviewElement(overviewSelectedIndex.value);
+      return;
+    }
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      startFromChapter(overviewSelectedIndex.value);
+    }
+  }
+}
+
+function focusOverviewElement(index) {
+  nextTick(() => {
+    const el = chapterElements.value[index];
+    if (el && typeof el.focus === 'function') el.focus();
+  });
+}
+
 onMounted(() => {
   checkLoggedIn();
   refreshWmsTimeVisibility();
+  window.addEventListener('keydown', onKeyDownHandler);
 });
 
 onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeyDownHandler);
   clearAutoplayTimer();
   clearInterval(accessDeniedTimer.value);
   destroyScroller();
@@ -963,14 +1101,24 @@ onBeforeUnmount(() => {
           <div v-else>
             <div v-if="stage === 'overview'">
               <div class="story-overview-step px-2 pb-4">
-                <v-btn
-                  v-if="canLeaveStory"
-                  :icon="mdiClose"
-                  variant="flat"
-                  size="small"
-                  class="story-play-close"
-                  @click="closeConfirmation = true"
-                />
+                <div class="overview-actions">
+                  <v-btn
+                    v-if="canEditStory && stage === 'overview'"
+                    :icon="mdiPencilOutline"
+                    variant="flat"
+                    size="small"
+                    class="story-play-edit"
+                    @click="editStoryOverview"
+                  />
+                  <v-btn
+                    v-if="canLeaveStory"
+                    :icon="mdiClose"
+                    variant="flat"
+                    size="small"
+                    class="story-play-close"
+                    @click="closeConfirmation = true"
+                  />
+                </div>
 
                 <div
                   v-if="story.titleImage"
@@ -988,7 +1136,9 @@ onBeforeUnmount(() => {
                   <li
                     v-for="(chapter, index) in story.chapters"
                     :key="chapter.id"
+                    :ref="(el) => setChapterElement(el, index)"
                     class="chapter"
+                    tabindex="0"
                     @click="startFromChapter(index)"
                   >
                     <div class="chapter-label">
@@ -1032,6 +1182,14 @@ onBeforeUnmount(() => {
                           </span>
                         </div>
                         <v-btn
+                          v-if="canEditStory && stage === 'play'"
+                          class="scrolly-edit-btn story-play-edit"
+                          :icon="mdiPencilOutline"
+                          variant="flat"
+                          size="small"
+                          @click.stop="editCurrentStep"
+                        />
+                        <v-btn
                           v-if="canLeaveStory"
                           class="scrolly-close-btn"
                           :icon="mdiClose"
@@ -1061,6 +1219,14 @@ onBeforeUnmount(() => {
                       size="small"
                       class="story-play-action-btn"
                       @click="autoplayPausedByUser = !autoplayPausedByUser"
+                    />
+                    <v-btn
+                      v-if="canEditStory && stage === 'play'"
+                      :icon="mdiPencilOutline"
+                      variant="flat"
+                      size="small"
+                      class="story-play-action-btn story-play-edit"
+                      @click.stop="editCurrentStep"
                     />
                     <v-btn
                       v-if="canLeaveStory"
@@ -1163,6 +1329,32 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss" scoped>
+.player-content .story-play-edit,
+.player-content .scrolly-edit-btn,
+.player-content .story-play-action-btn.story-play-edit,
+.overview-actions .story-play-edit {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-in-out;
+}
+
+.player-content:hover .story-play-edit,
+.player-content:hover .scrolly-edit-btn,
+.player-content:hover .story-play-action-btn.story-play-edit,
+.player-content:hover .overview-actions .story-play-edit {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ensure edit button is visually inline with close button */
+.story-play-edit {
+  margin-right: 6px;
+}
+
+.scrolly-edit-btn {
+  margin-right: 6px;
+}
+
 .access-denied {
   display: flex;
   flex-direction: column;
@@ -1197,6 +1389,21 @@ onBeforeUnmount(() => {
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 5px;
+}
+
+.story-overview-step {
+  position: relative;
+}
+
+.overview-actions {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  z-index: 20;
 }
 
 .story-title {
@@ -1328,14 +1535,8 @@ onBeforeUnmount(() => {
   position: relative;
 }
 
-.story-overview-step {
-  position: relative;
-}
-
 .story-play-close {
-  position: absolute;
-  top: 2px;
-  right: 2px;
+  /* positioned via .story-play-actions or .overview-actions parent */
 }
 
 .story-play-actions {

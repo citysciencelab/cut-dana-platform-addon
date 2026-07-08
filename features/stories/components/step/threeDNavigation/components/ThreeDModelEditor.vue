@@ -18,14 +18,14 @@ const height = computed(() => store.getters['Modules/Modeler3D/height']);
 const adaptToHeight = computed(() => store.getters['Modules/Modeler3D/adaptToHeight']);
 
 // Local display values — updated on input, committed on apply
-const scaleDisplay = ref((scale.value ?? 1).toFixed(1));
+const scaleDisplay = ref((scale.value ?? 1).toFixed(2));
 const rotationDisplay = ref(String(rotation.value ?? 0));
 const eastingDisplay = ref(String(coordinateEasting.value ?? 0));
 const northingDisplay = ref(String(coordinateNorthing.value ?? 0));
 const heightDisplay = ref(String(height.value ?? 0));
 
 watch(scale, (v) => {
-  scaleDisplay.value = (v ?? 1).toFixed(1);
+  scaleDisplay.value = (v ?? 1).toFixed(2);
 });
 watch(rotation, (v) => {
   rotationDisplay.value = String(v ?? 0);
@@ -50,8 +50,9 @@ function updateImportedEntity(type, value) {
 
 function applyScale() {
   let v = parseFloat(scaleDisplay.value);
-  if (isNaN(v) || v < 0.1) v = 0.1;
-  scaleDisplay.value = v.toFixed(1);
+  if (isNaN(v) || v < 0.01) v = 0.01;
+  v = Math.round(v * 100) / 100;
+  scaleDisplay.value = v.toFixed(2);
   store.commit('Modules/Modeler3D/setScale', v);
   const entities = mapCollection.getMap('3D').getDataSourceDisplay().defaultDataSource.entities;
   const entity = entities.getById(currentModelId.value);
@@ -193,8 +194,8 @@ function onHeightChange(e) {
             <input
               v-model="scaleDisplay"
               type="number"
-              step="0.1"
-              min="0.1"
+              step="0.01"
+              min="0.01"
               class="compact-input"
               @blur="applyScale"
               @keydown.enter.prevent="applyScale"

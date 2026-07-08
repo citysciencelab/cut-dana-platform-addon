@@ -114,6 +114,7 @@
       },
       "categoryBrowser": {
         "searchLayers": "Search Layers…",
+        "selectAll": "Select all",
         "noResultsFound": "No results found for \"{{query}}\".",
         "noCategoriesAvailable": "No categories available.",
         "noSubcategoriesInFolder": "No subcategories in this folder.",

@@ -50,9 +50,11 @@ export const actions = {
       const norm = v => (String(v ?? '').trim() || 'ohne Kategorie');
       const normSub = v => (String(v ?? '').trim() || 'ohne Subkategorie');
 
-      const wmsServices = allServices.filter(s =>
-        String(s?.typ || '').toUpperCase() === 'WMS'
-      );
+      const wmsServices = allServices.filter(s => {
+              const typ = String(s?.typ || '').toUpperCase();
+              // include WMS and SensorThings services so sensor/traffic layers appear in the category browser
+              return typ === 'WMS' || typ === 'SENSORTHINGS';
+            });
 
       const catMap = new Map();
 

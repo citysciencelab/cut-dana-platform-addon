@@ -67,6 +67,22 @@ function removeLayer(id) {
   emit('update:modelValue', props.modelValue.filter(v => String(v.id) !== String(id)));
 }
 
+function addLayers(layerIds) {
+  if (!Array.isArray(layerIds) || layerIds.length === 0) return;
+  const existingIds = new Set(props.modelValue.map(l => String(l.id)));
+  const toAdd = layerIds.filter(id => !existingIds.has(String(id)));
+  if (!toAdd.length) return;
+  const newList = [ ...props.modelValue, ...toAdd.map(id => ({ id, transparency: 0 })) ];
+  emit('update:modelValue', newList);
+}
+
+function removeLayers(layerIds) {
+  if (!Array.isArray(layerIds) || layerIds.length === 0) return;
+  const toRemove = new Set(layerIds.map(id => String(id)));
+  const newList = props.modelValue.filter(v => !toRemove.has(String(v.id)));
+  emit('update:modelValue', newList);
+}
+
 function toggleTransparencySlider(layer) {
   transparencyDialog.value = !transparencyDialog.value;
   activeLayerId.value = activeLayerId.value === layer.id ? null : layer.id;
@@ -212,6 +228,8 @@ watch(
     :selected-ids="(props.modelValue ?? []).map(l => l.id)"
     @select:layer="(l) => addLayer(l.id)"
     @deselect:layer="(l) => removeLayer(l.id)"
+    @select:layers="(layers) => addLayers(layers.map(l => l.id))"
+    @deselect:layers="(layers) => removeLayers(layers.map(l => l.id))"
   />
 </template>
 

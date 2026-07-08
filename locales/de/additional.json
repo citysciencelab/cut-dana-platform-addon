@@ -114,6 +114,7 @@
       },
       "categoryBrowser": {
         "searchLayers": "Ebenen durchsuchen…",
+        "selectAll": "Alle auswählen",
         "noResultsFound": "Keine Ergebnisse gefunden für \"{{query}}\".",
         "noCategoriesAvailable": "Keine Kategorien verfügbar.",
         "noSubcategoriesInFolder": "Keine Unterkategorien in diesem Ordner.",
