@@ -1,10 +1,30 @@
-import { generateSimpleGetters, generateSimpleMutations } from '../../../../../../ src/shared/js/utils/generators';
-
 import { createLogger } from '../../../utils/logger';
 
 const logger = createLogger('LayerStore');
 
 const TYPES_3D = new Set([ 'ENTITIES3D', 'TERRAIN3D', 'TILESET3D' ]);
+
+// Simple generators - local implementation (no masterportal dependency)
+function generateSimpleGetters(state) {
+  return Object.keys(state)
+    .reduce((acc, key) => ({
+      ...acc,
+      [key]: s => s[key]
+    }), {});
+}
+
+function generateSimpleMutations(state) {
+  return Object.keys(state)
+    .reduce((acc, key) => {
+      const mutationKey = `set${key[0].toUpperCase()}${key.slice(1)}`;
+      return {
+        ...acc,
+        [mutationKey]: (moduleState, payload) => {
+          moduleState[key] = payload;
+        }
+      };
+    }, {});
+}
 
 export const state = {
   layersTree: [],

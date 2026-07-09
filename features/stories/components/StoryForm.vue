@@ -616,6 +616,20 @@ async function saveStoryData() {
 
   isSaving.value = true;
 
+  // Guardrail: Prevent overwriting existing stories during creation
+  // A new story should NEVER overwrite an existing one
+  let storyId = currentStoryId.value || props.storyId;
+
+  // Check if this is supposed to be a new story (no ID)
+  const isNewStory = !storyId;
+
+  if (isNewStory) {
+    // Double-check: even if someone passed an ID, if currentStoryId is empty,
+    // we are creating a new story and should NOT use any provided ID
+    // This prevents accidental overwrites if props.storyId was somehow set incorrectly
+    storyId = null;
+  }
+
   const chaptersPayload = (chaptersData.value ?? []).map((chapter) => ({
     ...chapter,
     steps: (chapter.steps ?? []).map((step) => {
@@ -641,7 +655,6 @@ async function saveStoryData() {
     chapters: chaptersPayload
   };
 
-  let storyId = currentStoryId.value || props.storyId;
   let createdStory = payload;
 
   if (storyId) {
@@ -741,6 +754,8 @@ async function save() {
   removeAllVisibleLayers();
   clearGeoJSON();
   store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', store.state.Modules.DataNarrator.DashboardStore.mode);
+  store.commit('Modules/DataNarrator/StoryStore/clearSelectedStoryId');
+  store.commit('Modules/DataNarrator/EditStoryForm/resetStoryForm');
   gotoPage(dataNarratorModes.DASHBOARD);
 }
 
@@ -780,6 +795,8 @@ async function publish() {
   removeAllVisibleLayers();
   clearGeoJSON();
   store.dispatch('Modules/DataNarrator/StoryStore/fetchStories', store.state.Modules.DataNarrator.DashboardStore.mode);
+  store.commit('Modules/DataNarrator/StoryStore/clearSelectedStoryId');
+  store.commit('Modules/DataNarrator/EditStoryForm/resetStoryForm');
   gotoPage(dataNarratorModes.DASHBOARD);
 }
 

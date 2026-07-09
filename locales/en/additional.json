@@ -160,7 +160,8 @@
         "title": "Data Narrator",
         "subtitle": "Find and create data stories for Hamburg!",
         "description": "With the Urban Data Narrator (DaNa), you can read, create, and share data stories based on the Hamburg Geoportal. These data stories tell about many different topics and places in Hamburg. Selected data from the Hamburg Geoportal is combined with texts, photos, and illustrations. This way, you can share your perspective on urban development topics backed by data. DaNa is a project of the City Science Lab at HafenCity University Hamburg and is implemented as part of the Connected Urban Twins project.",
-        "noResults": "No more stories found."
+        "noResults": "No more stories found.",
+        "exportStory": "Export Story"
       },
       "success": {
         "storyCreated": "Story successfully created.",

@@ -14,6 +14,10 @@ export const mutations = {
   setSelectedStoryId (state, selectedStoryId) {
     state.selectedStoryId = selectedStoryId;
   },
+
+  clearSelectedStoryId (state) {
+    state.selectedStoryId = null;
+  },
 };
 
 export const getters = {

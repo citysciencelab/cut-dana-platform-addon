@@ -38,6 +38,10 @@ export function useStoryForm() {
     });
     if (response.ok) {
       const storyId = await response.json();
+      if (store.state.Modules.DataNarrator.EditStoryForm.selectedStoryId) {
+        logger.warn('Refusing to overwrite an existing story id during new story creation');
+        return;
+      }
       store.commit('Modules/DataNarrator/EditStoryForm/setSelectedStoryId', storyId)
     }
   }

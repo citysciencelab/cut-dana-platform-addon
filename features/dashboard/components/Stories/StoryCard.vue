@@ -9,6 +9,7 @@ import AuthorDisplay from './Author.vue';
 import CopyButton from './CopyButton.vue';
 import DeleteButton from './DeleteButton.vue';
 import EditButton from './EditButton.vue';
+import ExportButton from './ExportButton.vue';
 import FeaturedButton from './FeaturedButton.vue';
 import PlayButton from './PlayButton.vue';
 import PublishButton from './PublishButton.vue';
@@ -119,6 +120,10 @@ async function playStory() {
           <EditButton
             v-if="userId === story.owner || isAdmin"
             :story-id="story.id"
+          />
+          <ExportButton
+            v-if="userId === story.owner || isAdmin"
+            :story="story"
           />
           <DeleteButton
             v-if="userId === story.owner || isAdmin"

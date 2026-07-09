@@ -3,28 +3,143 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Circle, Fill, Stroke, Style } from 'ol/style.js';
 
-function createGeoJSONLayer() {
-  // Colors from design concept of Data Narrator
-  const fill = new Fill({
-    color: 'rgba(163,196,255)',
+// Style function to extract and use styling from GeoJSON features
+function geoJSONStyleFunction(feature) {
+  // Try to get style from feature properties (e.g., from GeoJSON with styling)
+  const style = feature.getStyle();
+  if (style) {
+    return style;
+  }
+
+  // Check for masterportal_attributes with drawState (from draw tool)
+  const masterportalAttributes = feature.get('masterportal_attributes');
+  if (masterportalAttributes?.drawState) {
+    const drawState = masterportalAttributes.drawState;
+    const geometryType = feature.getGeometry()?.getType();
+
+    // Point styling
+    if (geometryType === 'Point' || geometryType === 'MultiPoint') {
+      if (drawState.text) {
+        return new Style({
+          image: new Circle({
+            fill: new Fill({ color: drawState.color || 'rgba(226,26,28,0.9)' }),
+            radius: drawState.pointSize ? drawState.pointSize / 2 : 8
+          }),
+          text: new Style({
+            text: drawState.text,
+            font: `${drawState.fontSize || 16}px Arial,sans-serif`,
+            fill: new Fill({ color: drawState.color || 'rgba(226,26,28,0.9)' })
+          })
+        });
+      }
+      return new Style({
+        image: new Circle({
+          fill: new Fill({ color: drawState.color || 'rgba(226,26,28,0.9)' }),
+          radius: drawState.pointSize ? drawState.pointSize / 2 : 8
+        })
+      });
+    }
+
+    // Line styling
+    if (geometryType === 'LineString' || geometryType === 'MultiLineString') {
+      return new Style({
+        stroke: new Stroke({
+          color: drawState.colorContour || 'rgba(226,26,28,0.9)',
+          width: drawState.strokeWidth || 2
+        })
+      });
+    }
+
+    // Polygon styling
+    if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
+      return new Style({
+        stroke: new Stroke({
+          color: drawState.colorContour || 'rgba(226,26,28,0.9)',
+          width: drawState.strokeWidth || 2
+        }),
+        fill: new Fill({
+          color: drawState.color || 'rgba(228,26,28,0.5)'
+        })
+      });
+    }
+  }
+
+  // Check for attribute-based styling (custom styles)
+  const customStyles = window.__dataNarratorCustomStyles;
+  if (customStyles && !masterportalAttributes?.drawState) {
+    const layerName = feature.get('source');
+    const assetStyles = customStyles[layerName];
+    if (assetStyles && assetStyles.length > 0) {
+      const geometryType = feature.getGeometry()?.getType();
+      const featureAttribute = feature.get(assetStyles[0].attribute);
+      const featureColor = assetStyles.find(a =>
+        a.attributeValue === featureAttribute || a.attributeValue === 'none'
+      )?.attributeColor || 'rgba(226,26,28,0.9)';
+
+      if (geometryType === 'Point' || geometryType === 'MultiPoint') {
+        return new Style({
+          image: new Circle({
+            fill: new Fill({ color: featureColor }),
+            radius: 8
+          })
+        });
+      }
+      if (geometryType === 'LineString' || geometryType === 'MultiLineString') {
+        return new Style({
+          stroke: new Stroke({
+            color: featureColor,
+            width: 2
+          })
+        });
+      }
+      if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
+        return new Style({
+          stroke: new Stroke({
+            color: 'rgba(169,159,163,0.9)',
+            width: 2
+          }),
+          fill: new Fill({ color: featureColor })
+        });
+      }
+    }
+  }
+
+  // Fallback style if no styling found
+  const defaultFill = new Fill({
+    color: 'rgba(163,196,255,0.5)',
   });
-  const stroke = new Stroke({
+  const defaultStroke = new Stroke({
     color: 'rgb(70, 81, 102)',
     width: 2,
   });
-  const style = new Style({
-    image: new Circle({
-      fill: fill,
-      stroke: stroke,
-      radius: 8,
-    }),
-    fill: fill,
-    stroke: stroke,
-  });
+  const geometryType = feature.getGeometry()?.getType();
+  if (geometryType === 'Point' || geometryType === 'MultiPoint') {
+    return new Style({
+      image: new Circle({
+        fill: defaultFill,
+        stroke: defaultStroke,
+        radius: 8,
+      })
+    });
+  }
+  if (geometryType === 'LineString' || geometryType === 'MultiLineString') {
+    return new Style({
+      stroke: defaultStroke
+    });
+  }
+  if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
+    return new Style({
+      stroke: defaultStroke,
+      fill: defaultFill
+    });
+  }
+  return new Style();
+}
 
+function createGeoJSONLayer() {
   const layer = new VectorLayer({
     source: new VectorSource(),
-    style
+    style: geoJSONStyleFunction
   });
   layer.set('name', 'data-narrator-geojson');
   layer.set('id', 'data-narrator-geojson');
@@ -55,7 +170,7 @@ export function addGeoJSON(geoJSONAssets) {
   const map = mapCollection?.getMap('2D');
   if (!map) return;
   const mapProjection = map.getView().getProjection().getCode();
-  const parser = new GeoJSON();
+  const parser = new GeoJSON({ extractStyles: true });
   let transparency = 0;
   const layer = getGeoJSONLayer();
   const source = layer.getSource();

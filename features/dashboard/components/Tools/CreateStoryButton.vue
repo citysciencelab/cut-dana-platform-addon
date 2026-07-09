@@ -2,6 +2,8 @@
 import { mdiPlus } from '@mdi/js';
 import { useTranslation } from 'i18next-vue';
 
+import { useStore } from 'vuex';
+
 import { useDataNarrator } from '../../../../hooks/useDataNarrator';
 import { dataNarratorModes } from '../../../../store/contantsDataNarrator';
 import { useLogin } from '../../hooks/useLogin';
@@ -9,8 +11,11 @@ import { useLogin } from '../../hooks/useLogin';
 const { t } = useTranslation();
 const { loggedIn } = useLogin();
 const { gotoPage } = useDataNarrator();
+const store = useStore();
 
 const createStory = async () => {
+  store.commit('Modules/DataNarrator/StoryStore/clearSelectedStoryId');
+  store.commit('Modules/DataNarrator/EditStoryForm/resetStoryForm');
   gotoPage(dataNarratorModes.CREATE_STORY);
 };
 </script>
