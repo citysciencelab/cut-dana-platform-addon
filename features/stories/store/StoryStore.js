@@ -32,7 +32,9 @@ export const actions = {
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const error = new Error(`HTTP error! status: ${response.status}`);
+        commit('setError', error.message || 'Failed to fetch stories');
+        return;
       }
       const data = await response.json();
       commit('setStories', data);

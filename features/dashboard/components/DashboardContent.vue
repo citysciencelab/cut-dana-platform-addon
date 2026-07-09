@@ -79,7 +79,7 @@ watch(storiesDisplayMode, () => {
     >
       <v-btn
         color="primary"
-        variant="contained"
+        variant="elevated"
         @click="exportStories([story])"
       >
         Export: {{ story.title }}

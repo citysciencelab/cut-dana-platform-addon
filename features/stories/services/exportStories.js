@@ -56,7 +56,7 @@ export function exportStories(stories) {
 
   // Create JSON blob and download
   const jsonString = JSON.stringify(exportData, null, 2);
-  const blob = new Blob([jsonString], { type: 'application/json' });
+  const blob = new Blob([ jsonString ], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
 
   // Create download link
