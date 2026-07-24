@@ -1,5 +1,6 @@
 <script setup>
 import { useTranslation } from 'i18next-vue';
+import Quill from 'quill';
 import { computed, onBeforeUnmount, ref } from 'vue';
 import { VueEditor } from 'vue3-editor';
 
@@ -7,6 +8,35 @@ import * as constants from '../../../../store/contantsDataNarrator';
 import { backendUrl } from '../../../../store/contantsDataNarrator';
 import { createLogger } from '../../../../utils/logger.js';
 import { fixLinksInHTMLString } from '../../../../utils/stringUtils';
+
+// ---------------------------------------------------------------------------
+// Custom IframeBlot — renders a raw <iframe> embed in the editor
+// ---------------------------------------------------------------------------
+const BlockEmbed = Quill.import('blots/block/embed');
+
+class IframeBlot extends BlockEmbed {
+  static create(value) {
+    const node = super.create();
+    node.setAttribute('src', value.src);
+    if (value.allow) node.setAttribute('allow', value.allow);
+    if (value.allowfullscreen) node.setAttribute('allowfullscreen', '');
+    node.setAttribute('style', 'width:100%;max-width:600px;aspect-ratio:16/9;border:0;');
+    return node;
+  }
+
+  static value(node) {
+    return {
+      src: node.getAttribute('src'),
+      allow: node.getAttribute('allow') || '',
+      allowfullscreen: node.hasAttribute('allowfullscreen'),
+    };
+  }
+}
+
+IframeBlot.blotName = 'iframe';
+IframeBlot.tagName = 'iframe';
+
+Quill.register(IframeBlot);
 
 const logger = createLogger('StepDescription.vue');
 
@@ -117,11 +147,55 @@ function handleImageUpload() {
   };
 }
 
+/**
+ * Handles iframe embedding — prompts for a raw embed code, parses src and
+ * attributes, then inserts a custom IframeBlot into the editor.
+ * Accepts embed snippets from YouTube, Vimeo, Spotify, SoundCloud, etc.
+ */
+function handleIframeEmbed() {
+  const quill = getQuill();
+  if (!quill) return;
+  const range = quill.getSelection();
+  const insertIndex = getSafeEditorIndex(quill, range?.index ?? quill.getLength() - 1);
+
+
+  const raw = prompt(t('additional:modules.dataNarrator.editor.iframePrompt'));
+  if (!raw) return;
+
+  const srcMatch = raw.match(/src=["']([^"']+)["']/i);
+  const allowMatch = raw.match(/allow=["']([^"']+)["']/i);
+  const hasFullscreen = /allowfullscreen/i.test(raw);
+
+  if (!srcMatch) {
+
+    alert(t('additional:modules.dataNarrator.editor.iframeInvalid'));
+    return;
+  }
+
+  quill.insertEmbed(insertIndex, 'iframe', {
+    src: srcMatch[1],
+    allow: allowMatch?.[1] ?? '',
+    allowfullscreen: hasFullscreen,
+  }, 'user');
+  quill.setSelection(insertIndex + 1, 'silent');
+}
+
 function onEditorReady(quill) {
   // Override the default image handler which embeds base64
   const toolbar = quill.getModule('toolbar');
   if (toolbar) {
     toolbar.addHandler('image', handleImageUpload);
+    toolbar.addHandler('iframe', handleIframeEmbed);
+  }
+
+  // Add iframe toolbar button icon (Quill has no built-in iframe icon)
+  const iframeButton = quill.container.closest('.quillWrapper')
+    ?.querySelector('.ql-iframe');
+  if (iframeButton) {
+    iframeButton.innerHTML = `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="3" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      <path d="M6 7l-3 2 3 2M12 7l3 2-3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>`;
   }
 }
 </script>
@@ -172,8 +246,29 @@ function onEditorReady(quill) {
   .ql-container {
     border-color: #d32f2f !important;
   }
+
   .ql-toolbar {
     border-color: #d32f2f !important;
   }
+}
+
+// Iframe embeds inside the editor
+.ql-editor {
+  iframe {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 16 / 9;
+    border: none;
+    margin: 4px 0;
+  }
+}
+
+// Iframe toolbar button icon
+.ql-iframe svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
 }
 </style>

@@ -13,7 +13,9 @@
       "createStory": "Create Story",
       "3dForm": "3D View",
       "editor": {
-        "uploadingImage": "Uploading image…"
+        "uploadingImage": "Uploading image…",
+        "iframePrompt": "Paste iframe embed code (e.g. from YouTube, Vimeo, Spotify, SoundCloud …):",
+        "iframeInvalid": "No valid embed code detected. Please paste the full <iframe …> snippet."
       },
       "label": {
         "storyUnnamed": "Story Title",

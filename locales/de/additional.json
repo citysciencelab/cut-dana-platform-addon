@@ -13,7 +13,9 @@
       "createStory": "Story erstellen",
       "3dForm": "3D Objekte",
       "editor": {
-        "uploadingImage": "Bild wird hochgeladen…"
+        "uploadingImage": "Bild wird hochgeladen…",
+        "iframePrompt": "Iframe Embed-Code einfügen (z.B. von YouTube, Vimeo, Spotify, SoundCloud …):",
+        "iframeInvalid": "Kein gültiger Embed-Code erkannt. Bitte den vollständigen <iframe …>-Code einfügen."
       },
       "label": {
         "storyUnnamed": "Story Titel",

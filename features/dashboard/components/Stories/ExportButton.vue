@@ -34,6 +34,6 @@ function exportStory() {
         />
       </v-btn>
     </template>
-    {{ t('additional:modules.dataNarrator.dashboardView.title.exportStory') }}
+    {{ t('additional:modules.dataNarrator.dashboardView.exportStory') }}
   </v-tooltip>
 </template>

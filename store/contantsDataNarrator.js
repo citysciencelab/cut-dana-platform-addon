@@ -36,7 +36,7 @@ const htmlEditorToolbar = [
   ],
   [ { list: 'ordered' }, { list: 'bullet' } ],
   [ 'blockquote', 'code-block' ],
-  [ 'link', 'image' ]
+  [ 'link', 'image', 'iframe' ]
 ];
 
 const backendUrl = Config.backendUrl || 'https://staging-dana-backend.elie.de';
